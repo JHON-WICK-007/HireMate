@@ -1,0 +1,344 @@
+@import "tailwindcss";
+
+/* ─── HireMate AI Design System — Monochrome ────────────── */
+:root {
+  /* Neutral Palette */
+  --white: #ffffff;
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-300: #d4d4d4;
+  --gray-400: #a3a3a3;
+  --gray-500: #737373;
+  --gray-600: #525252;
+  --gray-700: #404040;
+  --gray-800: #262626;
+  --gray-900: #171717;
+  --gray-950: #0a0a0a;
+  --black: #000000;
+
+  /* Surfaces */
+  --surface-0: #000000;
+  --surface-50: #0a0a0a;
+  --surface-100: #111111;
+  --surface-200: #1a1a1a;
+  --surface-300: #222222;
+  --surface-400: #2a2a2a;
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --text-muted: #525252;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.2);
+
+  /* Accent — pure white glow */
+  --accent: #ffffff;
+
+  /* Success / Error */
+  --success: #22c55e;
+  --error: #ef4444;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 60px rgba(255, 255, 255, 0.04);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', var(--font-sans);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Accent & Theme-Specific */
+  --nav-bg: rgba(0, 0, 0, 0.8);
+  --btn-solid-bg: var(--white);
+  --btn-solid-fg: var(--black);
+  --btn-solid-hover: var(--gray-200);
+  --hero-glow: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+  --hero-grid-color: rgba(255, 255, 255, 0.015);
+  --badge-bg: rgba(255, 255, 255, 0.04);
+  --badge-dot: var(--white);
+  --step-number-color: var(--gray-800);
+  --cta-border-glow: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  --logo-grad-start: #ffffff;
+  --logo-grad-end: #a3a3a3;
+  --logo-stroke: #000000;
+  --logo-check-bg: #ffffff;
+  --gradient-text-start: #ffffff;
+  --gradient-text-end: #737373;
+  --particle-bg: rgba(255, 255, 255, 0.15);
+  --particle-bg-even: rgba(255, 255, 255, 0.08);
+  --auth-content-bg: rgba(10, 10, 10, 0.7);
+  --brand-panel-bg: rgba(255, 255, 255, 0.015);
+  --tab-indicator-bg: rgba(255, 255, 255, 0.07);
+  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-focus-border: rgba(255, 255, 255, 0.3);
+  --input-focus-bg: rgba(255, 255, 255, 0.05);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.02);
+  --glass-bg-hover: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.18);
+  --glass-blur: blur(16px);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  --glass-shadow-hover: 0 16px 40px 0 rgba(0, 0, 0, 0.35), 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+[data-theme="light"] {
+  /* Surfaces */
+  --surface-0: #ffffff;
+  --surface-50: #fafafa;
+  --surface-100: #f5f5f5;
+  --surface-200: #e5e5e5;
+  --surface-300: #d4d4d4;
+  --surface-400: #a3a3a3;
+
+  /* Text */
+  --text-primary: #000000;
+  --text-secondary: #525252;
+  --text-muted: #737373;
+
+  /* Borders */
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-default: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.2);
+
+  /* Accent */
+  --accent: #000000;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 60px rgba(0, 0, 0, 0.02);
+
+  /* Accent & Theme-Specific */
+  --nav-bg: rgba(255, 255, 255, 0.8);
+  --btn-solid-bg: var(--black);
+  --btn-solid-fg: var(--white);
+  --btn-solid-hover: var(--gray-800);
+  --hero-glow: radial-gradient(circle, rgba(0, 0, 0, 0.03) 0%, transparent 60%);
+  --hero-grid-color: rgba(0, 0, 0, 0.015);
+  --badge-bg: rgba(0, 0, 0, 0.04);
+  --badge-dot: var(--black);
+  --step-number-color: var(--gray-200);
+  --cta-border-glow: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+  --logo-grad-start: #000000;
+  --logo-grad-end: #525252;
+  --logo-stroke: #ffffff;
+  --logo-check-bg: #000000;
+  --gradient-text-start: #000000;
+  --gradient-text-end: #525252;
+  --particle-bg: rgba(0, 0, 0, 0.1);
+  --particle-bg-even: rgba(0, 0, 0, 0.05);
+  --auth-content-bg: rgba(255, 255, 255, 0.75);
+  --brand-panel-bg: rgba(0, 0, 0, 0.01);
+  --tab-indicator-bg: rgba(0, 0, 0, 0.04);
+  --input-bg: rgba(0, 0, 0, 0.02);
+  --input-focus-border: rgba(0, 0, 0, 0.3);
+  --input-focus-bg: rgba(0, 0, 0, 0.03);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-hover: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-hover: rgba(0, 0, 0, 0.15);
+  --glass-blur: blur(16px);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.03);
+  --glass-shadow-hover: 0 16px 40px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* ─── Reset & Base ──────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-0);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+::selection {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+[data-theme="light"] ::selection {
+  background: rgba(0, 0, 0, 0.15);
+  color: #000;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
+}
+
+*:focus-visible {
+  outline: 1px solid var(--white);
+  outline-offset: 2px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ─── Utilities ─────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--gradient-text-start) 0%, var(--gradient-text-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Theme Toggle ───────────────────────────────────────── */
+.theme-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text-primary) !important;
+  cursor: pointer !important;
+  transition: all var(--transition-base) !important;
+  flex-shrink: 0;
+  padding: 0 !important;
+  margin: 0;
+  line-height: 1;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  opacity: 0.7;
+}
+
+.theme-toggle:focus,
+.theme-toggle:focus-visible,
+.theme-toggle:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.theme-toggle:hover {
+  opacity: 1;
+  transform: scale(1.15) rotate(15deg);
+}
+
+[data-theme="light"] .theme-toggle {
+  background: transparent !important;
+  border: none !important;
+}
+
+[data-theme="light"] .theme-toggle:hover {
+  opacity: 1;
+}
+
+.theme-toggle svg {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px;
+  min-height: 20px;
+  transition: transform var(--transition-base);
+  display: block !important;
+}
+
+/* ─── Animations ────────────────────────────────────────── */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-subtle {
+
+  0%,
+  100% {
+    opacity: 0.03;
+  }
+
+  50% {
+    opacity: 0.06;
+  }
+}
