@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";
 import User from "../models/User";
 import { protect } from "../middleware/auth";
+import { generateVerificationCode, sendVerificationEmail } from "../utils/email";
 
 const router = Router();
 
@@ -35,6 +36,7 @@ const sendTokenResponse = (user: any, statusCode: number, res: Response) => {
       skills: user.skills,
       careerGoal: user.careerGoal,
       targetRole: user.targetRole,
+      isEmailVerified: user.isEmailVerified,
       createdAt: user.createdAt,
     },
   });
@@ -57,21 +59,41 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      res.status(400).json({
-        success: false,
-        message: "An account with this email already exists.",
-      });
-      return;
+      // If unverified, delete and allow re-registration
+      if (!existingUser.isEmailVerified) {
+        await User.deleteOne({ _id: existingUser._id });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "An account with this email already exists.",
+        });
+        return;
+      }
     }
 
-    // Create user
+    // Generate verification code
+    const verificationCode = generateVerificationCode();
+    const verificationExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+
+    // Create user (unverified)
     const user = await User.create({
       fullName,
       email,
       password,
+      isEmailVerified: false,
+      emailVerificationCode: verificationCode,
+      emailVerificationExpires: verificationExpires,
     });
 
-    sendTokenResponse(user, 201, res);
+    // Send verification email
+    await sendVerificationEmail(email, verificationCode, fullName);
+
+    res.status(201).json({
+      success: true,
+      requiresVerification: true,
+      message: "Account created! Please verify your email.",
+      email: user.email,
+    });
   } catch (error: any) {
     // Handle mongoose validation errors
     if (error.name === "ValidationError") {
@@ -86,6 +108,133 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
     }
 
     console.error("Register error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again.",
+    });
+  }
+});
+
+// ─── POST /api/auth/verify-email ────────────────────────────
+router.post("/verify-email", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, code } = req.body;
+
+    if (!email || !code) {
+      res.status(400).json({
+        success: false,
+        message: "Please provide email and verification code.",
+      });
+      return;
+    }
+
+    // Find user with verification fields
+    const user = await User.findOne({ email }).select(
+      "+emailVerificationCode +emailVerificationExpires"
+    );
+
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "No account found with this email.",
+      });
+      return;
+    }
+
+    if (user.isEmailVerified) {
+      res.status(400).json({
+        success: false,
+        message: "Email is already verified.",
+      });
+      return;
+    }
+
+    // Check if code has expired
+    if (
+      !user.emailVerificationExpires ||
+      user.emailVerificationExpires < new Date()
+    ) {
+      res.status(400).json({
+        success: false,
+        message: "Verification code has expired. Please request a new one.",
+      });
+      return;
+    }
+
+    // Check if code matches
+    if (user.emailVerificationCode !== code) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid verification code. Please try again.",
+      });
+      return;
+    }
+
+    // Mark email as verified
+    user.isEmailVerified = true;
+    user.emailVerificationCode = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
+
+    // Send token response (auto-login after verification)
+    sendTokenResponse(user, 200, res);
+  } catch (error) {
+    console.error("Verify email error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again.",
+    });
+  }
+});
+
+// ─── POST /api/auth/resend-code ─────────────────────────────
+router.post("/resend-code", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      res.status(400).json({
+        success: false,
+        message: "Please provide an email address.",
+      });
+      return;
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "No account found with this email.",
+      });
+      return;
+    }
+
+    if (user.isEmailVerified) {
+      res.status(400).json({
+        success: false,
+        message: "Email is already verified.",
+      });
+      return;
+    }
+
+    // Generate new code
+    const verificationCode = generateVerificationCode();
+    const verificationExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+    user.emailVerificationCode = verificationCode;
+    user.emailVerificationExpires = verificationExpires;
+    await user.save();
+
+    // Send email
+    await sendVerificationEmail(email, verificationCode, user.fullName);
+
+    res.status(200).json({
+      success: true,
+      message: "A new verification code has been sent to your email.",
+    });
+  } catch (error) {
+    console.error("Resend code error:", error);
     res.status(500).json({
       success: false,
       message: "Server error. Please try again.",
@@ -125,6 +274,27 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
       res.status(401).json({
         success: false,
         message: "Invalid email or password.",
+      });
+      return;
+    }
+
+    // Check if email is verified
+    if (!user.isEmailVerified) {
+      // Resend verification code automatically
+      const verificationCode = generateVerificationCode();
+      const verificationExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+      user.emailVerificationCode = verificationCode;
+      user.emailVerificationExpires = verificationExpires;
+      await user.save();
+
+      await sendVerificationEmail(email, verificationCode, user.fullName);
+
+      res.status(403).json({
+        success: false,
+        requiresVerification: true,
+        message: "Please verify your email first. A new code has been sent.",
+        email: user.email,
       });
       return;
     }
