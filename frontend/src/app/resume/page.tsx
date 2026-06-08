@@ -12,11 +12,11 @@ import { saveAs } from "file-saver";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 // Icons
-const IconUpload = () => <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>;
-const IconCheck = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>;
-const IconX = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
-const IconLightbulb = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2v1"/><path d="M12 7a5 5 0 0 0-5 5c0 2 1.5 3 2 4.5V18h6v-1.5c.5-1.5 2-2.5 2-4.5a5 5 0 0 0-5-5Z"/></svg>;
-const IconDownload = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>;
+const IconUpload = () => <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>;
+const IconCheck = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>;
+const IconX = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>;
+const IconLightbulb = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6" /><path d="M10 22h4" /><path d="M12 2v1" /><path d="M12 7a5 5 0 0 0-5 5c0 2 1.5 3 2 4.5V18h6v-1.5c.5-1.5 2-2.5 2-4.5a5 5 0 0 0-5-5Z" /></svg>;
+const IconDownload = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>;
 
 interface ResumeData {
   personalInfo: { fullName: string; email: string; phone: string; links: string[] };
@@ -38,12 +38,12 @@ export default function ResumePage() {
   const toast = useToast();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  
+
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [activeTab, setActiveTab] = useState<"analysis" | "preview">("analysis");
-  
+
   const resumeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function ResumePage() {
       fetch(`${API_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` }, credentials: "include" })
         .then(r => r.json())
         .then(data => { if (data.success) setUser(data.user); else router.push("/auth?mode=signin"); })
-        .catch(() => {});
+        .catch(() => { });
     } else {
       router.push("/auth?mode=signin");
     }
@@ -67,10 +67,10 @@ export default function ResumePage() {
 
   const handleUpload = async () => {
     if (!file) { toast.error("Please select a file first."); return; }
-    
+
     const formData = new FormData();
     formData.append("resume", file);
-    
+
     setIsUploading(true);
     try {
       const token = localStorage.getItem("token");
@@ -108,7 +108,7 @@ export default function ResumePage() {
 
   const exportDOCX = async () => {
     if (!resumeData) return;
-    
+
     const doc = new Document({
       sections: [{
         properties: {},
@@ -124,7 +124,7 @@ export default function ResumePage() {
         ]
       }]
     });
-    
+
     Packer.toBlob(doc).then(blob => {
       saveAs(blob, "HireMate_Resume.docx");
       toast.success("DOCX exported!");
@@ -137,7 +137,7 @@ export default function ResumePage() {
     <div className={styles.page}>
       <nav style={{ padding: "1.5rem 2rem", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--border-subtle)" }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", fontWeight: "bold", fontSize: "1.2rem", color: "var(--text-primary)" }}>
-          <svg width="24" height="24" viewBox="0 0 40 40" fill="none"><rect x="2" y="2" width="36" height="36" rx="10" fill="var(--text-primary)"/><path d="M12 14h16M12 20h10M12 26h14" stroke="var(--surface-0)" strokeWidth="2.5"/></svg>
+          <svg width="24" height="24" viewBox="0 0 40 40" fill="none"><rect x="2" y="2" width="36" height="36" rx="10" fill="var(--text-primary)" /><path d="M12 14h16M12 20h10M12 26h14" stroke="var(--surface-0)" strokeWidth="2.5" /></svg>
           HireMate AI
         </Link>
         <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
@@ -151,19 +151,21 @@ export default function ResumePage() {
         <div className={styles.heroContent}>
           <h1 className={styles.title}>Resume Optimizer</h1>
           <p className={styles.subtitle}>Upload your resume to instantly get an ATS score, AI-driven improvements, and generate a perfectly formatted template.</p>
-          
+
           {!resumeData && (
-            <div className={styles.uploadArea} onClick={() => document.getElementById("fileInput")?.click()}>
-              <IconUpload />
-              <div className={styles.uploadText}>{file ? file.name : "Drag & drop or click to upload"}</div>
-              <div className={styles.uploadSubtext}>Supports PDF and DOCX files</div>
-              <input id="fileInput" type="file" accept=".pdf,.docx" className={styles.uploadInput} onChange={handleFileChange} />
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1.5rem", width: "100%" }}>
+              <div className={styles.uploadArea} style={{ width: "100%" }}>
+                <IconUpload />
+                <div className={styles.uploadText}>{file ? file.name : "Drag & drop or click to upload"}</div>
+                <div className={styles.uploadSubtext}>Supports PDF and DOCX files</div>
+                <input id="fileInput" type="file" accept=".pdf,.docx" className={styles.uploadInput} onChange={handleFileChange} />
+              </div>
               
               <button 
-                onClick={(e) => { e.stopPropagation(); handleUpload(); }} 
+                onClick={handleUpload} 
                 className={`${styles.btn} ${styles.btnPrimary}`}
                 disabled={!file || isUploading}
-                style={{ marginTop: "1rem" }}
+                style={{ minWidth: "200px", justifyContent: "center" }}
               >
                 {isUploading ? "Analyzing with AI..." : "Analyze Resume"}
               </button>
@@ -178,7 +180,7 @@ export default function ResumePage() {
             <div className={styles.card}>
               <h3 className={styles.cardTitle}>ATS Score</h3>
               <div className={styles.atsScoreWrap}>
-                <div className={styles.atsScoreRing} style={{ "--score-pct": `${resumeData.analysis.atsScore}%`} as React.CSSProperties}>
+                <div className={styles.atsScoreRing} style={{ "--score-pct": `${resumeData.analysis.atsScore}%` } as React.CSSProperties}>
                   <div className={styles.atsScoreInner}>
                     <span className={styles.atsNumber}>{resumeData.analysis.atsScore}</span>
                     <span className={styles.atsLabel}>Out of 100</span>
@@ -210,7 +212,7 @@ export default function ResumePage() {
               <div>
                 <h2 style={{ marginBottom: "1rem" }}>{resumeData.personalInfo.fullName}</h2>
                 <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>{resumeData.personalInfo.email} | {resumeData.personalInfo.phone}</p>
-                
+
                 <h3 style={{ marginBottom: "0.5rem" }}>Skills</h3>
                 <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "2rem" }}>
                   {resumeData.skills.map((s, i) => <span key={i} style={{ background: "var(--surface-200)", padding: "0.2rem 0.6rem", borderRadius: "4px", fontSize: "0.8rem" }}>{s}</span>)}
@@ -233,7 +235,7 @@ export default function ResumePage() {
                   <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={exportPDF}><IconDownload /> Export PDF</button>
                   <button className={`${styles.btn} ${styles.btnOutline}`} onClick={exportDOCX}><IconDownload /> Export DOCX</button>
                 </div>
-                
+
                 <div style={{ overflowX: "auto", padding: "20px", background: "var(--surface-200)", borderRadius: "8px" }}>
                   <div className={styles.resumePreview} ref={resumeRef}>
                     <div className={styles.rpHeader}>
@@ -243,7 +245,7 @@ export default function ResumePage() {
                         {resumeData.personalInfo.links?.length > 0 && ` • ${resumeData.personalInfo.links.join(" • ")}`}
                       </div>
                     </div>
-                    
+
                     {resumeData.experience.length > 0 && (
                       <div className={styles.rpSection}>
                         <div className={styles.rpSectionTitle}>Professional Experience</div>
