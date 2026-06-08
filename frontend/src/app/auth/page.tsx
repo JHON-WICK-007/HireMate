@@ -1,16 +1,18 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
 import ThemeToggle from "../components/ThemeToggle";
+import { useToast } from "../components/Toast";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function AuthPage() {
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const toast = useToast();
 
   // Form fields
   const [fullName, setFullName] = useState("");
@@ -18,6 +20,31 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [showPasswordErrors, setShowPasswordErrors] = useState(false);
+  const [formErrors, setFormErrors] = useState<{
+    fullName?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
+
+  const getPasswordErrors = () => {
+    const errors = [];
+    if (password.length < 8) {
+      errors.push("Password must be at least 8 characters.");
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.push("Password must contain at least one capital letter.");
+    }
+    if (!/\d/.test(password)) {
+      errors.push("Password must contain at least one number.");
+    }
+    if (["password", "user", "username"].includes(password.toLowerCase())) {
+      errors.push("Password cannot be 'password', 'user', or 'username'.");
+    }
+    return errors;
+  };
 
   // Animated background particles
   const [particles, setParticles] = useState<
@@ -35,38 +62,63 @@ export default function AuthPage() {
     setParticles(generated);
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode");
+    if (mode === "signup") {
+      setIsLogin(false);
+    } else if (mode === "signin") {
+      setIsLogin(true);
+    }
+  }, []);
+
   const toggleMode = () => {
     setIsLogin(!isLogin);
-    setError("");
-    setSuccess("");
+    toast.dismissAll();
     setPassword("");
     setConfirmPassword("");
+    setShowPasswordErrors(false);
+    setFormErrors({});
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setFormErrors({});
 
-    // Validation
-    if (!email || !password) {
-      setError("Please fill in all required fields.");
-      return;
+    const newErrors: {
+      fullName?: string;
+      email?: string;
+      password?: string;
+      confirmPassword?: string;
+    } = {};
+
+    if (!isLogin && !fullName) {
+      newErrors.fullName = "Full name is required.";
+    }
+    if (!email) {
+      newErrors.email = "Email address is required.";
+    }
+    if (!password) {
+      newErrors.password = "Password is required.";
     }
 
     if (!isLogin) {
-      if (!fullName) {
-        setError("Please enter your full name.");
-        return;
+      if (password && password !== confirmPassword) {
+        newErrors.confirmPassword = "Passwords do not match.";
       }
-      if (password !== confirmPassword) {
-        setError("Passwords do not match.");
-        return;
+      
+      if (password) {
+        const rulesErrors = getPasswordErrors();
+        if (rulesErrors.length > 0) {
+          newErrors.password = "Please satisfy all password rules.";
+          setShowPasswordErrors(true);
+        }
       }
-      if (password.length < 6) {
-        setError("Password must be at least 6 characters.");
-        return;
-      }
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setFormErrors(newErrors);
+      return;
     }
 
     setIsLoading(true);
@@ -87,22 +139,28 @@ export default function AuthPage() {
       const data = await res.json();
 
       if (!data.success) {
-        setError(data.message || "Something went wrong.");
+        toast.error(data.message || "Something went wrong.");
         return;
       }
 
       if (isLogin) {
-        setSuccess(`Welcome back, ${data.user.fullName}! 🎉`);
+        toast.success(`Welcome back, ${data.user.fullName}! 🎉`);
         // Store token for API calls
         localStorage.setItem("token", data.token);
-        // TODO: Redirect to dashboard
+        // Redirect to homepage after 1.5s
+        setTimeout(() => {
+          router.push("/");
+        }, 1500);
       } else {
-        setSuccess("Account created successfully! 🚀 Welcome to HireMate AI!");
+        toast.success("Account created successfully! 🚀 Welcome to HireMate AI!");
         localStorage.setItem("token", data.token);
-        // TODO: Redirect to onboarding/profile setup
+        // Redirect to homepage after 1.5s
+        setTimeout(() => {
+          router.push("/");
+        }, 1500);
       }
     } catch (err) {
-      setError("Unable to connect to server. Please try again.");
+      toast.error("Unable to connect to server. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -222,21 +280,24 @@ export default function AuthPage() {
             {/* Social proof */}
             <div className={styles.socialProof}>
               <div className={styles.avatarStack}>
-                {["#ffffff", "#d4d4d4", "#a3a3a3", "#737373"].map(
-                  (color, i) => (
-                    <div
-                      key={i}
-                      className={styles.avatar}
-                      style={{
-                        background: color,
-                        zIndex: 4 - i,
-                        transform: `translateX(${i * -10}px)`,
-                      }}
-                    >
-                      {String.fromCharCode(65 + i)}
-                    </div>
-                  )
-                )}
+                {[
+                  "https://randomuser.me/api/portraits/women/44.jpg",
+                  "https://randomuser.me/api/portraits/men/32.jpg",
+                  "https://randomuser.me/api/portraits/women/68.jpg",
+                  "https://randomuser.me/api/portraits/men/75.jpg",
+                  "https://randomuser.me/api/portraits/women/90.jpg",
+                ].map((src, i) => (
+                  <img
+                    key={i}
+                    className={styles.avatar}
+                    src={src}
+                    alt={`User ${i + 1}`}
+                    style={{
+                      zIndex: 5 - i,
+                      transform: `translateX(${i * -10}px)`,
+                    }}
+                  />
+                ))}
               </div>
               <p className={styles.socialProofText}>
                 <strong>2,500+</strong> developers preparing with HireMate AI
@@ -282,25 +343,7 @@ export default function AuthPage() {
               />
             </div>
 
-            {/* Error / Success Messages */}
-            {error && (
-              <div className={styles.alert + " " + styles.alertError}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-                  <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-                {error}
-              </div>
-            )}
-            {success && (
-              <div className={styles.alert + " " + styles.alertSuccess}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                {success}
-              </div>
-            )}
+
 
             {/* Form */}
             <form onSubmit={handleSubmit} className={styles.form}>
@@ -318,13 +361,25 @@ export default function AuthPage() {
                     <input
                       id="fullName"
                       type="text"
-                      className={styles.input}
+                      className={`${styles.input} ${formErrors.fullName ? styles.inputError : ""}`}
                       placeholder="John Doe"
                       value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
+                      onChange={(e) => {
+                        setFullName(e.target.value);
+                        setFormErrors((prev) => ({ ...prev, fullName: undefined }));
+                      }}
                       autoComplete="name"
                     />
                   </div>
+                  {formErrors.fullName && (
+                    <div className={styles.fieldError}>
+                      <svg viewBox="0 0 24 24" className={styles.fieldErrorIcon} fill="currentColor">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                      </svg>
+                      <span>{formErrors.fullName}</span>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -341,13 +396,25 @@ export default function AuthPage() {
                   <input
                     id="email"
                     type="email"
-                    className={styles.input}
+                    className={`${styles.input} ${formErrors.email ? styles.inputError : ""}`}
                     placeholder="you@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setFormErrors((prev) => ({ ...prev, email: undefined }));
+                    }}
                     autoComplete="email"
                   />
                 </div>
+                {formErrors.email && (
+                  <div className={styles.fieldError}>
+                    <svg viewBox="0 0 24 24" className={styles.fieldErrorIcon} fill="currentColor">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                    </svg>
+                    <span>{formErrors.email}</span>
+                  </div>
+                )}
               </div>
 
               {/* Password */}
@@ -363,10 +430,16 @@ export default function AuthPage() {
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    className={styles.input}
+                    className={`${styles.input} ${formErrors.password ? styles.inputError : ""}`}
                     placeholder="••••••••"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setFormErrors((prev) => ({ ...prev, password: undefined }));
+                      setShowPasswordErrors(false);
+                    }}
+                    onFocus={() => setIsPasswordFocused(true)}
+                    onBlur={() => setIsPasswordFocused(false)}
                     autoComplete={isLogin ? "current-password" : "new-password"}
                   />
                   <button
@@ -387,7 +460,103 @@ export default function AuthPage() {
                       </svg>
                     )}
                   </button>
+
+                  {/* Password Rules Tooltip (Positioned relative to inputWrapper) */}
+                  {!isLogin && isPasswordFocused && (
+                    <div className={styles.passwordRulesTooltip} onMouseDown={(e) => e.preventDefault()}>
+                      <div className={styles.tooltipArrow} />
+                      <h4 className={styles.rulesTitle}>PASSWORD RULES</h4>
+                      <ul className={styles.rulesList}>
+                        <li className={password.length >= 8 ? styles.ruleValid : styles.ruleInvalid}>
+                          <span className={styles.ruleIcon}>
+                            {password.length >= 8 ? (
+                              <svg viewBox="0 0 24 24" className={styles.checkIcon} fill="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M8.5 12.5l2 2 5-5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            ) : (
+                              <svg viewBox="0 0 24 24" className={styles.alertIcon} fill="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                              </svg>
+                            )}
+                          </span>
+                          8 characters minimum
+                        </li>
+                        <li className={/[A-Z]/.test(password) ? styles.ruleValid : styles.ruleInvalid}>
+                          <span className={styles.ruleIcon}>
+                            {/[A-Z]/.test(password) ? (
+                              <svg viewBox="0 0 24 24" className={styles.checkIcon} fill="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M8.5 12.5l2 2 5-5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            ) : (
+                              <svg viewBox="0 0 24 24" className={styles.alertIcon} fill="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                              </svg>
+                            )}
+                          </span>
+                          Contains at least 1 capital letter
+                        </li>
+                        <li className={/\d/.test(password) ? styles.ruleValid : styles.ruleInvalid}>
+                          <span className={styles.ruleIcon}>
+                            {/\d/.test(password) ? (
+                              <svg viewBox="0 0 24 24" className={styles.checkIcon} fill="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M8.5 12.5l2 2 5-5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            ) : (
+                              <svg viewBox="0 0 24 24" className={styles.alertIcon} fill="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                              </svg>
+                            )}
+                          </span>
+                          Contains at least 1 number
+                        </li>
+                        <li className={!["password", "user", "username"].includes(password.toLowerCase()) ? styles.ruleValid : styles.ruleInvalid}>
+                          <span className={styles.ruleIcon}>
+                            {!["password", "user", "username"].includes(password.toLowerCase()) ? (
+                              <svg viewBox="0 0 24 24" className={styles.checkIcon} fill="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M8.5 12.5l2 2 5-5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            ) : (
+                              <svg viewBox="0 0 24 24" className={styles.alertIcon} fill="currentColor">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                              </svg>
+                            )}
+                          </span>
+                          Can't be "password", "user", "username"
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
+
+                {/* Password field missing validation error */}
+                {!showPasswordErrors && formErrors.password && (
+                  <div className={styles.fieldError}>
+                    <svg viewBox="0 0 24 24" className={styles.fieldErrorIcon} fill="currentColor">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                    </svg>
+                    <span>{formErrors.password}</span>
+                  </div>
+                )}
+
+                {/* Inline Validation Error Messages (Shown below field if validation is broken) */}
+                {!isLogin && showPasswordErrors && getPasswordErrors().map((err, idx) => (
+                  <div key={idx} className={styles.fieldError}>
+                    <svg viewBox="0 0 24 24" className={styles.fieldErrorIcon} fill="currentColor">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                    </svg>
+                    <span>{err}</span>
+                  </div>
+                ))}
               </div>
 
               {/* Confirm Password - only for register */}
@@ -403,13 +572,25 @@ export default function AuthPage() {
                     <input
                       id="confirmPassword"
                       type="password"
-                      className={styles.input}
+                      className={`${styles.input} ${formErrors.confirmPassword ? styles.inputError : ""}`}
                       placeholder="••••••••"
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        setFormErrors((prev) => ({ ...prev, confirmPassword: undefined }));
+                      }}
                       autoComplete="new-password"
                     />
                   </div>
+                  {formErrors.confirmPassword && (
+                    <div className={styles.fieldError}>
+                      <svg viewBox="0 0 24 24" className={styles.fieldErrorIcon} fill="currentColor">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                      </svg>
+                      <span>{formErrors.confirmPassword}</span>
+                    </div>
+                  )}
                 </div>
               )}
 

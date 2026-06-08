@@ -1,0 +1,289 @@
+/* ─── Toast Popup — Premium Centered Card ────────────────── */
+
+/* Backdrop overlay */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: backdrop-in 0.3s ease forwards;
+}
+
+:global([data-theme="light"]) .backdrop {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Container — centered */
+.container {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  padding: 24px;
+}
+
+/* ─── The Card ───────────────────────────────────────────── */
+.toast {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px 28px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  pointer-events: auto;
+
+  /* Dark glass surface */
+  background: var(--surface-200);
+  border: 1px solid var(--border-default);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  animation: card-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  cursor: default;
+}
+
+:global([data-theme="light"]) .toast {
+  background: var(--surface-50);
+  border-color: var(--border-default);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ─── Top Glow — the signature accent bar ────────────────── */
+.glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 120px;
+  border-radius: 0 0 50% 50%;
+  pointer-events: none;
+  filter: blur(40px);
+  opacity: 0.35;
+}
+
+.success .glow {
+  background: radial-gradient(ellipse at center top, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+}
+
+.error .glow {
+  background: radial-gradient(ellipse at center top, rgba(255, 255, 255, 0.35) 0%, transparent 70%);
+}
+
+.info .glow {
+  background: radial-gradient(ellipse at center top, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+}
+
+.warning .glow {
+  background: radial-gradient(ellipse at center top, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+}
+
+:global([data-theme="light"]) .success .glow,
+:global([data-theme="light"]) .error .glow,
+:global([data-theme="light"]) .info .glow,
+:global([data-theme="light"]) .warning .glow {
+  background: radial-gradient(ellipse at center top, rgba(0, 0, 0, 0.06) 0%, transparent 70%);
+  opacity: 0.5;
+}
+
+/* ─── Icon Container — rounded square ────────────────────── */
+.iconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.success .iconBox {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+
+.error .iconBox {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+
+.info .iconBox {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+
+.warning .iconBox {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+
+:global([data-theme="light"]) .success .iconBox,
+:global([data-theme="light"]) .error .iconBox,
+:global([data-theme="light"]) .info .iconBox,
+:global([data-theme="light"]) .warning .iconBox {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: var(--text-primary);
+}
+
+/* ─── Title ──────────────────────────────────────────────── */
+.title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Message ────────────────────────────────────────────── */
+.message {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Close Button ───────────────────────────────────────── */
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition-fast);
+}
+
+.close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
+:global([data-theme="light"]) .close {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: var(--text-muted);
+}
+
+:global([data-theme="light"]) .close:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--text-primary);
+}
+
+/* ─── Progress Bar ───────────────────────────────────────── */
+.progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--text-primary);
+  opacity: 0.15;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  animation: progress-shrink var(--toast-duration) linear forwards;
+}
+
+:global([data-theme="light"]) .progress {
+  background: var(--text-primary);
+  opacity: 0.1;
+}
+
+/* ─── Exit Animation ─────────────────────────────────────── */
+.exiting {
+  animation: card-out 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.backdropExiting {
+  animation: backdrop-out 0.3s ease forwards;
+}
+
+/* ─── Keyframes ──────────────────────────────────────────── */
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes backdrop-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes card-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+}
+
+@keyframes progress-shrink {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .toast {
+    max-width: calc(100vw - 48px);
+    padding: 28px 22px 24px;
+  }
+
+  .iconBox {
+    width: 42px;
+    height: 42px;
+  }
+
+  .title {
+    font-size: 1.05rem;
+  }
+
+  .message {
+    font-size: 0.88rem;
+  }
+}

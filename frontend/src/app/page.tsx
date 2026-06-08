@@ -152,8 +152,8 @@ export default function Home() {
 
           <div className={styles.navActions}>
             <ThemeToggle />
-            <Link href="/auth" className={styles.navBtnGhost}>Sign In</Link>
-            <Link href="/auth" className={styles.navBtnSolid}>Get Started</Link>
+            <Link href="/auth?mode=signin" className={styles.navBtnGhost}>Sign In</Link>
+            <Link href="/auth?mode=signup" className={styles.navBtnSolid}>Get Started</Link>
           </div>
 
           <button
@@ -179,8 +179,8 @@ export default function Home() {
             <a href="#how-it-works" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</a>
             <a href="#stats" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Results</a>
             <div className={styles.mobileDivider} />
-            <Link href="/auth" className={styles.mobileLink}>Sign In</Link>
-            <Link href="/auth" className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center" }}>Get Started</Link>
+            <Link href="/auth?mode=signin" className={styles.mobileLink}>Sign In</Link>
+            <Link href="/auth?mode=signup" className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center" }}>Get Started</Link>
           </div>
         )}
       </nav>
@@ -210,7 +210,7 @@ export default function Home() {
           </p>
 
           <div className={styles.heroCtas}>
-            <Link href="/auth" className={styles.heroCtaPrimary}>
+            <Link href="/auth?mode=signup" className={styles.heroCtaPrimary}>
               Start Practicing Free
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
@@ -223,16 +223,20 @@ export default function Home() {
 
           <div className={styles.heroProof}>
             <div className={styles.heroAvatars}>
-              {["#fff", "#d4d4d4", "#a3a3a3", "#737373", "#525252"].map((c, i) => (
-                <div
+              {[
+                "https://randomuser.me/api/portraits/women/44.jpg",
+                "https://randomuser.me/api/portraits/men/32.jpg",
+                "https://randomuser.me/api/portraits/women/68.jpg",
+                "https://randomuser.me/api/portraits/men/75.jpg",
+                "https://randomuser.me/api/portraits/women/90.jpg",
+              ].map((src, i) => (
+                <img
                   key={i}
                   className={styles.heroAvatar}
-                  style={{ background: c, zIndex: 5 - i, marginLeft: i > 0 ? "-10px" : 0 }}
-                >
-                  <span style={{ color: i < 2 ? "#000" : "#fff", fontSize: "0.65rem", fontWeight: 700 }}>
-                    {String.fromCharCode(65 + i)}
-                  </span>
-                </div>
+                  src={src}
+                  alt={`User ${i + 1}`}
+                  style={{ zIndex: 5 - i, marginLeft: i > 0 ? "-10px" : 0 }}
+                />
               ))}
             </div>
             <p className={styles.heroProofText}>
@@ -309,7 +313,7 @@ export default function Home() {
               Join thousands of developers who are preparing smarter with HireMate AI.
               Start for free — no credit card required.
             </p>
-            <Link href="/auth" className={styles.ctaButton}>
+            <Link href="/auth?mode=signup" className={styles.ctaButton}>
               Get Started for Free
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
