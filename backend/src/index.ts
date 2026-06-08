@@ -1,16 +1,17 @@
+import dotenv from "dotenv";
+// Load environment variables immediately
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
 import connectDB from "./config/db";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import resumeRoutes from "./routes/resume";
 
-// Load environment variables
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;

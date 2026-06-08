@@ -8,8 +8,6 @@ import { protect } from "../middleware/auth";
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
-
 router.post("/analyze", protect, upload.single("resume"), async (req: Request, res: Response): Promise<void> => {
   try {
     if (!req.file) {
@@ -81,6 +79,7 @@ Resume Text:
 ${extractedText.substring(0, 15000)} // Limit length to avoid massive prompts just in case
 `;
 
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: prompt,
