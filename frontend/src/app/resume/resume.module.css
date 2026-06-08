@@ -1,0 +1,354 @@
+.page {
+  min-height: 100vh;
+  background: var(--surface-0);
+  color: var(--text-primary);
+  padding-bottom: 4rem;
+}
+
+.hero {
+  padding: 8rem 2rem 4rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroGlow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── Upload Area ───────────────────────────────────────────────────────────── */
+.uploadArea {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  background: var(--surface-100);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.uploadArea:hover, .uploadAreaDrag {
+  border-color: var(--text-primary);
+  background: var(--surface-200);
+}
+
+.uploadIcon {
+  font-size: 3rem;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+}
+
+.uploadText {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.uploadSubtext {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.uploadInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* ─── Layout ────────────────────────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Sidebar (Analysis) ────────────────────────────────────────────────── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card {
+  background: var(--surface-100);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.atsScoreWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.atsScoreRing {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(var(--text-primary) var(--score-pct), var(--surface-300) 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.atsScoreInner {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--surface-100);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.atsNumber {
+  font-size: 2rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.atsLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-top: 0.2rem;
+}
+
+.analysisList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.analysisItem {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.analysisItem svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.analysisItem.strength svg { color: var(--success); }
+.analysisItem.weakness svg { color: var(--error); }
+.analysisItem.suggestion svg { color: #3b82f6; }
+
+/* ─── Main Editor / Preview ──────────────────────────────────────────────── */
+.main {
+  background: var(--surface-100);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  min-height: 800px;
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-default);
+  padding-bottom: 1rem;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.tab.active {
+  color: var(--surface-0);
+  background: var(--text-primary);
+}
+
+.exportBar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.btnPrimary {
+  background: var(--text-primary);
+  color: var(--surface-0);
+  border: none;
+}
+
+.btnPrimary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btnOutline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+
+.btnOutline:hover {
+  background: var(--surface-200);
+}
+
+/* ─── Resume Preview Pane ───────────────────────────────────────────────── */
+.resumePreview {
+  background: #ffffff; /* Always white for PDF generation */
+  color: #000000;
+  padding: 40px;
+  box-shadow: var(--shadow-sm);
+  font-family: Arial, sans-serif; /* Web safe */
+  width: 100%;
+  max-width: 800px; /* Standard A4 width approx */
+  margin: 0 auto;
+}
+
+.rpHeader {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 10px;
+}
+
+.rpName {
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0 0 5px;
+}
+
+.rpContact {
+  font-size: 12px;
+  color: #333;
+}
+
+.rpSection {
+  margin-bottom: 15px;
+}
+
+.rpSectionTitle {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding-bottom: 3px;
+}
+
+.rpItem {
+  margin-bottom: 10px;
+}
+
+.rpItemHeader {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+
+.rpItemSub {
+  font-size: 12px;
+  font-style: italic;
+  margin-bottom: 5px;
+}
+
+.rpItemDesc {
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.rpSkills {
+  font-size: 12px;
+  line-height: 1.5;
+}
