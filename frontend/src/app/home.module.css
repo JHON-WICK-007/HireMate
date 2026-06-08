@@ -71,14 +71,19 @@
 }
 
 .navBtnGhost {
-  padding: 8px 18px;
-  font-size: 0.88rem;
+  height: 42px;
+  padding: 0 16px;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-secondary);
   border: 1px solid transparent;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
   font-family: var(--font-sans);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .navBtnGhost:hover {
@@ -86,8 +91,12 @@
 }
 
 .navBtnSolid {
-  padding: 8px 20px;
-  font-size: 0.88rem;
+  height: 42px;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--btn-solid-fg);
   background: var(--btn-solid-bg);
@@ -97,7 +106,6 @@
   font-family: var(--font-sans);
   cursor: pointer;
   text-decoration: none;
-  display: inline-block;
 }
 
 .navBtnSolid:hover {

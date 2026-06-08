@@ -12,6 +12,9 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
   const lastScrollY = useRef(0);
+  const initials = user?.fullName
+    ? user.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
+    : "U";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -198,10 +201,39 @@ export default function Home() {
             <ThemeToggle />
             {isLoggedIn ? (
               <>
-                <Link href="/profile" className={styles.navBtnGhost}>
-                  {user?.fullName ? `Profile (${user.fullName.split(" ")[0]})` : "Profile"}
+                <Link href="/profile" className={styles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt="Profile"
+                      style={{
+                        width: "42px",
+                        height: "42px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                        border: "1.5px solid var(--border-default)"
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "42px",
+                        height: "42px",
+                        borderRadius: "50%",
+                        background: "var(--surface-300)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "0.95rem",
+                        fontWeight: "bold",
+                        color: "var(--text-primary)"
+                      }}
+                    >
+                      {initials}
+                    </div>
+                  )}
+                  <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
                 </Link>
-                <button onClick={handleSignOut} className={styles.navBtnSolid}>Sign Out</button>
               </>
             ) : (
               <>
@@ -236,8 +268,39 @@ export default function Home() {
             <div className={styles.mobileDivider} />
             {isLoggedIn ? (
               <>
-                <Link href="/profile" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Profile</Link>
-                <button onClick={() => { handleSignOut(); setMobileMenu(false); }} className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center", cursor: "pointer" }}>Sign Out</button>
+                <Link href="/profile" className={styles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt="Profile"
+                      style={{
+                        width: "42px",
+                        height: "42px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                        border: "1.5px solid var(--border-default)"
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "42px",
+                        height: "42px",
+                        borderRadius: "50%",
+                        background: "var(--surface-300)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "0.95rem",
+                        fontWeight: "bold",
+                        color: "var(--text-primary)"
+                      }}
+                    >
+                      {initials}
+                    </div>
+                  )}
+                  <span>Profile</span>
+                </Link>
               </>
             ) : (
               <>
