@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
 import authRoutes from "./routes/auth";
+import userRoutes from "./routes/user";
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +29,7 @@ app.use(morgan("dev"));
 
 // ─── API Routes ─────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // ─── Health Check Route ─────────────────────────────────────
 app.get("/api/health", (_req, res) => {

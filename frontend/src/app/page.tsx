@@ -9,7 +9,51 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      fetch(`${API_URL}/api/auth/me`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        credentials: "include"
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.user) {
+          setUser(data.user);
+        } else {
+          localStorage.removeItem("token");
+          setIsLoggedIn(false);
+        }
+      })
+      .catch(() => {
+        // Fallback: keep logged in state if fetch fails
+      });
+    }
+  }, []);
+
+  const handleSignOut = async () => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    try {
+      await fetch(`${API_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setUser(null);
+    window.location.reload();
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -152,8 +196,19 @@ export default function Home() {
 
           <div className={styles.navActions}>
             <ThemeToggle />
-            <Link href="/auth?mode=signin" className={styles.navBtnGhost}>Sign In</Link>
-            <Link href="/auth?mode=signup" className={styles.navBtnSolid}>Get Started</Link>
+            {isLoggedIn ? (
+              <>
+                <Link href="/profile" className={styles.navBtnGhost}>
+                  {user?.fullName ? `Profile (${user.fullName.split(" ")[0]})` : "Profile"}
+                </Link>
+                <button onClick={handleSignOut} className={styles.navBtnSolid}>Sign Out</button>
+              </>
+            ) : (
+              <>
+                <Link href="/auth?mode=signin" className={styles.navBtnGhost}>Sign In</Link>
+                <Link href="/auth?mode=signup" className={styles.navBtnSolid}>Get Started</Link>
+              </>
+            )}
           </div>
 
           <button
@@ -179,8 +234,17 @@ export default function Home() {
             <a href="#how-it-works" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</a>
             <a href="#stats" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Results</a>
             <div className={styles.mobileDivider} />
-            <Link href="/auth?mode=signin" className={styles.mobileLink}>Sign In</Link>
-            <Link href="/auth?mode=signup" className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center" }}>Get Started</Link>
+            {isLoggedIn ? (
+              <>
+                <Link href="/profile" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Profile</Link>
+                <button onClick={() => { handleSignOut(); setMobileMenu(false); }} className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center", cursor: "pointer" }}>Sign Out</button>
+              </>
+            ) : (
+              <>
+                <Link href="/auth?mode=signin" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Sign In</Link>
+                <Link href="/auth?mode=signup" className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center" }} onClick={() => setMobileMenu(false)}>Get Started</Link>
+              </>
+            )}
           </div>
         )}
       </nav>

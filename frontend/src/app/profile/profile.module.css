@@ -1,0 +1,836 @@
+.container {
+  min-height: 100vh;
+  background: var(--surface-0);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+}
+
+/* Background Grids & Orbs matching Auth page styling */
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 600px;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="light"] .container::before {
+  background: radial-gradient(circle at top, rgba(0, 0, 0, 0.02) 0%, transparent 70%);
+}
+
+/* ─── Navbar ─────────────────────────────────────────── */
+.nav {
+  height: 72px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--nav-bg);
+  backdrop-filter: var(--glass-blur);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  transition: background var(--transition-base), border-color var(--transition-base);
+}
+
+.navInner {
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navLogo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navLink {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.navLink:hover {
+  color: var(--text-primary);
+}
+
+.navSignOutBtn {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: var(--glass-blur);
+  transition: all var(--transition-fast);
+}
+
+.navSignOutBtn:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-1px);
+}
+
+/* ─── Layout ─────────────────────────────────────────── */
+.main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px 80px 24px;
+  z-index: 1;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 40px;
+  animation: fade-in 0.6s ease-out;
+}
+
+.avatarSquareContainer {
+  width: 140px;
+  height: 140px;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--border-strong);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.avatarSquare {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarSquareFallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--white) 0%, var(--gray-500) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--black);
+}
+
+[data-theme="light"] .avatarSquareFallback {
+  background: linear-gradient(135deg, var(--black) 0%, var(--gray-600) 100%);
+  color: var(--white);
+}
+
+.avatarUploadOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  cursor: pointer;
+}
+
+.avatarSquareContainer:hover .avatarUploadOverlay {
+  opacity: 1;
+}
+
+.cameraIcon {
+  font-size: 1.5rem;
+}
+
+.overlayText {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.avatarSpinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.emailBadge {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  border-radius: var(--radius-full);
+  margin-top: 6px;
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* ─── Sidebar Tabs ───────────────────────────────────── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  backdrop-filter: var(--glass-blur);
+  animation: fade-in 0.6s ease-out;
+}
+
+.tabBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tabBtn:hover {
+  color: var(--text-primary);
+  background: var(--glass-bg-hover);
+}
+
+.tabBtnActive {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset;
+}
+
+[data-theme="light"] .tabBtnActive {
+  background: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) inset;
+}
+
+.tabIcon {
+  font-size: 1.1rem;
+}
+
+/* ─── Panel Card ─────────────────────────────────────── */
+.panel {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.panelCard {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 16px;
+}
+
+.panelHeader h2 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Buttons */
+.editBtn,
+.cancelBtn,
+.saveBtn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.editBtn {
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+}
+
+.editBtn:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--text-primary);
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+}
+
+.cancelBtn:hover {
+  color: var(--text-primary);
+}
+
+.saveBtn {
+  background: var(--btn-solid-bg);
+  border: 1px solid var(--btn-solid-bg);
+  color: var(--btn-solid-fg);
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: var(--btn-solid-hover);
+  border-color: var(--btn-solid-hover);
+  transform: translateY(-1px);
+}
+
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ─── Display Content ────────────────────────────────── */
+.displayContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.infoGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.infoGroup label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.infoGroup p {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.bioText,
+.goalText {
+  white-space: pre-wrap;
+}
+
+.placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.sectionDesc {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+}
+
+/* ─── Form Inputs ────────────────────────────────────── */
+.formContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputGroup label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.input {
+  background: var(--input-bg);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  transition: all var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  background: var(--input-focus-bg);
+}
+
+.textarea {
+  background: var(--input-bg);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: all var(--transition-fast);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  background: var(--input-focus-bg);
+}
+
+.charCount {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  align-self: flex-end;
+}
+
+/* ─── Skills Tags ────────────────────────────────────── */
+.tagForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tagInput {
+  flex: 1;
+  background: var(--input-bg);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  transition: all var(--transition-fast);
+}
+
+.tagInput:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+}
+
+.addTagBtn {
+  background: var(--text-primary);
+  color: var(--surface-0);
+  border: none;
+  padding: 0 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.addTagBtn:hover {
+  opacity: 0.9;
+}
+
+.tagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tagCloudEditable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tag {
+  background: var(--glass-bg-hover);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.editableTag {
+  background: var(--glass-bg-hover);
+  border: 1px solid var(--glass-border-hover);
+  color: var(--text-primary);
+  padding: 4px 10px 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.removeTagBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+}
+
+.removeTagBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--error);
+}
+
+[data-theme="light"] .removeTagBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ─── Timeline ───────────────────────────────────────── */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 20px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 4px;
+  width: 1px;
+  background: var(--border-default);
+}
+
+.timelineItem {
+  position: relative;
+  padding-bottom: 32px;
+}
+
+.timelineItem:last-child {
+  padding-bottom: 0;
+}
+
+.timelineDot {
+  position: absolute;
+  left: -20px;
+  top: 8px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  border: 2px solid var(--surface-0);
+  z-index: 2;
+}
+
+.timelineContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timelineHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.timelineHeader h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.duration {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.company {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.description {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  margin-top: 4px;
+}
+
+/* ─── Dynamic Entries List Form ──────────────────────── */
+.entryCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 12px;
+  animation: fade-in 0.3s ease-out;
+}
+
+[data-theme="light"] .entryCard {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.entryCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.entryCardHeader h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
+.removeEntryBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.removeEntryBtn:hover {
+  color: var(--error);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.addEntryBtn {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  color: var(--text-secondary);
+  padding: 14px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-top: 10px;
+}
+
+.addEntryBtn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background: var(--glass-bg);
+}
+
+/* ─── Education Grid ─────────────────────────────────── */
+.educationGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.eduCard {
+  display: flex;
+  gap: 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 16px;
+  border-radius: var(--radius-md);
+}
+
+.eduIcon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.eduDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eduDetails h3 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.degree {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.year {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ─── Empty State ────────────────────────────────────── */
+.emptyState {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ─── Loading / Spinner ─────────────────────────── */
+.loadingContainer {
+  min-height: 100vh;
+  background: var(--surface-0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--text-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loadingText {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Responsiveness ─────────────────────────────────── */
+@media (max-width: 900px) {
+  .layoutGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 8px;
+  }
+
+  .tabBtn {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .headerRow {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .emailBadge {
+    align-self: center;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .panelCard {
+    padding: 20px;
+  }
+}

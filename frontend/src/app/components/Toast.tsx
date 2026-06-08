@@ -52,7 +52,7 @@ const titles: Record<ToastType, string> = {
 };
 
 /* ─── SVG Icons (24×24) ──────────────────────────────────── */
-const icons: Record<ToastType, JSX.Element> = {
+const icons: Record<ToastType, ReactNode> = {
   success: (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
