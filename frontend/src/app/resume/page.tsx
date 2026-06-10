@@ -9,6 +9,21 @@ import ThemeToggle from "../components/ThemeToggle";
 import { useToast } from "../components/Toast";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
 import { saveAs } from "file-saver";
+import { motion, AnimatePresence } from "framer-motion";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -143,7 +158,7 @@ export default function ResumePage() {
       const opt = {
         margin: 10,
         filename: 'HireMate_Resume.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
       };
@@ -332,32 +347,67 @@ export default function ResumePage() {
       </nav>
 
       {/* ─── Loading Overlay ───────────────────────────────── */}
-      {isUploading && (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.loadingSpinner} />
-          <div className={styles.loadingText}>Analyzing your resume…</div>
-          <div className={styles.loadingSubtext}>Our AI is evaluating your resume against ATS standards</div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isUploading && (
+          <motion.div
+            className={styles.loadingOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <div className={styles.loadingSpinner} />
+            <div className={styles.loadingText}>Analyzing your resume…</div>
+            <div className={styles.loadingSubtext}>Our AI is evaluating your resume against ATS standards</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ─── Hero / Upload Section ─────────────────────────── */}
       {!resumeData && (
         <section className={styles.hero}>
           <div className={styles.heroGlow} />
-          <div className={`${styles.heroOrb} ${styles.heroOrb1}`} />
-          <div className={`${styles.heroOrb} ${styles.heroOrb2}`} />
-          <div className={styles.heroContent}>
-            <div className={styles.titleBadge}>
+          <motion.div
+            className={`${styles.heroOrb} ${styles.heroOrb1}`}
+            animate={{
+              y: [0, -12, 0],
+              scale: [1, 1.05, 1]
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div
+            className={`${styles.heroOrb} ${styles.heroOrb2}`}
+            animate={{
+              y: [0, 10, 0],
+              scale: [1, 0.96, 1]
+            }}
+            transition={{
+              duration: 7,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div
+            className={styles.heroContent}
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+          >
+            <motion.div className={styles.titleBadge} variants={fadeInUp}>
               <span className={styles.titleBadgeDot} />
               AI-Powered Resume Analysis
-            </div>
-            <h1 className={styles.title}>Resume Optimizer</h1>
-            <p className={styles.subtitle}>
-              Upload your resume and get an instant ATS compatibility score, 
+            </motion.div>
+            <motion.h1 className={styles.title} variants={fadeInUp}>Resume Optimizer</motion.h1>
+            <motion.p className={styles.subtitle} variants={fadeInUp}>
+              Upload your resume and get an instant ATS compatibility score,
               AI-driven improvement suggestions, and a professionally formatted template.
-            </p>
+            </motion.p>
 
-            <div className={styles.uploadWrapper}>
+            <motion.div className={styles.uploadWrapper} variants={fadeInUp}>
               <div className={`${styles.uploadArea} ${file ? styles.uploadAreaActive : ""}`}>
                 <div className={styles.uploadIconWrap}>
                   <IconUpload />
@@ -377,22 +427,24 @@ export default function ResumePage() {
                 <input id="fileInput" type="file" accept=".pdf,.docx" className={styles.uploadInput} onChange={handleFileChange} />
               </div>
 
-              <button
+              <motion.button
                 onClick={handleUpload}
                 className={`${styles.btn} ${styles.btnPrimary}`}
                 disabled={!file || isUploading}
                 style={{ minWidth: "220px", justifyContent: "center", padding: "0.85rem 2rem" }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
                 {isUploading ? "Analyzing…" : "Analyze Resume"}
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
 
-            <div className={styles.featuresRow}>
+            <motion.div className={styles.featuresRow} variants={fadeInUp}>
               <span className={styles.featureChip}><IconShield /> ATS Compatible</span>
               <span className={styles.featureChip}><IconZap /> Instant Results</span>
               <span className={styles.featureChip}><IconTarget /> AI-Powered</span>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </section>
       )}
 
@@ -400,12 +452,23 @@ export default function ResumePage() {
       {resumeData && (
         <div className={styles.resultsSection}>
           {/* Score Banner */}
-          <div className={styles.scoreBanner}>
-            <div className={styles.scoreBannerRing} style={{ "--score-pct": `${resumeData.analysis.atsScore}%` } as React.CSSProperties}>
+          <motion.div
+            className={styles.scoreBanner}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
+          >
+            <motion.div
+              className={styles.scoreBannerRing}
+              style={{ "--score-pct": `${resumeData.analysis.atsScore}%` } as React.CSSProperties}
+              initial={{ scale: 0.7, rotate: -45 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] as const }}
+            >
               <div className={styles.scoreBannerInner}>
                 <span className={styles.scoreBannerNumber}>{resumeData.analysis.atsScore}</span>
               </div>
-            </div>
+            </motion.div>
             <div className={styles.scoreBannerInfo}>
               <div className={styles.scoreBannerName}>{resumeData.personalInfo.fullName}</div>
               <div className={styles.scoreBannerSub}>
@@ -417,7 +480,7 @@ export default function ResumePage() {
                 <IconRefresh /> New
               </button>
             </div>
-          </div>
+          </motion.div>
 
           {/* Tabs */}
           <div className={styles.tabs}>
@@ -426,194 +489,217 @@ export default function ResumePage() {
             <button className={`${styles.tab} ${activeTab === "preview" ? styles.active : ""}`} onClick={() => setActiveTab("preview")}>Resume Preview</button>
           </div>
 
-          {/* ── Analysis Tab ── */}
-          {activeTab === "analysis" && (
-            <div className={styles.tabPanel}>
-              <div className={styles.analysisGrid}>
-                {/* Strengths */}
-                <div className={styles.analysisCard}>
-                  <div className={`${styles.analysisCardTitle} ${styles.strengthTitle}`}>
-                    <IconCheck /> Strengths
-                  </div>
-                  <ul className={styles.analysisList}>
-                    {resumeData.analysis.strengths.map((s, i) => (
-                      <li key={i} className={`${styles.analysisItem} ${styles.strength}`}><IconCheck /><span>{s}</span></li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Weaknesses */}
-                <div className={styles.analysisCard}>
-                  <div className={`${styles.analysisCardTitle} ${styles.weaknessTitle}`}>
-                    <IconX /> Weaknesses
-                  </div>
-                  <ul className={styles.analysisList}>
-                    {resumeData.analysis.weaknesses.map((w, i) => (
-                      <li key={i} className={`${styles.analysisItem} ${styles.weakness}`}><IconX /><span>{w}</span></li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Suggestions */}
-                <div className={styles.analysisCard}>
-                  <div className={`${styles.analysisCardTitle} ${styles.suggestionTitle}`}>
-                    <IconLightbulb /> Suggestions
-                  </div>
-                  <ul className={styles.analysisList}>
-                    {resumeData.analysis.improvementSuggestions.map((s, i) => (
-                      <li key={i} className={`${styles.analysisItem} ${styles.suggestion}`}><IconLightbulb /><span>{s}</span></li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Missing Skills */}
-              {resumeData.analysis.missingSkills?.length > 0 && (
-                <div className={styles.missingSkillsSection}>
-                  <div className={styles.missingSkillsLabel}>Missing Skills</div>
-                  <div className={styles.missingSkillsWrap}>
-                    {resumeData.analysis.missingSkills.map((skill, i) => (
-                      <span key={i} className={styles.missingSkillBadge}>{skill}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ── Extracted Data Tab ── */}
-          {activeTab === "data" && (
-            <div className={styles.tabPanel}>
-              <div className={styles.dataSection}>
-                <h2 className={styles.dataName}>{resumeData.personalInfo.fullName}</h2>
-                <p className={styles.dataContact}>{resumeData.personalInfo.email} • {resumeData.personalInfo.phone}</p>
-
-                <h3 className={styles.dataSectionTitle}>Skills</h3>
-                <div className={styles.skillTags}>
-                  {resumeData.skills.map((s, i) => <span key={i} className={styles.skillTag}>{s}</span>)}
-                </div>
-
-                <h3 className={styles.dataSectionTitle}>Experience</h3>
-                {resumeData.experience.map((exp, i) => (
-                  <div key={i} className={styles.expCard}>
-                    <div className={styles.expRole}>{exp.role}</div>
-                    <div className={styles.expMeta}>
-                      <span>{exp.company}</span>
-                      <span className={styles.expMetaDot} />
-                      <span>{exp.duration}</span>
+          <AnimatePresence mode="wait">
+            {/* ── Analysis Tab ── */}
+            {activeTab === "analysis" && (
+              <motion.div
+                key="analysis"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className={styles.tabPanel}
+              >
+                <div className={styles.analysisGrid}>
+                  {/* Strengths */}
+                  <div className={styles.analysisCard}>
+                    <div className={`${styles.analysisCardTitle} ${styles.strengthTitle}`}>
+                      <IconCheck /> Strengths
                     </div>
-                    <p className={styles.expDesc}>{exp.description}</p>
+                    <ul className={styles.analysisList}>
+                      {resumeData.analysis.strengths.map((s, i) => (
+                        <li key={i} className={`${styles.analysisItem} ${styles.strength}`}><IconCheck /><span>{s}</span></li>
+                      ))}
+                    </ul>
                   </div>
-                ))}
 
-                {resumeData.education.length > 0 && (
-                  <>
-                    <h3 className={styles.dataSectionTitle} style={{ marginTop: "1.5rem" }}>Education</h3>
-                    {resumeData.education.map((ed, i) => (
-                      <div key={i} className={styles.expCard}>
-                        <div className={styles.expRole}>{ed.degree}</div>
-                        <div className={styles.expMeta}>
-                          <span>{ed.institution}</span>
-                          <span className={styles.expMetaDot} />
-                          <span>{ed.year}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                )}
-
-                {resumeData.projects?.length > 0 && (
-                  <>
-                    <h3 className={styles.dataSectionTitle} style={{ marginTop: "1.5rem" }}>Projects</h3>
-                    {resumeData.projects.map((proj, i) => (
-                      <div key={i} className={styles.expCard}>
-                        <div className={styles.expRole}>{proj.name}</div>
-                        <p className={styles.expDesc}>{proj.description}</p>
-                        <div className={styles.skillTags} style={{ marginTop: "0.5rem", marginBottom: 0 }}>
-                          {proj.technologies.map((t, j) => <span key={j} className={styles.skillTag} style={{ fontSize: "0.72rem" }}>{t}</span>)}
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* ── Resume Preview Tab ── */}
-          {activeTab === "preview" && (
-            <div className={styles.tabPanel}>
-              <div className={styles.exportBar}>
-                <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={exportPDF}><IconDownload /> Export PDF</button>
-                <button className={`${styles.btn} ${styles.btnOutline}`} onClick={exportDOCX}><IconDownload /> Export DOCX</button>
-              </div>
-
-              <div className={styles.resumePreviewWrap}>
-                <div className={styles.resumePreview} ref={resumeRef}>
-                  <div className={styles.rpHeader}>
-                    <h1 className={styles.rpName}>{resumeData.personalInfo.fullName}</h1>
-                    <div className={styles.rpContact}>
-                      {resumeData.personalInfo.email} • {resumeData.personalInfo.phone}
-                      {resumeData.personalInfo.links?.length > 0 && ` • ${resumeData.personalInfo.links.join(" • ")}`}
+                  {/* Weaknesses */}
+                  <div className={styles.analysisCard}>
+                    <div className={`${styles.analysisCardTitle} ${styles.weaknessTitle}`}>
+                      <IconX /> Weaknesses
                     </div>
+                    <ul className={styles.analysisList}>
+                      {resumeData.analysis.weaknesses.map((w, i) => (
+                        <li key={i} className={`${styles.analysisItem} ${styles.weakness}`}><IconX /><span>{w}</span></li>
+                      ))}
+                    </ul>
                   </div>
 
-                  {resumeData.experience.length > 0 && (
-                    <div className={styles.rpSection}>
-                      <div className={styles.rpSectionTitle}>Professional Experience</div>
-                      {resumeData.experience.map((exp, i) => (
-                        <div className={styles.rpItem} key={i}>
-                          <div className={styles.rpItemHeader}>
-                            <span>{exp.role}</span>
-                            <span>{exp.duration}</span>
-                          </div>
-                          <div className={styles.rpItemSub}>{exp.company}</div>
-                          <p className={styles.rpItemDesc}>{exp.description}</p>
-                        </div>
+                  {/* Suggestions */}
+                  <div className={styles.analysisCard}>
+                    <div className={`${styles.analysisCardTitle} ${styles.suggestionTitle}`}>
+                      <IconLightbulb /> Suggestions
+                    </div>
+                    <ul className={styles.analysisList}>
+                      {resumeData.analysis.improvementSuggestions.map((s, i) => (
+                        <li key={i} className={`${styles.analysisItem} ${styles.suggestion}`}><IconLightbulb /><span>{s}</span></li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Missing Skills */}
+                {resumeData.analysis.missingSkills?.length > 0 && (
+                  <div className={styles.missingSkillsSection}>
+                    <div className={styles.missingSkillsLabel}>Missing Skills</div>
+                    <div className={styles.missingSkillsWrap}>
+                      {resumeData.analysis.missingSkills.map((skill, i) => (
+                        <span key={i} className={styles.missingSkillBadge}>{skill}</span>
                       ))}
                     </div>
-                  )}
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {/* ── Extracted Data Tab ── */}
+            {activeTab === "data" && (
+              <motion.div
+                key="data"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className={styles.tabPanel}
+              >
+                <div className={styles.dataSection}>
+                  <h2 className={styles.dataName}>{resumeData.personalInfo.fullName}</h2>
+                  <p className={styles.dataContact}>{resumeData.personalInfo.email} • {resumeData.personalInfo.phone}</p>
+
+                  <h3 className={styles.dataSectionTitle}>Skills</h3>
+                  <div className={styles.skillTags}>
+                    {resumeData.skills.map((s, i) => <span key={i} className={styles.skillTag}>{s}</span>)}
+                  </div>
+
+                  <h3 className={styles.dataSectionTitle}>Experience</h3>
+                  {resumeData.experience.map((exp, i) => (
+                    <div key={i} className={styles.expCard}>
+                      <div className={styles.expRole}>{exp.role}</div>
+                      <div className={styles.expMeta}>
+                        <span>{exp.company}</span>
+                        <span className={styles.expMetaDot} />
+                        <span>{exp.duration}</span>
+                      </div>
+                      <p className={styles.expDesc}>{exp.description}</p>
+                    </div>
+                  ))}
 
                   {resumeData.education.length > 0 && (
-                    <div className={styles.rpSection}>
-                      <div className={styles.rpSectionTitle}>Education</div>
+                    <>
+                      <h3 className={styles.dataSectionTitle} style={{ marginTop: "1.5rem" }}>Education</h3>
                       {resumeData.education.map((ed, i) => (
-                        <div className={styles.rpItem} key={i}>
-                          <div className={styles.rpItemHeader}>
-                            <span>{ed.degree}</span>
+                        <div key={i} className={styles.expCard}>
+                          <div className={styles.expRole}>{ed.degree}</div>
+                          <div className={styles.expMeta}>
+                            <span>{ed.institution}</span>
+                            <span className={styles.expMetaDot} />
                             <span>{ed.year}</span>
                           </div>
-                          <div className={styles.rpItemSub}>{ed.institution}</div>
                         </div>
                       ))}
-                    </div>
+                    </>
                   )}
 
                   {resumeData.projects?.length > 0 && (
-                    <div className={styles.rpSection}>
-                      <div className={styles.rpSectionTitle}>Projects</div>
+                    <>
+                      <h3 className={styles.dataSectionTitle} style={{ marginTop: "1.5rem" }}>Projects</h3>
                       {resumeData.projects.map((proj, i) => (
-                        <div className={styles.rpItem} key={i}>
-                          <div className={styles.rpItemHeader}>
-                            <span>{proj.name}</span>
+                        <div key={i} className={styles.expCard}>
+                          <div className={styles.expRole}>{proj.name}</div>
+                          <p className={styles.expDesc}>{proj.description}</p>
+                          <div className={styles.skillTags} style={{ marginTop: "0.5rem", marginBottom: 0 }}>
+                            {proj.technologies.map((t, j) => <span key={j} className={styles.skillTag} style={{ fontSize: "0.72rem" }}>{t}</span>)}
                           </div>
-                          <p className={styles.rpItemDesc}>{proj.description}</p>
-                          <p className={styles.rpItemDesc} style={{ fontStyle: "italic", marginTop: "3px" }}>Tech: {proj.technologies.join(", ")}</p>
                         </div>
                       ))}
-                    </div>
-                  )}
-
-                  {resumeData.skills.length > 0 && (
-                    <div className={styles.rpSection}>
-                      <div className={styles.rpSectionTitle}>Skills</div>
-                      <div className={styles.rpSkills}>{resumeData.skills.join(", ")}</div>
-                    </div>
+                    </>
                   )}
                 </div>
-              </div>
-            </div>
-          )}
+              </motion.div>
+            )}
+
+            {/* ── Resume Preview Tab ── */}
+            {activeTab === "preview" && (
+              <motion.div
+                key="preview"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className={styles.tabPanel}
+              >
+                <div className={styles.exportBar}>
+                  <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={exportPDF}><IconDownload /> Export PDF</button>
+                  <button className={`${styles.btn} ${styles.btnOutline}`} onClick={exportDOCX}><IconDownload /> Export DOCX</button>
+                </div>
+
+                <div className={styles.resumePreviewWrap}>
+                  <div className={styles.resumePreview} ref={resumeRef}>
+                    <div className={styles.rpHeader}>
+                      <h1 className={styles.rpName}>{resumeData.personalInfo.fullName}</h1>
+                      <div className={styles.rpContact}>
+                        {resumeData.personalInfo.email} • {resumeData.personalInfo.phone}
+                        {resumeData.personalInfo.links?.length > 0 && ` • ${resumeData.personalInfo.links.join(" • ")}`}
+                      </div>
+                    </div>
+
+                    {resumeData.experience.length > 0 && (
+                      <div className={styles.rpSection}>
+                        <div className={styles.rpSectionTitle}>Professional Experience</div>
+                        {resumeData.experience.map((exp, i) => (
+                          <div className={styles.rpItem} key={i}>
+                            <div className={styles.rpItemHeader}>
+                              <span>{exp.role}</span>
+                              <span>{exp.duration}</span>
+                            </div>
+                            <div className={styles.rpItemSub}>{exp.company}</div>
+                            <p className={styles.rpItemDesc}>{exp.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {resumeData.education.length > 0 && (
+                      <div className={styles.rpSection}>
+                        <div className={styles.rpSectionTitle}>Education</div>
+                        {resumeData.education.map((ed, i) => (
+                          <div className={styles.rpItem} key={i}>
+                            <div className={styles.rpItemHeader}>
+                              <span>{ed.degree}</span>
+                              <span>{ed.year}</span>
+                            </div>
+                            <div className={styles.rpItemSub}>{ed.institution}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {resumeData.projects?.length > 0 && (
+                      <div className={styles.rpSection}>
+                        <div className={styles.rpSectionTitle}>Projects</div>
+                        {resumeData.projects.map((proj, i) => (
+                          <div className={styles.rpItem} key={i}>
+                            <div className={styles.rpItemHeader}>
+                              <span>{proj.name}</span>
+                            </div>
+                            <p className={styles.rpItemDesc}>{proj.description}</p>
+                            <p className={styles.rpItemDesc} style={{ fontStyle: "italic", marginTop: "3px" }}>Tech: {proj.technologies.join(", ")}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {resumeData.skills.length > 0 && (
+                      <div className={styles.rpSection}>
+                        <div className={styles.rpSectionTitle}>Skills</div>
+                        <div className={styles.rpSkills}>{resumeData.skills.join(", ")}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
 
@@ -668,13 +754,13 @@ export default function ResumePage() {
             <p>© 2026 HireMate AI. All rights reserved.</p>
             <div className={homeStyles.footerSocials}>
               <a href="#" aria-label="Twitter">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
               </a>
               <a href="#" aria-label="GitHub">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
               </a>
               <a href="#" aria-label="LinkedIn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
               </a>
             </div>
           </div>

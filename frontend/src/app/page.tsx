@@ -4,6 +4,37 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import styles from "./home.module.css";
 import ThemeToggle from "./components/ThemeToggle";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 25 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const cardContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
+};
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
@@ -316,41 +347,61 @@ export default function Home() {
 
       {/* ─── Hero Section ───────────────────────────────────── */}
       <section className={styles.hero}>
-        <div className={styles.heroGlow} />
+        <motion.div
+          className={styles.heroGlow}
+          animate={{
+            scale: [1, 1.08, 1],
+            opacity: [0.85, 1, 0.85]
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
         <div className={styles.heroGrid} />
 
-        <div className={styles.heroContent}>
-          <div className={styles.heroBadge}>
+        <motion.div
+          className={styles.heroContent}
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
+          <motion.div className={styles.heroBadge} variants={fadeInUp}>
             <span className={styles.heroBadgeDot} />
             AI-Powered Interview Platform
-          </div>
+          </motion.div>
 
-          <h1 className={styles.heroTitle}>
+          <motion.h1 className={styles.heroTitle} variants={fadeInUp}>
             Prepare Smarter.
             <br />
             <span className={styles.heroTitleAccent}>Interview Better.</span>
             <br />
             Land Faster.
-          </h1>
+          </motion.h1>
 
-          <p className={styles.heroSubtitle}>
+          <motion.p className={styles.heroSubtitle} variants={fadeInUp}>
             HireMate AI gives you mock interviews, resume analysis, coding practice,
             and career roadmaps — all powered by AI that adapts to your goals.
-          </p>
+          </motion.p>
 
-          <div className={styles.heroCtas}>
-            <Link href="/auth?mode=signup" className={styles.heroCtaPrimary}>
-              Start Practicing Free
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
-            <a href="#features" className={styles.heroCtaSecondary}>
-              See How It Works
-            </a>
-          </div>
+          <motion.div className={styles.heroCtas} variants={fadeInUp}>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+              <Link href="/auth?mode=signup" className={styles.heroCtaPrimary}>
+                Start Practicing Free
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+              <a href="#features" className={styles.heroCtaSecondary}>
+                See How It Works
+              </a>
+            </motion.div>
+          </motion.div>
 
-          <div className={styles.heroProof}>
+          <motion.div className={styles.heroProof} variants={fadeInUp}>
             <div className={styles.heroAvatars}>
               {[
                 "https://randomuser.me/api/portraits/women/44.jpg",
@@ -371,84 +422,137 @@ export default function Home() {
             <p className={styles.heroProofText}>
               <strong>2,500+</strong> developers already preparing
             </p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ─── Features Section ───────────────────────────────── */}
       <section className={styles.features} id="features">
         <div className={styles.sectionInner}>
-          <div className={styles.sectionHeader}>
+          <motion.div
+            className={styles.sectionHeader}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
             <span className={styles.sectionLabel}>Features</span>
             <h2 className={styles.sectionTitle}>Everything you need to ace your next interview</h2>
             <p className={styles.sectionSubtitle}>
               From resume review to live mock interviews — one platform, zero guesswork.
             </p>
-          </div>
+          </motion.div>
 
-          <div className={styles.featureGrid}>
+          <motion.div
+            className={styles.featureGrid}
+            variants={cardContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+          >
             {features.map((feature, i) => (
-              <div key={i} className={styles.featureCard}>
+              <motion.div
+                key={i}
+                className={styles.featureCard}
+                variants={cardVariants}
+                whileHover={{ y: -6, scale: 1.015 }}
+              >
                 <div className={styles.featureIcon}>{feature.icon}</div>
                 <h3 className={styles.featureTitle}>{feature.title}</h3>
                 <p className={styles.featureDesc}>{feature.description}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ─── How It Works ───────────────────────────────────── */}
       <section className={styles.howItWorks} id="how-it-works">
         <div className={styles.sectionInner}>
-          <div className={styles.sectionHeader}>
+          <motion.div
+            className={styles.sectionHeader}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
             <span className={styles.sectionLabel}>How It Works</span>
             <h2 className={styles.sectionTitle}>Four steps to interview confidence</h2>
-          </div>
+          </motion.div>
 
-          <div className={styles.stepsGrid}>
+          <motion.div
+            className={styles.stepsGrid}
+            variants={cardContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+          >
             {steps.map((step, i) => (
-              <div key={i} className={styles.stepCard}>
+              <motion.div
+                key={i}
+                className={styles.stepCard}
+                variants={cardVariants}
+                whileHover={{ y: -5, scale: 1.015 }}
+              >
                 <span className={styles.stepNumber}>{step.number}</span>
                 <h3 className={styles.stepTitle}>{step.title}</h3>
                 <p className={styles.stepDesc}>{step.description}</p>
                 {i < steps.length - 1 && <div className={styles.stepConnector} />}
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ─── Stats Section ──────────────────────────────────── */}
       <section className={styles.statsSection} id="stats">
         <div className={styles.sectionInner}>
-          <div className={styles.statsGrid}>
+          <motion.div
+            className={styles.statsGrid}
+            variants={cardContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+          >
             {stats.map((stat, i) => (
-              <div key={i} className={styles.statCard}>
+              <motion.div
+                key={i}
+                className={styles.statCard}
+                variants={cardVariants}
+                whileHover={{ y: -5, scale: 1.02 }}
+              >
                 <span className={styles.statValue}>{stat.value}</span>
                 <span className={styles.statLabel}>{stat.label}</span>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ─── CTA Section ────────────────────────────────────── */}
       <section className={styles.ctaSection}>
         <div className={styles.sectionInner}>
-          <div className={styles.ctaBox}>
+          <motion.div
+            className={styles.ctaBox}
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          >
             <h2 className={styles.ctaTitle}>Ready to land your dream job?</h2>
             <p className={styles.ctaSubtitle}>
               Join thousands of developers who are preparing smarter with HireMate AI.
               Start for free — no credit card required.
             </p>
-            <Link href="/auth?mode=signup" className={styles.ctaButton}>
-              Get Started for Free
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
-          </div>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ display: "inline-block" }}>
+              <Link href="/auth?mode=signup" className={styles.ctaButton}>
+                Get Started for Free
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
