@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import styles from "./home.module.css";
 import ThemeToggle from "./components/ThemeToggle";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 25 },
@@ -36,6 +36,214 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
 };
 
+function Interactive3DConsole() {
+  const [activeTab, setActiveTab] = useState<"interview" | "resume" | "playground">("interview");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [atsScore, setAtsScore] = useState(74);
+
+  // Mouse coordinate motion values
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Smooth springs for rotation
+  const rotateX = useSpring(useTransform(y, [-200, 200], [20, -20]), { damping: 25, stiffness: 200 });
+  const rotateY = useSpring(useTransform(x, [-200, 200], [-20, 20]), { damping: 25, stiffness: 200 });
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    // Calculate distance from center (-width/2 to +width/2)
+    const mouseX = event.clientX - rect.left - width / 2;
+    const mouseY = event.clientY - rect.top - height / 2;
+    x.set(mouseX);
+    y.set(mouseY);
+  }
+
+  function handleMouseLeave() {
+    x.set(0);
+    y.set(0);
+  }
+
+  // Effect to simulate active voice waveform animations
+  const [waveHeights, setWaveHeights] = useState([20, 15, 30, 25, 12, 18, 35, 15, 25, 20, 10, 22]);
+  useEffect(() => {
+    if (!isPlaying) return;
+    const interval = setInterval(() => {
+      setWaveHeights(prev => prev.map(() => Math.floor(Math.random() * 32) + 8));
+    }, 100);
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  // Effect to animate ATS Score count up
+  useEffect(() => {
+    const target = activeTab === "resume" ? 92 : activeTab === "playground" ? 99 : 74;
+    const current = atsScore;
+    if (current === target) return;
+    const step = current < target ? 1 : -1;
+    const timeout = setTimeout(() => {
+      setAtsScore(current + step);
+    }, 15);
+    return () => clearTimeout(timeout);
+  }, [activeTab, atsScore]);
+
+  return (
+    <div className={styles.heroRight}>
+      <motion.div
+        className={styles.consoleContainer}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateX,
+          rotateY,
+        }}
+      >
+        <div className={styles.consoleCard}>
+          {/* Top Panel / Header Info */}
+          <div className={styles.consoleHeader}>
+            <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+              {["interview", "resume", "playground"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab as any)}
+                  style={{
+                    padding: "5px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid var(--border-default)",
+                    background: activeTab === tab ? "var(--btn-solid-bg)" : "var(--surface-200)",
+                    color: activeTab === tab ? "var(--btn-solid-fg)" : "var(--text-secondary)",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    textTransform: "capitalize",
+                    transition: "all 0.2s"
+                  }}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem", fontWeight: 800, margin: 0 }}>
+              {activeTab === "interview" && "Voice Assistant Coach"}
+              {activeTab === "resume" && "ATS Real-Time Score"}
+              {activeTab === "playground" && "Voxel Editor Engine"}
+            </h4>
+            <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "4px", marginBottom: 0 }}>
+              {activeTab === "interview" && "Analyzing speaking pace, confidence, and filler word usage."}
+              {activeTab === "resume" && "Evaluating keyword relevance, formatting, and impact phrases."}
+              {activeTab === "playground" && "Running vector animations at 99 FPS on Canvas context."}
+            </p>
+          </div>
+
+          {/* Interactive Node: Speech wave or Voxel graphic */}
+          <div
+            className={`${styles.speechNode} ${isPlaying ? styles.speechNodeActive : ""}`}
+            onClick={() => {
+              if (activeTab === "interview") {
+                setIsPlaying(!isPlaying);
+              }
+            }}
+            style={{ cursor: activeTab === "interview" ? "pointer" : "default" }}
+          >
+            {activeTab === "interview" && (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: isPlaying ? "var(--badge-dot)" : "var(--text-secondary)" }}>
+                    {isPlaying ? "🔴 Live Recording" : "🔇 Tap to Record Voice"}
+                  </span>
+                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontFamily: "monospace" }}>00:04</span>
+                </div>
+                <div className={styles.waveform}>
+                  {waveHeights.map((h, i) => (
+                    <div
+                      key={i}
+                      className={`${styles.waveBar} ${isPlaying ? styles.waveBarActive : ""}`}
+                      style={{ height: `${isPlaying ? h : 4}px` }}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+
+            {activeTab === "resume" && (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--text-secondary)" }}>
+                    Analyzed Skills
+                  </span>
+                  <span style={{ fontSize: "0.7rem", color: "var(--badge-dot)", fontWeight: 700 }}>Optimal</span>
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "4px" }}>
+                  {["React", "Node.js", "System Design", "MongoDB", "TypeScript"].map((sk, i) => (
+                    <span
+                      key={sk}
+                      style={{
+                        fontSize: "0.72rem",
+                        padding: "3px 8px",
+                        borderRadius: "6px",
+                        background: "var(--surface-300)",
+                        color: "var(--text-primary)",
+                        fontWeight: 600
+                      }}
+                    >
+                      {sk}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {activeTab === "playground" && (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--text-secondary)" }}>
+                    Renderer Status
+                  </span>
+                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>WebGL Context</span>
+                </div>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "center", height: "40px" }}>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                    style={{ width: "24px", height: "24px", border: "2px dashed var(--btn-solid-bg)", borderRadius: "50%" }}
+                  />
+                  <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-primary)" }}>99.2 FPS</span>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Floating Score Badge */}
+          <div className={styles.atsBadge}>
+            <span className={styles.atsIndicator} />
+            <span>{atsScore}% ATS</span>
+          </div>
+
+          {/* Stats Bar */}
+          <div className={styles.statusCard}>
+            <div>
+              <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-muted)", display: "block", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                Platform Telemetry
+              </span>
+              <span style={{ fontSize: "0.95rem", fontWeight: 800, color: "var(--text-primary)" }}>
+                {activeTab === "interview" && "Speaking Confidence"}
+                {activeTab === "resume" && "ATS Keyword Match"}
+                {activeTab === "playground" && "FPS Frame Consistency"}
+              </span>
+            </div>
+            <div className={styles.statusBarContainer}>
+              <div
+                className={styles.statusBarFill}
+                style={{ width: `${atsScore}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
@@ -58,18 +266,18 @@ export default function Home() {
         },
         credentials: "include"
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.user) {
-          setUser(data.user);
-        } else {
-          localStorage.removeItem("token");
-          setIsLoggedIn(false);
-        }
-      })
-      .catch(() => {
-        // Fallback: keep logged in state if fetch fails
-      });
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.user) {
+            setUser(data.user);
+          } else {
+            localStorage.removeItem("token");
+            setIsLoggedIn(false);
+          }
+        })
+        .catch(() => {
+          // Fallback: keep logged in state if fetch fails
+        });
     }
   }, []);
 
@@ -108,7 +316,7 @@ export default function Home() {
     {
       icon: (
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       title: "AI Mock Interviews",
@@ -117,11 +325,11 @@ export default function Home() {
     {
       icon: (
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round"/>
-          <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round"/>
-          <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round"/>
-          <line x1="16" y1="17" x2="8" y2="17" strokeLinecap="round"/>
-          <polyline points="10 9 9 9 8 9" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" />
+          <line x1="16" y1="17" x2="8" y2="17" strokeLinecap="round" />
+          <polyline points="10 9 9 9 8 9" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       title: "Resume Analysis",
@@ -130,9 +338,9 @@ export default function Home() {
     {
       icon: (
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <polyline points="16 18 22 12 16 6" strokeLinecap="round" strokeLinejoin="round"/>
-          <polyline points="8 6 2 12 8 18" strokeLinecap="round" strokeLinejoin="round"/>
-          <line x1="14" y1="4" x2="10" y2="20" strokeLinecap="round"/>
+          <polyline points="16 18 22 12 16 6" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points="8 6 2 12 8 18" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="14" y1="4" x2="10" y2="20" strokeLinecap="round" />
         </svg>
       ),
       title: "Coding Playground",
@@ -141,8 +349,8 @@ export default function Home() {
     {
       icon: (
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       title: "Career Roadmaps",
@@ -151,9 +359,9 @@ export default function Home() {
     {
       icon: (
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M12 20V10" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M18 20V4" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M6 20v-4" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M12 20V10" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M18 20V4" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M6 20v-4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       title: "Performance Analytics",
@@ -162,8 +370,8 @@ export default function Home() {
     {
       icon: (
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       title: "Voice Interviews",
@@ -367,62 +575,66 @@ export default function Home() {
           animate="visible"
           variants={staggerContainer}
         >
-          <motion.div className={styles.heroBadge} variants={fadeInUp}>
-            <span className={styles.heroBadgeDot} />
-            AI-Powered Interview Platform
-          </motion.div>
-
-          <motion.h1 className={styles.heroTitle} variants={fadeInUp}>
-            Prepare Smarter.
-            <br />
-            <span className={styles.heroTitleAccent}>Interview Better.</span>
-            <br />
-            Land Faster.
-          </motion.h1>
-
-          <motion.p className={styles.heroSubtitle} variants={fadeInUp}>
-            HireMate AI gives you mock interviews, resume analysis, coding practice,
-            and career roadmaps — all powered by AI that adapts to your goals.
-          </motion.p>
-
-          <motion.div className={styles.heroCtas} variants={fadeInUp}>
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Link href="/auth?mode=signup" className={styles.heroCtaPrimary}>
-                Start Practicing Free
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
+          <div className={styles.heroLeft}>
+            <motion.div className={styles.heroBadge} variants={fadeInUp}>
+              <span className={styles.heroBadgeDot} />
+              AI-Powered Interview Platform
             </motion.div>
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <a href="#features" className={styles.heroCtaSecondary}>
-                See How It Works
-              </a>
-            </motion.div>
-          </motion.div>
 
-          <motion.div className={styles.heroProof} variants={fadeInUp}>
-            <div className={styles.heroAvatars}>
-              {[
-                "https://randomuser.me/api/portraits/women/44.jpg",
-                "https://randomuser.me/api/portraits/men/32.jpg",
-                "https://randomuser.me/api/portraits/women/68.jpg",
-                "https://randomuser.me/api/portraits/men/75.jpg",
-                "https://randomuser.me/api/portraits/women/90.jpg",
-              ].map((src, i) => (
-                <img
-                  key={i}
-                  className={styles.heroAvatar}
-                  src={src}
-                  alt={`User ${i + 1}`}
-                  style={{ zIndex: 5 - i, marginLeft: i > 0 ? "-10px" : 0 }}
-                />
-              ))}
-            </div>
-            <p className={styles.heroProofText}>
-              <strong>2,500+</strong> developers already preparing
-            </p>
-          </motion.div>
+            <motion.h1 className={styles.heroTitle} variants={fadeInUp}>
+              Prepare Smarter.
+              <br />
+              <span className={styles.heroTitleAccent}>Interview Better.</span>
+              <br />
+              Land Faster.
+            </motion.h1>
+
+            <motion.p className={styles.heroSubtitle} variants={fadeInUp}>
+              HireMate AI gives you mock interviews, resume analysis, coding practice,
+              and career roadmaps — all powered by AI that adapts to your goals.
+            </motion.p>
+
+            <motion.div className={styles.heroCtas} variants={fadeInUp}>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Link href="/auth?mode=signup" className={styles.heroCtaPrimary}>
+                  Start Practicing Free
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <a href="#features" className={styles.heroCtaSecondary}>
+                  See How It Works
+                </a>
+              </motion.div>
+            </motion.div>
+
+            <motion.div className={styles.heroProof} variants={fadeInUp}>
+              <div className={styles.heroAvatars}>
+                {[
+                  "https://randomuser.me/api/portraits/women/44.jpg",
+                  "https://randomuser.me/api/portraits/men/32.jpg",
+                  "https://randomuser.me/api/portraits/women/68.jpg",
+                  "https://randomuser.me/api/portraits/men/75.jpg",
+                  "https://randomuser.me/api/portraits/women/90.jpg",
+                ].map((src, i) => (
+                  <img
+                    key={i}
+                    className={styles.heroAvatar}
+                    src={src}
+                    alt={`User ${i + 1}`}
+                    style={{ zIndex: 5 - i, marginLeft: i > 0 ? "-10px" : 0 }}
+                  />
+                ))}
+              </div>
+              <p className={styles.heroProofText}>
+                <strong>2,500+</strong> developers already preparing
+              </p>
+            </motion.div>
+          </div>
+
+          <Interactive3DConsole />
         </motion.div>
       </section>
 
@@ -607,13 +819,13 @@ export default function Home() {
             <p>© 2026 HireMate AI. All rights reserved.</p>
             <div className={styles.footerSocials}>
               <a href="#" aria-label="Twitter">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
               </a>
               <a href="#" aria-label="GitHub">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
               </a>
               <a href="#" aria-label="LinkedIn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
               </a>
             </div>
           </div>
