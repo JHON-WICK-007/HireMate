@@ -3,17 +3,32 @@
   width: 100vw;
   min-height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
   color: var(--text-primary);
-  background: #060608;
+  background: #020204;
   font-family: var(--font-body);
-  padding: 120px 24px 80px;
+  padding: 140px 24px 80px;
 }
 
-/* ─── Header Showcase ────────────────────────────────── */
+/* ─── Grid Overlay ───────────────────────────────────── */
+.backgroundGrid {
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ─── Header ─────────────────────────────────────────── */
 .header {
   text-align: center;
   max-width: 800px;
-  margin: 0 auto 64px;
+  margin: 0 auto 72px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,44 +40,45 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 16px;
+  padding: 6px 18px;
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 800;
   color: #a3a3a3;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
 .badgeDot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #8b5cf6; /* Purple neon */
-  box-shadow: 0 0 10px #8b5cf6;
+  background: #3b82f6;
+  box-shadow: 0 0 10px #3b82f6;
   animation: pulseNeon 2s infinite ease-in-out;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2.8rem, 6vw, 4.5rem);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 50%, #525252 100%);
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, #ffffff 30%, #a3a3a3 80%, #525252 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  line-height: 1.1;
-  margin-bottom: 16px;
+  line-height: 1.05;
+  margin-bottom: 20px;
 }
 
 .subtitle {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: var(--text-secondary);
-  max-width: 550px;
+  max-width: 600px;
   line-height: 1.6;
 }
 
@@ -73,79 +89,121 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 24px;
+  gap: 28px;
   position: relative;
   z-index: 10;
 }
 
+/* Base Glass Card */
 .glassCard {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
   border-radius: var(--radius-lg);
-  padding: 32px;
+  padding: 36px;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  transition: border-color 0.3s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .glassCard:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.8), 0 0 24px rgba(255, 255, 255, 0.02);
 }
 
-/* Bento Column Spans */
-.col12 {
-  grid-column: span 12;
+.col12 { grid-column: span 12; }
+.col8 { grid-column: span 8; }
+.col4 { grid-column: span 4; }
+.col6 { grid-column: span 6; }
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
 }
 
-.col8 {
-  grid-column: span 8;
+.cardSubtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 28px;
 }
 
-.col4 {
-  grid-column: span 4;
+/* ─── Card 1: 3D Parallax Tilt (Deep 3D Layers) ──────── */
+.tiltCard {
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  cursor: pointer;
 }
 
-.col6 {
-  grid-column: span 6;
+.parallaxContainer {
+  transform-style: preserve-3d;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-/* ─── Bento Items / Styles ───────────────────────────── */
+/* Floating elements inside tilt card */
+.layerBase {
+  transform: translateZ(20px);
+  transition: transform 0.2s ease;
+}
 
-/* Component 1: Neon Border Tracer */
-.neonTracerCard {
-  background: #0b0c10;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+.layerFloat {
+  transform: translateZ(50px);
+  transition: transform 0.2s ease;
+}
+
+.layerDeepFloat {
+  transform: translateZ(85px);
+  transition: transform 0.2s ease;
+}
+
+/* Radial light reflection following mouse */
+.cardSpotlight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 250px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.04), transparent 80%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ─── Card 2: Conic Laser Border Tracer ──────────────── */
+.laserCard {
+  background: #030407;
   position: relative;
   z-index: 1;
 }
 
-/* Glowing border effect using absolute pseudo-element */
-.neonTracerGlow {
+.laserTracer {
   position: absolute;
-  inset: -1.5px;
+  inset: -1px;
   border-radius: var(--radius-lg);
   background: conic-gradient(
-    from 90deg at 50% 50%,
+    from var(--angle, 0deg) at 50% 50%,
     transparent 0deg,
-    #3b82f6 80deg,
-    #8b5cf6 160deg,
-    transparent 220deg
+    #3b82f6 30deg,
+    #8b5cf6 60deg,
+    transparent 120deg
   );
   z-index: -1;
-  animation: rotateGlow 4s linear infinite;
   opacity: 0.85;
 }
 
-.neonTracerInner {
+.laserInner {
   position: absolute;
   inset: 1px;
-  background: #0b0c10;
+  background: #05060a;
   border-radius: calc(var(--radius-lg) - 1px);
   z-index: 1;
-  padding: 32px;
+  padding: 36px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -153,171 +211,120 @@
   width: calc(100% - 2px);
 }
 
-/* Component 2: 3D Tilt Card */
-.tiltCard {
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  cursor: pointer;
-}
-
-.tiltContent {
-  transform: translateZ(50px);
-  transition: transform 0.2s ease;
-}
-
-/* Component 3: Premium Feature Grid / Stack */
-.stackRow {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 16px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  margin-top: 12px;
-  transition: all var(--transition-fast);
-}
-
-.stackRow:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-  transform: translateX(4px);
-}
-
-.stackIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+/* ─── Card 3: Interactive Draggable Card Stack ───────── */
+.stackArea {
+  position: relative;
+  height: 220px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 10px;
 }
 
-.stackDetails {
+.draggableCard {
+  position: absolute;
+  width: 280px;
+  height: 160px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 24px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+  cursor: grab;
 }
 
-.stackTitle {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--text-primary);
+.draggableCard:active {
+  cursor: grabbing;
 }
 
-.stackDesc {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-/* Typography elements */
-.cardTitle {
+.draggableCardTitle {
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 8px;
 }
 
-.cardSubtitle {
-  font-size: 0.92rem;
+.draggableCardDesc {
+  font-size: 0.78rem;
   color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 24px;
+  line-height: 1.4;
 }
 
-/* ─── Interactive Playground ────────────────────────── */
-.playgroundArea {
-  flex-grow: 1;
+/* ─── Card 4: Liquid Glass Audio Visualizer ─────────── */
+.visualizerArea {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 120px;
-  position: relative;
-}
-
-/* Pulsing neon waves */
-.pulseCircle {
-  position: absolute;
-  border-radius: 50%;
-  border: 1.5px solid rgba(139, 92, 246, 0.3);
-  width: 80px;
-  height: 80px;
-  animation: pulseRipple 3s infinite cubic-bezier(0.1, 0.8, 0.3, 1);
-}
-
-.pulseCircle2 {
-  animation-delay: 1s;
-}
-
-.pulseCircle3 {
-  animation-delay: 2s;
-}
-
-.centerGlowDot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #8b5cf6;
-  box-shadow: 0 0 20px #8b5cf6, 0 0 40px #8b5cf6;
-  z-index: 5;
-}
-
-/* Buttons */
-.btnDemo {
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 3px;
+  height: 90px;
   margin-top: auto;
+  padding: 0 8px;
+}
+
+.visualizerBar {
+  flex-grow: 1;
+  background: linear-gradient(to top, rgba(139, 92, 246, 0.15) 0%, #3b82f6 60%, #8b5cf6 100%);
+  border-radius: var(--radius-full);
+  min-height: 6px;
+  transition: height 0.12s cubic-bezier(0.1, 0.8, 0.3, 1);
+  opacity: 0.4;
+}
+
+.visualizerActiveBar {
+  opacity: 0.95;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+}
+
+/* UI Elements */
+.btnDemo {
   border-radius: var(--radius-full);
   background: var(--white);
   color: var(--black);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 24px;
-  font-size: 0.88rem;
+  padding: 12px 28px;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.15);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   transition: all var(--transition-fast);
 }
 
 .btnDemo:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
 }
 
-/* ─── Keyframe Animations ────────────────────────────── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Animations */
 @keyframes pulseNeon {
   0%, 100% {
     transform: scale(1);
     opacity: 1;
+    box-shadow: 0 0 8px #3b82f6;
   }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.15);
     opacity: 0.6;
-  }
-}
-
-@keyframes rotateGlow {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes pulseRipple {
-  0% {
-    transform: scale(0.6);
-    opacity: 0.85;
-  }
-  100% {
-    transform: scale(2.2);
-    opacity: 0;
+    box-shadow: 0 0 16px #3b82f6;
   }
 }
 
