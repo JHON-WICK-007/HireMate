@@ -1,7 +1,7 @@
 /* ─── Page ──────────────────────────────────────────────── */
 .page {
   min-height: 100vh;
-  background: var(--surface-0);
+  background: transparent;
   color: var(--text-primary);
 }
 
