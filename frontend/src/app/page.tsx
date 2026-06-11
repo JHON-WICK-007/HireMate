@@ -5,7 +5,6 @@ import Link from "next/link";
 import styles from "./home.module.css";
 import ThemeToggle from "./components/ThemeToggle";
 import { motion } from "framer-motion";
-import ShaderBackground from "./components/ShaderBackground";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 25 },
@@ -204,7 +203,6 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <ShaderBackground dim={0.22} />
       {/* ─── Navbar ─────────────────────────────────────────── */}
       <nav className={`${styles.nav} ${scrolled ? styles.navScrolled : ""} ${navHidden ? styles.navHidden : ""}`}>
         <div className={styles.navInner}>
