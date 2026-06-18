@@ -172,8 +172,8 @@ function Interactive3DConsole() {
         <div
           className={`${styles.floatingOutcomeCard} ${styles.cardFloat1}`}
           style={{
-            top: "-30px",
-            left: "-90px",
+            top: "40px",
+            left: "-140px",
           }}
         >
           <div className={styles.floatingCardIcon} style={{ background: "rgba(16, 185, 129, 0.12)", color: "#10b981" }}>
@@ -192,8 +192,8 @@ function Interactive3DConsole() {
         <div
           className={`${styles.floatingOutcomeCard} ${styles.cardFloat2}`}
           style={{
-            bottom: "140px",
-            left: "-85px",
+            bottom: "120px",
+            left: "-140px",
           }}
         >
           <div className={styles.floatingCardIcon} style={{ background: "rgba(168, 85, 247, 0.12)", color: "#a855f7" }}>
@@ -213,8 +213,8 @@ function Interactive3DConsole() {
         <div
           className={`${styles.floatingOutcomeCard} ${styles.cardFloat3}`}
           style={{
-            top: "100px",
-            right: "-90px",
+            top: "140px",
+            right: "-140px",
           }}
         >
           <div className={styles.floatingCardIcon} style={{ background: "rgba(249, 115, 22, 0.12)", color: "#f97316" }}>
@@ -234,8 +234,8 @@ function Interactive3DConsole() {
         <div
           className={`${styles.floatingOutcomeCard} ${styles.cardFloat4}`}
           style={{
-            bottom: "140px",
-            right: "-85px",
+            bottom: "120px",
+            right: "-140px",
           }}
         >
           <div className={styles.floatingCardIcon} style={{ background: "rgba(6, 182, 212, 0.12)", color: "#06b6d4" }}>
