@@ -460,21 +460,29 @@ function Interactive3DConsole() {
 
   return (
     <div className={styles.heroRight}>
-      <motion.div
+      <div
         className={styles.consoleContainer}
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{
-          rotateX,
-          rotateY,
-          "--shadow-dx": useTransform(shadowX, (v) => `${v}px`),
-          "--shadow-dy": useTransform(shadowY, (v) => `${v}px`),
           "--border-glow-color": TAB_THEMES[activeTab].borderGlow,
           "--spotlight-color": TAB_THEMES[activeTab].spotlight,
           "--badge-dot": TAB_THEMES[activeTab].badgeColor,
         } as any}
       >
+        <motion.div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            transformStyle: "preserve-3d",
+            rotateX,
+            rotateY,
+            "--shadow-dx": useTransform(shadowX, (v) => `${v}px`),
+            "--shadow-dy": useTransform(shadowY, (v) => `${v}px`),
+          } as any}
+        >
         {floatingCards.map((card) => (
           <div
             key={card.id}
@@ -651,6 +659,7 @@ function Interactive3DConsole() {
           </div>
         </div>
       </motion.div>
+      </div>
     </div>
   );
 }
