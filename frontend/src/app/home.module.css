@@ -589,56 +589,114 @@
   overflow: visible;
 }
 
+.featureCardWrapper {
+  perspective: 800px;
+}
+
 .featureCard {
   padding: 2.5rem;
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   box-shadow: var(--glass-shadow);
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
   position: relative;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  cursor: pointer;
+  will-change: transform;
 }
 
 .featureCard:hover {
   background: var(--glass-bg-hover);
   border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+/* Border glow — cursor-following edge illumination */
+.featureCardBorderGlow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* Glass spotlight — inner surface glow */
+.featureCardSpotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* 3D content — floats above the glass surface */
+.featureCardContent {
+  position: relative;
+  z-index: 3;
+  transform: translateZ(30px);
+  transform-style: preserve-3d;
 }
 
 .featureIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: var(--radius-md);
-  background: var(--badge-bg);
+  background: var(--surface-200);
   border: 1px solid var(--border-subtle);
   color: var(--text-primary);
   margin-bottom: 1.25rem;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
+  transform: translateZ(20px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .featureCard:hover .featureIcon {
-  transform: scale(1.05);
-  border-color: var(--border-strong);
-  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateZ(35px) scale(1.06);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.featureTitle {
+/* Title — mid Z-depth */
+.featureTitleLayer {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.6rem;
   letter-spacing: -0.01em;
+  transform: translateZ(12px);
+  transition: transform 0.4s ease;
 }
 
-.featureDesc {
+.featureCard:hover .featureTitleLayer {
+  transform: translateZ(22px);
+}
+
+/* Description — baseline depth */
+.featureDescLayer {
   font-size: 0.88rem;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.65;
+  transform: translateZ(4px);
+  transition: transform 0.4s ease;
+}
+
+.featureCard:hover .featureDescLayer {
+  transform: translateZ(8px);
 }
 
 /* ─── How It Works ──────────────────────────────────────── */

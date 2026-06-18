@@ -244,6 +244,75 @@ function Interactive3DConsole() {
   );
 }
 
+function FeatureCard({ feature, variants }: { feature: any; variants: any }) {
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(y, [-150, 150], [8, -8]), { damping: 25, stiffness: 200 });
+  const rotateY = useSpring(useTransform(x, [-150, 150], [-8, 8]), { damping: 25, stiffness: 200 });
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const mx = event.clientX - rect.left;
+    const my = event.clientY - rect.top;
+
+    x.set(mx - rect.width / 2);
+    y.set(my - rect.height / 2);
+
+    // Direct DOM updates — no React re-renders
+    if (spotlightRef.current) {
+      spotlightRef.current.style.background =
+        `radial-gradient(circle 400px at ${mx}px ${my}px, var(--spotlight-color), transparent 60%)`;
+    }
+    if (glowRef.current) {
+      const nx = (mx / rect.width) * 100;
+      const ny = (my / rect.height) * 100;
+      glowRef.current.style.background =
+        `radial-gradient(circle 250px at ${nx}% ${ny}%, var(--border-glow-color), transparent 50%)`;
+    }
+  }
+
+  function handleMouseEnter() {
+    if (spotlightRef.current) spotlightRef.current.style.opacity = "1";
+    if (glowRef.current) glowRef.current.style.opacity = "1";
+  }
+
+  function handleMouseLeave() {
+    x.set(0);
+    y.set(0);
+    if (spotlightRef.current) spotlightRef.current.style.opacity = "0";
+    if (glowRef.current) glowRef.current.style.opacity = "0";
+  }
+
+  return (
+    <motion.div variants={variants} className={styles.featureCardWrapper}>
+      <motion.div
+        className={styles.featureCard}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        whileHover={{ y: -6 }}
+      >
+        {/* Border glow — follows cursor along edges */}
+        <div ref={glowRef} className={styles.featureCardBorderGlow} />
+
+        {/* Glass spotlight — illuminates surface under cursor */}
+        <div ref={spotlightRef} className={styles.featureCardSpotlight} />
+
+        {/* 3D parallax content */}
+        <div className={styles.featureCardContent}>
+          <div className={styles.featureIcon}>{feature.icon}</div>
+          <h3 className={styles.featureTitleLayer}>{feature.title}</h3>
+          <p className={styles.featureDescLayer}>{feature.description}</p>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
@@ -663,16 +732,11 @@ export default function Home() {
             viewport={{ once: true, margin: "-80px" }}
           >
             {features.map((feature, i) => (
-              <motion.div
+              <FeatureCard
                 key={i}
-                className={styles.featureCard}
+                feature={feature}
                 variants={cardVariants}
-                whileHover={{ y: -6, scale: 1.015 }}
-              >
-                <div className={styles.featureIcon}>{feature.icon}</div>
-                <h3 className={styles.featureTitle}>{feature.title}</h3>
-                <p className={styles.featureDesc}>{feature.description}</p>
-              </motion.div>
+              />
             ))}
           </motion.div>
         </div>

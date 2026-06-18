@@ -91,13 +91,17 @@
   --input-focus-bg: rgba(255, 255, 255, 0.05);
 
   /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.02);
-  --glass-bg-hover: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-hover: rgba(255, 255, 255, 0.18);
-  --glass-blur: blur(16px);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-  --glass-shadow-hover: 0 16px 40px 0 rgba(0, 0, 0, 0.35), 0 0 20px rgba(255, 255, 255, 0.02);
+  --glass-bg: rgba(255, 255, 255, 0.008);
+  --glass-bg-hover: rgba(255, 255, 255, 0.015);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-border-hover: rgba(255, 255, 255, 0.10);
+  --glass-blur: blur(40px);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --glass-shadow-hover: 0 16px 40px 0 rgba(0, 0, 0, 0.4);
+  --spotlight-color: rgba(255, 255, 255, 0.03);
+  --border-glow-color: rgba(255, 255, 255, 0.06);
+  --shimmer-color: rgba(255, 255, 255, 0.02);
+  --shimmer-color-strong: rgba(255, 255, 255, 0.04);
 }
 
 [data-theme="light"] {
@@ -159,9 +163,13 @@
   --glass-bg-hover: rgba(255, 255, 255, 0.75);
   --glass-border: rgba(0, 0, 0, 0.08);
   --glass-border-hover: rgba(0, 0, 0, 0.15);
-  --glass-blur: blur(16px);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.03);
-  --glass-shadow-hover: 0 16px 40px 0 rgba(0, 0, 0, 0.06);
+  --glass-blur: blur(20px);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  --glass-shadow-hover: 0 20px 50px 0 rgba(0, 0, 0, 0.08);
+  --spotlight-color: rgba(0, 0, 0, 0.05);
+  --border-glow-color: rgba(0, 0, 0, 0.12);
+  --shimmer-color: rgba(255, 255, 255, 0.3);
+  --shimmer-color-strong: rgba(255, 255, 255, 0.5);
 }
 
 /* ─── Reset & Base ──────────────────────────────────────── */
