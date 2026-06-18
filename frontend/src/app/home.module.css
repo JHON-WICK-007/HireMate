@@ -452,9 +452,6 @@
   box-shadow: var(--shadow-dx, 0px) var(--shadow-dy, 15px) 40px rgba(0, 0, 0, 0.08);
 }
 
-.consoleCard:hover {
-  border-color: transparent;
-}
 
 /* Border glow — cursor-following edge illumination */
 .consoleCardBorderGlow {
@@ -707,38 +704,39 @@
 }
 
 .questionText {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--badge-dot);
   background: var(--surface-100);
+  border: 1px solid var(--border-subtle);
   border-left: 3px solid var(--badge-dot);
-  padding: 6px 12px;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
 }
 
 .answerText {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   line-height: 1.5;
   color: var(--text-secondary);
   background: var(--surface-100);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  min-height: 52px;
+  padding: 6px 10px;
+  min-height: 40px;
   font-style: italic;
 }
 
 .waveform {
   display: flex;
   align-items: center;
-  gap: 4px;
-  height: 24px;
+  gap: 3px;
+  height: 18px;
   padding: 0 4px;
 }
 
 .waveBar {
   flex-grow: 1;
-  width: 3px;
+  width: 2px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 2px;
   transition: height 0.1s ease;

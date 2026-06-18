@@ -295,16 +295,11 @@ function Interactive3DConsole() {
       spotlightRef.current.style.background =
         `radial-gradient(circle 350px at ${mx}px ${my}px, var(--spotlight-color), transparent 60%)`;
     }
-    if (glowRef.current) {
-      glowRef.current.style.background =
-        `radial-gradient(circle 100px at ${mx}px ${my}px, var(--border-glow-color), transparent 100%)`;
-    }
   }
 
   function handleMouseEnter(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     rectRef.current = event.currentTarget.getBoundingClientRect();
     if (spotlightRef.current) spotlightRef.current.style.opacity = "1";
-    if (glowRef.current) glowRef.current.style.opacity = "1";
   }
 
   function handleTabClick(tabId: "resume" | "interview" | "roadmap") {
@@ -321,7 +316,6 @@ function Interactive3DConsole() {
     y.set(0);
     rectRef.current = null;
     if (spotlightRef.current) spotlightRef.current.style.opacity = "0";
-    if (glowRef.current) glowRef.current.style.opacity = "0";
   }
 
   useEffect(() => {
@@ -341,7 +335,7 @@ function Interactive3DConsole() {
   }, []);
 
   const [typedAnswer, setTypedAnswer] = useState("");
-  const candidateAnswerText = "I am a Full Stack Developer with experience in React, Node.js, and TypeScript. I specialize in building responsive, high-performance web applications...";
+  const candidateAnswerText = "I build responsive, high-performance web applications using React, Next.js, Node.js, and TypeScript.";
 
   useEffect(() => {
     if (activeTab !== "interview") return;
@@ -360,10 +354,10 @@ function Interactive3DConsole() {
     return () => clearInterval(interval);
   }, [activeTab]);
 
-  const [waveHeights, setWaveHeights] = useState([15, 25, 35, 20, 10, 30, 25, 12, 18, 28, 15, 8]);
+  const [waveHeights, setWaveHeights] = useState([8, 14, 18, 12, 6, 16, 14, 8, 10, 15, 9, 5]);
   useEffect(() => {
     const interval = setInterval(() => {
-      setWaveHeights(prev => prev.map(() => Math.floor(Math.random() * 30) + 6));
+      setWaveHeights(prev => prev.map(() => Math.floor(Math.random() * 14) + 4));
     }, 120);
     return () => clearInterval(interval);
   }, []);
@@ -498,7 +492,6 @@ function Interactive3DConsole() {
         ))}
 
         <div className={styles.consoleCard}>
-          <div ref={glowRef} className={styles.consoleCardBorderGlow} />
           <div ref={spotlightRef} className={styles.consoleCardSpotlight} />
 
           <div className={styles.dialLayer}>
@@ -584,7 +577,7 @@ function Interactive3DConsole() {
                 )}
                 {activeTab === "interview" && (
                   <div className={styles.interviewQABox}>
-                    <div className={styles.questionText}>Q: Tell me about yourself.</div>
+                    <div className={styles.questionText}>Q: What is your development stack?</div>
                     <div className={styles.answerText}>
                       {typedAnswer}
                       <span style={{ animation: "pulse 1s infinite", fontWeight: "bold", color: "#a855f7" }}>|</span>
