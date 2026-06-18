@@ -487,98 +487,53 @@
 
 .floatingOutcomeCard {
   position: absolute;
-  padding: 10px 14px;
-  background: rgba(15, 15, 20, 0.75);
+  padding: 10px 16px;
+  background: rgba(13, 13, 17, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-radius: 14px;
-  box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   z-index: 15;
   pointer-events: auto;
   user-select: none;
   min-width: 155px;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-
-/* Neon Backlit Background Glow */
-.floatingOutcomeCard::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 20% 30%, var(--card-color-glow), transparent 65%);
-  pointer-events: none;
-  opacity: 0.4;
-  z-index: 0;
-}
-
-/* Neon Gradient Border Glow */
-.floatingOutcomeCard::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--card-color) 0%, transparent 60%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0.65;
-  z-index: 1;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .floatingOutcomeCard:hover {
-  transform: scale(1.05) translate3d(0, -6px, 20px) !important;
-  box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.4),
-    0 0 20px var(--card-color-glow);
-  background: rgba(15, 15, 20, 0.85);
+  transform: translateY(-4px) translateZ(15px) !important;
+  border-color: var(--card-color);
+  background: rgba(20, 20, 25, 0.85);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
 }
 
 [data-theme="light"] .floatingOutcomeCard {
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.05),
-    0 0 0 1px rgba(0, 0, 0, 0.02);
-}
-
-[data-theme="light"] .floatingOutcomeCard::before {
-  opacity: 0.45;
-}
-
-[data-theme="light"] .floatingOutcomeCard::after {
-  opacity: 0.25;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="light"] .floatingOutcomeCard:hover {
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 
-    0 15px 35px rgba(0, 0, 0, 0.08),
-    0 0 25px var(--card-color-glow);
+  border-color: var(--card-color);
 }
 
 .floatingCardIcon {
-  position: relative;
-  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.05);
 }
 
 .floatingCardDetails {
-  position: relative;
-  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -587,16 +542,17 @@
 
 .floatingCardVal {
   font-family: var(--font-sans);
-  font-weight: 800;
+  font-weight: 850;
   font-size: 0.95rem;
   color: var(--text-primary);
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .floatingCardLbl {
   font-size: 0.65rem;
   color: var(--text-muted);
   font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 /* Float Drift Animations for Cards */
