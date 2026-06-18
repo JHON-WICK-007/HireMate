@@ -267,10 +267,8 @@ function FeatureCard({ feature, variants }: { feature: any; variants: any }) {
         `radial-gradient(circle 400px at ${mx}px ${my}px, var(--spotlight-color), transparent 60%)`;
     }
     if (glowRef.current) {
-      const nx = (mx / rect.width) * 100;
-      const ny = (my / rect.height) * 100;
       glowRef.current.style.background =
-        `radial-gradient(circle 250px at ${nx}% ${ny}%, var(--border-glow-color), transparent 50%)`;
+        `radial-gradient(circle 120px at ${mx}px ${my}px, var(--border-glow-color), transparent 100%)`;
     }
   }
 
@@ -293,8 +291,14 @@ function FeatureCard({ feature, variants }: { feature: any; variants: any }) {
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        whileHover={{ y: -6 }}
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: "preserve-3d",
+          "--border-glow-color": feature.accentColor,
+          "--spotlight-color": feature.spotlightColor
+        } as any}
+        whileHover={{ y: -8, scale: 1.03 }}
       >
         {/* Border glow — follows cursor along edges */}
         <div ref={glowRef} className={styles.featureCardBorderGlow} />
@@ -422,16 +426,30 @@ export default function Home() {
   const features = [
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#indigoPurpleGrad)" strokeWidth="1.5">
+          <defs>
+            <linearGradient id="indigoPurpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#6366f1" />
+              <stop offset="100%" stopColor="#a855f7" />
+            </linearGradient>
+          </defs>
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       title: "AI Mock Interviews",
-      description: "Practice with an AI interviewer tailored to your target company, role, and experience level. Get real-time feedback.",
+      description: "Practice with an AI interviewer tailored to your target company and role. Get real-time feedback.",
+      accentColor: "rgba(168, 85, 247, 0.85)",
+      spotlightColor: "rgba(168, 85, 247, 0.08)",
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#blueCyanGrad)" strokeWidth="1.5">
+          <defs>
+            <linearGradient id="blueCyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#3b82f6" />
+              <stop offset="100%" stopColor="#06b6d4" />
+            </linearGradient>
+          </defs>
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
           <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round" />
           <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" />
@@ -440,49 +458,83 @@ export default function Home() {
         </svg>
       ),
       title: "Resume Analysis",
-      description: "Upload your resume and get instant ATS scoring, skill gap analysis, and actionable improvement suggestions.",
+      description: "Upload your resume for instant ATS scoring, skill gap analysis, and actionable improvement tips.",
+      accentColor: "rgba(6, 182, 212, 0.85)",
+      spotlightColor: "rgba(6, 182, 212, 0.08)",
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#purpleFuchsiaGrad)" strokeWidth="1.5">
+          <defs>
+            <linearGradient id="purpleFuchsiaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#8b5cf6" />
+              <stop offset="100%" stopColor="#d946ef" />
+            </linearGradient>
+          </defs>
           <polyline points="16 18 22 12 16 6" strokeLinecap="round" strokeLinejoin="round" />
           <polyline points="8 6 2 12 8 18" strokeLinecap="round" strokeLinejoin="round" />
           <line x1="14" y1="4" x2="10" y2="20" strokeLinecap="round" />
         </svg>
       ),
       title: "Coding Playground",
-      description: "Solve coding challenges in a real editor with syntax highlighting, AI code review, and complexity analysis.",
+      description: "Solve coding challenges in a real editor with syntax highlighting and instant AI code review.",
+      accentColor: "rgba(219, 70, 239, 0.85)",
+      spotlightColor: "rgba(219, 70, 239, 0.08)",
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#pinkRoseGrad)" strokeWidth="1.5">
+          <defs>
+            <linearGradient id="pinkRoseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ec4899" />
+              <stop offset="100%" stopColor="#f43f5e" />
+            </linearGradient>
+          </defs>
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       title: "Career Roadmaps",
       description: "Get personalized learning paths with skill milestones, project ideas, and resource recommendations.",
+      accentColor: "rgba(244, 63, 94, 0.85)",
+      spotlightColor: "rgba(244, 63, 94, 0.08)",
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#tealGreenGrad)" strokeWidth="1.5">
+          <defs>
+            <linearGradient id="tealGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#14b8a6" />
+              <stop offset="100%" stopColor="#10b981" />
+            </linearGradient>
+          </defs>
           <path d="M12 20V10" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M18 20V4" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M6 20v-4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       title: "Performance Analytics",
-      description: "Track your progress with detailed dashboards showing scores, trends, and improvement areas over time.",
+      description: "Track your progress with detailed dashboards showing scores, trends, and improvement areas.",
+      accentColor: "rgba(16, 185, 129, 0.85)",
+      spotlightColor: "rgba(16, 185, 129, 0.08)",
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#orangeAmberGrad)" strokeWidth="1.5">
+          <defs>
+            <linearGradient id="orangeAmberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f97316" />
+              <stop offset="100%" stopColor="#f59e0b" />
+            </linearGradient>
+          </defs>
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
       title: "Voice Interviews",
-      description: "Speak your answers naturally with voice-to-text transcription for a realistic interview simulation.",
+      description: "Speak your answers naturally with real-time transcription for a realistic interview simulation.",
+      accentColor: "rgba(249, 115, 22, 0.85)",
+      spotlightColor: "rgba(249, 115, 22, 0.08)",
     },
   ];
 
@@ -771,8 +823,8 @@ export default function Home() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <span className={styles.sectionLabel}>Features</span>
-            <h2 className={styles.sectionTitle}>Everything you need to ace your next interview</h2>
+            <span className={styles.sectionLabel}>Powerful Features</span>
+            <h2 className={styles.sectionTitle}>Everything you need to land your dream job</h2>
             <p className={styles.sectionSubtitle}>
               From resume review to live mock interviews — one platform, zero guesswork.
             </p>

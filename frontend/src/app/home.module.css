@@ -940,15 +940,19 @@
 
 .featureCard {
   padding: 2.5rem;
-  background: var(--glass-bg);
+  background: linear-gradient(135deg, var(--card-bg-start) 0%, rgba(255, 255, 255, 0.003) 50%, rgba(0, 0, 0, 0.85) 100%);
+  background-clip: padding-box;
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--radius-xl);
-  box-shadow: var(--glass-shadow);
+  box-shadow: 
+    var(--glass-shadow),
+    0 4px 20px rgba(0, 0, 0, 0.25);
   transition:
-    background-color 0.35s ease,
-    box-shadow 0.35s ease;
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
   position: relative;
   transform-style: preserve-3d;
   overflow: hidden;
@@ -956,20 +960,49 @@
   will-change: transform;
 }
 
+[data-theme="light"] .featureCard {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 100%);
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    var(--glass-shadow),
+    0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
 .featureCard:hover {
-  background: var(--glass-bg-hover);
-  box-shadow: var(--glass-shadow-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    0 0 25px var(--card-hover-glow);
+}
+
+[data-theme="light"] .featureCard:hover {
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    0 16px 32px rgba(0, 0, 0, 0.04),
+    0 0 20px var(--card-hover-glow);
 }
 
 /* Border glow — cursor-following edge illumination */
 .featureCardBorderGlow {
   position: absolute;
-  inset: -1px;
+  inset: -1.5px;
   border-radius: inherit;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
   opacity: 0;
   transition: opacity 0.35s ease;
+  
+  border: 1.5px solid transparent;
+  background-clip: border-box;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) padding-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: 
+    linear-gradient(#fff 0 0) padding-box, 
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
 }
 
 /* Glass spotlight — inner surface glow */
@@ -1004,7 +1037,73 @@
 }
 
 .featureCard:hover .featureIcon {
-  transform: translateZ(35px) scale(1.06);
+  transform: translateZ(35px) scale(1.08);
+}
+
+/* Card 1: AI Mock Interviews (Indigo) */
+.featureCardWrapper:nth-child(1) {
+  --card-bg-start: rgba(99, 102, 241, 0.05);
+  --card-hover-border: rgba(99, 102, 241, 0.45);
+  --card-hover-glow: rgba(99, 102, 241, 0.15);
+}
+[data-theme="light"] .featureCardWrapper:nth-child(1) {
+  --card-hover-border: rgba(99, 102, 241, 0.4);
+  --card-hover-glow: rgba(99, 102, 241, 0.08);
+}
+
+/* Card 2: Resume Analysis (Cyan) */
+.featureCardWrapper:nth-child(2) {
+  --card-bg-start: rgba(6, 182, 212, 0.05);
+  --card-hover-border: rgba(6, 182, 212, 0.45);
+  --card-hover-glow: rgba(6, 182, 212, 0.15);
+}
+[data-theme="light"] .featureCardWrapper:nth-child(2) {
+  --card-hover-border: rgba(6, 182, 212, 0.4);
+  --card-hover-glow: rgba(6, 182, 212, 0.08);
+}
+
+/* Card 3: Coding Playground (Purple) */
+.featureCardWrapper:nth-child(3) {
+  --card-bg-start: rgba(168, 85, 247, 0.05);
+  --card-hover-border: rgba(168, 85, 247, 0.45);
+  --card-hover-glow: rgba(168, 85, 247, 0.15);
+}
+[data-theme="light"] .featureCardWrapper:nth-child(3) {
+  --card-hover-border: rgba(168, 85, 247, 0.4);
+  --card-hover-glow: rgba(168, 85, 247, 0.08);
+}
+
+/* Card 4: Career Roadmaps (Pink) */
+.featureCardWrapper:nth-child(4) {
+  --card-bg-start: rgba(236, 72, 153, 0.05);
+  --card-hover-border: rgba(236, 72, 153, 0.45);
+  --card-hover-glow: rgba(236, 72, 153, 0.15);
+}
+[data-theme="light"] .featureCardWrapper:nth-child(4) {
+  --card-hover-border: rgba(236, 72, 153, 0.4);
+  --card-hover-glow: rgba(236, 72, 153, 0.08);
+}
+
+/* Card 5: Performance Analytics (Green) */
+.featureCardWrapper:nth-child(5) {
+  --card-bg-start: rgba(20, 184, 166, 0.05);
+  --card-hover-border: rgba(20, 184, 166, 0.45);
+  --card-hover-glow: rgba(20, 184, 166, 0.15);
+}
+[data-theme="light"] .featureCardWrapper:nth-child(5) {
+  --card-hover-border: rgba(20, 184, 166, 0.4);
+  --card-hover-glow: rgba(20, 184, 166, 0.08);
+}
+
+/* Card 6: Voice Interviews (Amber) */
+.featureCardWrapper:nth-child(6) {
+  --card-bg-start: rgba(249, 115, 22, 0.05);
+  --card-hover-border: rgba(249, 115, 22, 0.45);
+  --card-hover-glow: rgba(249, 115, 22, 0.15);
+}
+[data-theme="light"] .featureCardWrapper:nth-child(6) {
+  --card-hover-border: rgba(249, 115, 22, 0.4);
+  --card-hover-glow: rgba(249, 115, 22, 0.08);
 }
 
 /* Title — mid Z-depth */
