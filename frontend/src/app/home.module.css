@@ -703,24 +703,35 @@
 .questionText {
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--badge-dot);
-  background: var(--surface-100);
-  border: 1px solid var(--border-subtle);
-  border-left: 3px solid var(--badge-dot);
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.06);
+  border: 1px solid rgba(168, 85, 247, 0.12);
+  border-left: 3px solid #a855f7;
   padding: 5px 10px;
   border-radius: var(--radius-sm);
+}
+
+[data-theme="light"] .questionText {
+  background: rgba(168, 85, 247, 0.05);
+  border-color: rgba(168, 85, 247, 0.1);
+  color: #7c3aed;
 }
 
 .answerText {
   font-size: 0.7rem;
   line-height: 1.5;
   color: var(--text-secondary);
-  background: var(--surface-100);
-  border: 1px solid var(--border-subtle);
+  background: rgba(168, 85, 247, 0.03);
+  border: 1px solid rgba(168, 85, 247, 0.08);
   border-radius: var(--radius-sm);
   padding: 6px 10px;
   min-height: 40px;
   font-style: italic;
+}
+
+[data-theme="light"] .answerText {
+  background: rgba(168, 85, 247, 0.03);
+  border-color: rgba(168, 85, 247, 0.08);
 }
 
 .waveform {
@@ -734,13 +745,13 @@
 .waveBar {
   flex-grow: 1;
   width: 2px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(168, 85, 247, 0.1);
   border-radius: 2px;
   transition: height 0.1s ease;
 }
 
 .waveBarActive {
-  background: var(--badge-dot);
+  background: linear-gradient(to top, #7c3aed, #c084fc);
 }
 
 /* Roadmap elements */
@@ -982,26 +993,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  text-align: center;
   z-index: 2;
-  user-select: none;
 }
 
 .dialValue {
   font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
+  font-weight: 900;
   color: var(--text-primary);
   line-height: 1;
 }
 
 .dialLabel {
-  font-size: 0.48rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
+  font-size: 0.55rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  margin-top: 3px;
+  text-transform: uppercase;
+  color: var(--badge-dot);
+  letter-spacing: 0.08em;
+  margin-top: 2px;
 }
 
 /* Layer 4: Telemetry Stats Card (Z = 20px) */
@@ -1043,8 +1053,9 @@
 }
 
 .metricItem {
-  background: var(--surface-100);
-  border: 1px solid var(--border-subtle);
+  background: rgba(168, 85, 247, 0.04);
+  border: 1px solid rgba(168, 85, 247, 0.1);
+  border-top: 2px solid rgba(168, 85, 247, 0.3);
   border-radius: var(--radius-md);
   padding: 8px 6px;
   display: flex;
@@ -1054,16 +1065,22 @@
   transition: border-color 0.3s ease, background 0.3s ease;
 }
 
+[data-theme="light"] .metricItem {
+  background: rgba(168, 85, 247, 0.03);
+  border: 1px solid rgba(168, 85, 247, 0.08);
+  border-top: 2px solid rgba(168, 85, 247, 0.2);
+}
+
 .metricItem:hover {
-  border-color: var(--badge-dot);
-  background: var(--surface-200);
+  border-color: rgba(168, 85, 247, 0.35);
+  background: rgba(168, 85, 247, 0.08);
 }
 
 .metricValue {
   font-family: var(--font-display);
   font-size: 0.9rem;
   font-weight: 800;
-  color: var(--text-primary);
+  color: #c084fc;
   line-height: 1.2;
 }
 
