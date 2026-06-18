@@ -453,7 +453,7 @@
 }
 
 .consoleCard:hover {
-  /* No static border-color highlight on hover so the cursor-following glow remains localized and premium */
+  border-color: transparent;
 }
 
 /* Border glow — cursor-following edge illumination */
