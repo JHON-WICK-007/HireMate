@@ -280,14 +280,17 @@
     transform: translate(0, 0) scale(1);
     filter: blur(130px) hue-rotate(0deg);
   }
+
   33% {
     transform: translate(80px, -60px) scale(1.1);
     filter: blur(130px) hue-rotate(120deg);
   }
+
   66% {
     transform: translate(-50px, 40px) scale(0.95);
     filter: blur(130px) hue-rotate(240deg);
   }
+
   100% {
     transform: translate(0, 0) scale(1);
     filter: blur(130px) hue-rotate(360deg);
@@ -299,10 +302,12 @@
     transform: translate(0, 0) scale(1.05);
     filter: blur(150px) hue-rotate(360deg);
   }
+
   50% {
     transform: translate(-90px, 70px) scale(0.9);
     filter: blur(150px) hue-rotate(180deg);
   }
+
   100% {
     transform: translate(0, 0) scale(1.05);
     filter: blur(150px) hue-rotate(0deg);
@@ -314,14 +319,17 @@
     transform: translate(0, 0) scale(1);
     filter: blur(120px) hue-rotate(0deg);
   }
+
   33% {
     transform: translate(-60px, 50px) scale(1.08);
     filter: blur(120px) hue-rotate(-120deg);
   }
+
   66% {
     transform: translate(50px, -30px) scale(0.92);
     filter: blur(120px) hue-rotate(-240deg);
   }
+
   100% {
     transform: translate(0, 0) scale(1);
     filter: blur(120px) hue-rotate(-360deg);
@@ -329,10 +337,13 @@
 }
 
 @keyframes pulse-glow-features {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
     filter: hue-rotate(0deg);
   }
+
   50% {
     transform: translate(-50%, -50%) scale(1.05);
     filter: hue-rotate(180deg);
@@ -340,10 +351,13 @@
 }
 
 @keyframes pulse-glow-howitworks {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
     filter: hue-rotate(0deg);
   }
+
   50% {
     transform: translate(-50%, -50%) scale(1.08);
     filter: hue-rotate(-180deg);
@@ -351,10 +365,13 @@
 }
 
 @keyframes pulse-glow-stats {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
     filter: hue-rotate(0deg);
   }
+
   50% {
     transform: translate(-50%, -50%) scale(1.05);
     filter: hue-rotate(120deg);
@@ -362,10 +379,13 @@
 }
 
 @keyframes pulse-glow-cta {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(-50%, -50%) scale(1);
     filter: hue-rotate(0deg);
   }
+
   50% {
     transform: translate(-50%, -50%) scale(1.07);
     filter: hue-rotate(-120deg);
