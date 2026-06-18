@@ -54,8 +54,205 @@ const TAB_THEMES = {
   }
 };
 
+const TABS_CONTENT = {
+  resume: {
+    title: "ATS Real-Time Score",
+    subtitle: "Evaluating keyword relevance, formatting, and impact phrases.",
+    cards: [
+      {
+        id: "r1",
+        val: "92%",
+        lbl: "ATS Score",
+        position: { top: "40px", left: "-140px" },
+        depth: 65,
+        color: "#06b6d4",
+        bg: "rgba(6, 182, 212, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points="22 4 12 14.01 9 11.01" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      },
+      {
+        id: "r2",
+        val: "18 / 22",
+        lbl: "Keywords Matched",
+        position: { bottom: "120px", left: "-140px" },
+        depth: 45,
+        color: "#10b981",
+        bg: "rgba(16, 185, 129, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        )
+      },
+      {
+        id: "r3",
+        val: "Format Pass",
+        lbl: "Structure & Layout",
+        position: { top: "140px", right: "-140px" },
+        depth: 55,
+        color: "#f59e0b",
+        bg: "rgba(245, 158, 11, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      },
+      {
+        id: "r4",
+        val: "14 Action",
+        lbl: "Verbs Detected",
+        position: { bottom: "120px", right: "-140px" },
+        depth: 75,
+        color: "#06b6d4",
+        bg: "rgba(6, 182, 212, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      }
+    ]
+  },
+  interview: {
+    title: "Voice Assistant Coach",
+    subtitle: "Analyzing speaking pace, confidence, and filler word usage.",
+    cards: [
+      {
+        id: "i1",
+        val: "87%",
+        lbl: "Confidence Score",
+        position: { top: "40px", left: "-140px" },
+        depth: 65,
+        color: "#a855f7",
+        bg: "rgba(168, 85, 247, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      },
+      {
+        id: "i2",
+        val: "24 Sessions",
+        lbl: "Mocks Practiced",
+        position: { bottom: "120px", left: "-140px" },
+        depth: 45,
+        color: "#a855f7",
+        bg: "rgba(168, 85, 247, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <line x1="8" y1="2" x2="8" y2="22" strokeLinecap="round" strokeLinejoin="round" />
+            <line x1="16" y1="2" x2="16" y2="22" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      },
+      {
+        id: "i3",
+        val: "130 WPM",
+        lbl: "Speaking Pace",
+        position: { top: "140px", right: "-140px" },
+        depth: 55,
+        color: "#10b981",
+        bg: "rgba(16, 185, 129, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points="12 6 12 12 16 14" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      },
+      {
+        id: "i4",
+        val: "Low",
+        lbl: "Filler Words Rate",
+        position: { bottom: "120px", right: "-140px" },
+        depth: 75,
+        color: "#a855f7",
+        bg: "rgba(168, 85, 247, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      }
+    ]
+  },
+  roadmap: {
+    title: "Career Progression Path",
+    subtitle: "Tracking completed milestones and upcoming skills.",
+    cards: [
+      {
+        id: "m1",
+        val: "65%",
+        lbl: "Career Ready",
+        position: { top: "40px", left: "-140px" },
+        depth: 65,
+        color: "#f97316",
+        bg: "rgba(249, 115, 22, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="12" cy="12" r="6" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="12" cy="12" r="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      },
+      {
+        id: "m2",
+        val: "SDE-1",
+        lbl: "Target: Amazon",
+        position: { bottom: "120px", left: "-140px" },
+        depth: 45,
+        color: "#f97316",
+        bg: "rgba(249, 115, 22, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      },
+      {
+        id: "m3",
+        val: "Next: Docker",
+        lbl: "Active Focus",
+        position: { top: "140px", right: "-140px" },
+        depth: 55,
+        color: "#f97316",
+        bg: "rgba(249, 115, 22, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      },
+      {
+        id: "m4",
+        val: "3 Completed",
+        lbl: "Path Milestones",
+        position: { bottom: "120px", right: "-140px" },
+        depth: 75,
+        color: "#10b981",
+        bg: "rgba(16, 185, 129, 0.12)",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
+            <polyline points="22 4 12 14.01 9 11.01" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )
+      }
+    ]
+  }
+};
+
 function Interactive3DConsole() {
-  const [activeTab, setActiveTab] = useState<"resume" | "interview" | "roadmap" >("interview");
+  const [activeTab, setActiveTab] = useState<"resume" | "interview" | "roadmap">("interview");
   const [score, setScore] = useState(87);
 
   const spotlightRef = useRef<HTMLDivElement>(null);
@@ -105,6 +302,15 @@ function Interactive3DConsole() {
     if (glowRef.current) glowRef.current.style.opacity = "1";
   }
 
+  function handleTabClick(tabId: "resume" | "interview" | "roadmap") {
+    userInteractedRef.current = true;
+    setActiveTab(tabId);
+    if (autoRotateTimerRef.current) clearTimeout(autoRotateTimerRef.current);
+    autoRotateTimerRef.current = setTimeout(() => {
+      userInteractedRef.current = false;
+    }, 12000);
+  }
+
   function handleMouseLeave() {
     x.set(0);
     y.set(0);
@@ -112,18 +318,6 @@ function Interactive3DConsole() {
     if (glowRef.current) glowRef.current.style.opacity = "0";
   }
 
-  // Tab selection with user interaction tracking
-  function handleTabClick(tabId: "resume" | "interview" | "roadmap") {
-    userInteractedRef.current = true;
-    setActiveTab(tabId);
-    // Resume auto-rotation after 12s of no interaction
-    if (autoRotateTimerRef.current) clearTimeout(autoRotateTimerRef.current);
-    autoRotateTimerRef.current = setTimeout(() => {
-      userInteractedRef.current = false;
-    }, 12000);
-  }
-
-  // Auto-rotate tabs every 5 seconds when user is not interacting
   useEffect(() => {
     const tabs: Array<"resume" | "interview" | "roadmap"> = ["resume", "interview", "roadmap"];
     const interval = setInterval(() => {
@@ -140,7 +334,6 @@ function Interactive3DConsole() {
     };
   }, []);
 
-  // Typewriter effect state for candidate answer
   const [typedAnswer, setTypedAnswer] = useState("");
   const candidateAnswerText = "I am a Full Stack Developer with experience in React, Node.js, and TypeScript. I specialize in building responsive, high-performance web applications...";
 
@@ -161,7 +354,6 @@ function Interactive3DConsole() {
     return () => clearInterval(interval);
   }, [activeTab]);
 
-  // Waveform height animations for interview microphone wave
   const [waveHeights, setWaveHeights] = useState([15, 25, 35, 20, 10, 30, 25, 12, 18, 28, 15, 8]);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -170,7 +362,6 @@ function Interactive3DConsole() {
     return () => clearInterval(interval);
   }, []);
 
-  // Score count animation
   useEffect(() => {
     const target = activeTab === "resume" ? 92 : activeTab === "interview" ? 87 : 65;
     const current = score;
@@ -179,10 +370,9 @@ function Interactive3DConsole() {
     const timeout = setTimeout(() => {
       setScore(current + step);
     }, 15);
-    return () => clearTimeout(timeout);
+    return () => clearInterval(timeout);
   }, [activeTab, score]);
 
-  // Tab definitions with icons
   const tabDefs = [
     {
       id: "resume" as const,
@@ -217,6 +407,57 @@ function Interactive3DConsole() {
     }
   ];
 
+  const floatingCards = [
+    {
+      id: "f1", val: "92%", lbl: "Resume Match",
+      position: { top: "40px", left: "-140px" } as React.CSSProperties,
+      color: "#10b981", bg: "rgba(16, 185, 129, 0.12)",
+      floatClass: styles.cardFloat1,
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points="22 4 12 14.01 9 11.01" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
+    },
+    {
+      id: "f2", val: "24", lbl: "Mock Practiced",
+      position: { bottom: "120px", left: "-140px" } as React.CSSProperties,
+      color: "#a855f7", bg: "rgba(168, 85, 247, 0.12)",
+      floatClass: styles.cardFloat2,
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
+    },
+    {
+      id: "f3", val: "Amazon SDE-1", lbl: "Career Goal",
+      position: { top: "140px", right: "-140px" } as React.CSSProperties,
+      color: "#f97316", bg: "rgba(249, 115, 22, 0.12)",
+      floatClass: styles.cardFloat3,
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="6" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
+    },
+    {
+      id: "f4", val: "87%", lbl: "Interview Score",
+      position: { bottom: "120px", right: "-140px" } as React.CSSProperties,
+      color: "#06b6d4", bg: "rgba(6, 182, 212, 0.12)",
+      floatClass: styles.cardFloat4,
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
+    }
+  ];
+
   return (
     <div className={styles.heroRight}>
       <motion.div
@@ -234,104 +475,26 @@ function Interactive3DConsole() {
           "--badge-dot": TAB_THEMES[activeTab].badgeColor,
         } as any}
       >
-        {/* Ambient Floating Particles */}
-        <div className={styles.ambientParticles}>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className={styles.particle} />
-          ))}
-        </div>
+        {floatingCards.map((card) => (
+          <div
+            key={card.id}
+            className={`${styles.floatingOutcomeCard} ${card.floatClass}`}
+            style={card.position}
+          >
+            <div className={styles.floatingCardIcon} style={{ background: card.bg, color: card.color }}>
+              {card.icon}
+            </div>
+            <div className={styles.floatingCardDetails}>
+              <span className={styles.floatingCardVal}>{card.val}</span>
+              <span className={styles.floatingCardLbl}>{card.lbl}</span>
+            </div>
+          </div>
+        ))}
 
-        {/* Floating Outcome Cards */}
-        {/* Card 1: Resume Score 92% */}
-        <div
-          className={`${styles.floatingOutcomeCard} ${styles.cardFloat1}`}
-          style={{
-            top: "40px",
-            left: "-140px",
-          }}
-        >
-          <div className={styles.floatingCardIcon} style={{ background: "rgba(16, 185, 129, 0.12)", color: "#10b981" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
-              <polyline points="22 4 12 14.01 9 11.01" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <div className={styles.floatingCardDetails}>
-            <span className={styles.floatingCardVal}>92%</span>
-            <span className={styles.floatingCardLbl}>Resume Match</span>
-          </div>
-        </div>
-
-        {/* Card 2: Mock Practiced 24 */}
-        <div
-          className={`${styles.floatingOutcomeCard} ${styles.cardFloat2}`}
-          style={{
-            bottom: "120px",
-            left: "-140px",
-          }}
-        >
-          <div className={styles.floatingCardIcon} style={{ background: "rgba(168, 85, 247, 0.12)", color: "#a855f7" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
-              <line x1="12" x2="12" y1="19" y2="22" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <div className={styles.floatingCardDetails}>
-            <span className={styles.floatingCardVal}>24</span>
-            <span className={styles.floatingCardLbl}>Mock Practiced</span>
-          </div>
-        </div>
-
-        {/* Card 3: Career Goal Amazon SDE-1 */}
-        <div
-          className={`${styles.floatingOutcomeCard} ${styles.cardFloat3}`}
-          style={{
-            top: "140px",
-            right: "-140px",
-          }}
-        >
-          <div className={styles.floatingCardIcon} style={{ background: "rgba(249, 115, 22, 0.12)", color: "#f97316" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="12" cy="12" r="6" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="12" cy="12" r="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <div className={styles.floatingCardDetails}>
-            <span className={styles.floatingCardVal} style={{ fontSize: "0.82rem" }}>Amazon SDE-1</span>
-            <span className={styles.floatingCardLbl}>Career Goal</span>
-          </div>
-        </div>
-
-        {/* Card 4: Interview Score 87% */}
-        <div
-          className={`${styles.floatingOutcomeCard} ${styles.cardFloat4}`}
-          style={{
-            bottom: "120px",
-            right: "-140px",
-          }}
-        >
-          <div className={styles.floatingCardIcon} style={{ background: "rgba(6, 182, 212, 0.12)", color: "#06b6d4" }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <div className={styles.floatingCardDetails}>
-            <span className={styles.floatingCardVal}>87%</span>
-            <span className={styles.floatingCardLbl}>Interview Score</span>
-          </div>
-        </div>
-
-        {/* Console Card */}
         <div className={styles.consoleCard}>
-          {/* Holographic Shimmer Border */}
-          <div className={styles.consoleShimmerBorder} />
-          {/* Spotlight & Neon Border Glow */}
           <div ref={glowRef} className={styles.consoleCardBorderGlow} />
           <div ref={spotlightRef} className={styles.consoleCardSpotlight} />
 
-          {/* Interactive Dial Indicator (Z = 75px) */}
           <div className={styles.dialLayer}>
             <svg className={styles.dialSvg} viewBox="0 0 90 90">
               <circle className={styles.dialBgCircle} cx="45" cy="45" r="38" />
@@ -356,42 +519,29 @@ function Interactive3DConsole() {
             </div>
           </div>
 
-          {/* Tabs and Title Header (Z = 15px) */}
           <div className={styles.headerLayer}>
-            <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+            <div className={styles.tabsWrapper}>
               {tabDefs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => handleTabClick(tab.id)}
-                  className={styles.tabBtn}
-                  style={{
-                    background: activeTab === tab.id ? "var(--btn-solid-bg)" : "rgba(255, 255, 255, 0.03)",
-                    color: activeTab === tab.id ? "var(--btn-solid-fg)" : "var(--text-secondary)",
-                    borderColor: activeTab === tab.id ? "var(--btn-solid-bg)" : "var(--border-default)"
-                  }}
+                  className={`${styles.tabBtn} ${activeTab === tab.id ? styles.tabBtnActive : ""}`}
                 >
                   <span className={styles.tabIcon}>{tab.icon}</span>
                   {tab.label}
                 </button>
               ))}
             </div>
-            <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary)" }}>
-              {activeTab === "resume" && "ATS Real-Time Score"}
-              {activeTab === "interview" && "Voice Assistant Coach"}
-              {activeTab === "roadmap" && "Career Progression Path"}
+            <h4 className={styles.consoleHeaderTitle}>
+              {TABS_CONTENT[activeTab].title}
             </h4>
-            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "4px", marginBottom: 0 }}>
-              {activeTab === "resume" && "Evaluating keyword relevance, formatting, and impact phrases."}
-              {activeTab === "interview" && "Analyzing speaking pace, confidence, and filler word usage."}
-              {activeTab === "roadmap" && "Tracking completed milestones and upcoming skills."}
+            <p className={styles.consoleHeaderDesc}>
+              {TABS_CONTENT[activeTab].subtitle}
             </p>
           </div>
 
-          {/* Middle Content Panel (Z = 35px) */}
           <div className={styles.mainPanelLayer} style={{ position: "relative" }}>
-            {/* Scan Line Animation — visible on resume tab */}
             {activeTab === "resume" && <div className={styles.scanLine} />}
-
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -402,22 +552,22 @@ function Interactive3DConsole() {
               >
                 {activeTab === "resume" && (
                   <div className={styles.skillsList} style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "flex-start" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.85rem", fontWeight: "700", color: "#10b981" }}>
+                    <div className={styles.skillsSuccessText}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                       <span>Resume Uploaded Successfully</span>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%" }}>
-                      <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.04em" }}>Detected Skills</span>
+                    <div className={styles.skillsGroup}>
+                      <span className={styles.skillsGroupLabel}>Detected Skills</span>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                         {["React", "Node.js", "MongoDB", "TypeScript", "AWS"].map((sk) => (
                           <span key={sk} className={`${styles.skillTag} ${styles.skillFound}`}>{sk}</span>
                         ))}
                       </div>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%", marginTop: "4px" }}>
-                      <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.04em" }}>Suggested Gaps</span>
+                    <div className={styles.skillsGroup} style={{ marginTop: "4px" }}>
+                      <span className={styles.skillsGroupLabel}>Suggested Gaps</span>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                         {["Docker", "Kubernetes", "System Design"].map((sk) => (
                           <span key={sk} className={`${styles.skillTag} ${styles.skillMissing}`}>{sk}</span>
@@ -426,20 +576,15 @@ function Interactive3DConsole() {
                     </div>
                   </div>
                 )}
-
                 {activeTab === "interview" && (
                   <div className={styles.interviewQABox}>
-                    <div className={styles.questionText}>
-                      Q: Tell me about yourself.
-                    </div>
+                    <div className={styles.questionText}>Q: Tell me about yourself.</div>
                     <div className={styles.answerText}>
                       {typedAnswer}
                       <span style={{ animation: "pulse 1s infinite", fontWeight: "bold", color: "#a855f7" }}>|</span>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "4px 0" }}>
-                      <span style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", color: "var(--badge-dot)" }}>
-                        🎤 Recording Active
-                      </span>
+                    <div className={styles.recordingRow}>
+                      <span className={styles.recordingIndicator}>🎤 Recording Active</span>
                       <div className={styles.waveform}>
                         {waveHeights.map((h, i) => (
                           <div
@@ -464,12 +609,11 @@ function Interactive3DConsole() {
                     </div>
                   </div>
                 )}
-
                 {activeTab === "roadmap" && (
                   <div className={styles.roadmapProgressContainer}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div className={styles.roadmapHeader}>
                       <span className={styles.roadmapRole}>Amazon SDE-1</span>
-                      <span style={{ fontSize: "0.75rem", fontWeight: "700", color: "#f97316" }}>65% Complete</span>
+                      <span className={styles.roadmapPercentage}>65% Complete</span>
                     </div>
                     <div className={styles.roadmapNodes}>
                       <div className={`${styles.roadmapNode} ${styles.roadmapNodeCompleted}`}>
@@ -488,13 +632,11 @@ function Interactive3DConsole() {
             </AnimatePresence>
           </div>
 
-          {/* Stats Bar / Telemetry */}
+          {/* Telemetry Status Bar */}
           <div className={styles.statusCard}>
-            <div style={{ textAlign: "left" }}>
-              <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--text-muted)", display: "block", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                Platform Telemetry
-              </span>
-              <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "var(--text-primary)" }}>
+            <div className={styles.telemetryHeader}>
+              <span className={styles.telemetryLabel}>Platform Telemetry</span>
+              <span className={styles.telemetryTitle}>
                 {activeTab === "resume" && "ATS Keyword Match"}
                 {activeTab === "interview" && "Voice Speaking Confidence"}
                 {activeTab === "roadmap" && "Path Milestone Progress"}
@@ -506,12 +648,6 @@ function Interactive3DConsole() {
                 style={{ width: `${score}%` }}
               />
             </div>
-          </div>
-
-          {/* Live Status Indicator */}
-          <div className={styles.liveIndicator}>
-            <span className={styles.liveIndicatorDot} />
-            <span>HireMate AI Engine Active</span>
           </div>
         </div>
       </motion.div>
@@ -536,7 +672,6 @@ function FeatureCard({ feature, variants }: { feature: any; variants: any }) {
     x.set(mx - rect.width / 2);
     y.set(my - rect.height / 2);
 
-    // Direct DOM updates — no React re-renders
     if (spotlightRef.current) {
       spotlightRef.current.style.background =
         `radial-gradient(circle 400px at ${mx}px ${my}px, var(--spotlight-color), transparent 60%)`;
@@ -575,13 +710,8 @@ function FeatureCard({ feature, variants }: { feature: any; variants: any }) {
         } as any}
         whileHover={{ y: -8, scale: 1.03 }}
       >
-        {/* Border glow — follows cursor along edges */}
         <div ref={glowRef} className={styles.featureCardBorderGlow} />
-
-        {/* Glass spotlight — illuminates surface under cursor */}
         <div ref={spotlightRef} className={styles.featureCardSpotlight} />
-
-        {/* 3D parallax content */}
         <div className={styles.featureCardContent}>
           <div className={styles.featureIcon}>{feature.icon}</div>
           <h3 className={styles.featureTitleLayer}>{feature.title}</h3>
