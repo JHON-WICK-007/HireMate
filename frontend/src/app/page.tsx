@@ -479,11 +479,7 @@ function Interactive3DConsole() {
           <div
             key={card.id}
             className={`${styles.floatingOutcomeCard} ${card.floatClass}`}
-            style={{
-              ...card.position,
-              "--card-color": card.color,
-              "--card-color-glow": card.bg
-            } as React.CSSProperties}
+            style={card.position}
           >
             <div className={styles.floatingCardIcon} style={{ background: card.bg, color: card.color }}>
               {card.icon}
