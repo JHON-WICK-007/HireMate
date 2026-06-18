@@ -943,12 +943,11 @@
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  border: 1px solid transparent;
   border-radius: var(--radius-xl);
   box-shadow: var(--glass-shadow);
   transition:
     background-color 0.35s ease,
-    border-color 0.35s ease,
     box-shadow 0.35s ease;
   position: relative;
   transform-style: preserve-3d;
@@ -959,7 +958,6 @@
 
 .featureCard:hover {
   background: var(--glass-bg-hover);
-  border-color: var(--glass-border-hover);
   box-shadow: var(--glass-shadow-hover);
 }
 
@@ -1003,7 +1001,7 @@
   background: transparent;
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  border: 1px solid transparent;
   color: var(--text-primary);
   margin-bottom: 1.25rem;
   transition: all 0.4s ease;
@@ -1013,11 +1011,11 @@
 
 [data-theme="light"] .featureIcon {
   background: transparent;
-  border-color: var(--glass-border);
+  border-color: transparent;
 }
 
 .featureCard:hover .featureIcon {
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: transparent;
   background: transparent;
   color: var(--text-primary);
   transform: translateZ(35px) scale(1.06);
@@ -1025,7 +1023,7 @@
 }
 
 [data-theme="light"] .featureCard:hover .featureIcon {
-  border-color: rgba(0, 0, 0, 0.22);
+  border-color: transparent;
   background: transparent;
   color: var(--text-primary);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
