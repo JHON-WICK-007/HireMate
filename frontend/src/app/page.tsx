@@ -426,13 +426,7 @@ export default function Home() {
   const features = [
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#indigoPurpleGrad)" strokeWidth="1.5">
-          <defs>
-            <linearGradient id="indigoPurpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#6366f1" />
-              <stop offset="100%" stopColor="#a855f7" />
-            </linearGradient>
-          </defs>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       ),
@@ -443,13 +437,7 @@ export default function Home() {
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#blueCyanGrad)" strokeWidth="1.5">
-          <defs>
-            <linearGradient id="blueCyanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3b82f6" />
-              <stop offset="100%" stopColor="#06b6d4" />
-            </linearGradient>
-          </defs>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
           <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round" />
           <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" />
@@ -464,13 +452,7 @@ export default function Home() {
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#purpleFuchsiaGrad)" strokeWidth="1.5">
-          <defs>
-            <linearGradient id="purpleFuchsiaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#8b5cf6" />
-              <stop offset="100%" stopColor="#d946ef" />
-            </linearGradient>
-          </defs>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <polyline points="16 18 22 12 16 6" strokeLinecap="round" strokeLinejoin="round" />
           <polyline points="8 6 2 12 8 18" strokeLinecap="round" strokeLinejoin="round" />
           <line x1="14" y1="4" x2="10" y2="20" strokeLinecap="round" />
@@ -483,13 +465,7 @@ export default function Home() {
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#pinkRoseGrad)" strokeWidth="1.5">
-          <defs>
-            <linearGradient id="pinkRoseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ec4899" />
-              <stop offset="100%" stopColor="#f43f5e" />
-            </linearGradient>
-          </defs>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -501,13 +477,7 @@ export default function Home() {
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#tealGreenGrad)" strokeWidth="1.5">
-          <defs>
-            <linearGradient id="tealGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#14b8a6" />
-              <stop offset="100%" stopColor="#10b981" />
-            </linearGradient>
-          </defs>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M12 20V10" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M18 20V4" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M6 20v-4" strokeLinecap="round" strokeLinejoin="round" />
@@ -520,13 +490,7 @@ export default function Home() {
     },
     {
       icon: (
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#orangeAmberGrad)" strokeWidth="1.5">
-          <defs>
-            <linearGradient id="orangeAmberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#f97316" />
-              <stop offset="100%" stopColor="#f59e0b" />
-            </linearGradient>
-          </defs>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
