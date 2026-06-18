@@ -273,12 +273,16 @@ function Interactive3DConsole() {
   // Track user interaction to pause auto-rotation
   const userInteractedRef = useRef(false);
   const autoRotateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rectRef = useRef<DOMRect | null>(null);
 
   function handleMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    const rect = event.currentTarget.getBoundingClientRect();
+    if (!rectRef.current) {
+      rectRef.current = event.currentTarget.getBoundingClientRect();
+    }
+    const rect = rectRef.current;
     const width = rect.width;
     const height = rect.height;
-    
+
     const mouseX = event.clientX - rect.left - width / 2;
     const mouseY = event.clientY - rect.top - height / 2;
     x.set(mouseX);
@@ -293,11 +297,12 @@ function Interactive3DConsole() {
     }
     if (glowRef.current) {
       glowRef.current.style.background =
-        `radial-gradient(circle 120px at ${mx}px ${my}px, var(--border-glow-color), transparent 100%)`;
+        `radial-gradient(circle 100px at ${mx}px ${my}px, var(--border-glow-color), transparent 100%)`;
     }
   }
 
-  function handleMouseEnter() {
+  function handleMouseEnter(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    rectRef.current = event.currentTarget.getBoundingClientRect();
     if (spotlightRef.current) spotlightRef.current.style.opacity = "1";
     if (glowRef.current) glowRef.current.style.opacity = "1";
   }
@@ -314,6 +319,7 @@ function Interactive3DConsole() {
   function handleMouseLeave() {
     x.set(0);
     y.set(0);
+    rectRef.current = null;
     if (spotlightRef.current) spotlightRef.current.style.opacity = "0";
     if (glowRef.current) glowRef.current.style.opacity = "0";
   }
@@ -379,8 +385,8 @@ function Interactive3DConsole() {
       label: "Resume Analysis",
       icon: (
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round"/>
-          <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       )
     },
@@ -389,8 +395,8 @@ function Interactive3DConsole() {
       label: "Interview Coach",
       icon: (
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       )
     },
@@ -399,9 +405,9 @@ function Interactive3DConsole() {
       label: "Career Roadmap",
       icon: (
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="12" cy="12" r="6" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="12" cy="12" r="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="6" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       )
     }
@@ -460,29 +466,21 @@ function Interactive3DConsole() {
 
   return (
     <div className={styles.heroRight}>
-      <div
+      <motion.div
         className={styles.consoleContainer}
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{
+          rotateX,
+          rotateY,
+          "--shadow-dx": useTransform(shadowX, (v) => `${v}px`),
+          "--shadow-dy": useTransform(shadowY, (v) => `${v}px`),
           "--border-glow-color": TAB_THEMES[activeTab].borderGlow,
           "--spotlight-color": TAB_THEMES[activeTab].spotlight,
           "--badge-dot": TAB_THEMES[activeTab].badgeColor,
         } as any}
       >
-        <motion.div
-          style={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            transformStyle: "preserve-3d",
-            rotateX,
-            rotateY,
-            "--shadow-dx": useTransform(shadowX, (v) => `${v}px`),
-            "--shadow-dy": useTransform(shadowY, (v) => `${v}px`),
-          } as any}
-        >
         {floatingCards.map((card) => (
           <div
             key={card.id}
@@ -659,7 +657,6 @@ function Interactive3DConsole() {
           </div>
         </div>
       </motion.div>
-      </div>
     </div>
   );
 }

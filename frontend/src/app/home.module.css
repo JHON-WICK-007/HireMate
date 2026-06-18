@@ -453,19 +453,19 @@
 }
 
 .consoleCard:hover {
-  border-color: var(--glass-border-hover);
+  /* No static border-color highlight on hover so the cursor-following glow remains localized and premium */
 }
 
 /* Border glow — cursor-following edge illumination */
 .consoleCardBorderGlow {
   position: absolute;
-  inset: -1.5px;
+  inset: -1px;
   border-radius: inherit;
   pointer-events: none;
   z-index: 2;
   opacity: 0;
   transition: opacity 0.35s ease;
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   background-clip: border-box;
   -webkit-mask:
     linear-gradient(#fff 0 0) padding-box,
