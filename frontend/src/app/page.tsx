@@ -376,7 +376,7 @@ function Interactive3DConsole() {
   const tabDefs = [
     {
       id: "resume" as const,
-      label: "Resume Analysis",
+      label: "Resume",
       icon: (
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
@@ -386,7 +386,7 @@ function Interactive3DConsole() {
     },
     {
       id: "interview" as const,
-      label: "Interview Coach",
+      label: "Interview",
       icon: (
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" strokeLinecap="round" strokeLinejoin="round" />
@@ -396,7 +396,7 @@ function Interactive3DConsole() {
     },
     {
       id: "roadmap" as const,
-      label: "Career Roadmap",
+      label: "Roadmap",
       icon: (
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
@@ -479,7 +479,11 @@ function Interactive3DConsole() {
           <div
             key={card.id}
             className={`${styles.floatingOutcomeCard} ${card.floatClass}`}
-            style={card.position}
+            style={{
+              ...card.position,
+              "--card-color": card.color,
+              "--card-color-glow": card.bg
+            } as React.CSSProperties}
           >
             <div className={styles.floatingCardIcon} style={{ background: card.bg, color: card.color }}>
               {card.icon}

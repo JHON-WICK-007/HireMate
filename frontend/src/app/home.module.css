@@ -488,37 +488,97 @@
 .floatingOutcomeCard {
   position: absolute;
   padding: 10px 14px;
-  background: rgba(20, 20, 25, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  background: rgba(15, 15, 20, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 14px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   gap: 10px;
   z-index: 15;
   pointer-events: auto;
   user-select: none;
-  min-width: 150px;
+  min-width: 155px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* Neon Backlit Background Glow */
+.floatingOutcomeCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, var(--card-color-glow), transparent 65%);
+  pointer-events: none;
+  opacity: 0.4;
+  z-index: 0;
+}
+
+/* Neon Gradient Border Glow */
+.floatingOutcomeCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--card-color) 0%, transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.65;
+  z-index: 1;
+}
+
+.floatingOutcomeCard:hover {
+  transform: scale(1.05) translate3d(0, -6px, 20px) !important;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.4),
+    0 0 20px var(--card-color-glow);
+  background: rgba(15, 15, 20, 0.85);
 }
 
 [data-theme="light"] .floatingOutcomeCard {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .floatingOutcomeCard::before {
+  opacity: 0.45;
+}
+
+[data-theme="light"] .floatingOutcomeCard::after {
+  opacity: 0.25;
+}
+
+[data-theme="light"] .floatingOutcomeCard:hover {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.08),
+    0 0 25px var(--card-color-glow);
 }
 
 .floatingCardIcon {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
   border-radius: 8px;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.05);
 }
 
 .floatingCardDetails {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -605,39 +665,36 @@
 }
 
 .tabBtn {
+  flex: 1;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: 6px 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-default);
+  border-radius: 9999px;
+  border: none;
   font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
   color: var(--text-secondary);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-[data-theme="light"] .tabBtn {
-  background: rgba(0, 0, 0, 0.03);
-}
-
 .tabBtn:hover {
-  border-color: var(--badge-dot);
   color: var(--text-primary);
 }
 
 .tabBtnActive {
   background: #ffffff !important;
   color: #000000 !important;
-  border-color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme="light"] .tabBtnActive {
   background: #000000 !important;
   color: #ffffff !important;
-  border-color: #000000 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Layer 2: Main Content Panel (Z = 35px) */
@@ -2252,8 +2309,19 @@
 /* ─── Interactive Console Helpers ─── */
 .tabsWrapper {
   display: flex;
-  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  padding: 4px;
+  gap: 2px;
   margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+[data-theme="light"] .tabsWrapper {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .consoleHeaderTitle {
