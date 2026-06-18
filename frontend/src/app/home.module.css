@@ -467,12 +467,12 @@
   transition: opacity 0.35s ease;
   border: 1px solid transparent;
   background-clip: border-box;
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) padding-box, 
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
-  mask: 
-    linear-gradient(#fff 0 0) padding-box, 
+  mask:
+    linear-gradient(#fff 0 0) padding-box,
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
 }
@@ -560,23 +560,43 @@
 }
 
 @keyframes float-card-1 {
-  0% { transform: translate3d(0, 0, 65px) rotate(0deg); }
-  100% { transform: translate3d(-4px, -8px, 67px) rotate(1deg); }
+  0% {
+    transform: translate3d(0, 0, 65px) rotate(0deg);
+  }
+
+  100% {
+    transform: translate3d(-4px, -8px, 67px) rotate(1deg);
+  }
 }
 
 @keyframes float-card-2 {
-  0% { transform: translate3d(0, 0, 45px) rotate(0deg); }
-  100% { transform: translate3d(5px, 6px, 47px) rotate(-1deg); }
+  0% {
+    transform: translate3d(0, 0, 45px) rotate(0deg);
+  }
+
+  100% {
+    transform: translate3d(5px, 6px, 47px) rotate(-1deg);
+  }
 }
 
 @keyframes float-card-3 {
-  0% { transform: translate3d(0, 0, 55px) rotate(0deg); }
-  100% { transform: translate3d(-6px, 5px, 57px) rotate(-1.5deg); }
+  0% {
+    transform: translate3d(0, 0, 55px) rotate(0deg);
+  }
+
+  100% {
+    transform: translate3d(-6px, 5px, 57px) rotate(-1.5deg);
+  }
 }
 
 @keyframes float-card-4 {
-  0% { transform: translate3d(0, 0, 75px) rotate(0deg); }
-  100% { transform: translate3d(4px, -6px, 77px) rotate(1.5deg); }
+  0% {
+    transform: translate3d(0, 0, 75px) rotate(0deg);
+  }
+
+  100% {
+    transform: translate3d(4px, -6px, 77px) rotate(1.5deg);
+  }
 }
 
 /* Layer 1: Header / Navigation (Z = 15px) */
@@ -625,6 +645,8 @@
 
 /* Layer 2: Main Content Panel (Z = 35px) */
 .mainPanelLayer {
+  position: relative;
+  overflow: hidden;
   background: rgba(13, 13, 17, 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -802,8 +824,15 @@
 }
 
 @keyframes pulse-current-node {
-  0% { transform: scale(1); opacity: 0.7; }
-  100% { transform: scale(1.3); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
 }
 
 /* Layer 3: Circular HUD Dial (Z = 75px) */
@@ -952,14 +981,12 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--badge-dot, rgba(6, 182, 212, 0.8)) 30%,
-    var(--badge-dot, rgba(6, 182, 212, 1)) 50%,
-    var(--badge-dot, rgba(6, 182, 212, 0.8)) 70%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      var(--badge-dot, rgba(6, 182, 212, 0.8)) 30%,
+      var(--badge-dot, rgba(6, 182, 212, 1)) 50%,
+      var(--badge-dot, rgba(6, 182, 212, 0.8)) 70%,
+      transparent 100%);
   box-shadow:
     0 0 8px var(--badge-dot, rgba(6, 182, 212, 0.5)),
     0 0 20px var(--badge-dot, rgba(6, 182, 212, 0.2));
@@ -970,11 +997,28 @@
 }
 
 @keyframes scanLineMove {
-  0% { top: 0; opacity: 0; }
-  5% { opacity: 1; }
-  50% { top: 100%; opacity: 1; }
-  55% { opacity: 0; }
-  100% { top: 0; opacity: 0; }
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  50% {
+    top: 100%;
+    opacity: 1;
+  }
+
+  55% {
+    opacity: 0;
+  }
+
+  100% {
+    top: 0;
+    opacity: 0;
+  }
 }
 
 /* Ambient particles removed — were adding visual noise without meaning */
@@ -993,9 +1037,20 @@
 }
 
 @keyframes dialPulseRing {
-  0% { transform: scale(1); opacity: 0; }
-  50% { transform: scale(1.15); opacity: 0.5; }
-  100% { transform: scale(1.3); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
 }
 
 /* ─── Console Enhancements: Tab Content Transition ─── */
@@ -1042,8 +1097,17 @@
 }
 
 @keyframes livePulse {
-  0%, 100% { opacity: 0.4; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
+
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
 }
 
 .heroBadge {
