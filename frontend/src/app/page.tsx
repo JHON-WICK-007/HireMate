@@ -36,205 +36,388 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
 };
 
+const TAB_THEMES = {
+  resume: {
+    borderGlow: "rgba(6, 182, 212, 0.85)",
+    spotlight: "rgba(6, 182, 212, 0.08)",
+    badgeColor: "rgba(6, 182, 212, 1)"
+  },
+  interview: {
+    borderGlow: "rgba(168, 85, 247, 0.85)",
+    spotlight: "rgba(168, 85, 247, 0.08)",
+    badgeColor: "rgba(168, 85, 247, 1)"
+  },
+  roadmap: {
+    borderGlow: "rgba(249, 115, 22, 0.85)",
+    spotlight: "rgba(249, 115, 22, 0.08)",
+    badgeColor: "rgba(249, 115, 22, 1)"
+  }
+};
+
 function Interactive3DConsole() {
-  const [activeTab, setActiveTab] = useState<"interview" | "resume" | "playground">("interview");
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [atsScore, setAtsScore] = useState(74);
+  const [activeTab, setActiveTab] = useState<"resume" | "interview" | "roadmap" >("interview");
+  const [score, setScore] = useState(87);
+
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
 
   // Mouse coordinate motion values
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
   // Smooth springs for rotation
-  const rotateX = useSpring(useTransform(y, [-200, 200], [20, -20]), { damping: 25, stiffness: 200 });
-  const rotateY = useSpring(useTransform(x, [-200, 200], [-20, 20]), { damping: 25, stiffness: 200 });
+  const rotateX = useSpring(useTransform(y, [-200, 200], [15, -15]), { damping: 25, stiffness: 200 });
+  const rotateY = useSpring(useTransform(x, [-200, 200], [-15, 15]), { damping: 25, stiffness: 200 });
+
+  // Shadows
+  const shadowX = useSpring(useTransform(x, [-200, 200], [25, -25]), { damping: 25, stiffness: 200 });
+  const shadowY = useSpring(useTransform(y, [-200, 200], [25, -25]), { damping: 25, stiffness: 200 });
 
   function handleMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const rect = event.currentTarget.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
-    // Calculate distance from center (-width/2 to +width/2)
+    
     const mouseX = event.clientX - rect.left - width / 2;
     const mouseY = event.clientY - rect.top - height / 2;
     x.set(mouseX);
     y.set(mouseY);
+
+    const mx = event.clientX - rect.left;
+    const my = event.clientY - rect.top;
+
+    if (spotlightRef.current) {
+      spotlightRef.current.style.background =
+        `radial-gradient(circle 350px at ${mx}px ${my}px, var(--spotlight-color), transparent 60%)`;
+    }
+    if (glowRef.current) {
+      glowRef.current.style.background =
+        `radial-gradient(circle 100px at ${mx}px ${my}px, var(--border-glow-color), transparent 100%)`;
+    }
+  }
+
+  function handleMouseEnter() {
+    if (spotlightRef.current) spotlightRef.current.style.opacity = "1";
+    if (glowRef.current) glowRef.current.style.opacity = "1";
   }
 
   function handleMouseLeave() {
     x.set(0);
     y.set(0);
+    if (spotlightRef.current) spotlightRef.current.style.opacity = "0";
+    if (glowRef.current) glowRef.current.style.opacity = "0";
   }
 
-  // Effect to simulate active voice waveform animations
-  const [waveHeights, setWaveHeights] = useState([20, 15, 30, 25, 12, 18, 35, 15, 25, 20, 10, 22]);
-  useEffect(() => {
-    if (!isPlaying) return;
-    const interval = setInterval(() => {
-      setWaveHeights(prev => prev.map(() => Math.floor(Math.random() * 32) + 8));
-    }, 100);
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+  // Typewriter effect state for candidate answer
+  const [typedAnswer, setTypedAnswer] = useState("");
+  const candidateAnswerText = "I am a Full Stack Developer with experience in React, Node.js, and TypeScript. I specialize in building responsive, high-performance web applications...";
 
-  // Effect to animate ATS Score count up
   useEffect(() => {
-    const target = activeTab === "resume" ? 92 : activeTab === "playground" ? 99 : 74;
-    const current = atsScore;
+    if (activeTab !== "interview") return;
+    setTypedAnswer("");
+    let current = "";
+    let idx = 0;
+    const interval = setInterval(() => {
+      if (idx < candidateAnswerText.length) {
+        current += candidateAnswerText[idx];
+        setTypedAnswer(current);
+        idx++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 25);
+    return () => clearInterval(interval);
+  }, [activeTab]);
+
+  // Waveform height animations for interview microphone wave
+  const [waveHeights, setWaveHeights] = useState([15, 25, 35, 20, 10, 30, 25, 12, 18, 28, 15, 8]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWaveHeights(prev => prev.map(() => Math.floor(Math.random() * 30) + 6));
+    }, 120);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Score count animation
+  useEffect(() => {
+    const target = activeTab === "resume" ? 92 : activeTab === "interview" ? 87 : 65;
+    const current = score;
     if (current === target) return;
     const step = current < target ? 1 : -1;
     const timeout = setTimeout(() => {
-      setAtsScore(current + step);
+      setScore(current + step);
     }, 15);
     return () => clearTimeout(timeout);
-  }, [activeTab, atsScore]);
+  }, [activeTab, score]);
 
   return (
     <div className={styles.heroRight}>
       <motion.div
         className={styles.consoleContainer}
         onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{
           rotateX,
           rotateY,
-        }}
+          "--shadow-dx": useTransform(shadowX, (v) => `${v}px`),
+          "--shadow-dy": useTransform(shadowY, (v) => `${v}px`),
+          "--border-glow-color": TAB_THEMES[activeTab].borderGlow,
+          "--spotlight-color": TAB_THEMES[activeTab].spotlight,
+          "--badge-dot": TAB_THEMES[activeTab].badgeColor,
+        } as any}
       >
+        {/* Floating Outcome Cards */}
+        {/* Card 1: Resume Score 92% */}
+        <div
+          className={`${styles.floatingOutcomeCard} ${styles.cardFloat1}`}
+          style={{
+            top: "-35px",
+            left: "-85px",
+          }}
+        >
+          <div className={styles.floatingCardIcon} style={{ background: "rgba(16, 185, 129, 0.12)", color: "#10b981" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
+              <polyline points="22 4 12 14.01 9 11.01" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <div className={styles.floatingCardDetails}>
+            <span className={styles.floatingCardVal}>92%</span>
+            <span className={styles.floatingCardLbl}>Resume Match</span>
+          </div>
+        </div>
+
+        {/* Card 2: Mock Practiced 24 */}
+        <div
+          className={`${styles.floatingOutcomeCard} ${styles.cardFloat2}`}
+          style={{
+            bottom: "60px",
+            left: "-75px",
+          }}
+        >
+          <div className={styles.floatingCardIcon} style={{ background: "rgba(168, 85, 247, 0.12)", color: "#a855f7" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
+              <line x1="12" x2="12" y1="19" y2="22" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <div className={styles.floatingCardDetails}>
+            <span className={styles.floatingCardVal}>24</span>
+            <span className={styles.floatingCardLbl}>Mock Practiced</span>
+          </div>
+        </div>
+
+        {/* Card 3: Career Goal Amazon SDE-1 */}
+        <div
+          className={`${styles.floatingOutcomeCard} ${styles.cardFloat3}`}
+          style={{
+            top: "-25px",
+            right: "-75px",
+          }}
+        >
+          <div className={styles.floatingCardIcon} style={{ background: "rgba(249, 115, 22, 0.12)", color: "#f97316" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="12" cy="12" r="6" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="12" cy="12" r="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <div className={styles.floatingCardDetails}>
+            <span className={styles.floatingCardVal} style={{ fontSize: "0.82rem" }}>Amazon SDE-1</span>
+            <span className={styles.floatingCardLbl}>Career Goal</span>
+          </div>
+        </div>
+
+        {/* Card 4: Interview Score 87% */}
+        <div
+          className={`${styles.floatingOutcomeCard} ${styles.cardFloat4}`}
+          style={{
+            bottom: "50px",
+            right: "-80px",
+          }}
+        >
+          <div className={styles.floatingCardIcon} style={{ background: "rgba(6, 182, 212, 0.12)", color: "#06b6d4" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <div className={styles.floatingCardDetails}>
+            <span className={styles.floatingCardVal}>87%</span>
+            <span className={styles.floatingCardLbl}>Interview Score</span>
+          </div>
+        </div>
+
+        {/* Console Card */}
         <div className={styles.consoleCard}>
-          {/* Top Panel / Header Info */}
-          <div className={styles.consoleHeader}>
+          {/* Spotlight & Neon Border Glow */}
+          <div ref={glowRef} className={styles.consoleCardBorderGlow} />
+          <div ref={spotlightRef} className={styles.consoleCardSpotlight} />
+
+          {/* Interactive Dial Indicator (Z = 75px) */}
+          <div className={styles.dialLayer}>
+            <svg className={styles.dialSvg} viewBox="0 0 90 90">
+              <circle className={styles.dialBgCircle} cx="45" cy="45" r="38" />
+              <circle
+                className={styles.dialValueCircle}
+                cx="45"
+                cy="45"
+                r="38"
+                style={{
+                  strokeDasharray: "238.76",
+                  strokeDashoffset: 238.76 - (238.76 * score) / 100
+                }}
+              />
+            </svg>
+            <div className={styles.dialTextContainer}>
+              <span className={styles.dialValue}>{score}%</span>
+              <span className={styles.dialLabel}>
+                {activeTab === "resume" && "ATS"}
+                {activeTab === "interview" && "Score"}
+                {activeTab === "roadmap" && "Ready"}
+              </span>
+            </div>
+          </div>
+
+          {/* Tabs and Title Header (Z = 15px) */}
+          <div className={styles.headerLayer}>
             <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-              {["interview", "resume", "playground"].map((tab) => (
+              {[
+                { id: "resume", label: "Resume Analysis" },
+                { id: "interview", label: "Interview Coach" },
+                { id: "roadmap", label: "Career Roadmap" }
+              ].map((tab) => (
                 <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab as any)}
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={styles.tabBtn}
                   style={{
-                    padding: "5px 12px",
-                    borderRadius: "8px",
-                    border: "1px solid var(--border-default)",
-                    background: activeTab === tab ? "var(--btn-solid-bg)" : "var(--surface-200)",
-                    color: activeTab === tab ? "var(--btn-solid-fg)" : "var(--text-secondary)",
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                    textTransform: "capitalize",
-                    transition: "all 0.2s"
+                    background: activeTab === tab.id ? "var(--btn-solid-bg)" : "rgba(255, 255, 255, 0.03)",
+                    color: activeTab === tab.id ? "var(--btn-solid-fg)" : "var(--text-secondary)",
+                    borderColor: activeTab === tab.id ? "var(--btn-solid-bg)" : "var(--border-default)"
                   }}
                 >
-                  {tab}
+                  {tab.label}
                 </button>
               ))}
             </div>
-            <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem", fontWeight: 800, margin: 0 }}>
-              {activeTab === "interview" && "Voice Assistant Coach"}
+            <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.1rem", fontWeight: 800, margin: 0, color: "var(--text-primary)" }}>
               {activeTab === "resume" && "ATS Real-Time Score"}
-              {activeTab === "playground" && "Voxel Editor Engine"}
+              {activeTab === "interview" && "Voice Assistant Coach"}
+              {activeTab === "roadmap" && "Career Progression Path"}
             </h4>
-            <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "4px", marginBottom: 0 }}>
-              {activeTab === "interview" && "Analyzing speaking pace, confidence, and filler word usage."}
+            <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "4px", marginBottom: 0 }}>
               {activeTab === "resume" && "Evaluating keyword relevance, formatting, and impact phrases."}
-              {activeTab === "playground" && "Running vector animations at 99 FPS on Canvas context."}
+              {activeTab === "interview" && "Analyzing speaking pace, confidence, and filler word usage."}
+              {activeTab === "roadmap" && "Tracking completed milestones and upcoming skills."}
             </p>
           </div>
 
-          {/* Interactive Node: Speech wave or Voxel graphic */}
-          <div
-            className={`${styles.speechNode} ${isPlaying ? styles.speechNodeActive : ""}`}
-            onClick={() => {
-              if (activeTab === "interview") {
-                setIsPlaying(!isPlaying);
-              }
-            }}
-            style={{ cursor: activeTab === "interview" ? "pointer" : "default" }}
-          >
-            {activeTab === "interview" && (
-              <>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: isPlaying ? "var(--badge-dot)" : "var(--text-secondary)" }}>
-                    {isPlaying ? "🔴 Live Recording" : "🔇 Tap to Record Voice"}
-                  </span>
-                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontFamily: "monospace" }}>00:04</span>
-                </div>
-                <div className={styles.waveform}>
-                  {waveHeights.map((h, i) => (
-                    <div
-                      key={i}
-                      className={`${styles.waveBar} ${isPlaying ? styles.waveBarActive : ""}`}
-                      style={{ height: `${isPlaying ? h : 4}px` }}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-
+          {/* Middle Content Panel (Z = 35px) */}
+          <div className={styles.mainPanelLayer}>
             {activeTab === "resume" && (
-              <>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--text-secondary)" }}>
-                    Analyzed Skills
-                  </span>
-                  <span style={{ fontSize: "0.7rem", color: "var(--badge-dot)", fontWeight: 700 }}>Optimal</span>
+              <div className={styles.skillsList} style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "flex-start" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.85rem", fontWeight: "700", color: "#10b981" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>Resume Uploaded Successfully</span>
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "4px" }}>
-                  {["React", "Node.js", "System Design", "MongoDB", "TypeScript"].map((sk, i) => (
-                    <span
-                      key={sk}
-                      style={{
-                        fontSize: "0.72rem",
-                        padding: "3px 8px",
-                        borderRadius: "6px",
-                        background: "var(--surface-300)",
-                        color: "var(--text-primary)",
-                        fontWeight: 600
-                      }}
-                    >
-                      {sk}
-                    </span>
+                <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%" }}>
+                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.04em" }}>Detected Skills</span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    {["React", "Node.js", "MongoDB", "TypeScript", "AWS"].map((sk) => (
+                      <span key={sk} className={`${styles.skillTag} ${styles.skillFound}`}>{sk}</span>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%", marginTop: "4px" }}>
+                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.04em" }}>Suggested Gaps</span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    {["Docker", "Kubernetes", "System Design"].map((sk) => (
+                      <span key={sk} className={`${styles.skillTag} ${styles.skillMissing}`}>{sk}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "interview" && (
+              <div className={styles.interviewQABox}>
+                <div className={styles.questionText}>
+                  Q: Tell me about yourself.
+                </div>
+                <div className={styles.answerText}>
+                  {typedAnswer}
+                  <span style={{ animation: "pulse 1s infinite", fontWeight: "bold", color: "#a855f7" }}>|</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "4px 0" }}>
+                  <span style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", color: "var(--badge-dot)" }}>
+                    🎤 Recording Active
+                  </span>
+                  <div className={styles.waveform}>
+                    {waveHeights.map((h, i) => (
+                      <div
+                        key={i}
+                        className={`${styles.waveBar} ${styles.waveBarActive}`}
+                        style={{ height: `${h}px` }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className={styles.metricsGrid}>
+                  {[
+                    { val: "88%", label: "Technical" },
+                    { val: "91%", label: "Communication" },
+                    { val: "85%", label: "Confidence" }
+                  ].map((m, idx) => (
+                    <div key={idx} className={styles.metricItem}>
+                      <span className={styles.metricValue}>{m.val}</span>
+                      <span className={styles.metricLabel}>{m.label}</span>
+                    </div>
                   ))}
                 </div>
-              </>
+              </div>
             )}
 
-            {activeTab === "playground" && (
-              <>
+            {activeTab === "roadmap" && (
+              <div className={styles.roadmapProgressContainer}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--text-secondary)" }}>
-                    Renderer Status
-                  </span>
-                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>WebGL Context</span>
+                  <span className={styles.roadmapRole}>Amazon SDE-1</span>
+                  <span style={{ fontSize: "0.75rem", fontWeight: "700", color: "#f97316" }}>65% Complete</span>
                 </div>
-                <div style={{ display: "flex", gap: "8px", alignItems: "center", justifyContent: "center", height: "40px" }}>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                    style={{ width: "24px", height: "24px", border: "2px dashed var(--btn-solid-bg)", borderRadius: "50%" }}
-                  />
-                  <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--text-primary)" }}>99.2 FPS</span>
+                <div className={styles.roadmapNodes}>
+                  <div className={`${styles.roadmapNode} ${styles.roadmapNodeCompleted}`}>
+                    ✓ JavaScript, React, Git (Completed)
+                  </div>
+                  <div className={`${styles.roadmapNode} ${styles.roadmapNodeCurrent}`}>
+                    → Node.js, MongoDB (Active Focus)
+                  </div>
+                  <div className={`${styles.roadmapNode} ${styles.roadmapNodeUpcoming}`}>
+                    Upcoming: AWS, System Design, DSA
+                  </div>
                 </div>
-              </>
+              </div>
             )}
           </div>
 
-          {/* Floating Score Badge */}
-          <div className={styles.atsBadge}>
-            <span className={styles.atsIndicator} />
-            <span>{atsScore}% ATS</span>
-          </div>
-
-          {/* Stats Bar */}
+          {/* Stats Bar / Telemetry */}
           <div className={styles.statusCard}>
-            <div>
-              <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--text-muted)", display: "block", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+            <div style={{ textAlign: "left" }}>
+              <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--text-muted)", display: "block", textTransform: "uppercase", letterSpacing: "0.04em" }}>
                 Platform Telemetry
               </span>
-              <span style={{ fontSize: "0.95rem", fontWeight: 800, color: "var(--text-primary)" }}>
-                {activeTab === "interview" && "Speaking Confidence"}
+              <span style={{ fontSize: "0.85rem", fontWeight: 800, color: "var(--text-primary)" }}>
                 {activeTab === "resume" && "ATS Keyword Match"}
-                {activeTab === "playground" && "FPS Frame Consistency"}
+                {activeTab === "interview" && "Voice Speaking Confidence"}
+                {activeTab === "roadmap" && "Path Milestone Progress"}
               </span>
             </div>
             <div className={styles.statusBarContainer}>
               <div
                 className={styles.statusBarFill}
-                style={{ width: `${atsScore}%` }}
+                style={{ width: `${score}%` }}
               />
             </div>
           </div>

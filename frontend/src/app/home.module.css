@@ -422,16 +422,11 @@
   position: relative;
   width: 100%;
   max-width: 440px;
-  height: 480px;
+  height: 520px;
   display: flex;
   align-items: center;
   justify-content: center;
   transform-style: preserve-3d;
-  cursor: grab;
-}
-
-.consoleContainer:active {
-  cursor: grabbing;
 }
 
 .consoleCard {
@@ -443,7 +438,7 @@
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--shadow-dx, 0px) var(--shadow-dy, 15px) 40px rgba(0, 0, 0, 0.35);
   padding: 2.25rem;
   display: flex;
   flex-direction: column;
@@ -456,37 +451,239 @@
   background: var(--glass-bg-hover);
 }
 
-.speechNode {
-  background: var(--surface-100);
+/* Border glow — cursor-following edge illumination */
+.consoleCardBorderGlow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  border: 1px solid transparent;
+  background-clip: border-box;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) padding-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: 
+    linear-gradient(#fff 0 0) padding-box, 
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+/* Spotlight inner surface glow */
+.consoleCardSpotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* Floating 3D Outcome Cards */
+.floatingOutcomeCard {
+  position: absolute;
+  padding: 12px 16px;
+  background: rgba(20, 20, 25, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 15;
+  pointer-events: auto;
+  user-select: none;
+  min-width: 160px;
+}
+
+.floatingCardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.floatingCardDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.floatingCardVal {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.floatingCardLbl {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Float Drift Animations for Cards */
+.cardFloat1 {
+  animation: float-card-1 6s ease-in-out infinite alternate;
+}
+
+.cardFloat2 {
+  animation: float-card-2 7s ease-in-out infinite alternate;
+}
+
+.cardFloat3 {
+  animation: float-card-3 5s ease-in-out infinite alternate;
+}
+
+.cardFloat4 {
+  animation: float-card-4 8s ease-in-out infinite alternate;
+}
+
+@keyframes float-card-1 {
+  0% { transform: translate3d(0, 0, 65px) rotate(0deg); }
+  100% { transform: translate3d(-4px, -8px, 67px) rotate(1deg); }
+}
+
+@keyframes float-card-2 {
+  0% { transform: translate3d(0, 0, 45px) rotate(0deg); }
+  100% { transform: translate3d(5px, 6px, 47px) rotate(-1deg); }
+}
+
+@keyframes float-card-3 {
+  0% { transform: translate3d(0, 0, 55px) rotate(0deg); }
+  100% { transform: translate3d(-6px, 5px, 57px) rotate(-1.5deg); }
+}
+
+@keyframes float-card-4 {
+  0% { transform: translate3d(0, 0, 75px) rotate(0deg); }
+  100% { transform: translate3d(4px, -6px, 77px) rotate(1.5deg); }
+}
+
+/* Layer 1: Header / Navigation (Z = 15px) */
+.headerLayer {
+  transform: translateZ(15px);
+  transform-style: preserve-3d;
+  z-index: 5;
+  text-align: left;
+}
+
+.tabBtn {
+  padding: 6px 14px;
+  border-radius: 8px;
   border: 1px solid var(--border-default);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tabBtn:hover {
+  border-color: var(--badge-dot);
+}
+
+/* Layer 2: Main Content Panel (Z = 35px) */
+.mainPanelLayer {
+  background: rgba(13, 13, 17, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   padding: 1.25rem;
-  transform: translateZ(60px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transform: translateZ(35px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
   margin-top: 1rem;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: border-color 0.2s;
+  min-height: 220px;
+  justify-content: center;
 }
 
-.speechNodeActive {
-  border-color: var(--badge-dot);
+[data-theme="light"] .mainPanelLayer {
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Resume tab elements */
+.skillsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.skillTag {
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.skillFound {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #10b981;
+}
+
+.skillMissing {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: #f59e0b;
+}
+
+/* Interview Coach elements */
+.interviewQABox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.questionText {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.08);
+  border-left: 3px solid #a855f7;
+  padding: 6px 12px;
+  border-radius: 0 8px 8px 0;
+}
+
+.answerText {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-height: 52px;
+  font-style: italic;
 }
 
 .waveform {
   display: flex;
   align-items: center;
   gap: 4px;
-  height: 40px;
+  height: 24px;
   padding: 0 4px;
 }
 
 .waveBar {
   flex-grow: 1;
   width: 3px;
-  background: var(--text-muted);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 2px;
   transition: height 0.1s ease;
 }
@@ -495,57 +692,196 @@
   background: var(--badge-dot);
 }
 
-.atsBadge {
-  position: absolute;
-  top: 6%;
-  right: -6%;
-  background: var(--surface-200);
-  border: 1.5px solid var(--badge-dot);
-  border-radius: 12px;
-  padding: 8px 16px;
-  font-family: var(--font-display);
+/* Roadmap elements */
+.roadmapProgressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.roadmapRole {
+  font-size: 0.85rem;
   font-weight: 800;
-  font-size: 0.9rem;
   color: var(--text-primary);
-  transform: translateZ(90px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+.roadmapNodes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  padding-left: 14px;
+}
+
+.roadmapNodes::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 3px;
+  width: 2px;
+  background: var(--border-default);
+}
+
+.roadmapNode {
   display: flex;
   align-items: center;
   gap: 8px;
-  user-select: none;
+  font-size: 0.76rem;
+  position: relative;
 }
 
-.atsIndicator {
+.roadmapNode::before {
+  content: '';
+  position: absolute;
+  left: -14px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--badge-dot);
+  background: var(--border-default);
 }
 
+.roadmapNodeCompleted {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.roadmapNodeCompleted::before {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.roadmapNodeCurrent {
+  color: #f97316;
+  font-weight: 600;
+}
+
+.roadmapNodeCurrent::before {
+  background: #f97316;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+  animation: pulse-current-node 1.5s infinite alternate;
+}
+
+.roadmapNodeUpcoming {
+  color: var(--text-muted);
+}
+
+@keyframes pulse-current-node {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.3); opacity: 1; }
+}
+
+/* Layer 3: Circular HUD Dial (Z = 75px) */
+.dialLayer {
+  position: absolute;
+  top: -24px;
+  right: -24px;
+  width: 96px;
+  height: 96px;
+  background: rgba(15, 15, 20, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(75px);
+  z-index: 18;
+}
+
+[data-theme="light"] .dialLayer {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dialSvg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.dialBgCircle {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 5;
+}
+
+[data-theme="light"] .dialBgCircle {
+  stroke: rgba(0, 0, 0, 0.04);
+}
+
+.dialValueCircle {
+  fill: none;
+  stroke: var(--badge-dot);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dialTextContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  user-select: none;
+}
+
+.dialValue {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.dialLabel {
+  font-size: 0.48rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-top: 3px;
+}
+
+/* Layer 4: Telemetry Stats Card (Z = 20px) */
 .statusCard {
-  background: var(--surface-100);
-  border: 1px solid var(--border-default);
+  background: rgba(20, 20, 25, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  padding: 1rem 1.25rem;
-  transform: translateZ(30px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 0.88rem 1.25rem;
+  transform: translateZ(20px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
 }
 
+[data-theme="light"] .statusCard {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .statusBarContainer {
-  width: 100px;
+  width: 90px;
   height: 8px;
-  background: var(--surface-300);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 4px;
   overflow: hidden;
 }
 
+[data-theme="light"] .statusBarContainer {
+  background: rgba(0, 0, 0, 0.06);
+}
+
 .statusBarFill {
   height: 100%;
-  background: var(--btn-solid-bg);
+  background: var(--badge-dot);
   border-radius: 4px;
   transition: width 0.5s ease;
 }
