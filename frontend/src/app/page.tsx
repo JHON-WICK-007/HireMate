@@ -172,8 +172,8 @@ function Interactive3DConsole() {
         <div
           className={`${styles.floatingOutcomeCard} ${styles.cardFloat1}`}
           style={{
-            top: "-35px",
-            left: "-85px",
+            top: "-30px",
+            left: "-90px",
           }}
         >
           <div className={styles.floatingCardIcon} style={{ background: "rgba(16, 185, 129, 0.12)", color: "#10b981" }}>
@@ -192,8 +192,8 @@ function Interactive3DConsole() {
         <div
           className={`${styles.floatingOutcomeCard} ${styles.cardFloat2}`}
           style={{
-            bottom: "60px",
-            left: "-75px",
+            bottom: "140px",
+            left: "-85px",
           }}
         >
           <div className={styles.floatingCardIcon} style={{ background: "rgba(168, 85, 247, 0.12)", color: "#a855f7" }}>
@@ -213,8 +213,8 @@ function Interactive3DConsole() {
         <div
           className={`${styles.floatingOutcomeCard} ${styles.cardFloat3}`}
           style={{
-            top: "-25px",
-            right: "-75px",
+            top: "100px",
+            right: "-90px",
           }}
         >
           <div className={styles.floatingCardIcon} style={{ background: "rgba(249, 115, 22, 0.12)", color: "#f97316" }}>
@@ -234,8 +234,8 @@ function Interactive3DConsole() {
         <div
           className={`${styles.floatingOutcomeCard} ${styles.cardFloat4}`}
           style={{
-            bottom: "50px",
-            right: "-80px",
+            bottom: "140px",
+            right: "-85px",
           }}
         >
           <div className={styles.floatingCardIcon} style={{ background: "rgba(6, 182, 212, 0.12)", color: "#06b6d4" }}>
@@ -273,9 +273,9 @@ function Interactive3DConsole() {
             <div className={styles.dialTextContainer}>
               <span className={styles.dialValue}>{score}%</span>
               <span className={styles.dialLabel}>
-                {activeTab === "resume" && "ATS"}
-                {activeTab === "interview" && "Score"}
-                {activeTab === "roadmap" && "Ready"}
+                {activeTab === "resume" && "ATS SCORE"}
+                {activeTab === "interview" && "CONFIDENCE"}
+                {activeTab === "roadmap" && "CAREER READY"}
               </span>
             </div>
           </div>
