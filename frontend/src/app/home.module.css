@@ -997,36 +997,14 @@
   justify-content: center;
   width: 52px;
   height: 52px;
-  border-radius: var(--radius-md);
-  background: transparent;
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid transparent;
   color: var(--text-primary);
   margin-bottom: 1.25rem;
   transition: all 0.4s ease;
   transform: translateZ(20px);
-  box-shadow: var(--glass-shadow);
-}
-
-[data-theme="light"] .featureIcon {
-  background: transparent;
-  border-color: transparent;
 }
 
 .featureCard:hover .featureIcon {
-  border-color: transparent;
-  background: transparent;
-  color: var(--text-primary);
   transform: translateZ(35px) scale(1.06);
-  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.04);
-}
-
-[data-theme="light"] .featureCard:hover .featureIcon {
-  border-color: transparent;
-  background: transparent;
-  color: var(--text-primary);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 /* Title — mid Z-depth */
