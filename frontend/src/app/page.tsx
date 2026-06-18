@@ -792,6 +792,7 @@ export default function Home() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [flippedCard, setFlippedCard] = useState<number | null>(null);
   const lastScrollY = useRef(0);
   const initials = user?.fullName
     ? user.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
@@ -938,29 +939,199 @@ export default function Home() {
       number: "01",
       title: "Create Your Profile",
       description: "Sign up and tell us about your skills, experience, and career goals.",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      )
     },
     {
       number: "02",
       title: "Upload Your Resume",
       description: "Get instant AI analysis with ATS scoring and improvement tips.",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+        </svg>
+      )
     },
     {
       number: "03",
       title: "Practice Interviews",
       description: "Take mock interviews tailored to your target role and company.",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+          <line x1="12" y1="19" x2="12" y2="22" />
+        </svg>
+      )
     },
     {
       number: "04",
       title: "Land Your Dream Job",
       description: "Track progress, refine skills, and walk into interviews with confidence.",
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+          <line x1="4" y1="22" x2="4" y2="15" />
+        </svg>
+      )
     },
   ];
 
   const stats = [
-    { value: "10K+", label: "Mock Interviews" },
-    { value: "95%", label: "User Satisfaction" },
-    { value: "2.5K+", label: "Users Active" },
-    { value: "50+", label: "Companies Covered" },
+    {
+      title: "Interviews",
+      badge: "Monthly",
+      subtitle: "Mock Sessions",
+      value: "10K+",
+      trend: "up",
+      description: "Interview sessions completed this month with AI-powered feedback.",
+      accentColor: "#00e5ff",
+      details: {
+        headline: "Interview Analytics",
+        metrics: [
+          { label: "Total Sessions", value: "10,247", change: "+18%" },
+          { label: "Avg. Duration", value: "34 min", change: "+5%" },
+          { label: "Completion Rate", value: "92%", change: "+3%" },
+          { label: "Repeat Users", value: "67%", change: "+12%" },
+        ],
+        highlights: [
+          "Behavioral interviews are the most popular category",
+          "Peak usage hours: 6PM – 10PM EST",
+          "System Design sessions grew 45% this month",
+        ],
+      },
+      chart: (
+        <svg viewBox="0 0 200 80" fill="none" className={styles.miniChart}>
+          <defs>
+            <linearGradient id="chartFill1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#00e5ff" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#00e5ff" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path d="M 0 60 Q 25 55, 50 48 T 100 35 T 150 20 T 200 12" stroke="#00e5ff" strokeWidth="2.5" fill="none" />
+          <path d="M 0 60 Q 25 55, 50 48 T 100 35 T 150 20 T 200 12 L 200 80 L 0 80 Z" fill="url(#chartFill1)" />
+          <circle cx="200" cy="12" r="4" fill="#00e5ff" />
+        </svg>
+      ),
+    },
+    {
+      title: "Satisfaction",
+      badge: "Weekly",
+      subtitle: "User Rating",
+      value: "95%",
+      trend: "up",
+      description: "Users report improved confidence after practicing with HireMate.",
+      accentColor: "#8c7cff",
+      details: {
+        headline: "Satisfaction Breakdown",
+        metrics: [
+          { label: "Overall Rating", value: "4.8/5", change: "+0.2" },
+          { label: "Would Recommend", value: "97%", change: "+4%" },
+          { label: "NPS Score", value: "82", change: "+9" },
+          { label: "Support Rating", value: "4.9/5", change: "+0.1" },
+        ],
+        highlights: [
+          "AI feedback quality rated highest among features",
+          "93% feel more confident after 3+ sessions",
+          "Response time satisfaction: 98%",
+        ],
+      },
+      chart: (
+        <svg viewBox="0 0 200 80" fill="none" className={styles.miniChart}>
+          <defs>
+            <linearGradient id="chartFill2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#8c7cff" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#8c7cff" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path d="M 0 55 C 30 50, 45 25, 65 30 C 85 35, 95 55, 115 48 C 135 41, 145 18, 165 20 C 185 22, 195 28, 200 30" stroke="#8c7cff" strokeWidth="2.5" fill="none" />
+          <path d="M 0 55 C 30 50, 45 25, 65 30 C 85 35, 95 55, 115 48 C 135 41, 145 18, 165 20 C 185 22, 195 28, 200 30 L 200 80 L 0 80 Z" fill="url(#chartFill2)" />
+          <circle cx="165" cy="20" r="4" fill="#8c7cff" />
+        </svg>
+      ),
+    },
+    {
+      title: "Growth",
+      badge: "Monthly",
+      subtitle: "Active Users",
+      value: "2.5K+",
+      trend: "up",
+      description: "Community growing rapidly with developers joining every week.",
+      accentColor: "#ff70a6",
+      details: {
+        headline: "Growth Insights",
+        metrics: [
+          { label: "New Users", value: "820", change: "+24%" },
+          { label: "DAU / MAU", value: "38%", change: "+7%" },
+          { label: "Retention (7d)", value: "74%", change: "+6%" },
+          { label: "Avg. Sessions/User", value: "4.2", change: "+1.1" },
+        ],
+        highlights: [
+          "Organic signups account for 68% of new users",
+          "Highest growth in India, US, and UK markets",
+          "Referral program driving 22% of acquisitions",
+        ],
+      },
+      chart: (
+        <svg viewBox="0 0 200 80" fill="none" className={styles.miniChart}>
+          <defs>
+            <linearGradient id="chartFill3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ff70a6" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#ff70a6" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <rect x="10" y="50" width="18" height="30" rx="4" fill="rgba(255,112,166,0.15)" />
+          <rect x="38" y="38" width="18" height="42" rx="4" fill="rgba(255,112,166,0.2)" />
+          <rect x="66" y="28" width="18" height="52" rx="4" fill="rgba(255,112,166,0.25)" />
+          <rect x="94" y="42" width="18" height="38" rx="4" fill="rgba(255,112,166,0.2)" />
+          <rect x="122" y="20" width="18" height="60" rx="4" fill="rgba(255,112,166,0.3)" />
+          <rect x="150" y="32" width="18" height="48" rx="4" fill="rgba(255,112,166,0.35)" />
+          <rect x="178" y="10" width="18" height="70" rx="4" fill="#ff70a6" opacity="0.5" />
+        </svg>
+      ),
+    },
+    {
+      title: "Coverage",
+      badge: "All Time",
+      subtitle: "Companies",
+      value: "50+",
+      trend: "up",
+      description: "Interview questions from top tech companies like FAANG and more.",
+      accentColor: "#00ffcc",
+      details: {
+        headline: "Company Coverage",
+        metrics: [
+          { label: "Companies", value: "54", change: "+8" },
+          { label: "Question Bank", value: "12K+", change: "+2.1K" },
+          { label: "Categories", value: "18", change: "+3" },
+          { label: "Updated Weekly", value: "Yes", change: "" },
+        ],
+        highlights: [
+          "Full FAANG coverage: Google, Amazon, Meta, Apple, Netflix",
+          "New additions: Stripe, Databricks, Coinbase",
+          "System Design library expanded by 40%",
+        ],
+      },
+      chart: (
+        <svg viewBox="0 0 200 80" fill="none" className={styles.miniChart}>
+          <defs>
+            <linearGradient id="chartFill4" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#00ffcc" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#00ffcc" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="40" r="32" stroke="rgba(0,255,204,0.12)" strokeWidth="12" fill="none" />
+          <circle cx="100" cy="40" r="32" stroke="#00ffcc" strokeWidth="12" fill="none" strokeDasharray="160 201" strokeDashoffset="0" strokeLinecap="round" opacity="0.5" />
+        </svg>
+      ),
+    },
   ];
 
   return (
@@ -1258,27 +1429,62 @@ export default function Home() {
             <h2 className={styles.sectionTitle}>Four steps to interview confidence</h2>
           </motion.div>
 
-          <motion.div
-            className={styles.stepsGrid}
-            variants={cardContainerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-          >
-            {steps.map((step, i) => (
-              <motion.div
-                key={i}
-                className={styles.stepCard}
-                variants={cardVariants}
-                whileHover={{ y: -5, scale: 1.015 }}
-              >
-                <span className={styles.stepNumber}>{step.number}</span>
-                <h3 className={styles.stepTitle}>{step.title}</h3>
-                <p className={styles.stepDesc}>{step.description}</p>
-                {i < steps.length - 1 && <div className={styles.stepConnector} />}
-              </motion.div>
-            ))}
-          </motion.div>
+          <div className={styles.timelineWrapper}>
+            {/* The SVG curve path */}
+            <svg className={styles.timelineSvg} viewBox="0 0 1000 440" fill="none" preserveAspectRatio="none">
+              <path
+                d="M 0 290 L 155 290 C 230 290, 270 120, 345 120 L 405 120 C 480 120, 520 290, 595 290 L 655 290 C 730 290, 770 120, 845 120 L 1000 120"
+                stroke="url(#timelineWaveGrad)"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                d="M 0 290 L 155 290 C 230 290, 270 120, 345 120 L 405 120 C 480 120, 520 290, 595 290 L 655 290 C 730 290, 770 120, 845 120 L 1000 120"
+                stroke="rgba(59, 130, 246, 0.05)"
+                strokeWidth="8"
+                fill="none"
+              />
+              <defs>
+                <linearGradient id="timelineWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#2dd4bf" />
+                  <stop offset="35%" stopColor="#3b82f6" />
+                  <stop offset="70%" stopColor="#818cf8" />
+                  <stop offset="100%" stopColor="#c084fc" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <motion.div
+              className={styles.timelineSteps}
+              variants={cardContainerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+            >
+              {steps.map((step, i) => (
+                <motion.div
+                  key={i}
+                  className={styles.timelineStep}
+                  variants={cardVariants}
+                >
+                  <span className={styles.stepBgNumber}>{i + 1}</span>
+
+                  <div className={styles.stepNodeOuter}>
+                    <div className={styles.stepNodeWrapper}>
+                      <div className={styles.stepNodeInner}>
+                        {step.icon}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.stepTextContainer}>
+                    <h3>{step.title}</h3>
+                    <p>{step.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -1286,6 +1492,16 @@ export default function Home() {
       <section className={styles.statsSection} id="stats">
         <div className={styles.statsGlow} />
         <div className={styles.sectionInner}>
+          <motion.div
+            className={styles.sectionHeader}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <span className={styles.sectionLabel}>By The Numbers</span>
+            <h2 className={styles.sectionTitle}>Platform impact at a glance</h2>
+          </motion.div>
           <motion.div
             className={styles.statsGrid}
             variants={cardContainerVariants}
@@ -1296,19 +1512,97 @@ export default function Home() {
             {stats.map((stat, i) => (
               <motion.div
                 key={i}
-                className={styles.statCard}
+                className={styles.statCardOuter}
                 variants={cardVariants}
-                whileHover={{ y: -5, scale: 1.02 }}
+                whileHover={flippedCard !== i ? { y: -6 } : {}}
               >
-                <span className={styles.statValue}>{stat.value}</span>
-                <span className={styles.statLabel}>{stat.label}</span>
+                <div className={`${styles.statCardInner} ${flippedCard === i ? styles.statCardFlipped : ""}`}>
+                  {/* ─── Front Face ─── */}
+                  <div className={styles.statCardFront}>
+                    <div className={styles.statCardHeader}>
+                      <h4 className={styles.statTitle}>{stat.title}</h4>
+                      <span className={styles.statBadge}>{stat.badge}</span>
+                    </div>
+
+                    <span className={styles.statSubtitle}>{stat.subtitle}</span>
+
+                    <div className={styles.statValueRow}>
+                      <span className={styles.statValue}>{stat.value}</span>
+                      <svg className={styles.statTrend} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M7 17l9.2-9.2M17 17V7H7" />
+                      </svg>
+                    </div>
+
+                    <div className={styles.statChartWrap}>
+                      {stat.chart}
+                    </div>
+
+                    <div className={styles.statFooter}>
+                      <p className={styles.statDesc}>{stat.description}</p>
+                      <button
+                        className={styles.statArrow}
+                        onClick={() => setFlippedCard(i)}
+                        aria-label={`View ${stat.title} details`}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* ─── Back Face ─── */}
+                  <div className={styles.statCardBack} style={{ "--accent": stat.accentColor } as any}>
+                    <div className={styles.statBackTop}>
+                      <div className={styles.statBackTopLeft}>
+                        <span className={styles.statBackBigValue}>{stat.value}</span>
+                        <h4 className={styles.statBackTitle}>{stat.details.headline}</h4>
+                      </div>
+                      <button
+                        className={styles.statBackClose}
+                        onClick={() => setFlippedCard(null)}
+                        aria-label="Close details"
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div className={styles.statBackBody}>
+                      <div className={styles.statBackMetrics}>
+                        {stat.details.metrics.map((m, mi) => (
+                          <div key={mi} className={styles.statBackMetric}>
+                            <span className={styles.statBackMetricLabel}>{m.label}</span>
+                            <span className={styles.statBackMetricValue}>{m.value}</span>
+                            {m.change && <span className={styles.statBackMetricChange}>{m.change}</span>}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className={styles.statBackDivider} />
+
+                      <div className={styles.statBackHighlights}>
+                        <span className={styles.statBackHighlightsLabel}>Key Insights</span>
+                        {stat.details.highlights.map((h, hi) => (
+                          <div key={hi} className={styles.statBackHighlight}>
+                            <svg className={styles.statBackCheckIcon} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M20 6L9 17l-5-5" />
+                            </svg>
+                            <span>{h}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* --- CTA Section --- */}
+      {/* --- Social Proof / CTA Section --- */}
       <section className={styles.ctaSection}>
         <div className={styles.ctaGlow} />
         <div className={styles.sectionInner}>
@@ -1319,17 +1613,38 @@ export default function Home() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className={styles.ctaTitle}>Ready to land your dream job?</h2>
-            <p className={styles.ctaSubtitle}>
-              Join thousands of developers who are preparing smarter with HireMate AI.
-              Start for free — no credit card required.
-            </p>
-            <Link href="/auth?mode=signup" className={styles.ctaButton}>
-              <span>Get Started for Free</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
+            {/* Scattered photo cards */}
+            <div className={styles.ctaPhotos}>
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto1}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto2}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto3}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto4}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto5}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto6}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto7}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto8}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto9}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto10}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto11}`} />
+              <div className={`${styles.ctaPhoto} ${styles.ctaPhoto12}`} />
+            </div>
+
+            <div className={styles.ctaContent}>
+              <span className={styles.sectionLabel}>Testimonials</span>
+              <h2 className={styles.ctaTitle}>
+                Trusted by professionals<br />
+                <span className={styles.ctaTitleFaded}>from various industries</span>
+              </h2>
+              <p className={styles.ctaSubtitle}>
+                Learn why thousands of developers trust HireMate AI to prepare for interviews and land their dream jobs.
+              </p>
+              <Link href="/auth?mode=signup" className={styles.ctaButton}>
+                <span>Read Success Stories</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
