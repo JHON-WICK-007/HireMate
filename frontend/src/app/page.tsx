@@ -293,7 +293,7 @@ function Interactive3DConsole() {
     }
     if (glowRef.current) {
       glowRef.current.style.background =
-        `radial-gradient(circle 100px at ${mx}px ${my}px, var(--border-glow-color), transparent 100%)`;
+        `radial-gradient(circle 120px at ${mx}px ${my}px, var(--border-glow-color), transparent 100%)`;
     }
   }
 

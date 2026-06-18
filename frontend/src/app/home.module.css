@@ -459,13 +459,13 @@
 /* Border glow — cursor-following edge illumination */
 .consoleCardBorderGlow {
   position: absolute;
-  inset: -1px;
+  inset: -1.5px;
   border-radius: inherit;
   pointer-events: none;
   z-index: 2;
   opacity: 0;
   transition: opacity 0.35s ease;
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
   background-clip: border-box;
   -webkit-mask:
     linear-gradient(#fff 0 0) padding-box,
