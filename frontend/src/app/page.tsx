@@ -73,6 +73,10 @@ function Interactive3DConsole() {
   const shadowX = useSpring(useTransform(x, [-200, 200], [25, -25]), { damping: 25, stiffness: 200 });
   const shadowY = useSpring(useTransform(y, [-200, 200], [25, -25]), { damping: 25, stiffness: 200 });
 
+  // Track user interaction to pause auto-rotation
+  const userInteractedRef = useRef(false);
+  const autoRotateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   function handleMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const rect = event.currentTarget.getBoundingClientRect();
     const width = rect.width;
@@ -107,6 +111,34 @@ function Interactive3DConsole() {
     if (spotlightRef.current) spotlightRef.current.style.opacity = "0";
     if (glowRef.current) glowRef.current.style.opacity = "0";
   }
+
+  // Tab selection with user interaction tracking
+  function handleTabClick(tabId: "resume" | "interview" | "roadmap") {
+    userInteractedRef.current = true;
+    setActiveTab(tabId);
+    // Resume auto-rotation after 12s of no interaction
+    if (autoRotateTimerRef.current) clearTimeout(autoRotateTimerRef.current);
+    autoRotateTimerRef.current = setTimeout(() => {
+      userInteractedRef.current = false;
+    }, 12000);
+  }
+
+  // Auto-rotate tabs every 5 seconds when user is not interacting
+  useEffect(() => {
+    const tabs: Array<"resume" | "interview" | "roadmap"> = ["resume", "interview", "roadmap"];
+    const interval = setInterval(() => {
+      if (!userInteractedRef.current) {
+        setActiveTab(prev => {
+          const currentIdx = tabs.indexOf(prev);
+          return tabs[(currentIdx + 1) % tabs.length];
+        });
+      }
+    }, 5000);
+    return () => {
+      clearInterval(interval);
+      if (autoRotateTimerRef.current) clearTimeout(autoRotateTimerRef.current);
+    };
+  }, []);
 
   // Typewriter effect state for candidate answer
   const [typedAnswer, setTypedAnswer] = useState("");
@@ -150,6 +182,41 @@ function Interactive3DConsole() {
     return () => clearTimeout(timeout);
   }, [activeTab, score]);
 
+  // Tab definitions with icons
+  const tabDefs = [
+    {
+      id: "resume" as const,
+      label: "Resume Analysis",
+      icon: (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round"/>
+          <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    },
+    {
+      id: "interview" as const,
+      label: "Interview Coach",
+      icon: (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    },
+    {
+      id: "roadmap" as const,
+      label: "Career Roadmap",
+      icon: (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="12" cy="12" r="6" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="12" cy="12" r="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )
+    }
+  ];
+
   return (
     <div className={styles.heroRight}>
       <motion.div
@@ -167,6 +234,13 @@ function Interactive3DConsole() {
           "--badge-dot": TAB_THEMES[activeTab].badgeColor,
         } as any}
       >
+        {/* Ambient Floating Particles */}
+        <div className={styles.ambientParticles}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className={styles.particle} />
+          ))}
+        </div>
+
         {/* Floating Outcome Cards */}
         {/* Card 1: Resume Score 92% */}
         <div
@@ -251,6 +325,8 @@ function Interactive3DConsole() {
 
         {/* Console Card */}
         <div className={styles.consoleCard}>
+          {/* Holographic Shimmer Border */}
+          <div className={styles.consoleShimmerBorder} />
           {/* Spotlight & Neon Border Glow */}
           <div ref={glowRef} className={styles.consoleCardBorderGlow} />
           <div ref={spotlightRef} className={styles.consoleCardSpotlight} />
@@ -283,14 +359,10 @@ function Interactive3DConsole() {
           {/* Tabs and Title Header (Z = 15px) */}
           <div className={styles.headerLayer}>
             <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-              {[
-                { id: "resume", label: "Resume Analysis" },
-                { id: "interview", label: "Interview Coach" },
-                { id: "roadmap", label: "Career Roadmap" }
-              ].map((tab) => (
+              {tabDefs.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => handleTabClick(tab.id)}
                   className={styles.tabBtn}
                   style={{
                     background: activeTab === tab.id ? "var(--btn-solid-bg)" : "rgba(255, 255, 255, 0.03)",
@@ -298,6 +370,7 @@ function Interactive3DConsole() {
                     borderColor: activeTab === tab.id ? "var(--btn-solid-bg)" : "var(--border-default)"
                   }}
                 >
+                  <span className={styles.tabIcon}>{tab.icon}</span>
                   {tab.label}
                 </button>
               ))}
@@ -315,91 +388,104 @@ function Interactive3DConsole() {
           </div>
 
           {/* Middle Content Panel (Z = 35px) */}
-          <div className={styles.mainPanelLayer}>
-            {activeTab === "resume" && (
-              <div className={styles.skillsList} style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "flex-start" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.85rem", fontWeight: "700", color: "#10b981" }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Resume Uploaded Successfully</span>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%" }}>
-                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.04em" }}>Detected Skills</span>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                    {["React", "Node.js", "MongoDB", "TypeScript", "AWS"].map((sk) => (
-                      <span key={sk} className={`${styles.skillTag} ${styles.skillFound}`}>{sk}</span>
-                    ))}
-                  </div>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%", marginTop: "4px" }}>
-                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.04em" }}>Suggested Gaps</span>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                    {["Docker", "Kubernetes", "System Design"].map((sk) => (
-                      <span key={sk} className={`${styles.skillTag} ${styles.skillMissing}`}>{sk}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
+          <div className={styles.mainPanelLayer} style={{ position: "relative" }}>
+            {/* Scan Line Animation — visible on resume tab */}
+            {activeTab === "resume" && <div className={styles.scanLine} />}
 
-            {activeTab === "interview" && (
-              <div className={styles.interviewQABox}>
-                <div className={styles.questionText}>
-                  Q: Tell me about yourself.
-                </div>
-                <div className={styles.answerText}>
-                  {typedAnswer}
-                  <span style={{ animation: "pulse 1s infinite", fontWeight: "bold", color: "#a855f7" }}>|</span>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "4px 0" }}>
-                  <span style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", color: "var(--badge-dot)" }}>
-                    🎤 Recording Active
-                  </span>
-                  <div className={styles.waveform}>
-                    {waveHeights.map((h, i) => (
-                      <div
-                        key={i}
-                        className={`${styles.waveBar} ${styles.waveBarActive}`}
-                        style={{ height: `${h}px` }}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className={styles.metricsGrid}>
-                  {[
-                    { val: "88%", label: "Technical" },
-                    { val: "91%", label: "Communication" },
-                    { val: "85%", label: "Confidence" }
-                  ].map((m, idx) => (
-                    <div key={idx} className={styles.metricItem}>
-                      <span className={styles.metricValue}>{m.val}</span>
-                      <span className={styles.metricLabel}>{m.label}</span>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {activeTab === "resume" && (
+                  <div className={styles.skillsList} style={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "flex-start" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.85rem", fontWeight: "700", color: "#10b981" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span>Resume Uploaded Successfully</span>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%" }}>
+                      <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.04em" }}>Detected Skills</span>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                        {["React", "Node.js", "MongoDB", "TypeScript", "AWS"].map((sk) => (
+                          <span key={sk} className={`${styles.skillTag} ${styles.skillFound}`}>{sk}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%", marginTop: "4px" }}>
+                      <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.04em" }}>Suggested Gaps</span>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                        {["Docker", "Kubernetes", "System Design"].map((sk) => (
+                          <span key={sk} className={`${styles.skillTag} ${styles.skillMissing}`}>{sk}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-            {activeTab === "roadmap" && (
-              <div className={styles.roadmapProgressContainer}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span className={styles.roadmapRole}>Amazon SDE-1</span>
-                  <span style={{ fontSize: "0.75rem", fontWeight: "700", color: "#f97316" }}>65% Complete</span>
-                </div>
-                <div className={styles.roadmapNodes}>
-                  <div className={`${styles.roadmapNode} ${styles.roadmapNodeCompleted}`}>
-                    ✓ JavaScript, React, Git (Completed)
+                {activeTab === "interview" && (
+                  <div className={styles.interviewQABox}>
+                    <div className={styles.questionText}>
+                      Q: Tell me about yourself.
+                    </div>
+                    <div className={styles.answerText}>
+                      {typedAnswer}
+                      <span style={{ animation: "pulse 1s infinite", fontWeight: "bold", color: "#a855f7" }}>|</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "4px 0" }}>
+                      <span style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", color: "var(--badge-dot)" }}>
+                        🎤 Recording Active
+                      </span>
+                      <div className={styles.waveform}>
+                        {waveHeights.map((h, i) => (
+                          <div
+                            key={i}
+                            className={`${styles.waveBar} ${styles.waveBarActive}`}
+                            style={{ height: `${h}px` }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className={styles.metricsGrid}>
+                      {[
+                        { val: "88%", label: "Technical" },
+                        { val: "91%", label: "Communication" },
+                        { val: "85%", label: "Confidence" }
+                      ].map((m, idx) => (
+                        <div key={idx} className={styles.metricItem}>
+                          <span className={styles.metricValue}>{m.val}</span>
+                          <span className={styles.metricLabel}>{m.label}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <div className={`${styles.roadmapNode} ${styles.roadmapNodeCurrent}`}>
-                    → Node.js, MongoDB (Active Focus)
+                )}
+
+                {activeTab === "roadmap" && (
+                  <div className={styles.roadmapProgressContainer}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span className={styles.roadmapRole}>Amazon SDE-1</span>
+                      <span style={{ fontSize: "0.75rem", fontWeight: "700", color: "#f97316" }}>65% Complete</span>
+                    </div>
+                    <div className={styles.roadmapNodes}>
+                      <div className={`${styles.roadmapNode} ${styles.roadmapNodeCompleted}`}>
+                        ✓ JavaScript, React, Git (Completed)
+                      </div>
+                      <div className={`${styles.roadmapNode} ${styles.roadmapNodeCurrent}`}>
+                        → Node.js, MongoDB (Active Focus)
+                      </div>
+                      <div className={`${styles.roadmapNode} ${styles.roadmapNodeUpcoming}`}>
+                        Upcoming: AWS, System Design, DSA
+                      </div>
+                    </div>
                   </div>
-                  <div className={`${styles.roadmapNode} ${styles.roadmapNodeUpcoming}`}>
-                    Upcoming: AWS, System Design, DSA
-                  </div>
-                </div>
-              </div>
-            )}
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Stats Bar / Telemetry */}
@@ -420,6 +506,12 @@ function Interactive3DConsole() {
                 style={{ width: `${score}%` }}
               />
             </div>
+          </div>
+
+          {/* Live Status Indicator */}
+          <div className={styles.liveIndicator}>
+            <span className={styles.liveIndicatorDot} />
+            <span>HireMate AI Engine Active</span>
           </div>
         </div>
       </motion.div>
