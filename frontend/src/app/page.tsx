@@ -614,15 +614,42 @@ function Interactive3DConsole() {
                       <span className={styles.roadmapRole}>Amazon SDE-1</span>
                       <span className={styles.roadmapPercentage}>65% Complete</span>
                     </div>
+
+                    <div className={styles.roadmapProgressBarContainer}>
+                      <div className={styles.roadmapProgressBarFill} style={{ width: "65%" }} />
+                    </div>
+
                     <div className={styles.roadmapNodes}>
                       <div className={`${styles.roadmapNode} ${styles.roadmapNodeCompleted}`}>
-                        ✓ JavaScript, React, Git (Completed)
+                        <div className={styles.roadmapNodeIcon}>
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                        <div className={styles.roadmapNodeContent}>
+                          <span className={styles.roadmapNodeTitle}>JavaScript, React, Git</span>
+                          <span className={styles.roadmapNodeStatusBadge}>Completed</span>
+                        </div>
                       </div>
+
                       <div className={`${styles.roadmapNode} ${styles.roadmapNodeCurrent}`}>
-                        → Node.js, MongoDB (Active Focus)
+                        <div className={styles.roadmapNodeIcon}>
+                          <span className={styles.roadmapNodeActivePulse} />
+                        </div>
+                        <div className={styles.roadmapNodeContent}>
+                          <span className={styles.roadmapNodeTitle}>Node.js, MongoDB</span>
+                          <span className={styles.roadmapNodeStatusBadge}>Active Focus</span>
+                        </div>
                       </div>
+
                       <div className={`${styles.roadmapNode} ${styles.roadmapNodeUpcoming}`}>
-                        Upcoming: AWS, System Design, DSA
+                        <div className={styles.roadmapNodeIcon}>
+                          <span className={styles.roadmapNodeUpcomingDot} />
+                        </div>
+                        <div className={styles.roadmapNodeContent}>
+                          <span className={styles.roadmapNodeTitle}>AWS, System Design, DSA</span>
+                          <span className={styles.roadmapNodeStatusBadge}>Upcoming</span>
+                        </div>
                       </div>
                     </div>
                   </div>
