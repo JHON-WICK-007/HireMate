@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import styles from "./home.module.css";
 import ThemeToggle from "./components/ThemeToggle";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from "framer-motion";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 25 },
@@ -313,7 +313,45 @@ function FeatureCard({ feature, variants }: { feature: any; variants: any }) {
   );
 }
 
+function StatCounter({ target, duration = 2000 }: { target: number; duration?: number }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const end = target;
+    if (start === end) return;
+
+    const totalMiliseconds = duration;
+    const incrementTime = Math.max(Math.floor(totalMiliseconds / end), 15);
+    const step = Math.ceil(end / (totalMiliseconds / incrementTime));
+
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= end) {
+        clearInterval(timer);
+        setCount(end);
+      } else {
+        setCount(start);
+      }
+    }, incrementTime);
+
+    return () => clearInterval(timer);
+  }, [target, duration]);
+
+  return <>{count.toLocaleString()}</>;
+}
+
 export default function Home() {
+  const companies = ["Google", "Amazon", "Meta", "Microsoft", "Apple", "Netflix", "Uber", "NVIDIA"];
+  const [currentCompanyIndex, setCurrentCompanyIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentCompanyIndex((prev) => (prev + 1) % companies.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -480,7 +518,11 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      {/* ─── Navbar ─────────────────────────────────────────── */}
+      <div className={styles.heroOrb1} />
+      <div className={styles.heroOrb2} />
+      <div className={styles.heroOrb3} />
+      <div className={styles.heroNoise} />
+      {/* --- Navbar --- */}
       <nav className={`${styles.nav} ${scrolled ? styles.navScrolled : ""} ${navHidden ? styles.navHidden : ""}`}>
         <div className={styles.navInner}>
           <Link href="/" className={styles.navLogo}>
@@ -622,7 +664,7 @@ export default function Home() {
         )}
       </nav>
 
-      {/* ─── Hero Section ───────────────────────────────────── */}
+      {/* --- Hero Section --- */}
       <section className={styles.hero}>
         <motion.div
           className={styles.heroGlow}
@@ -636,7 +678,6 @@ export default function Home() {
             ease: "easeInOut"
           }}
         />
-        <div className={styles.heroGrid} />
 
         <motion.div
           className={styles.heroContent}
@@ -663,20 +704,32 @@ export default function Home() {
               and career roadmaps — all powered by AI that adapts to your goals.
             </motion.p>
 
+            <motion.div className={styles.carouselContainer} variants={fadeInUp}>
+              <span>Prepping for</span>
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={companies[currentCompanyIndex]}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.22, ease: "easeInOut" }}
+                  className={styles.carouselWordActive}
+                >
+                  {companies[currentCompanyIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </motion.div>
+
             <motion.div className={styles.heroCtas} variants={fadeInUp}>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                <Link href="/auth?mode=signup" className={styles.heroCtaPrimary}>
-                  Start Practicing Free
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </Link>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                <a href="#features" className={styles.heroCtaSecondary}>
-                  See How It Works
-                </a>
-              </motion.div>
+              <Link href="/auth?mode=signup" className={styles.heroCtaPrimary}>
+                <span>Start Practicing Free</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+              <a href="#features" className={styles.heroCtaSecondary}>
+                <span>See How It Works</span>
+              </a>
             </motion.div>
 
             <motion.div className={styles.heroProof} variants={fadeInUp}>
@@ -698,7 +751,7 @@ export default function Home() {
                 ))}
               </div>
               <p className={styles.heroProofText}>
-                <strong>2,500+</strong> developers already preparing
+                <strong><StatCounter target={2500} />+</strong> developers already preparing
               </p>
             </motion.div>
           </div>
@@ -707,8 +760,9 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* ─── Features Section ───────────────────────────────── */}
+      {/* --- Features Section --- */}
       <section className={styles.features} id="features">
+        <div className={styles.featuresGlow} />
         <div className={styles.sectionInner}>
           <motion.div
             className={styles.sectionHeader}
@@ -742,8 +796,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── How It Works ───────────────────────────────────── */}
+      {/* --- How It Works --- */}
       <section className={styles.howItWorks} id="how-it-works">
+        <div className={styles.howItWorksGlow} />
         <div className={styles.sectionInner}>
           <motion.div
             className={styles.sectionHeader}
@@ -780,8 +835,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── Stats Section ──────────────────────────────────── */}
+      {/* --- Stats Section --- */}
       <section className={styles.statsSection} id="stats">
+        <div className={styles.statsGlow} />
         <div className={styles.sectionInner}>
           <motion.div
             className={styles.statsGrid}
@@ -805,8 +861,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── CTA Section ────────────────────────────────────── */}
+      {/* --- CTA Section --- */}
       <section className={styles.ctaSection}>
+        <div className={styles.ctaGlow} />
         <div className={styles.sectionInner}>
           <motion.div
             className={styles.ctaBox}
@@ -820,19 +877,17 @@ export default function Home() {
               Join thousands of developers who are preparing smarter with HireMate AI.
               Start for free — no credit card required.
             </p>
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} style={{ display: "inline-block" }}>
-              <Link href="/auth?mode=signup" className={styles.ctaButton}>
-                Get Started for Free
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
-            </motion.div>
+            <Link href="/auth?mode=signup" className={styles.ctaButton}>
+              <span>Get Started for Free</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* ─── Footer ─────────────────────────────────────────── */}
+      {/* --- Footer --- */}
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
           <div className={styles.footerTop}>
