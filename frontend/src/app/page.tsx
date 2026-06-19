@@ -1707,7 +1707,20 @@ export default function Home() {
             </div>
           </div>
 
-          <p className={styles.footerWordmark} aria-hidden="true">HireMate</p>
+          <p
+            className={styles.footerWordmark}
+            aria-hidden="true"
+            onPointerMove={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              const x = ((event.clientX - rect.left) / rect.width) * 100;
+              event.currentTarget.style.setProperty("--spotlight-x", `${x}%`);
+            }}
+            onPointerLeave={(event) => {
+              event.currentTarget.style.setProperty("--spotlight-x", "50%");
+            }}
+          >
+            HireMate
+          </p>
         </div>
       </footer>
     </div>

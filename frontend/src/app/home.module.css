@@ -2950,21 +2950,55 @@
   font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 0.8;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 85%);
+  --spotlight-x: 50%;
+  background: none;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.07);
   opacity: 1;
   text-align: center;
   margin: 2rem 0 -2rem;
   padding: 0 1.5rem;
   user-select: none;
-  pointer-events: none;
+  cursor: default;
+  transition: filter 0.25s ease, -webkit-text-stroke 0.25s ease;
+}
+
+.footerWordmark:hover {
+  background:
+    radial-gradient(ellipse 22% 82% at var(--spotlight-x) 48%,
+      rgba(180, 75, 30, 0.84) 0%,
+      rgba(124, 45, 18, 0.58) 38%,
+      rgba(65, 27, 17, 0.2) 58%,
+      transparent 76%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08);
+  filter: none;
 }
 
 [data-theme="light"] .footerWordmark {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 85%);
+  background: none;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .footerWordmark:hover {
+  background:
+    radial-gradient(ellipse 22% 82% at var(--spotlight-x) 48%,
+      rgba(180, 75, 30, 0.72) 0%,
+      rgba(124, 45, 18, 0.44) 38%,
+      rgba(65, 27, 17, 0.14) 58%,
+      transparent 76%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.13);
+  filter: none;
 }
 
 /* Legacy footer layout — profile & resume pages */
