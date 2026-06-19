@@ -1433,16 +1433,18 @@ export default function Home() {
             {/* The SVG curve path */}
             <svg className={styles.timelineSvg} viewBox="0 0 1000 440" fill="none" preserveAspectRatio="none">
               <path
-                d="M 0 290 L 155 290 C 230 290, 270 120, 345 120 L 405 120 C 480 120, 520 290, 595 290 L 655 290 C 730 290, 770 120, 845 120 L 1000 120"
+                d="M 0 290 L 88 290 M 162 290 C 230 290, 270 120, 338 120 M 412 120 C 480 120, 520 290, 588 290 M 662 290 C 730 290, 770 120, 838 120 M 912 120 L 1000 120"
                 stroke="url(#timelineWaveGrad)"
                 strokeWidth="4"
                 fill="none"
+                strokeLinecap="round"
               />
               <path
-                d="M 0 290 L 155 290 C 230 290, 270 120, 345 120 L 405 120 C 480 120, 520 290, 595 290 L 655 290 C 730 290, 770 120, 845 120 L 1000 120"
+                d="M 0 290 L 88 290 M 162 290 C 230 290, 270 120, 338 120 M 412 120 C 480 120, 520 290, 588 290 M 662 290 C 730 290, 770 120, 838 120 M 912 120 L 1000 120"
                 stroke="rgba(59, 130, 246, 0.05)"
                 strokeWidth="8"
                 fill="none"
+                strokeLinecap="round"
               />
               <defs>
                 <linearGradient id="timelineWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -1651,65 +1653,61 @@ export default function Home() {
 
       {/* --- Footer --- */}
       <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <div className={styles.footerTop}>
-            <div className={styles.footerBrand}>
-              <Link href="/" className={styles.footerLogo}>
-                <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
-                  <rect x="2" y="2" width="36" height="36" rx="10" fill="url(#ftLogoGrad)" />
-                  <path d="M12 14h16M12 20h10M12 26h14" stroke="var(--logo-stroke)" strokeWidth="2.5" strokeLinecap="round" />
-                  <defs>
-                    <linearGradient id="ftLogoGrad" x1="0" y1="0" x2="40" y2="40">
-                      <stop stopColor="var(--logo-grad-start)" />
-                      <stop offset="1" stopColor="var(--logo-grad-end)" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <span>HireMate AI</span>
-              </Link>
-              <p className={styles.footerTagline}>
-                Intelligent interview preparation & career development platform.
-              </p>
+        <div className={styles.footerCtaBand}>
+          <div className={styles.footerCtaInner}>
+            <h2 className={styles.footerCtaHeading}>
+              Let&apos;s prepare <strong>together</strong>
+            </h2>
+            <div className={styles.footerCtaLinks}>
+              <Link href="/auth?mode=signup">Get Started</Link>
+              <a href="#">Contact</a>
             </div>
+          </div>
+        </div>
 
-            <div className={styles.footerLinks}>
-              <div className={styles.footerCol}>
-                <h4 className={styles.footerColTitle}>Product</h4>
-                <a href="#features">Mock Interviews</a>
-                <a href="#features">Resume Analysis</a>
-                <a href="#features">Coding Practice</a>
-                <a href="#features">Career Roadmaps</a>
+        <div className={styles.footerBody}>
+          <div className={styles.footerBodyInner}>
+            <div className={styles.footerMetaRow}>
+              <div className={styles.footerLeftCol}>
+                <div className={styles.footerSocials}>
+                  <a href="#" aria-label="LinkedIn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+                  </a>
+                  <a href="#" aria-label="Twitter">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                  </a>
+                  <a href="#" aria-label="GitHub">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
+                  </a>
+                </div>
+
+                <div className={styles.footerLegalRow}>
+                  <span className={styles.footerCopyright}>© 2026 HireMate AI</span>
+                  <div className={styles.footerLegalLinks}>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">Privacy Policy</a>
+                  </div>
+                </div>
               </div>
-              <div className={styles.footerCol}>
-                <h4 className={styles.footerColTitle}>Company</h4>
-                <a href="#">About</a>
-                <a href="#">Blog</a>
-                <a href="#">Careers</a>
-                <a href="#">Contact</a>
-              </div>
-              <div className={styles.footerCol}>
-                <h4 className={styles.footerColTitle}>Legal</h4>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Cookie Policy</a>
+
+              <div className={styles.footerInfoCols}>
+                <div className={styles.footerInfoCol}>
+                  <strong className={styles.footerInfoTitle}>Platform</strong>
+                  <a href="#features">Mock Interviews</a>
+                  <a href="#features">Resume Analysis</a>
+                  <a href="/resume">Resume Builder</a>
+                </div>
+                <div className={styles.footerInfoCol}>
+                  <strong className={styles.footerInfoTitle}>Company</strong>
+                  <span>Remote-first, global team</span>
+                  <a href="mailto:support@hiremate.ai">support@hiremate.ai</a>
+                  <a href="#">Careers</a>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className={styles.footerBottom}>
-            <p>© 2026 HireMate AI. All rights reserved.</p>
-            <div className={styles.footerSocials}>
-              <a href="#" aria-label="Twitter">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-              </a>
-              <a href="#" aria-label="GitHub">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
-              </a>
-              <a href="#" aria-label="LinkedIn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
-              </a>
-            </div>
-          </div>
+          <p className={styles.footerWordmark} aria-hidden="true">HireMate</p>
         </div>
       </footer>
     </div>
