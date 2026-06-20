@@ -1,7 +1,7 @@
 /* ─── Page Shell ─────────────────────────────────────────── */
 .page {
   min-height: 100vh;
-  background: var(--surface-0);
+  background: transparent;
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
@@ -20,6 +20,7 @@
 }
 
 .heroGlow {
+  display: none;
   position: absolute;
   width: 800px;
   height: 800px;
@@ -33,10 +34,12 @@
 }
 
 [data-theme="light"] .heroGlow {
+  display: none;
   background: radial-gradient(circle, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.01) 40%, transparent 70%);
 }
 
 .heroOrb {
+  display: none;
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);

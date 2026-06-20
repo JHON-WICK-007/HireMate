@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
 import ThemeToggle from "../components/ThemeToggle";
 import { useToast } from "../components/Toast";
+import SiteFooter from "../components/SiteFooter";
+import HomeBackdrop from "../components/HomeBackdrop";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -167,6 +169,7 @@ export default function AuthPage() {
   };
 
   return (
+    <>
     <div className={styles.container}>
       {/* Floating Theme Toggle */}
       <div style={{ position: "fixed", top: "20px", right: "20px", zIndex: 100 }}>
@@ -174,11 +177,7 @@ export default function AuthPage() {
       </div>
 
       {/* Animated Background */}
-      <div className={styles.bgGradient} />
-      <div className={styles.bgOrb1} />
-      <div className={styles.bgOrb2} />
-      <div className={styles.bgOrb3} />
-      <div className={styles.gridOverlay} />
+      <HomeBackdrop />
 
       {/* Floating Particles */}
       {particles.map((p) => (
@@ -676,5 +675,7 @@ export default function AuthPage() {
         </div>
       </div>
     </div>
+    <SiteFooter />
+    </>
   );
 }
