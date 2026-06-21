@@ -1055,7 +1055,7 @@
 
 .checkCard:hover .cardVisualBg,
 .checkCard.isExpanded .cardVisualBg {
-  transform: scale(1.15) translate3d(0, 0, 0);
+  transform: scale(1.18) translate3d(-6px, -4px, 0);
 }
 
 .cardVisualIcon {
@@ -1072,7 +1072,7 @@
 
 .checkCard:hover .cardVisualIcon,
 .checkCard.isExpanded .cardVisualIcon {
-  transform: scale(0.9) translate3d(0, 0, 0);
+  transform: scale(0.88) translate3d(6px, 4px, 0);
 }
 
 .cardVisualIcon svg {
