@@ -604,6 +604,7 @@ export default function ResumePage() {
               {checkCategories.map((category, index) => {
                 const isSpanFull = index === 6; // 7th card spans full width
                 const isExpanded = expandedCardId === index;
+                const isContentCard = category.title.toLowerCase() === "content";
                 
                 return (
                   <motion.div
@@ -619,7 +620,7 @@ export default function ResumePage() {
                       <img 
                         src="/de-niro.jpg" 
                         alt={category.title}
-                        className={styles.cardVisualBg}
+                        className={`${styles.cardVisualBg} ${isContentCard ? styles.specialContentBg : ""}`}
                         style={{ objectFit: "cover", width: "100%", height: "100%" }}
                       />
                     </div>
