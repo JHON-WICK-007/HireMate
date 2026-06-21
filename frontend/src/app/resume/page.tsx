@@ -587,11 +587,11 @@ export default function ResumePage() {
         <section className={styles.checksSection}>
           <div className={styles.checksContent}>
             <h2 className={styles.checksTitle}>
-              The AI-powered Resume Checker goes <br />
-              beyond typos and punctuation
+              Advanced AI Diagnostics <br />
+              Beyond Basic Formatting & Grammar
             </h2>
             <p className={styles.checksSubtitle}>
-              We've built-in various AI models to help you create a resume that's tailored to the position you're applying for and pass both ATS and human checks. The tool checks for 27 crucial things across seven different categories on your resume including ATS essentials, resume content, job tailoring with keywords in the most important sections of your resume, as well as HR red flags, potential discrimination reasons and your seniority fit. Here's a full list of the checks you'll receive:
+              HireMate AI runs deep algorithmic audits across 27 critical parameters to ensure your resume is fully optimized for ATS filters and recruiter benchmarks. We evaluate layout compliance, keyword tailoring, red flags, and seniority fit to maximize your interview conversion rate. Here is a full list of the checks performed:
             </p>
 
             <motion.div 
