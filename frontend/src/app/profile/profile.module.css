@@ -267,8 +267,10 @@
   color: var(--text-muted);
   padding: 0.22rem 0.65rem;
   border-radius: var(--radius-full);
-  background: var(--surface-200);
-  border: 1px solid var(--border-subtle);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
 }
 
 /* ─── Completion Bar ────────────────────────────────────────────────────────── */
@@ -584,10 +586,18 @@
   font-weight: 500;
   padding: 0.3rem 0.9rem;
   border-radius: var(--radius-full);
-  background: var(--surface-200);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   color: var(--text-primary);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--glass-border);
   letter-spacing: 0.01em;
+  transition: all var(--transition-fast);
+}
+
+.tag:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
 }
 
 .tagEditable {
@@ -598,9 +608,17 @@
   font-weight: 500;
   padding: 0.28rem 0.45rem 0.28rem 0.85rem;
   border-radius: var(--radius-full);
-  background: var(--surface-200);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   color: var(--text-primary);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--glass-border);
+  transition: all var(--transition-fast);
+}
+
+.tagEditable:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
 }
 
 .removeTag {
@@ -739,19 +757,27 @@
   align-items: flex-start;
   padding: 1.1rem;
   border-radius: var(--radius-md);
-  background: var(--surface-200);
-  border: 1px solid var(--border-subtle);
-  transition: border-color var(--transition-fast);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
-.eduCard:hover { border-color: var(--border-default); }
+.eduCard:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+}
 
 .eduIcon {
   width: 34px;
   height: 34px;
   border-radius: var(--radius-sm);
-  background: var(--surface-300);
-  border: 1px solid var(--border-default);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
   color: var(--text-secondary);
   display: flex;
   align-items: center;
@@ -787,10 +813,19 @@
 }
 
 .entryCard {
-  background: var(--surface-200);
-  border: 1px solid var(--border-default);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   padding: 1.25rem;
+  box-shadow: var(--glass-shadow);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.entryCard:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
 }
 
 .entryCardHeader {

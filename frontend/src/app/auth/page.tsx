@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
 import ThemeToggle from "../components/ThemeToggle";
 import { useToast } from "../components/Toast";
-import SiteFooter from "../components/SiteFooter";
 import HomeBackdrop from "../components/HomeBackdrop";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -675,7 +674,6 @@ export default function AuthPage() {
         </div>
       </div>
     </div>
-    <SiteFooter />
     </>
   );
 }
