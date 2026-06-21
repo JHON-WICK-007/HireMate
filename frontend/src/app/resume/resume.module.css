@@ -1053,18 +1053,9 @@
   transform: translate3d(0, 0, 0);
 }
 
-.specialContentBg {
-  /* Base class to export for CSS Modules */
-}
-
 .checkCard:hover .cardVisualBg,
 .checkCard.isExpanded .cardVisualBg {
   transform: scale(1.15) translate3d(0, 0, 0);
-}
-
-.checkCard:hover .specialContentBg,
-.checkCard.isExpanded .specialContentBg {
-  transform: scale(1.3) translate3d(-15px, 0, 0) rotate(2deg) !important;
 }
 
 .cardVisualIcon {
