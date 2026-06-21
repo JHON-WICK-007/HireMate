@@ -614,15 +614,14 @@ export default function ResumePage() {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setExpandedCardId(isExpanded ? null : index)}
                   >
-                    {/* Left Column: Visual Gradient Box */}
+                    {/* Left Column: Visual Image Box */}
                     <div className={styles.cardVisual}>
-                      <div 
-                        className={styles.cardVisualBg} 
-                        style={{ background: category.gradient }}
+                      <img 
+                        src="/de-niro.jpg" 
+                        alt={category.title}
+                        className={styles.cardVisualBg}
+                        style={{ objectFit: "cover", width: "100%", height: "100%" }}
                       />
-                      <div className={styles.cardVisualIcon}>
-                        {category.icon}
-                      </div>
                     </div>
 
                     {/* Right Column: Card Contents */}
