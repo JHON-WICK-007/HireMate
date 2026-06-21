@@ -1026,16 +1026,11 @@
 }
 
 .cardIconWrap {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.25rem;
-  background: rgba(16, 185, 129, 0.08);
   color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.15);
 }
 
 .cardTitle {
