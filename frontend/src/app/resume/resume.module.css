@@ -1016,13 +1016,12 @@
   border-radius: var(--radius-lg);
   padding: 1.75rem;
   box-shadow: var(--glass-shadow);
-  transition: all var(--transition-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .checkCard:hover {
   border-color: var(--glass-border-hover);
   box-shadow: var(--glass-shadow-hover);
-  transform: translateY(-2px);
 }
 
 .cardIconWrap {

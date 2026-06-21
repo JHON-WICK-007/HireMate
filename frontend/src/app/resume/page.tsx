@@ -462,11 +462,22 @@ export default function ResumePage() {
               We've built-in various AI models to help you create a resume that's tailored to the position you're applying for and pass both ATS and human checks. The tool checks for 27 crucial things across seven different categories on your resume including ATS essentials, resume content, job tailoring with keywords in the most important sections of your resume, as well as HR red flags, potential discrimination reasons and your seniority fit. Here's a full list of the checks you'll receive:
             </p>
 
-            <div className={styles.checksGrid}>
+            <motion.div 
+              className={styles.checksGrid}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={staggerContainer}
+            >
               {/* Column 1 */}
               <div className={styles.checksColumn}>
                 {/* Card 1: ATS essentials */}
-                <div className={styles.checkCard}>
+                <motion.div 
+                  className={styles.checkCard}
+                  variants={fadeInUp}
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
                   <div className={`${styles.cardIconWrap} ${styles.iconAts}`}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
                   </div>
@@ -497,10 +508,15 @@ export default function ResumePage() {
                       <span>Dates and links consistency</span>
                     </li>
                   </ul>
-                </div>
+                </motion.div>
 
                 {/* Card 4: Resume sections */}
-                <div className={styles.checkCard}>
+                <motion.div 
+                  className={styles.checkCard}
+                  variants={fadeInUp}
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
                   <div className={`${styles.cardIconWrap} ${styles.iconSections}`}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
                   </div>
@@ -519,13 +535,18 @@ export default function ResumePage() {
                       <span>Section order</span>
                     </li>
                   </ul>
-                </div>
+                </motion.div>
               </div>
 
               {/* Column 2 */}
               <div className={styles.checksColumn}>
                 {/* Card 2: Content */}
-                <div className={styles.checkCard}>
+                <motion.div 
+                  className={styles.checkCard}
+                  variants={fadeInUp}
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
                   <div className={`${styles.cardIconWrap} ${styles.iconContent}`}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
                   </div>
@@ -552,10 +573,15 @@ export default function ResumePage() {
                       <span>Bullet length and consistency</span>
                     </li>
                   </ul>
-                </div>
+                </motion.div>
 
                 {/* Card 5: Job tailoring */}
-                <div className={styles.checkCard}>
+                <motion.div 
+                  className={styles.checkCard}
+                  variants={fadeInUp}
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
                   <div className={`${styles.cardIconWrap} ${styles.iconJob}`}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                   </div>
@@ -578,13 +604,18 @@ export default function ResumePage() {
                       <span>Tailored job title</span>
                     </li>
                   </ul>
-                </div>
+                </motion.div>
               </div>
 
               {/* Column 3 */}
               <div className={styles.checksColumn}>
                 {/* Card 3: Recruiter red flags */}
-                <div className={styles.checkCard}>
+                <motion.div 
+                  className={styles.checkCard}
+                  variants={fadeInUp}
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
                   <div className={`${styles.cardIconWrap} ${styles.iconFlags}`}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
                   </div>
@@ -607,10 +638,15 @@ export default function ResumePage() {
                       <span>LinkedIn profile match</span>
                     </li>
                   </ul>
-                </div>
+                </motion.div>
 
                 {/* Card 6: Bias & discrimination */}
-                <div className={styles.checkCard}>
+                <motion.div 
+                  className={styles.checkCard}
+                  variants={fadeInUp}
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
                   <div className={`${styles.cardIconWrap} ${styles.iconBias}`}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                   </div>
@@ -625,10 +661,15 @@ export default function ResumePage() {
                       <span>Employment gaps</span>
                     </li>
                   </ul>
-                </div>
+                </motion.div>
 
                 {/* Card 7: Seniority & impact */}
-                <div className={styles.checkCard}>
+                <motion.div 
+                  className={styles.checkCard}
+                  variants={fadeInUp}
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                >
                   <div className={`${styles.cardIconWrap} ${styles.iconSeniority}`}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M5 20h14"/></svg>
                   </div>
@@ -647,9 +688,9 @@ export default function ResumePage() {
                       <span>Leadership signals</span>
                     </li>
                   </ul>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
       )}
