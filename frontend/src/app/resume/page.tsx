@@ -610,7 +610,7 @@ export default function ResumePage() {
                     key={index}
                     className={`${styles.checkCard} ${isSpanFull ? styles.cardSpanFull : ""} ${isExpanded ? styles.isExpanded : ""}`}
                     variants={fadeInUp}
-                    whileHover={{ y: -6, scale: 1.01 }}
+                    whileHover={{ y: -6 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setExpandedCardId(isExpanded ? null : index)}
                   >
