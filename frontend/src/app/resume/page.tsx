@@ -641,31 +641,12 @@ export default function ResumePage() {
                                 <span>{check}</span>
                               </li>
                             ))}
-                            {category.checks.length > 4 && (
-                              <li className={styles.checklistMore}>
-                                + {category.checks.length - 4} more checks
-                              </li>
-                            )}
                           </ul>
                         </div>
                       </div>
 
-                      {/* Card Footer: Stats Row */}
+                      {/* Card Footer: Stats Row (Mobile Chevron Only) */}
                       <div className={styles.cardStats}>
-                        <div className={styles.statsItem}>
-                          <svg className={`${styles.statsIcon} ${styles.statsCheck}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                          <span>{category.checks.length} checks</span>
-                        </div>
-                        <div className={styles.statsItem}>
-                          <svg className={`${styles.statsIcon} ${styles.statsClock}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                          </svg>
-                          <span>{category.duration}</span>
-                        </div>
-                        
                         {/* Mobile chevron to indicate expandable list */}
                         <div className={styles.mobileChevron}>
                           <svg 
