@@ -56,6 +56,137 @@ interface ResumeData {
   };
 }
 
+const checkCategories = [
+  {
+    title: "ATS essentials",
+    description: "Master the fundamentals of ATS optimization. Learn file format, design, and compliance checks.",
+    gradient: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+    checks: [
+      "File format and size",
+      "ATS-friendly design",
+      "Professional email address",
+      "Header links compliance",
+      "Resume file name",
+      "Dates and links consistency"
+    ],
+    duration: "3 min",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+        <polyline points="14 2 14 8 20 8" />
+      </svg>
+    )
+  },
+  {
+    title: "Content",
+    description: "Improve readability and impact. Analyze parse rate, word repetition, and AI rewrite suggestions.",
+    gradient: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
+    checks: [
+      "ATS parse rate",
+      "Quantifying impact with AI rewrite suggestions",
+      "Repetition of words and phrases",
+      "Spelling and grammar",
+      "Bullet length and consistency"
+    ],
+    duration: "3 min",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+      </svg>
+    )
+  },
+  {
+    title: "Recruiter red flags",
+    description: "Avoid major pitfalls. Detect credibility issues, risk signals, and LinkedIn mismatches.",
+    gradient: "linear-gradient(135deg, #f43f5e 0%, #be123c 100%)",
+    checks: [
+      "Resume credibility",
+      "Interview risk signals",
+      "Peer benchmarking",
+      "LinkedIn profile match"
+    ],
+    duration: "2 min",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+        <line x1="4" y1="22" x2="4" y2="15" />
+      </svg>
+    )
+  },
+  {
+    title: "Resume sections",
+    description: "Organize your profile structure. Verify essential sections, order, and contact info completeness.",
+    gradient: "linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)",
+    checks: [
+      "Essential sections",
+      "Contact information",
+      "Section order"
+    ],
+    duration: "1 min",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="9" />
+        <rect x="14" y="3" width="7" height="5" />
+        <rect x="14" y="12" width="7" height="9" />
+        <rect x="3" y="16" width="7" height="5" />
+      </svg>
+    )
+  },
+  {
+    title: "Job tailoring",
+    description: "Match job descriptions precisely. Check hard and soft skills, action verbs, and titles.",
+    gradient: "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+    checks: [
+      "Hard skills match",
+      "Soft skills match",
+      "Action verbs",
+      "Tailored job title"
+    ],
+    duration: "2 min",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <circle cx="12" cy="12" r="6" />
+        <circle cx="12" cy="12" r="2" />
+      </svg>
+    )
+  },
+  {
+    title: "Bias & discrimination",
+    description: "Ensure fair evaluation. Detect age, location, and employment gap bias patterns.",
+    gradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+    checks: [
+      "Age and date bias",
+      "Employment gaps"
+    ],
+    duration: "1 min",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    )
+  },
+  {
+    title: "Seniority & impact",
+    description: "Demonstrate career level and authority. Assess leadership signals and skill evidence.",
+    gradient: "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+    checks: [
+      "Career progression",
+      "Skills evidence",
+      "Leadership signals"
+    ],
+    duration: "2 min",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z" />
+        <path d="M5 20h14" />
+      </svg>
+    )
+  }
+];
+
 export default function ResumePage() {
   const router = useRouter();
   const toast = useToast();
@@ -66,6 +197,7 @@ export default function ResumePage() {
   const [isUploading, setIsUploading] = useState(false);
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [activeTab, setActiveTab] = useState<"analysis" | "data" | "preview">("analysis");
+  const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
 
   const resumeRef = useRef<HTMLDivElement>(null);
 
@@ -469,227 +601,90 @@ export default function ResumePage() {
               viewport={{ once: true, margin: "-50px" }}
               variants={staggerContainer}
             >
-              {/* Column 1 */}
-              <div className={styles.checksColumn}>
-                {/* Card 1: ATS essentials */}
-                <motion.div 
-                  className={styles.checkCard}
-                  variants={fadeInUp}
-                  whileHover={{ y: -6, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <div className={`${styles.cardIconWrap} ${styles.iconAts}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                  </div>
-                  <h3 className={styles.cardTitle}>ATS essentials</h3>
-                  <ul className={styles.cardList}>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>File format and size</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>ATS-friendly design</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Professional email address</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Header links compliance</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Resume file name</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Dates and links consistency</span>
-                    </li>
-                  </ul>
-                </motion.div>
+              {checkCategories.map((category, index) => {
+                const isSpanFull = index === 6; // 7th card spans full width
+                const isExpanded = expandedCardId === index;
+                
+                return (
+                  <motion.div
+                    key={index}
+                    className={`${styles.checkCard} ${isSpanFull ? styles.cardSpanFull : ""} ${isExpanded ? styles.isExpanded : ""}`}
+                    variants={fadeInUp}
+                    whileHover={{ y: -6, scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setExpandedCardId(isExpanded ? null : index)}
+                  >
+                    {/* Left Column: Visual Gradient Box */}
+                    <div className={styles.cardVisual}>
+                      <div 
+                        className={styles.cardVisualBg} 
+                        style={{ background: category.gradient }}
+                      />
+                      <div className={styles.cardVisualIcon}>
+                        {category.icon}
+                      </div>
+                    </div>
 
-                {/* Card 4: Resume sections */}
-                <motion.div 
-                  className={styles.checkCard}
-                  variants={fadeInUp}
-                  whileHover={{ y: -6, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <div className={`${styles.cardIconWrap} ${styles.iconSections}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-                  </div>
-                  <h3 className={styles.cardTitle}>Resume sections</h3>
-                  <ul className={styles.cardList}>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Essential sections</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Contact information</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Section order</span>
-                    </li>
-                  </ul>
-                </motion.div>
-              </div>
+                    {/* Right Column: Card Contents */}
+                    <div className={styles.cardContent}>
+                      <div className={styles.cardHeader}>
+                        <h3 className={styles.cardTitle}>{category.title}</h3>
+                        <p className={styles.cardDescription}>{category.description}</p>
+                        
+                        <div className={styles.checklistContainer}>
+                          <ul className={styles.cardChecklist}>
+                            {category.checks.map((check, cIdx) => (
+                              <li key={cIdx}>
+                                <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                <span>{check}</span>
+                              </li>
+                            ))}
+                            {category.checks.length > 4 && (
+                              <li className={styles.checklistMore}>
+                                + {category.checks.length - 4} more checks
+                              </li>
+                            )}
+                          </ul>
+                        </div>
+                      </div>
 
-              {/* Column 2 */}
-              <div className={styles.checksColumn}>
-                {/* Card 2: Content */}
-                <motion.div 
-                  className={styles.checkCard}
-                  variants={fadeInUp}
-                  whileHover={{ y: -6, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <div className={`${styles.cardIconWrap} ${styles.iconContent}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                  </div>
-                  <h3 className={styles.cardTitle}>Content</h3>
-                  <ul className={styles.cardList}>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>ATS parse rate</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Quantifying impact with AI rewrite suggestions</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Repetition of words and phrases</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Spelling and grammar</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Bullet length and consistency</span>
-                    </li>
-                  </ul>
-                </motion.div>
-
-                {/* Card 5: Job tailoring */}
-                <motion.div 
-                  className={styles.checkCard}
-                  variants={fadeInUp}
-                  whileHover={{ y: -6, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <div className={`${styles.cardIconWrap} ${styles.iconJob}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                  </div>
-                  <h3 className={styles.cardTitle}>Job tailoring</h3>
-                  <ul className={styles.cardList}>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Hard skills match</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Soft skills match</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Action verbs</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Tailored job title</span>
-                    </li>
-                  </ul>
-                </motion.div>
-              </div>
-
-              {/* Column 3 */}
-              <div className={styles.checksColumn}>
-                {/* Card 3: Recruiter red flags */}
-                <motion.div 
-                  className={styles.checkCard}
-                  variants={fadeInUp}
-                  whileHover={{ y: -6, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <div className={`${styles.cardIconWrap} ${styles.iconFlags}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-                  </div>
-                  <h3 className={styles.cardTitle}>Recruiter red flags</h3>
-                  <ul className={styles.cardList}>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Resume credibility</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Interview risk signals</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Peer benchmarking</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>LinkedIn profile match</span>
-                    </li>
-                  </ul>
-                </motion.div>
-
-                {/* Card 6: Bias & discrimination */}
-                <motion.div 
-                  className={styles.checkCard}
-                  variants={fadeInUp}
-                  whileHover={{ y: -6, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <div className={`${styles.cardIconWrap} ${styles.iconBias}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  </div>
-                  <h3 className={styles.cardTitle}>Bias & discrimination</h3>
-                  <ul className={styles.cardList}>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Age and date bias</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Employment gaps</span>
-                    </li>
-                  </ul>
-                </motion.div>
-
-                {/* Card 7: Seniority & impact */}
-                <motion.div 
-                  className={styles.checkCard}
-                  variants={fadeInUp}
-                  whileHover={{ y: -6, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  <div className={`${styles.cardIconWrap} ${styles.iconSeniority}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M5 20h14"/></svg>
-                  </div>
-                  <h3 className={styles.cardTitle}>Seniority & impact</h3>
-                  <ul className={styles.cardList}>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Career progression</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Skills evidence</span>
-                    </li>
-                    <li>
-                      <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      <span>Leadership signals</span>
-                    </li>
-                  </ul>
-                </motion.div>
-              </div>
+                      {/* Card Footer: Stats Row */}
+                      <div className={styles.cardStats}>
+                        <div className={styles.statsItem}>
+                          <svg className={`${styles.statsIcon} ${styles.statsCheck}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                          <span>{category.checks.length} checks</span>
+                        </div>
+                        <div className={styles.statsItem}>
+                          <svg className={`${styles.statsIcon} ${styles.statsClock}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                          </svg>
+                          <span>{category.duration}</span>
+                        </div>
+                        
+                        {/* Mobile chevron to indicate expandable list */}
+                        <div className={styles.mobileChevron}>
+                          <svg 
+                            className={`${styles.chevronIcon} ${isExpanded ? styles.chevronRotate : ""}`} 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            strokeWidth="2.5" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </div>
         </section>
