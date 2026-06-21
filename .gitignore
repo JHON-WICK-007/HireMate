@@ -29,3 +29,14 @@ Thumbs.db
 
 # Test Files
 test-resume.pdf
+
+# Agent / IDE Files
+.agent/
+.agents/
+.claude/
+.kilocode/
+.cursorrules
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+skills-lock.json
