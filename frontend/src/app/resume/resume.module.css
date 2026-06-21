@@ -962,3 +962,128 @@
     padding: 24px;
   }
 }
+
+/* ─── Checks Section ─────────────────────────────────────── */
+.checksSection {
+  padding: 4rem 2rem 8rem;
+  background: transparent;
+  width: 100%;
+}
+
+.checksContent {
+  max-width: 1120px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.checksTitle {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+  font-family: var(--font-display);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+
+.checksSubtitle {
+  font-size: 0.925rem;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin: 0 auto 4rem;
+  line-height: 1.7;
+}
+
+.checksGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+  text-align: left;
+}
+
+.checksColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.checkCard {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--glass-shadow);
+  transition: all var(--transition-base);
+}
+
+.checkCard:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.cardIconWrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  background: rgba(16, 185, 129, 0.08);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.cardTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.cardList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cardList li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.checkIcon {
+  width: 14px;
+  height: 14px;
+  color: #10b981;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+@media (max-width: 960px) {
+  .checksGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .checksGrid {
+    grid-template-columns: 1fr;
+  }
+  .checksTitle {
+    font-size: 1.8rem;
+  }
+}
