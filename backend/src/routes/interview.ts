@@ -31,7 +31,7 @@ async function callWithRetry<T>(fn: () => Promise<T>, maxRetries = 3, baseDelayM
 // @access  Protected
 router.post("/start", protect, async (req: Request, res: Response): Promise<void> => {
   try {
-    const { company, role, level, questionTypes, totalQuestions } = req.body;
+    const { company, role, level, questionTypes, totalQuestions, difficulty, duration } = req.body;
 
     if (!company || !role || !level) {
       res.status(400).json({ success: false, message: "Please provide company, role, and experience level." });
@@ -51,6 +51,8 @@ router.post("/start", protect, async (req: Request, res: Response): Promise<void
 Company: ${company}
 Role: ${role}
 Experience Level: ${level}
+Difficulty: ${difficulty || "Medium"}
+Session Duration: ${duration || 30} minutes
 Requested Question Types: ${qTypes.join(", ")}
 
 Please generate the first question of this mock interview. It MUST match one of the requested question types.
@@ -90,6 +92,8 @@ Respond ONLY with a valid JSON object matching this exact schema:
       company,
       role,
       level,
+      difficulty: difficulty || "Medium",
+      duration: duration || 30,
       questionTypes: qTypes,
       questions: [firstQuestion],
       currentQuestionIndex: 0,
@@ -166,6 +170,8 @@ Evaluation Feedback: ${q.feedback || "Pending"}`;
 Company: ${interview.company}
 Role: ${interview.role}
 Experience Level: ${interview.level}
+Difficulty: ${interview.difficulty || "Medium"}
+Session Duration: ${interview.duration || 30} minutes
 
 Here is the conversation history including all questions, candidate answers, and evaluations so far:
 ${formattedHistory}

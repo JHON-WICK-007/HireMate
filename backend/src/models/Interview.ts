@@ -13,6 +13,8 @@ export interface IInterview extends Document {
   company: string;
   role: string;
   level: string;
+  difficulty?: string;
+  duration?: number;
   questionTypes: string[];
   questions: IQuestionLog[];
   currentQuestionIndex: number;
@@ -49,6 +51,16 @@ const interviewSchema = new Schema<IInterview>(
       type: String,
       required: true,
       trim: true,
+    },
+    difficulty: {
+      type: String,
+      enum: ["Easy", "Medium", "Hard"],
+      default: "Medium",
+    },
+    duration: {
+      type: Number,
+      enum: [15, 30, 45],
+      default: 30,
     },
     questionTypes: [
       {

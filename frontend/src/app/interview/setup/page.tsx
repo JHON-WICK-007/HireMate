@@ -92,15 +92,32 @@ const renderCompanyLogo = (company: string) => {
       );
     case "Infosys":
       return (
-        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          <span style={{ fontWeight: "700", fontSize: "0.95rem", color: "#007cc3", fontFamily: "sans-serif", fontStyle: "italic", letterSpacing: "-0.01em" }}>Infosys</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#007cc3" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+          <span style={{ fontWeight: "700", fontSize: "0.95rem", color: "#007cc3", fontFamily: "sans-serif" }}>Infosys</span>
         </div>
       );
     case "Accenture":
       return (
-        <div style={{ display: "flex", alignItems: "center", gap: "1px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a100ff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
           <span style={{ fontWeight: "700", fontSize: "0.95rem", color: "#a100ff", fontFamily: "sans-serif" }}>accenture</span>
-          <span style={{ color: "#a100ff", fontWeight: "900", fontSize: "1rem", lineHeight: "1" }}>&gt;</span>
+        </div>
+      );
+    case "Other / Custom":
+      return (
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+          <span style={{ fontWeight: "600", fontSize: "0.95rem", color: "#10b981", fontFamily: "sans-serif" }}>Custom</span>
         </div>
       );
     default:
@@ -174,18 +191,64 @@ const getRoleAvatar = (role: string) => {
   }
 };
 
+const IconSeedling = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <path d="M12 22V12" />
+    <path d="M12 12a5 5 0 0 0 5-5c0-1.5 0-3-3-3s-2 2.5-2 3" />
+    <path d="M12 14a5 5 0 0 1-5-5c0-1.5 0-3 3-3s2 2.5 2 3" />
+  </svg>
+);
+
+const IconUser = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const IconBriefcaseSmall = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+  </svg>
+);
+
+const IconCrown = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z" />
+    <path d="M3 20h18" />
+  </svg>
+);
+
 const getLevelAvatar = (level: string) => {
   switch (level) {
     case "Fresher":
-      return <IconLevelBars level={1} />;
+      return <IconSeedling />;
     case "1–3 years":
-      return <IconLevelBars level={2} />;
+      return <IconUser />;
     case "3–5 years":
-      return <IconLevelBars level={3} />;
+      return <IconBriefcaseSmall />;
     case "5+ years":
-      return <IconLevelBars level={4} />;
+      return <IconCrown />;
     default:
       return null;
+  }
+};
+
+const getRoleTooltipText = (role: string) => {
+  switch (role) {
+    case "Backend developer":
+      return "APIs, Databases, Scalability, Node/Python";
+    case "Frontend developer":
+      return "React, Next.js, CSS, JS, UI Performance";
+    case "Full stack":
+      return "System Architecture, Client & Server Integrations";
+    case "DevOps":
+      return "Docker, K8s, CI/CD, AWS, System Monitoring";
+    case "Data analyst":
+      return "SQL, Python, Excel, BI Dashboards, Statistics";
+    default:
+      return "Skill assessments";
   }
 };
 
@@ -203,14 +266,17 @@ export default function SetupPage() {
   const lastScrollY = useRef(0);
 
   // Setup options
-  const companies = ["Google", "Amazon", "Microsoft", "TCS", "Infosys", "Accenture"];
+  const companies = ["Google", "Amazon", "Microsoft", "TCS", "Infosys", "Accenture", "Other / Custom"];
   const roles = ["Backend developer", "Frontend developer", "Full stack", "DevOps", "Data analyst"];
   const experienceLevels = ["Fresher", "1–3 years", "3–5 years", "5+ years"];
 
   const [selectedCompany, setSelectedCompany] = useState("Google");
+  const [customCompany, setCustomCompany] = useState("");
   const [selectedRole, setSelectedRole] = useState("Backend developer");
   const [selectedLevel, setSelectedLevel] = useState("1–3 years");
   const [selectedQuestionTypes, setSelectedQuestionTypes] = useState<string[]>(["Technical", "Behavioral"]);
+  const [difficulty, setDifficulty] = useState("Medium");
+  const [duration, setDuration] = useState(30);
   const [isStartingSession, setIsStartingSession] = useState(false);
 
   // Scroll logic for navbar
@@ -287,11 +353,13 @@ export default function SetupPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          company: selectedCompany,
+          company: selectedCompany === "Other / Custom" ? (customCompany || "Custom Company") : selectedCompany,
           role: selectedRole,
           level: selectedLevel,
           questionTypes: selectedQuestionTypes,
           totalQuestions: 5,
+          difficulty,
+          duration,
         }),
       });
 
@@ -334,7 +402,10 @@ export default function SetupPage() {
 
           <div className={nav.navLinks}>
             <Link href="/resume" className={nav.navLink}>Resume Builder</Link>
-            <Link href="/interview/setup" className={`${nav.navLink} ${nav.navActive || ""}`} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
+            <Link href="/interview/setup" className={`${nav.navLink} ${nav.navActive || ""}`} style={{ color: "var(--domain-interview)", position: "relative" }}>
+              Mock Interview
+              <span className={styles.activeLinkUnderline} />
+            </Link>
             <Link href="/profile" className={nav.navLink}>Profile</Link>
           </div>
 
@@ -405,94 +476,321 @@ export default function SetupPage() {
             <div className={styles.setupTitle}>Start a mock interview</div>
             <div className={styles.setupSub}>Configure your session and the AI interviewer will ask role-specific questions and evaluate your answers.</div>
 
-            <div className={styles.field}>
-              <span className={styles.fieldLabel}>Company</span>
-              <div className={styles.logoWall}>
-                {companies.map((c) => (
-                  <div
-                    key={c}
-                    className={`${styles.logoItem} ${selectedCompany === c ? styles.logoItemActive : ""}`}
-                    onClick={() => setSelectedCompany(c)}
-                  >
-                    {renderCompanyLogo(c)}
+            {/* Stepper Progress bar */}
+            {(() => {
+              let configuredCount = 0;
+              if (selectedCompany === "Other / Custom" ? customCompany.trim() !== "" : selectedCompany) configuredCount++;
+              if (selectedRole) configuredCount++;
+              if (selectedLevel) configuredCount++;
+              if (selectedQuestionTypes.length > 0) configuredCount++;
+              if (difficulty) configuredCount++;
+              if (duration) configuredCount++;
+              const progressPercent = Math.round((configuredCount / 6) * 100);
+
+              return (
+                <div className={styles.progressContainer}>
+                  <div className={styles.progressHeader}>
+                    <span className={styles.progressTitle}>Setup Progress</span>
+                    <span className={styles.progressPercentage}>{configuredCount} of 6 configured ({progressPercent}%)</span>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.field}>
-              <span className={styles.fieldLabel}>Role</span>
-              <div className={styles.chipGroup}>
-                {roles.map((r) => (
-                  <span key={r} className={`${styles.chip} ${selectedRole === r ? styles.chipSelectedRole : ""}`} onClick={() => setSelectedRole(r)}>
-                    {getRoleAvatar(r)}
-                    <span>{r}</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.field}>
-              <span className={styles.fieldLabel}>Experience level</span>
-              <div className={styles.chipGroup}>
-                {experienceLevels.map((l) => (
-                  <span key={l} className={`${styles.chip} ${selectedLevel === l ? styles.chipSelectedLevel : ""}`} onClick={() => setSelectedLevel(l)}>
-                    {getLevelAvatar(l)}
-                    <span>{l}</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.field}>
-              <span className={styles.fieldLabel}>Question types</span>
-              <div className={styles.typeGrid}>
-                <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Technical") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Technical")}>
-                  <div className={styles.tcTitle}>
-                    <IconCode />Technical
+                  <div className={styles.progressBarTrack}>
+                    <div className={styles.progressBarFill} style={{ width: `${progressPercent}%` }} />
                   </div>
-                  <div className={styles.tcSub}>Concepts, architecture, debugging</div>
                 </div>
+              );
+            })()}
 
-                <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Behavioral") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Behavioral")}>
-                  <div className={styles.tcTitle}>
-                    <IconUsers />Behavioral
-                  </div>
-                  <div className={styles.tcSub}>Teamwork, conflict, leadership</div>
-                </div>
+            {/* 2-Column Grid Layout */}
+            {(() => {
+              let configuredCount = 0;
+              if (selectedCompany === "Other / Custom" ? customCompany.trim() !== "" : selectedCompany) configuredCount++;
+              if (selectedRole) configuredCount++;
+              if (selectedLevel) configuredCount++;
+              if (selectedQuestionTypes.length > 0) configuredCount++;
+              if (difficulty) configuredCount++;
+              if (duration) configuredCount++;
+              const progressPercent = Math.round((configuredCount / 6) * 100);
 
-                <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("HR") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("HR")}>
-                  <div className={styles.tcTitle}>
-                    <IconBriefcase />HR
+              return (
+                <div className={styles.setupBodyGrid}>
+                  {/* Summary Sidebar (Left Column) */}
+                  <div className={styles.summarySidebar}>
+                    <div className={styles.sidebarTitle}>Session Summary</div>
+                    <div className={styles.sidebarList}>
+                      <div className={styles.sidebarItem}>
+                        <span className={styles.sidebarItemLabel}>Target Company</span>
+                        <span className={styles.sidebarItemValue}>
+                          {selectedCompany === "Other / Custom" ? (customCompany || "Custom Company") : selectedCompany}
+                        </span>
+                      </div>
+                      <div className={styles.sidebarItem}>
+                        <span className={styles.sidebarItemLabel}>Target Role</span>
+                        <span className={styles.sidebarItemValue}>
+                          {getRoleAvatar(selectedRole)}
+                          {selectedRole}
+                        </span>
+                      </div>
+                      <div className={styles.sidebarItem}>
+                        <span className={styles.sidebarItemLabel}>Experience Level</span>
+                        <span className={styles.sidebarItemValue}>
+                          {getLevelAvatar(selectedLevel)}
+                          {selectedLevel}
+                        </span>
+                      </div>
+                      <div className={styles.sidebarItem}>
+                        <span className={styles.sidebarItemLabel}>Question Types</span>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "2px" }}>
+                          {selectedQuestionTypes.map(type => (
+                            <span key={type} style={{ fontSize: "0.7rem", background: "rgba(14, 165, 233, 0.1)", color: "#0ea5e9", padding: "2px 6px", borderRadius: "4px", fontWeight: "600" }}>
+                              {type}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className={styles.sidebarItem}>
+                        <span className={styles.sidebarItemLabel}>Difficulty</span>
+                        <span className={styles.sidebarItemValue} style={{ color: "#6366f1", fontWeight: "600" }}>
+                          {difficulty}
+                        </span>
+                      </div>
+                      <div className={styles.sidebarItem}>
+                        <span className={styles.sidebarItemLabel}>Duration</span>
+                        <span className={styles.sidebarItemValue} style={{ color: "#8b5cf6", fontWeight: "600" }}>
+                          {duration} mins
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className={styles.tcSub}>Goals, salary, culture fit</div>
-                </div>
 
-                <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("System design") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("System design")}>
-                  <div className={styles.tcTitle}>
-                    <IconLayout />System design
+                  {/* Configurable Form (Right Column) */}
+                  <div style={{ flex: 1 }}>
+                    <div className={styles.field}>
+                      <span className={styles.fieldLabel}>Company</span>
+                      <div className={styles.logoWall}>
+                        {companies.map((c) => (
+                          <div
+                            key={c}
+                            className={`${styles.logoItem} ${selectedCompany === c ? styles.logoItemActive : ""}`}
+                            onClick={() => setSelectedCompany(c)}
+                          >
+                            {renderCompanyLogo(c)}
+                          </div>
+                        ))}
+                      </div>
+                      {selectedCompany === "Other / Custom" && (
+                        <div className={styles.customInputContainer}>
+                          <input
+                            type="text"
+                            className={styles.customInput}
+                            placeholder="Type custom company name (e.g. OpenAI)"
+                            value={customCompany}
+                            onChange={(e) => setCustomCompany(e.target.value)}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    <hr className={styles.sectionDivider} />
+
+                    <div className={styles.field}>
+                      <span className={styles.fieldLabel}>Role</span>
+                      <div className={styles.chipGroup}>
+                        {roles.map((r) => (
+                          <div key={r} className={styles.tooltipContainer}>
+                            <span className={`${styles.chip} ${selectedRole === r ? styles.chipSelectedRole : ""}`} onClick={() => setSelectedRole(r)}>
+                              {getRoleAvatar(r)}
+                              <span>{r}</span>
+                            </span>
+                            <span className={styles.tooltipText}>{getRoleTooltipText(r)}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ marginTop: "0.5rem", display: "flex", justifyContent: "flex-end" }}>
+                        <Link href="/resume" style={{ fontSize: "0.75rem", color: "#14b8a6", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "2px", fontWeight: "500" }}>
+                          Upload resume to auto-fill your role
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
+                          </svg>
+                        </Link>
+                      </div>
+                    </div>
+
+                    <hr className={styles.sectionDivider} />
+
+                    <div className={styles.field}>
+                      <span className={styles.fieldLabel}>Experience level</span>
+                      <div className={styles.chipGroup}>
+                        {experienceLevels.map((l) => (
+                          <span key={l} className={`${styles.chip} ${selectedLevel === l ? styles.chipSelectedLevel : ""}`} onClick={() => setSelectedLevel(l)}>
+                            {getLevelAvatar(l)}
+                            <span>{l}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <hr className={styles.sectionDivider} />
+
+                    <div className={styles.field}>
+                      <span className={styles.fieldLabel}>Question types</span>
+                      <div className={styles.typeGrid}>
+                        <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Technical") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Technical")}>
+                          <span className={styles.typeCardCheckbox}>
+                            {selectedQuestionTypes.includes("Technical") ? (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                              </svg>
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="10" />
+                              </svg>
+                            )}
+                          </span>
+                          <div className={styles.tcTitle}>
+                            <IconCode />Technical
+                          </div>
+                          <div className={styles.tcSub} style={{ paddingRight: "1.5rem" }}>Concepts, architecture, debugging</div>
+                        </div>
+
+                        <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Behavioral") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Behavioral")}>
+                          <span className={styles.typeCardCheckbox}>
+                            {selectedQuestionTypes.includes("Behavioral") ? (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                              </svg>
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="10" />
+                              </svg>
+                            )}
+                          </span>
+                          <div className={styles.tcTitle}>
+                            <IconUsers />Behavioral
+                          </div>
+                          <div className={styles.tcSub} style={{ paddingRight: "1.5rem" }}>Teamwork, conflict, leadership</div>
+                        </div>
+
+                        <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("HR") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("HR")}>
+                          <span className={styles.typeCardCheckbox}>
+                            {selectedQuestionTypes.includes("HR") ? (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                              </svg>
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="10" />
+                              </svg>
+                            )}
+                          </span>
+                          <div className={styles.tcTitle}>
+                            <IconBriefcase />HR
+                          </div>
+                          <div className={styles.tcSub} style={{ paddingRight: "1.5rem" }}>Goals, salary, culture fit</div>
+                        </div>
+
+                        <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("System design") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("System design")}>
+                          <span className={styles.typeCardCheckbox}>
+                            {selectedQuestionTypes.includes("System design") ? (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                              </svg>
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="10" />
+                              </svg>
+                            )}
+                          </span>
+                          <div className={styles.tcTitle}>
+                            <IconLayout />System design
+                          </div>
+                          <div className={styles.tcSub} style={{ paddingRight: "1.5rem" }}>Scalability, trade-offs</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr className={styles.sectionDivider} />
+
+                    <div className={styles.field}>
+                      <span className={styles.fieldLabel}>Difficulty</span>
+                      <div className={styles.toggleGroup}>
+                        {["Easy", "Medium", "Hard"].map((d) => (
+                          <button
+                            key={d}
+                            type="button"
+                            className={`${styles.toggleBtn} ${difficulty === d ? styles.toggleBtnSelectedIndigo : ""}`}
+                            onClick={() => setDifficulty(d)}
+                          >
+                            {d}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <hr className={styles.sectionDivider} />
+
+                    <div className={styles.field}>
+                      <span className={styles.fieldLabel}>Duration</span>
+                      <div className={styles.toggleGroup}>
+                        {[15, 30, 45].map((mins) => (
+                          <button
+                            key={mins}
+                            type="button"
+                            className={`${styles.toggleBtn} ${duration === mins ? styles.toggleBtnSelectedViolet : ""}`}
+                            onClick={() => setDuration(mins)}
+                          >
+                            {mins} mins
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <div className={styles.tcSub}>Scalability, trade-offs</div>
                 </div>
-              </div>
-            </div>
+              );
+            })()}
 
             <hr className={styles.divider} />
 
-            <button className={styles.startBtn} onClick={startInterview} disabled={isStartingSession}>
+            <button className={styles.startBtn} onClick={startInterview} disabled={isStartingSession || (selectedCompany === "Other / Custom" && !customCompany.trim())}>
               {isStartingSession ? (
                 <>
                   <IconSpinner /> Initializing AI Interviewer...
                 </>
               ) : (
                 <>
-                  <IconPlay /> Start interview — {selectedCompany} · {selectedRole.split(" ")[0]} · {selectedLevel.replace(" years", " yrs")}
+                  <IconPlay /> Start interview — {selectedCompany === "Other / Custom" ? (customCompany || "Custom") : selectedCompany} · {selectedRole.split(" ")[0]} · {selectedLevel.replace(" years", " yrs")}
                 </>
               )}
             </button>
           </div>
         </div>
       </main>
+
+      {/* Sticky Bottom CTA Bar */}
+      <div className={styles.stickyCTA}>
+        <div className={styles.stickyCTAInner}>
+          <div className={styles.stickyCTAMeta}>
+            <span className={styles.stickyCTATitle}>Ready to begin?</span>
+            <span className={styles.stickyCTASub}>
+              {selectedCompany === "Other / Custom" ? (customCompany || "Custom") : selectedCompany} · {selectedRole.split(" ")[0]} · {selectedLevel.replace(" years", " yrs")}
+            </span>
+          </div>
+          <button 
+            className={styles.stickyCTAButton} 
+            onClick={startInterview} 
+            disabled={isStartingSession || (selectedCompany === "Other / Custom" && !customCompany.trim())}
+          >
+            {isStartingSession ? (
+              <>
+                <IconSpinner /> Initializing...
+              </>
+            ) : (
+              <>
+                <IconPlay /> Start Mock Interview
+              </>
+            )}
+          </button>
+        </div>
+      </div>
 
       <SiteFooter />
     </div>
