@@ -257,6 +257,7 @@ export default function ProfilePage() {
 
           <div className={nav.navLinks}>
             <Link href="/resume" className={nav.navLink}>Resume Builder</Link>
+            <Link href="/interview/setup" className={nav.navLink}>Mock Interview</Link>
             <Link href="/#features" className={nav.navLink}>Features</Link>
             <Link href="/#how-it-works" className={nav.navLink}>How It Works</Link>
             <Link href="/#stats" className={nav.navLink}>Results</Link>
@@ -318,6 +319,7 @@ export default function ProfilePage() {
             </div>
             <div className={nav.mobileDivider} />
             <Link href="/resume" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Resume Builder</Link>
+            <Link href="/interview/setup" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
             <Link href="/#features" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Features</Link>
             <Link href="/#how-it-works" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</Link>
             <Link href="/#stats" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Results</Link>

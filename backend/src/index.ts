@@ -11,6 +11,7 @@ import connectDB from "./config/db";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import resumeRoutes from "./routes/resume";
+import interviewRoutes from "./routes/interview";
 
 
 const app = express();
@@ -33,6 +34,7 @@ app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/resume", resumeRoutes);
+app.use("/api/interviews", interviewRoutes);
 
 // ─── Health Check Route ─────────────────────────────────────
 app.get("/api/health", (_req, res) => {
