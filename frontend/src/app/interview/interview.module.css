@@ -17,6 +17,13 @@
   flex-direction: column;
   z-index: 10;
   position: relative;
+  transition: max-width var(--transition-base);
+}
+
+@media (min-width: 850px) {
+  .layout {
+    max-width: 1040px;
+  }
 }
 
 /* ─── Card Container (Setup, Chat, Results) ────────────── */
@@ -68,6 +75,13 @@
   max-width: 600px;
   margin: 0 auto;
   width: 100%;
+  transition: max-width var(--transition-base);
+}
+
+@media (min-width: 850px) {
+  .setupBody {
+    max-width: 960px;
+  }
 }
 
 .setupTitle {
@@ -127,7 +141,7 @@
   color: var(--text-primary);
 }
 
-/* --- Role Selected State (Teal) --- */
+/* --- Role Selected State (Teal Green) --- */
 .chipSelectedRole {
   background: rgba(20, 184, 166, 0.08);
   color: #14b8a6;
@@ -141,18 +155,32 @@
   color: #14b8a6;
 }
 
-/* --- Experience Level Selected State (Cyan) --- */
+/* --- Experience Level Selected State (Grass Green) --- */
 .chipSelectedLevel {
-  background: rgba(6, 182, 212, 0.08);
-  color: #06b6d4;
-  border-color: rgba(6, 182, 212, 0.35);
+  background: rgba(34, 197, 94, 0.08);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.35);
   font-weight: 500;
 }
 
 .chipSelectedLevel:hover {
-  background: rgba(6, 182, 212, 0.12);
-  border-color: rgba(6, 182, 212, 0.5);
-  color: #06b6d4;
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.5);
+  color: #22c55e;
+}
+
+/* --- Duration Selected State (Blue/Cyan) --- */
+.chipSelectedDuration {
+  background: rgba(14, 165, 233, 0.08);
+  color: #0ea5e9;
+  border-color: rgba(14, 165, 233, 0.35);
+  font-weight: 500;
+}
+
+.chipSelectedDuration:hover {
+  background: rgba(14, 165, 233, 0.12);
+  border-color: rgba(14, 165, 233, 0.5);
+  color: #0ea5e9;
 }
 
 /* ─── Company Logo Wall (Footer Style) ────────────────────── */
@@ -170,32 +198,33 @@
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-base);
-  padding: 0.45rem 1rem;
-  border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid var(--border-subtle);
+  opacity: 0.65;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid transparent;
   user-select: none;
-  min-height: 38px;
-  opacity: 0.7;
+  min-height: 40px;
 }
 
-.logoItem:not(.logoItemActive):hover {
+.logoItem:not([class*="Active"]):hover {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
+/* --- Active Selected State (Emerald Green Accent) --- */
 .logoItemActive {
-  opacity: 1;
-  background: rgba(16, 185, 129, 0.06);
-  border-color: rgba(16, 185, 129, 0.25);
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.08);
+  opacity: 1 !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.15) !important;
 }
 
 .logoItemActive:hover {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.12);
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.22) !important;
 }
 
 .typeGrid {
@@ -226,13 +255,13 @@
 }
 
 .typeCardSelectedQuestion {
-  border-color: rgba(14, 165, 233, 0.35);
-  background: rgba(14, 165, 233, 0.06);
+  border-color: rgba(52, 211, 153, 0.35);
+  background: rgba(52, 211, 153, 0.06);
 }
 
 .typeCardSelectedQuestion:hover {
-  border-color: rgba(14, 165, 233, 0.5);
-  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(52, 211, 153, 0.5);
+  background: rgba(52, 211, 153, 0.1);
 }
 
 .tcTitle {
@@ -246,7 +275,22 @@
 }
 
 .typeCardSelectedQuestion .tcTitle {
-  color: #0ea5e9;
+  color: #34d399;
+}
+
+.typeCardCheckbox {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.typeCardSelectedQuestion .typeCardCheckbox {
+  color: #34d399;
 }
 
 .tcSub {
@@ -257,7 +301,8 @@
 
 .startBtn {
   width: 100%;
-  padding: 0.85rem;
+  height: 48px;
+  /* Fixed height to prevent layout shift */
   background: var(--btn-solid-bg);
   color: var(--btn-solid-fg);
   border: none;
@@ -272,6 +317,9 @@
   justify-content: center;
   gap: 0.5rem;
   box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+  /* Prevent wrapping */
+  flex-shrink: 0;
 }
 
 .startBtn:hover:not(:disabled) {
@@ -825,379 +873,137 @@
   }
 }
 
-/* ─── Mock Interview Setup Overhaul ────────────────────── */
-
-.setupBodyGrid {
+/* ─── Grid & Sidebar Setup ───────────────────────────── */
+.setupGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.5rem;
+  align-items: start;
   width: 100%;
 }
 
-@media (min-width: 1024px) {
-  .setupBodyGrid {
-    grid-template-columns: 280px 1fr;
-    gap: 3rem;
-    align-items: start;
+@media (min-width: 850px) {
+  .setupGrid {
+    grid-template-columns: 1fr 300px;
+    gap: 3.5rem;
   }
+}
+
+.setupForm {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .summarySidebar {
-  position: relative;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 120px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--glass-shadow);
+  padding: 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-}
-
-@media (min-width: 1024px) {
-  .summarySidebar {
-    position: sticky;
-    top: 100px;
-  }
+  gap: 1.5rem;
+  z-index: 20;
 }
 
 .sidebarTitle {
   font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--text-primary);
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 0.75rem;
+  letter-spacing: -0.01em;
 }
 
-.sidebarList {
+.sidebarSection {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
-.sidebarItem {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+.sidebarSection:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
-.sidebarItemLabel {
-  font-size: 0.7rem;
+.sidebarSectionLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
-  font-weight: 600;
 }
 
-.sidebarItemValue {
+.sidebarSectionValue {
   font-size: 0.85rem;
-  color: var(--text-primary);
   font-weight: 500;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.sidebarItemValue svg {
+.sidebarSectionValue svg {
   flex-shrink: 0;
 }
 
-.stickyCTA {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border-subtle);
-  padding: 0.85rem 2rem;
-  z-index: 100;
+.sidebarBadgeList {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
-  animation: fadeInUp var(--transition-base) ease-out;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.1rem;
 }
 
-[data-theme="light"] .stickyCTA {
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.05);
-}
-
-.stickyCTAInner {
-  max-width: 800px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-}
-
-.stickyCTAMeta {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .stickyCTAMeta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-}
-
-.stickyCTATitle {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.stickyCTASub {
+.sidebarBadge {
   font-size: 0.72rem;
-  color: var(--text-secondary);
-}
-
-.stickyCTAButton {
-  padding: 0.65rem 1.75rem;
-  background: linear-gradient(135deg, #10b981, #14b8a6);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.25);
-}
-
-.stickyCTAButton:hover:not(:disabled) {
-  box-shadow: 0 6px 20px rgba(20, 184, 166, 0.35);
-  background: linear-gradient(135deg, #059669, #0d9488);
-}
-
-.stickyCTAButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: var(--surface-300);
-  box-shadow: none;
-  color: var(--text-muted);
-}
-
-.toggleGroup {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.35rem;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid var(--border-subtle);
-  padding: 0.2rem;
-  border-radius: var(--radius-md);
-  width: 100%;
-}
-
-.toggleBtn {
-  font-size: 0.8rem;
-  padding: 0.45rem;
+  padding: 0.2rem 0.5rem;
   border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid transparent;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all var(--transition-fast);
-  text-align: center;
-  user-select: none;
-}
-
-.toggleBtn:hover {
-  color: var(--text-primary);
   background: rgba(255, 255, 255, 0.03);
-}
-
-/* Difficulty selected (Indigo) */
-.toggleBtnSelectedIndigo {
-  background: rgba(99, 102, 241, 0.08) !important;
-  color: #6366f1 !important;
-  border-color: rgba(99, 102, 241, 0.35) !important;
-  font-weight: 600;
-}
-
-.toggleBtnSelectedIndigo:hover {
-  background: rgba(99, 102, 241, 0.12) !important;
-  border-color: rgba(99, 102, 241, 0.5) !important;
-}
-
-/* Duration selected (Violet) */
-.toggleBtnSelectedViolet {
-  background: rgba(139, 92, 246, 0.08) !important;
-  color: #8b5cf6 !important;
-  border-color: rgba(139, 92, 246, 0.35) !important;
-  font-weight: 600;
-}
-
-.toggleBtnSelectedViolet:hover {
-  background: rgba(139, 92, 246, 0.12) !important;
-  border-color: rgba(139, 92, 246, 0.5) !important;
-}
-
-.tooltipContainer {
-  position: relative;
-  display: inline-flex;
-}
-
-.tooltipText {
-  visibility: hidden;
-  position: absolute;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #111111;
-  border: 1px solid var(--border-strong);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--text-secondary);
-  padding: 0.4rem 0.6rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.72rem;
   font-weight: 500;
-  white-space: nowrap;
-  z-index: 200;
-  box-shadow: var(--shadow-md);
-  opacity: 0;
-  transition: opacity var(--transition-fast) ease-in-out, transform var(--transition-fast) ease-in-out;
-  pointer-events: none;
 }
 
-[data-theme="light"] .tooltipText {
-  background: #ffffff;
-}
-
-.tooltipText::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 5px;
-  border-style: solid;
-  border-color: #111111 transparent transparent transparent;
-}
-
-[data-theme="light"] .tooltipText::after {
-  border-color: #ffffff transparent transparent transparent;
-}
-
-.tooltipContainer:hover .tooltipText {
-  visibility: visible;
-  opacity: 1;
-  transform: translateX(-50%) translateY(-2px);
-}
-
-.sectionDivider {
-  border: none;
-  border-top: 1px solid var(--border-subtle);
-  margin: 1.75rem 0;
-}
-
-.progressContainer {
-  margin-bottom: 2rem;
+/* ─── Top Progress & Stepper ─────────────────────────── */
+.topProgress {
+  margin-bottom: 2.5rem;
   background: rgba(255, 255, 255, 0.01);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 1rem 1.25rem;
   border-radius: var(--radius-md);
-  padding: 0.85rem 1.15rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
 }
 
-.progressHeader {
+.topProgressText {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.progressTitle {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.progressPercentage {
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.6rem;
+}
+
+.topProgressCount {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
   color: #10b981;
 }
 
-.progressBarTrack {
-  height: 5px;
-  background: var(--surface-200);
+.topProgressBar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-full);
   overflow: hidden;
+  width: 100%;
 }
 
-.progressBarFill {
+.topProgressFill {
   height: 100%;
-  background: linear-gradient(90deg, #10b981, #0ea5e9);
-  border-radius: var(--radius-full);
-  transition: width 0.3s ease-out;
-}
-
-.customInputContainer {
-  margin-top: 0.75rem;
-  width: 100%;
-  animation: fadeInUp var(--transition-fast) ease-out;
-}
-
-.customInput {
-  width: 100%;
-  padding: 0.55rem 0.85rem;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-primary);
-  font-size: 0.85rem;
-  transition: all var(--transition-fast);
-}
-
-.customInput:focus {
-  outline: none;
-  border-color: rgba(16, 185, 129, 0.35);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.typeCardCheckbox {
-  position: absolute;
-  top: 0.85rem;
-  right: 0.85rem;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-}
-
-.typeCardSelectedQuestion .typeCardCheckbox {
-  color: #0ea5e9;
-}
-
-.typeCard {
-  position: relative;
-}
-
-.activeLinkUnderline {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #14b8a6;
-  border-radius: var(--radius-full);
-  box-shadow: 0 1px 4px rgba(20, 184, 166, 0.4);
+  background: #10b981;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
