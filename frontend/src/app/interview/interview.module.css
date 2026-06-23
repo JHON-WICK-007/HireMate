@@ -240,6 +240,7 @@
 }
 
 .typeCard {
+  position: relative;
   padding: 1rem;
   border-radius: var(--radius-md);
   border: 1px solid transparent;

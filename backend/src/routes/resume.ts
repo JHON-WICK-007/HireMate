@@ -104,7 +104,7 @@ ${extractedText.substring(0, 15000)}
     // Call with automatic retry on 503 errors
     const response = await callWithRetry(() =>
       ai.models.generateContent({
-        model: 'gemini-2.5-flash-lite',
+        model: 'gemini-2.5-flash',
         contents: prompt,
         config: {
           responseMimeType: "application/json",

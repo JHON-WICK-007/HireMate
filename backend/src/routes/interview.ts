@@ -64,7 +64,7 @@ Respond ONLY with a valid JSON object matching this exact schema:
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const response = await callWithRetry(() =>
       ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-2.5-flash",
         contents: prompt,
         config: {
           responseMimeType: "application/json",
@@ -224,7 +224,7 @@ If isEnded is true:
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const response = await callWithRetry(() =>
       ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-2.5-flash",
         contents: prompt,
         config: {
           responseMimeType: "application/json",
