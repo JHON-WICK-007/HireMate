@@ -793,7 +793,6 @@ export default function Home() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [mounted, setMounted] = useState(false);
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
   const lastScrollY = useRef(0);
   const initials = user?.fullName
@@ -801,7 +800,6 @@ export default function Home() {
     : "U";
 
   useEffect(() => {
-    setMounted(true);
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
@@ -1167,7 +1165,7 @@ export default function Home() {
             <a href="#stats" className={styles.navLink}>Results</a>
           </div>
 
-          <div className={styles.navActions} style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.2s ease" }}>
+          <div className={styles.navActions}>
             {isLoggedIn ? (
               <>
                 <Link href="/profile" className={styles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
@@ -1232,8 +1230,7 @@ export default function Home() {
             <a href="#how-it-works" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</a>
             <a href="#stats" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Results</a>
             <div className={styles.mobileDivider} />
-            {mounted && (
-              isLoggedIn ? (
+            {isLoggedIn ? (
               <>
                 <Link href="/profile" className={styles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   {user?.avatar ? (
@@ -1274,7 +1271,7 @@ export default function Home() {
                 <Link href="/auth?mode=signin" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Sign In</Link>
                 <Link href="/auth?mode=signup" className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center" }} onClick={() => setMobileMenu(false)}>Get Started</Link>
               </>
-            ))}
+            )}
           </div>
         )}
       </nav>

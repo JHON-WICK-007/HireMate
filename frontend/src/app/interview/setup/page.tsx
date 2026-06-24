@@ -369,7 +369,6 @@ export default function SetupPage() {
   const [avatar, setAvatar] = useState("");
   const [fullName, setFullName] = useState("");
   const [userInitials, setUserInitials] = useState("U");
-  const [profileLoaded, setProfileLoaded] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -469,9 +468,6 @@ export default function SetupPage() {
       })
       .catch(() => {
         toast.error("Failed to authenticate session.");
-      })
-      .finally(() => {
-        setProfileLoaded(true);
       });
   }, []);
 
@@ -562,7 +558,7 @@ export default function SetupPage() {
             <Link href="/profile" className={nav.navLink}>Profile</Link>
           </div>
 
-          <div className={nav.navActions} style={{ opacity: profileLoaded ? 1 : 0, transition: "opacity 0.2s ease" }}>
+          <div className={nav.navActions}>
             <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
               {avatar ? (
                 <img
