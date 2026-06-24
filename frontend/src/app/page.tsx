@@ -805,7 +805,7 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
-    
+
     // Check if we should display the welcome modal
     const showWelcomeFlag = localStorage.getItem("showWelcomeModal");
     if (showWelcomeFlag === "true") {
@@ -815,7 +815,7 @@ export default function Home() {
           const parsedUser = JSON.parse(savedUser);
           setWelcomeUserName(parsedUser.fullName || "");
           setShowWelcome(true);
-        } catch (e) {}
+        } catch (e) { }
       }
       localStorage.removeItem("showWelcomeModal");
     }
@@ -829,7 +829,7 @@ export default function Home() {
       if (savedUser) {
         try {
           setUser(JSON.parse(savedUser));
-        } catch (e) {}
+        } catch (e) { }
       }
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       fetch(`${API_URL}/api/auth/me`, {
@@ -1302,50 +1302,50 @@ export default function Home() {
             <div className={styles.mobileDivider} />
             {mounted && (
               isLoggedIn ? (
-              <>
-                <Link href="/profile" className={styles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  {user?.avatar ? (
-                    <img
-                      src={user.avatar}
-                      alt="Profile"
-                      style={{
-                        width: "42px",
-                        height: "42px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        border: "1.5px solid var(--border-default)"
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: "42px",
-                        height: "42px",
-                        borderRadius: "50%",
-                        background: "var(--surface-300)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "0.95rem",
-                        fontWeight: "bold",
-                        color: "var(--text-primary)"
-                      }}
-                    >
-                      {initials}
-                    </div>
-                  )}
-                  <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
-                </Link>
-                <button onClick={handleSignOut} className={styles.mobileLink} style={{ color: "var(--color-error)", border: "none", background: "none", cursor: "pointer", padding: "12px 16px", textAlign: "left", fontSize: "1.1rem", fontWeight: "600", width: "100%" }}>
-                  Sign Out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/auth?mode=signin" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Sign In</Link>
-                <Link href="/auth?mode=signup" className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center" }} onClick={() => setMobileMenu(false)}>Get Started</Link>
-              </>
-            ))}
+                <>
+                  <Link href="/profile" className={styles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    {user?.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt="Profile"
+                        style={{
+                          width: "42px",
+                          height: "42px",
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          border: "1.5px solid var(--border-default)"
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "42px",
+                          height: "42px",
+                          borderRadius: "50%",
+                          background: "var(--surface-300)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "0.95rem",
+                          fontWeight: "bold",
+                          color: "var(--text-primary)"
+                        }}
+                      >
+                        {initials}
+                      </div>
+                    )}
+                    <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
+                  </Link>
+                  <button onClick={handleSignOut} className={styles.mobileLink} style={{ color: "var(--color-error)", border: "none", background: "none", cursor: "pointer", padding: "12px 16px", textAlign: "left", fontSize: "1.1rem", fontWeight: "600", width: "100%" }}>
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth?mode=signin" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Sign In</Link>
+                  <Link href="/auth?mode=signup" className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center" }} onClick={() => setMobileMenu(false)}>Get Started</Link>
+                </>
+              ))}
           </div>
         )}
       </nav>
@@ -1491,7 +1491,7 @@ export default function Home() {
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
             <span className={styles.sectionLabel}>How It Works</span>
-            <h2 className={styles.sectionTitle}>Four steps to interview confidence</h2>
+            <h2 className={styles.gradientSectionTitle}>Four steps to interview confidence</h2>
           </motion.div>
 
           <div className={styles.timelineWrapper}>
@@ -1567,7 +1567,7 @@ export default function Home() {
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
             <span className={styles.sectionLabel}>By The Numbers</span>
-            <h2 className={styles.sectionTitle}>Platform impact at a glance</h2>
+            <h2 className={styles.gradientSectionTitle}>Platform impact at a glance</h2>
           </motion.div>
           <motion.div
             className={styles.statsGrid}
@@ -1778,11 +1778,11 @@ export default function Home() {
                   <div className={styles.welcomeGridItem}>
                     <div className={styles.gridItemIcon}>
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round"/>
-                        <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round"/>
-                        <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" strokeLinejoin="round"/>
-                        <line x1="16" y1="17" x2="8" y2="17" strokeLinecap="round" strokeLinejoin="round"/>
-                        <polyline points="10 9 9 9 8 9" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
+                        <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round" />
+                        <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" strokeLinejoin="round" />
+                        <line x1="16" y1="17" x2="8" y2="17" strokeLinecap="round" strokeLinejoin="round" />
+                        <polyline points="10 9 9 9 8 9" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </div>
                     <span className={styles.gridItemText}>Upload your resume</span>
@@ -1791,10 +1791,10 @@ export default function Home() {
                   <div className={styles.welcomeGridItem}>
                     <div className={styles.gridItemIcon}>
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <line x1="12" y1="19" x2="12" y2="23" strokeLinecap="round" strokeLinejoin="round"/>
-                        <line x1="8" y1="23" x2="16" y2="23" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round" />
+                        <line x1="12" y1="19" x2="12" y2="23" strokeLinecap="round" strokeLinejoin="round" />
+                        <line x1="8" y1="23" x2="16" y2="23" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </div>
                     <span className={styles.gridItemText}>Start mock interview</span>
@@ -1803,11 +1803,11 @@ export default function Home() {
                   <div className={styles.welcomeGridItem}>
                     <div className={styles.gridItemIcon}>
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M4 22h16" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 2a5 5 0 0 1 5 5v5a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M4 22h16" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M12 2a5 5 0 0 1 5 5v5a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </div>
                     <span className={styles.gridItemText}>Track your progress</span>
