@@ -38,10 +38,18 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
       <head>
         <script
+          id="theme-and-auth-loader"
           dangerouslySetInnerHTML={{
             __html: `
               try {
                 document.documentElement.setAttribute('data-theme', 'dark');
+                if (localStorage.getItem('token')) {
+                  document.documentElement.classList.add('auth-logged-in');
+                  document.documentElement.classList.remove('auth-logged-out');
+                } else {
+                  document.documentElement.classList.add('auth-logged-out');
+                  document.documentElement.classList.remove('auth-logged-in');
+                }
               } catch (e) {}
             `,
           }}

@@ -392,48 +392,48 @@ export default function ResumePage() {
           </div>
 
           <div className={homeStyles.navActions} suppressHydrationWarning>
-            {isLoggedIn ? (
-              <>
-                <Link href="/profile" className={homeStyles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
-                  {user?.avatar ? (
-                    <img
-                      src={user.avatar}
-                      alt="Profile"
-                      style={{
-                        width: "42px",
-                        height: "42px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        border: "1.5px solid var(--border-default)"
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: "42px",
-                        height: "42px",
-                        borderRadius: "50%",
-                        background: "var(--surface-300)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "0.95rem",
-                        fontWeight: "bold",
-                        color: "var(--text-primary)"
-                      }}
-                    >
-                      {initials}
-                    </div>
-                  )}
-                  <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href="/auth?mode=signin" className={homeStyles.navBtnGhost}>Sign In</Link>
-                <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid}>Get Started</Link>
-              </>
-            )}
+            {/* Logged-in profile link (instantly toggled via head script) */}
+            <div className="auth-logged-in-only" style={{ display: isLoggedIn ? "flex" : "none" }}>
+              <Link href="/profile" className={homeStyles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt="Profile"
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "1.5px solid var(--border-default)"
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "50%",
+                      background: "var(--surface-300)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "0.95rem",
+                      fontWeight: "bold",
+                      color: "var(--text-primary)"
+                    }}
+                  >
+                    {initials}
+                  </div>
+                )}
+                <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
+              </Link>
+            </div>
+
+            {/* Logged-out buttons (instantly toggled via head script) */}
+            <div className="auth-logged-out-only" style={{ display: !isLoggedIn ? "flex" : "none" }}>
+              <Link href="/auth?mode=signin" className={homeStyles.navBtnGhost}>Sign In</Link>
+              <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid}>Get Started</Link>
+            </div>
           </div>
 
           <button
