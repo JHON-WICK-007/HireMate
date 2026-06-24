@@ -1724,8 +1724,19 @@ export default function Home() {
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 350 }}
             >
-              {/* Violet Header */}
-              <div className={styles.welcomeHeader}>
+              {/* Left Side: Dynamic Animated Neon Lottie Box */}
+              <div className={styles.welcomeLeft}>
+                <div className={styles.lottieWrapper}>
+                  <DotLottieReact
+                    src="/508T6DecB3.json"
+                    loop={true}
+                    autoplay={true}
+                  />
+                </div>
+              </div>
+
+              {/* Right Side: Welcome Details */}
+              <div className={styles.welcomeRight}>
                 {/* 5 dots row */}
                 <div className={styles.dotRow}>
                   <div className={styles.dot} style={{ background: "#fbbf24" }} />
@@ -1734,22 +1745,6 @@ export default function Home() {
                   <div className={styles.dot} style={{ background: "#4ade80" }} />
                   <div className={styles.dot} style={{ background: "#e5e7eb" }} />
                 </div>
-                
-                {/* Success animation wrapper */}
-                <div className={styles.checkmarkContainer}>
-                  <div className={styles.lottieWrapper}>
-                    <DotLottieReact
-                      src="/RJaN4bTA8T.lottie"
-                      loop={true}
-                      autoplay={true}
-                    />
-                  </div>
-                </div>
-
-                <h2 className={styles.welcomeTitle}>
-                  Welcome to HireMate AI,<br />
-                  {welcomeUserName ? welcomeUserName.split(" ")[0] : "Friend"}!
-                </h2>
 
                 <div className={styles.successBadge}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -1757,10 +1752,12 @@ export default function Home() {
                   </svg>
                   <span>Account created successfully</span>
                 </div>
-              </div>
 
-              {/* Dark Body */}
-              <div className={styles.welcomeBody}>
+                <h2 className={styles.welcomeTitle}>
+                  Welcome to HireMate AI,<br />
+                  {welcomeUserName ? welcomeUserName.split(" ")[0] : "Friend"}!
+                </h2>
+
                 <p className={styles.welcomeDesc}>
                   Your account has been created successfully. Let's start your career journey and land the job you've been working toward.
                 </p>
@@ -1806,18 +1803,20 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Primary Button */}
-                <button className={styles.welcomeButton} onClick={() => setShowWelcome(false)}>
-                  <span>Get started</span>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
+                <div className={styles.welcomeActions}>
+                  {/* Primary Button */}
+                  <button className={styles.welcomeButton} onClick={() => setShowWelcome(false)}>
+                    <span>Get started</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
 
-                {/* Secondary Link */}
-                <button className={styles.exploreLink} onClick={() => setShowWelcome(false)}>
-                  Explore on my own
-                </button>
+                  {/* Secondary Link */}
+                  <button className={styles.exploreLink} onClick={() => setShowWelcome(false)}>
+                    Explore on my own
+                  </button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
