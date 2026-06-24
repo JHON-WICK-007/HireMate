@@ -596,7 +596,7 @@ export default function ResumePage() {
               HireMate AI runs deep algorithmic audits across 27 critical parameters to ensure your resume is fully optimized for ATS filters and recruiter benchmarks. We evaluate layout compliance, keyword tailoring, red flags, and seniority fit to maximize your interview conversion rate. Here is a full list of the checks performed:
             </p>
 
-            <motion.div 
+            <motion.div
               className={styles.checksGrid}
               initial="hidden"
               whileInView="visible"
@@ -606,20 +606,19 @@ export default function ResumePage() {
               {checkCategories.map((category, index) => {
                 const isSpanFull = index === 6; // 7th card spans full width
                 const isExpanded = expandedCardId === index;
-                
+
                 return (
                   <motion.div
                     key={index}
                     className={`${styles.checkCard} ${isSpanFull ? styles.cardSpanFull : ""} ${isExpanded ? styles.isExpanded : ""}`}
                     variants={fadeInUp}
-                    whileHover={{ y: -6 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setExpandedCardId(isExpanded ? null : index)}
                   >
                     {/* Left Column: Visual Image Box */}
                     <div className={styles.cardVisual}>
-                      <img 
-                        src="/de-niro.jpg" 
+                      <img
+                        src="/de-niro.jpg"
                         alt={category.title}
                         className={styles.cardVisualBg}
                         style={{ objectFit: "cover", width: "100%", height: "100%" }}
@@ -631,7 +630,7 @@ export default function ResumePage() {
                       <div className={styles.cardHeader}>
                         <h3 className={styles.cardTitle}>{category.title}</h3>
                         <p className={styles.cardDescription}>{category.description}</p>
-                        
+
                         <div className={styles.checklistContainer}>
                           <ul className={styles.cardChecklist}>
                             {category.checks.map((check, cIdx) => (
@@ -650,13 +649,13 @@ export default function ResumePage() {
                       <div className={styles.cardStats}>
                         {/* Mobile chevron to indicate expandable list */}
                         <div className={styles.mobileChevron}>
-                          <svg 
-                            className={`${styles.chevronIcon} ${isExpanded ? styles.chevronRotate : ""}`} 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            strokeWidth="2.5" 
-                            strokeLinecap="round" 
+                          <svg
+                            className={`${styles.chevronIcon} ${isExpanded ? styles.chevronRotate : ""}`}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
                             strokeLinejoin="round"
                           >
                             <polyline points="6 9 12 15 18 9" />

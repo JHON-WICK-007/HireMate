@@ -979,11 +979,14 @@
 .checksTitle {
   font-size: 2.5rem;
   font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 1.25rem;
   font-family: var(--font-display);
   line-height: 1.25;
   letter-spacing: -0.03em;
+  margin-bottom: 1.25rem;
+  background: linear-gradient(135deg, var(--gradient-text-start) 0%, var(--gradient-text-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .checksSubtitle {
@@ -1012,8 +1015,8 @@
   min-height: 200px;
   overflow: hidden;
   box-shadow: var(--glass-shadow);
-  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   position: relative;
   will-change: transform, box-shadow;
@@ -1113,8 +1116,8 @@
 
 /* Checklist responsive container */
 .checklistContainer {
-  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cardChecklist {
@@ -1203,6 +1206,7 @@
   .cardChecklist li:nth-child(n+5) {
     display: none;
   }
+
   .checklistMore {
     display: flex;
     align-items: center;
@@ -1215,6 +1219,7 @@
     grid-template-columns: 1fr;
     gap: 1.25rem;
   }
+
   .cardSpanFull {
     grid-column: span 1;
   }
@@ -1225,34 +1230,34 @@
     flex-direction: column;
     min-height: auto;
   }
-  
+
   .cardVisual {
     width: 100%;
     height: 140px;
   }
-  
+
   .cardContent {
     padding: 1.5rem;
   }
-  
+
   /* Mobile Checklist: hidden by default, expands to single column on tap */
   .checklistContainer {
     max-height: 0;
     opacity: 0;
     overflow: hidden;
   }
-  
+
   .checkCard.isExpanded .checklistContainer {
     max-height: 400px;
     opacity: 1;
   }
-  
+
   .cardChecklist {
     grid-template-columns: 1fr;
     gap: 0.5rem;
     margin-top: 0.75rem;
   }
-  
+
   .mobileChevron {
     display: flex;
   }
