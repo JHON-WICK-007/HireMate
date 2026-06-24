@@ -245,12 +245,7 @@ export default function ProfilePage() {
     router.push("/");
   };
 
-  if (isLoading) return (
-    <div className={styles.loadingScreen}>
-      <div className={styles.loadingSpinner} />
-      <p>Loading profile…</p>
-    </div>
-  );
+
 
   const initials = fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || "U";
 
@@ -398,7 +393,13 @@ export default function ProfilePage() {
         )}
       </nav>
 
-      <div className={styles.layout}>
+      {isLoading ? (
+        <div className={styles.loadingScreen}>
+          <div className={styles.loadingSpinner} />
+          <p>Loading profile…</p>
+        </div>
+      ) : (
+        <div className={styles.layout}>
         {/* ── Left: Profile Card ── */}
         <aside className={styles.profileCard}>
           {/* Avatar */}
@@ -664,6 +665,7 @@ export default function ProfilePage() {
 
         </main>
       </div>
+      )}
 
       <SiteFooter />
     </div>

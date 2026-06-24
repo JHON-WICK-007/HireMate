@@ -208,14 +208,7 @@ function ResultsContent() {
     return circumference - (score / 100) * circumference;
   };
 
-  if (isLoadingResults) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "12px", color: "var(--text-secondary)" }}>
-        <IconSpinner />
-        <p>Loading interview evaluation report...</p>
-      </div>
-    );
-  }
+
 
   return (
     <div className={styles.page}>
@@ -318,8 +311,13 @@ function ResultsContent() {
         )}
       </nav>
 
-      {/* ── Main Layout Content ── */}
-      <main className={styles.layout}>
+      {isLoadingResults ? (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "12px", color: "var(--text-secondary)" }}>
+          <IconSpinner />
+          <p>Loading interview evaluation report...</p>
+        </div>
+      ) : (
+        <main className={styles.layout}>
         <div className={styles.consoleCard}>
 
 
@@ -417,6 +415,7 @@ function ResultsContent() {
           </div>
         </div>
       </main>
+      )}
 
       <SiteFooter />
     </div>

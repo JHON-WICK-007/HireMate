@@ -636,14 +636,7 @@ function LiveInterviewContent() {
     }
   };
 
-  if (isLoadingSession) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "12px", color: "var(--text-secondary)" }}>
-        <IconSpinner />
-        <p>Loading active mock interview...</p>
-      </div>
-    );
-  }
+
 
   return (
     <div className={styles.page}>
@@ -747,8 +740,13 @@ function LiveInterviewContent() {
         )}
       </nav>
 
-      {/* ── Main Layout Content ── */}
-      <main className={styles.layout}>
+      {isLoadingSession ? (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "12px", color: "var(--text-secondary)" }}>
+          <IconSpinner />
+          <p>Loading active mock interview...</p>
+        </div>
+      ) : (
+        <main className={styles.layout}>
         <div className={styles.consoleCard}>
 
 
@@ -954,6 +952,7 @@ function LiveInterviewContent() {
           </div>
         </div>
       </main>
+      )}
 
       <SiteFooter />
     </div>
