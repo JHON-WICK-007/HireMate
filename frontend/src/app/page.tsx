@@ -1189,7 +1189,16 @@ export default function Home() {
           <div className={styles.navActions} suppressHydrationWarning>
             {/* Logged-in profile link (instantly toggled via head script) */}
             <div className="auth-logged-in-only">
-              <Link href="/profile" className={styles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
+              <Link
+                href="/profile"
+                className={styles.navBtnGhost}
+                style={{
+                  width: "136px",
+                  paddingLeft: "6px",
+                  paddingRight: "16px",
+                  justifyContent: "flex-start"
+                }}
+              >
                 {user?.avatar ? (
                   <img
                     src={user.avatar}
@@ -1220,7 +1229,18 @@ export default function Home() {
                     {initials}
                   </div>
                 )}
-                <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: "64px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    textAlign: "left"
+                  }}
+                >
+                  {user?.fullName ? user.fullName.split(" ")[0] : "Profile"}
+                </span>
               </Link>
             </div>
 

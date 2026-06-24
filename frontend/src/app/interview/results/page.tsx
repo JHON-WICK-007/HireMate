@@ -247,7 +247,16 @@ function ResultsContent() {
           </div>
 
           <div className={nav.navActions} suppressHydrationWarning>
-            <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
+            <Link
+              href="/profile"
+              className={nav.navBtnGhost}
+              style={{
+                width: "136px",
+                paddingLeft: "6px",
+                paddingRight: "16px",
+                justifyContent: "flex-start"
+              }}
+            >
               {avatar ? (
                 <img
                   src={avatar}
@@ -278,7 +287,18 @@ function ResultsContent() {
                   {userInitials}
                 </div>
               )}
-              <span>{fullName ? fullName.split(" ")[0] : "Profile"}</span>
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "64px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  textAlign: "left"
+                }}
+              >
+                {fullName ? fullName.split(" ")[0] : "Profile"}
+              </span>
             </Link>
           </div>
 

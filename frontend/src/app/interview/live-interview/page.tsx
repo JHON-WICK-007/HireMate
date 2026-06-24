@@ -675,7 +675,17 @@ function LiveInterviewContent() {
           </div>
 
           <div className={nav.navActions} suppressHydrationWarning>
-            <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }} onClick={blockNavigation}>
+            <Link
+              href="/profile"
+              className={nav.navBtnGhost}
+              style={{
+                width: "136px",
+                paddingLeft: "6px",
+                paddingRight: "16px",
+                justifyContent: "flex-start"
+              }}
+              onClick={blockNavigation}
+            >
               {avatar ? (
                 <img
                   src={avatar}
@@ -706,7 +716,18 @@ function LiveInterviewContent() {
                   {userInitials}
                 </div>
               )}
-              <span>{fullName ? fullName.split(" ")[0] : "Profile"}</span>
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "64px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  textAlign: "left"
+                }}
+              >
+                {fullName ? fullName.split(" ")[0] : "Profile"}
+              </span>
             </Link>
           </div>
 
