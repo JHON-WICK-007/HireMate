@@ -356,8 +356,6 @@ export default function ResumePage() {
     return `${(bytes / 1048576).toFixed(1)} MB`;
   };
 
-  if (!isLoggedIn) return null;
-
   return (
     <div className={styles.page}>
       <HomeBackdrop />
