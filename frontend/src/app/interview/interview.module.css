@@ -135,52 +135,52 @@
   font-weight: 500;
 }
 
-.chip:not(.chipSelectedRole):not(.chipSelectedLevel):hover {
+.chip:not(.chipSelectedRole):not(.chipSelectedLevel):not(.chipSelectedDuration):hover {
   border-color: rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-primary);
 }
 
-/* --- Role Selected State (Teal Green) --- */
+/* --- Role Selected State (Cyan) --- */
 .chipSelectedRole {
+  background: rgba(6, 182, 212, 0.08);
+  color: #06b6d4;
+  border-color: rgba(6, 182, 212, 0.35);
+  font-weight: 500;
+}
+
+.chipSelectedRole:hover {
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.5);
+  color: #06b6d4;
+}
+
+/* --- Experience Level Selected State (Teal) --- */
+.chipSelectedLevel {
   background: rgba(20, 184, 166, 0.08);
   color: #14b8a6;
   border-color: rgba(20, 184, 166, 0.35);
   font-weight: 500;
 }
 
-.chipSelectedRole:hover {
+.chipSelectedLevel:hover {
   background: rgba(20, 184, 166, 0.12);
   border-color: rgba(20, 184, 166, 0.5);
   color: #14b8a6;
 }
 
-/* --- Experience Level Selected State (Grass Green) --- */
-.chipSelectedLevel {
-  background: rgba(34, 197, 94, 0.08);
-  color: #22c55e;
-  border-color: rgba(34, 197, 94, 0.35);
-  font-weight: 500;
-}
-
-.chipSelectedLevel:hover {
-  background: rgba(34, 197, 94, 0.12);
-  border-color: rgba(34, 197, 94, 0.5);
-  color: #22c55e;
-}
-
-/* --- Duration Selected State (Blue/Cyan) --- */
+/* --- Duration Selected State (Emerald) --- */
 .chipSelectedDuration {
-  background: rgba(14, 165, 233, 0.08);
-  color: #0ea5e9;
-  border-color: rgba(14, 165, 233, 0.35);
+  background: rgba(16, 185, 129, 0.08);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.35);
   font-weight: 500;
 }
 
 .chipSelectedDuration:hover {
-  background: rgba(14, 165, 233, 0.12);
-  border-color: rgba(14, 165, 233, 0.5);
-  color: #0ea5e9;
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: #10b981;
 }
 
 /* ─── Company Logo Wall (Footer Style) ────────────────────── */
@@ -199,12 +199,13 @@
   cursor: pointer;
   transition: all var(--transition-base);
   opacity: 0.65;
-  padding: 0.5rem 0.85rem;
+  width: 110px;
+  height: 40px;
   border-radius: var(--radius-md);
   background: transparent;
   border: 1px solid transparent;
   user-select: none;
-  min-height: 40px;
+  box-sizing: border-box;
 }
 
 .logoItem:not([class*="Active"]):hover {
@@ -213,18 +214,18 @@
   border-color: rgba(255, 255, 255, 0.08);
 }
 
-/* --- Active Selected State (Emerald Green Accent) --- */
+/* --- Company Active Selected State (Indigo Accent) --- */
 .logoItemActive {
   opacity: 1 !important;
-  background: rgba(16, 185, 129, 0.08) !important;
-  border-color: rgba(16, 185, 129, 0.35) !important;
-  box-shadow: 0 0 14px rgba(16, 185, 129, 0.15) !important;
+  background: rgba(99, 102, 241, 0.08) !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.15) !important;
 }
 
 .logoItemActive:hover {
-  background: rgba(16, 185, 129, 0.12) !important;
-  border-color: rgba(16, 185, 129, 0.5) !important;
-  box-shadow: 0 0 18px rgba(16, 185, 129, 0.22) !important;
+  background: rgba(99, 102, 241, 0.12) !important;
+  border-color: rgba(99, 102, 241, 0.5) !important;
+  box-shadow: 0 0 18px rgba(99, 102, 241, 0.22) !important;
 }
 
 .typeGrid {
@@ -256,13 +257,13 @@
 }
 
 .typeCardSelectedQuestion {
-  border-color: rgba(52, 211, 153, 0.35);
-  background: rgba(52, 211, 153, 0.06);
+  border-color: rgba(168, 85, 247, 0.35);
+  background: rgba(168, 85, 247, 0.06);
 }
 
 .typeCardSelectedQuestion:hover {
-  border-color: rgba(52, 211, 153, 0.5);
-  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(168, 85, 247, 0.5);
+  background: rgba(168, 85, 247, 0.1);
 }
 
 .tcTitle {
@@ -276,7 +277,7 @@
 }
 
 .typeCardSelectedQuestion .tcTitle {
-  color: #34d399;
+  color: #a855f7;
 }
 
 .typeCardCheckbox {
@@ -291,7 +292,7 @@
 }
 
 .typeCardSelectedQuestion .typeCardCheckbox {
-  color: #34d399;
+  color: #a855f7;
 }
 
 .tcSub {
@@ -342,16 +343,29 @@
 .chatLayout {
   display: flex;
   flex-direction: column;
-  height: 600px;
+  height: 950px;
+}
+
+.chatHeader {
+  border-bottom: 1px solid var(--border-subtle);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
 }
 
 .chatMeta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.85rem 1.25rem;
-  border-bottom: 1px solid var(--border-subtle);
+  padding: 0.9rem 1.25rem 0.85rem;
   background: transparent;
+}
+
+.progressContainer {
+  padding: 0.25rem 1.25rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .metaLeft {
@@ -406,6 +420,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 1.5rem;
+  margin-bottom: 1.5rem; /* create a physical layout gap to prevent message bubbles and scrollbar from overlapping the input bar */
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -437,12 +452,17 @@
   font-weight: 700;
   flex-shrink: 0;
   user-select: none;
+  overflow: hidden;
 }
 
 .avatarAi {
-  background: rgba(168, 85, 247, 0.12);
-  color: var(--domain-interview, #a855f7);
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.5), inset 0 0 4px rgba(255, 255, 255, 0.2);
 }
 
 .avatarUser {
@@ -491,93 +511,192 @@
 .scorePill {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.35rem;
   font-size: 0.72rem;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
   margin-top: 0.35rem;
-  background: rgba(34, 197, 94, 0.1);
-  color: var(--success, #22c55e);
-  border: 1px solid rgba(34, 197, 94, 0.2);
   width: fit-content;
+  font-weight: 600;
+  transition: all var(--transition-fast);
 }
 
-.chatInputArea {
-  padding: 0.85rem 1.25rem;
-  border-top: 1px solid var(--border-subtle);
-  background: transparent;
+.inputSection {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+.chatInputAreaForm {
+  margin: 0 1.25rem 0.25rem;
   display: flex;
   gap: 0.75rem;
-  align-items: flex-end;
+  align-items: stretch;
 }
 
-.chatInputArea textarea {
+.chatInputContainer {
+  flex: 1;
+  min-height: 56px;
+  padding: 0.25rem 1.5rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.015);
+  border: none;
+  display: flex;
+  align-items: center;
+  transition: all var(--transition-base);
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+/* Very thin dynamic border that shifts colors subtly based on question type */
+.chatInputContainer::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px; /* 2px border width */
+  background: linear-gradient(135deg, 
+    var(--active-gradient-c1, rgba(168, 85, 247, 0.25)), 
+    var(--active-gradient-c2, rgba(239, 68, 68, 0.25)), 
+    var(--active-gradient-c3, rgba(249, 115, 22, 0.25)), 
+    var(--active-gradient-c4, rgba(234, 179, 8, 0.25)), 
+    var(--active-gradient-c5, rgba(16, 185, 129, 0.25)),
+    var(--active-gradient-c6, rgba(59, 130, 246, 0.25)),
+    var(--active-gradient-c1, rgba(168, 85, 247, 0.25))
+  );
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.65;
+  transition: all var(--transition-base);
+  pointer-events: none;
+  animation: borderFlow 8s ease infinite;
+}
+
+.chatInputContainer:focus-within {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.chatInputContainer:focus-within::before {
+  background: linear-gradient(135deg, 
+    var(--active-gradient-c1-focus, #a855f7), 
+    var(--active-gradient-c2-focus, #ef4444), 
+    var(--active-gradient-c3-focus, #f97316), 
+    var(--active-gradient-c4-focus, #eab308), 
+    var(--active-gradient-c5-focus, #10b981),
+    var(--active-gradient-c6-focus, #3b82f6),
+    var(--active-gradient-c1-focus, #a855f7)
+  );
+  background-size: 300% 300%;
+  opacity: 0.95;
+}
+
+@keyframes borderFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.chatInputContainer textarea {
   flex: 1;
   resize: none;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
+  border: none !important;
+  background: transparent !important;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.025);
-  font-family: var(--font-sans);
-  min-height: 44px;
+  min-height: 38px;
   max-height: 140px;
-  transition: all var(--transition-fast);
-  backdrop-filter: blur(8px);
-}
-
-.chatInputArea textarea:focus {
-  outline: none;
-  border-color: rgba(168, 85, 247, 0.3);
-  background: rgba(255, 255, 255, 0.05);
+  outline: none !important;
+  padding: 0.65rem 0;
 }
 
 .sendBtn {
-  width: 44px;
-  height: 44px;
+  width: 130px;
+  height: 56px;
+  align-self: flex-end;
   border-radius: var(--radius-md);
   background: var(--btn-solid-bg);
   color: var(--btn-solid-fg);
-  border: none;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
   transition: all var(--transition-fast);
 }
 
 .sendBtn:hover:not(:disabled) {
   background: var(--btn-solid-hover);
-  transform: scale(1.03);
 }
 
 .sendBtn:active:not(:disabled) {
-  transform: scale(0.97);
+  background: #f1f3f5;
 }
 
 .sendBtn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
+}
+
+.inputHelper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  padding: 0.85rem 2.25rem 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.keyBadge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.helperDot {
+  color: var(--text-muted);
+  opacity: 0.5;
+  margin: 0 0.15rem;
 }
 
 .endBtn {
   font-size: 0.75rem;
-  color: var(--error, #ef4444);
-  border: 1px solid var(--border);
-  background: transparent;
+  color: #ffffff;
+  border: none;
+  background: var(--error, #ef4444);
   border-radius: var(--radius-md);
-  padding: 0.4rem 0.8rem;
+  padding: 0.45rem 1rem;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   transition: all var(--transition-fast);
 }
 
 .endBtn:hover {
-  background: rgba(239, 68, 68, 0.05);
-  border-color: var(--error, #ef4444);
+  background: #dc2626;
+}
+
+.timerWarning {
+  color: var(--error, #ef4444) !important;
+  animation: pulseWarning 1.5s infinite alternate;
+}
+
+@keyframes pulseWarning {
+  0% { opacity: 0.85; }
+  100% { opacity: 1; }
 }
 
 /* ─── Typing Indicator ───────────────────────────────────── */
@@ -946,6 +1065,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  height: 26px;
+  box-sizing: border-box;
 }
 
 .sidebarSectionValue svg {
@@ -1007,4 +1128,140 @@
   background: #10b981;
   transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+/* ─── Setup Form Input ────────────────────────────────── */
+.setupInput {
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.setupInput:focus {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ─── Live Interview Progress Bars ────────────────────── */
+.progressInfoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.solidProgressBar {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  width: 100%;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.solidProgressFill {
+  height: 100%;
+  background: var(--domain-interview, #a855f7);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 8px var(--domain-interview, #a855f7);
+}
+
+.segmentedProgressBar {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.segment {
+  flex: 1;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-full);
+  transition: background-color 0.4s ease;
+}
+
+.segmentFilled {
+  background: var(--domain-interview, #a855f7);
+  box-shadow: 0 0 8px var(--domain-interview, #a855f7);
+}
+
+/* ─── Question Divider Separator ───────────────────────── */
+.questionSeparator {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 2rem 0;
+  gap: 1rem;
+}
+
+.separatorLine {
+  flex: 1;
+  height: 1px;
+}
+
+.questionSeparator .separatorLine:first-child {
+  background: linear-gradient(to left, var(--badge-color, rgba(255, 255, 255, 0.08)), transparent);
+  opacity: 0.18;
+}
+
+.questionSeparator .separatorLine:last-child {
+  background: linear-gradient(to right, var(--badge-color, rgba(255, 255, 255, 0.08)), transparent);
+  opacity: 0.18;
+}
+
+.separatorTextBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  background: transparent;
+  color: var(--badge-color, var(--domain-interview, #a855f7));
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ─── Score Pill Color States (5 tiers) ────────────────── */
+.scorePillExcellent {
+  background: rgba(16, 185, 129, 0.08);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.1);
+}
+
+.scorePillGood {
+  background: rgba(34, 197, 94, 0.06);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.05);
+}
+
+.scorePillAverage {
+  background: rgba(245, 158, 11, 0.06);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.05);
+}
+
+.scorePillOk {
+  background: rgba(249, 115, 22, 0.06);
+  color: #f97316;
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.05);
+}
+
+.scorePillPoor {
+  background: rgba(239, 68, 68, 0.06);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.05);
 }

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styles from "./resume.module.css";
 import homeStyles from "../home.module.css";
-import ThemeToggle from "../components/ThemeToggle";
 import { useToast } from "../components/Toast";
 import SiteFooter from "../components/SiteFooter";
 import HomeBackdrop from "../components/HomeBackdrop";
@@ -367,7 +366,6 @@ export default function ResumePage() {
           </div>
 
           <div className={homeStyles.navActions}>
-            <ThemeToggle />
             {isLoggedIn ? (
               <>
                 <Link href="/profile" className={homeStyles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
@@ -426,11 +424,6 @@ export default function ResumePage() {
         {/* Mobile Menu */}
         {mobileMenu && (
           <div className={homeStyles.mobileMenu}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" }}>
-              <span className={homeStyles.mobileLink} style={{ margin: 0 }}>Theme</span>
-              <ThemeToggle />
-            </div>
-            <div className={homeStyles.mobileDivider} />
             <Link href="/resume" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
             <Link href="/#features" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Features</Link>

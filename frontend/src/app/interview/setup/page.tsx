@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "../interview.module.css";
 import nav from "../../home.module.css";
-import ThemeToggle from "../../components/ThemeToggle";
 import { useToast } from "../../components/Toast";
 import SiteFooter from "../../components/SiteFooter";
 import HomeBackdrop from "../../components/HomeBackdrop";
@@ -117,17 +116,17 @@ const renderCompanyLogo = (company: string) => {
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335" />
           </svg>
-          <span style={{ fontWeight: "600", fontSize: "0.95rem", color: "#4285F4", fontFamily: "'Product Sans', sans-serif" }}>Google</span>
+          <span style={{ fontWeight: "600", fontSize: "0.95rem", color: "#ffffff", fontFamily: "'Product Sans', sans-serif" }}>Google</span>
         </div>
       );
     case "Amazon":
       return (
-        <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
-          <span style={{ fontWeight: "800", fontSize: "0.95rem", color: "var(--text-primary)", fontFamily: "sans-serif" }}>amazon</span>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0, color: "#ff9900", marginTop: "4px" }}>
-            <path d="M15.93 17.13c-1.16.8-2.7 1.17-4.22 1.17-2.5 0-4.66-1.03-5.63-2.67-.14-.23-.03-.43.2-.3l2.84 1.65c.18.1.33.02.43-.13.5-1.03 1.68-1.57 2.76-1.57 1.18 0 2.23.53 2.62 1.57.06.18.2.22.36.1l2.55-1.7c.18-.1.2-.32.06-.48-1.5-1.9-4.07-2.8-6.66-2.8-3.3 0-6.13 1.56-7.23 4.25-.13.3.06.6.35.48a17.27 17.27 0 0111.43-1.03c.2.06.33-.12.16-.27z" fill="currentColor" />
-            <path d="M18.8 13.9a17.1 17.1 0 00.93-3.23c.08-.4-.25-.66-.6-.48a20.2 20.2 0 01-3.66 1.25c-.38.07-.46.43-.13.62.96.53 2.1 1.26 3.08 2 .18.12.33.03.38-.16z" fill="#FF9900" />
-          </svg>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <img
+            src="/amazon.png"
+            alt="Amazon"
+            style={{ height: "18px", width: "auto", flexShrink: 0, filter: "url(#amazon-orange-arrow)" }}
+          />
         </div>
       );
     case "Microsoft":
@@ -144,8 +143,8 @@ const renderCompanyLogo = (company: string) => {
       );
     case "TCS":
       return (
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <svg width="24" height="20" viewBox="0 0 90 50" fill="none" style={{ flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <svg width="34" height="22" viewBox="0 4.2 24 15.6" fill="none" style={{ flexShrink: 0 }}>
             <defs>
               <linearGradient id="tcsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#FF9F00" />
@@ -154,35 +153,19 @@ const renderCompanyLogo = (company: string) => {
                 <stop offset="100%" stopColor="#7000FF" />
               </linearGradient>
             </defs>
-            {/* t */}
-            <path d="M 12 8 L 12 36 C 12 42 18 44 22 44 C 26 44 28 40 28 36" stroke="url(#tcsGrad)" strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M 5 18 L 22 18" stroke="url(#tcsGrad)" strokeWidth="6.5" strokeLinecap="round" />
-            {/* c */}
-            <path d="M 54 18 C 48 12 36 14 36 26 C 36 38 48 40 54 34" stroke="url(#tcsGrad)" strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round" />
-            {/* s */}
-            <path d="M 80 16 C 74 10 64 16 64 24 C 64 32 80 30 80 38 C 80 44 72 46 66 40" stroke="url(#tcsGrad)" strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M24 16.262c0-1.305-.522-2.174-1.827-3.088l-1.785-1.24c-.033-.022-.06-.045-.092-.068-.629-.473-.91-.912-.91-1.43 0-.696.567-1.13 1.371-1.13 1.022 0 1.503.477 2.111.477.479 0 .805-.326.805-.804 0-.348-.174-.631-.631-.848-.718-.348-1.503-.48-2.35-.48-.892 0-1.676.262-2.241.697a.984.984 0 0 0 0-.001 3.64 3.64 0 0 0-.326.283l-.008.01c-.65.695-1.19 1.714-1.623 3.145l-.501 1.652c-.893 2.912-2.306 4.304-4.504 4.304-2.415 0-3.938-1.675-3.938-4.153v.026-.025c0-2.468 1.509-4.159 3.69-4.174l.03-.002a4.857 4.857 0 0 1 2.089.457c.282.13.522.174.74.174.1 0 .192-.017.279-.041.362-.103.592-.408.592-.83 0-.326-.196-.653-.653-.87-.827-.414-1.894-.653-3.046-.653-.86 0-1.653.152-2.359.436-2.117.851-3.452 2.886-3.452 5.545l.002-.024-.001.024c0 .931.169 1.783.479 2.536-.452.985-1.143 1.509-2.046 1.509-1.087 0-1.804-.63-1.806-2.06V9.477h2.546c.588 0 .979-.348.979-.848s-.39-.848-.98-.848H2.09V5.563c0-.653-.435-1.088-1.044-1.088C.435 4.475 0 4.911 0 5.563v10.285c0 2.393 1.37 3.655 3.7 3.655.486.001.97-.08 1.43-.24h.005a3.49 3.49 0 0 0 1.81-1.514c1.034 1.117 2.565 1.775 4.48 1.775.999 0 1.868-.195 2.65-.607h.003c1.588-.827 2.72-2.502 3.503-5.068l.457-1.5a2.984 2.984 0 0 1-.162-.234c.308.492.785.953 1.468 1.43l1.631 1.13c.244.17.463.34.668.51.289.322.378.67.378 1.078 0 .935-.74 1.566-1.807 1.566-1.022 0-1.893-.522-2.371-.522s-.806.325-.806.804c0 .348.174.63.632.848.631.304 1.653.566 2.567.566 1.153 0 2.111-.348 2.785-.957a1.59 1.59 0 0 0 .156-.161A3.104 3.104 0 0 0 24 16.262z"
+              fill="url(#tcsGrad)"
+            />
           </svg>
-          <span style={{
-            fontWeight: "800",
-            fontSize: "0.95rem",
-            background: "linear-gradient(135deg, #FF9F00 0%, #D946EF 50%, #7000FF 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            fontFamily: "sans-serif",
-            letterSpacing: "0.02em"
-          }}>TCS</span>
         </div>
       );
     case "Infosys":
       return (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{
-            fontWeight: "600",
-            fontSize: "0.95rem",
-            color: "#1970C2",
-            fontFamily: "system-ui, -apple-system, sans-serif",
-            letterSpacing: "-0.01em"
-          }}>Infosys</span>
+          <svg width="48" height="17" viewBox="0 7.3 21.5 7.7" fill="currentColor" style={{ flexShrink: 0, color: "#1970C2" }}>
+            <path d="M8.1367 7.625c-.9001 0-1.549.5917-1.6387 1.6406h-.6953v.5215h.6856c.0028 1.6664-.002 3.334-.002 4.998h.7774c-.0022-1.6659-.002-3.3319-.002-4.998h1.748c-.646.5242-1.0663 1.3739-1.0663 2.334 0 1.593 1.1564 2.8848 2.582 2.8848 1.4258 0 2.582-1.2918 2.582-2.8848 0-.1896-.0174-.3753-.0488-.5547.2565.4131.7488.6133 1.4082.8985.7784.329 1.2129.6165 1.2129 1.1074 0 .5885-.556.8955-1.1817.8906-.611 0-1.0883-.249-1.6191-.7305v.9239c.3239.2088.8256.3281 1.3691.3281.6844-.0023 2.0918-.249 2.0918-1.6758-.0044-.8557-.715-1.2239-1.4863-1.5586-.9383-.4653-1.2965-.5629-1.2871-1.0957 0-.7088.6178-.9219 1.0996-.9219.2099 0 .3891.0293.5586.086.3163.1194.4209.3553.5332.6113.5283 1.2356 1.0344 2.4811 1.5488 3.7227-.2464.5637-.526 1.1519-.7168 1.5273l-.0039.0098-.1601.2969-.1797.336h.7617c.3322-.7342 1.7436-4.1688 2.0469-4.9083.1995.533.6857.7467 1.4297 1.0684.7783.329 1.2148.6166 1.2148 1.1074 0 .5886-.5562.8936-1.1816.8887-.6348 0-1.1257-.2685-1.6817-.7871l-.0507-.041v.9413c.3115.259.8713.4102 1.4824.4102.6844-.0022 2.0918-.249 2.0918-1.6758-.0042-.8557-.7151-1.2258-1.4863-1.5605-.9384-.4654-1.2593-.563-1.25-1.0957 0-.709.5787-.9219 1.0605-.9219.5483 0 .8958.2037 1.379.5547V9.584c-.3923-.1381-.7212-.1915-1.1642-.1895-.8912-.0018-1.6966.3234-1.9004 1.0762l-1.1054 2.7344-.1153.3437-.1015-.3437c-.5022-1.2089-.9934-2.4236-1.4863-3.6309-.3154-.0828-.8307-.201-1.1934-.1953-.0377-.0007-.0758-.0002-.1152 0-1.0302-.002-2.0235.4332-2.0235 1.457 0 .0596.0022.1155.006.17-.412-.9813-1.3036-1.6602-2.338-1.6602-.1245 0-.2472.0085-.3672.0273H7.254c-.1194-.733.2228-1.1503.7383-1.1503.6472-.0006.9242.192 1.205.4511 0 0 .0195-.0007.0274 0 .0038-.2457.002-.5318.002-.7949-.185-.0857-.5061-.1465-1.0899-.1465z M0 7.756v7.1367h.8594V7.7559z M4.1719 9.3555c-.945 0-1.3429.3359-1.6582.6738a.2474.2474 0 00-.0352.0644h-.0078v-.043l-.0098-.623H1.707v5.4649h.7754v-3.9961c.0226-.4905.7134-.9746 1.252-.9746.6477 0 1.1777.4364 1.1777 1.039v3.9317h.7754c-.0019-1.429-.002-2.858-.002-4.2871-.0234-.4835-.6094-1.25-1.5136-1.25zm6.2832.5566c.9741-.0175 1.7825 1.0214 1.8047 2.3184.022 1.297-.7504 2.3614-1.7246 2.3789-.9742.0171-1.7825-1.0195-1.8047-2.3164-.0221-1.2971.7503-2.3634 1.7246-2.3809Z" />
+          </svg>
         </div>
       );
     case "Accenture":
@@ -197,10 +180,10 @@ const renderCompanyLogo = (company: string) => {
     case "Meta":
       return (
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-            <path d="M16.03 6C14.18 6 12.56 6.94 11.53 8.39 10.5 6.94 8.88 6 7.03 6 3.61 6 .49 9.12.49 13s3.12 7 6.54 7c1.85 0 3.47-.94 4.5-2.39.11-.15.21-.31.31-.48.1.17.2.33.31.48 1.03 1.45 2.65 2.39 4.5 2.39 3.42 0 6.54-3.12 6.54-7 0-3.88-3.12-7-6.54-7zm-9 11.5c-2.48 0-4.54-2.02-4.54-4.5S4.55 8.5 7.03 8.5c1.47 0 2.78.71 3.59 1.82a6.38 6.38 0 00-.61 2.68c0 1 .22 1.95.61 2.68-.81 1.11-2.12 1.82-3.59 1.82zm9 0c-1.47 0-2.78-.71-3.59-1.82.39-.73.61-1.68.61-2.68 0-1-.22-1.95-.61-2.68.81-1.11 2.12-1.82 3.59-1.82 2.48 0 4.54 2.02 4.54 4.5s-2.06 4.5-4.54 4.5z" fill="#0064E0" />
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" style={{ flexShrink: 0, color: "#0081FB" }}>
+            <path fillRule="evenodd" d="M8.217 5.243C9.145 3.988 10.171 3 11.483 3 13.96 3 16 6.153 16.001 9.907c0 2.29-.986 3.725-2.757 3.725-1.543 0-2.395-.866-3.924-3.424l-.667-1.123-.118-.197a55 55 0 0 0-.53-.877l-1.178 2.08c-1.673 2.925-2.615 3.541-3.923 3.541C1.086 13.632 0 12.217 0 9.973 0 6.388 1.995 3 4.598 3q.477-.001.924.122c.31.086.611.22.913.407.577.359 1.154.915 1.782 1.714m1.516 2.224q-.378-.615-.727-1.133L9 6.326c.845-1.305 1.543-1.954 2.372-1.954 1.723 0 3.102 2.537 3.102 5.653 0 1.188-.39 1.877-1.195 1.877-.773 0-1.142-.51-2.61-2.87zM4.846 4.756c.725.1 1.385.634 2.34 2.001A212 212 0 0 0 5.551 9.3c-1.357 2.126-1.826 2.603-2.581 2.603-.777 0-1.24-.682-1.24-1.9 0-2.602 1.298-5.264 2.846-5.264q.137 0 .27.018" />
           </svg>
-          <span style={{ fontWeight: "700", fontSize: "0.95rem", color: "#0064E0", fontFamily: "sans-serif" }}>Meta</span>
+          <span style={{ fontWeight: "700", fontSize: "0.95rem", color: "#ffffff", fontFamily: "sans-serif" }}>Meta</span>
         </div>
       );
     case "Netflix":
@@ -223,11 +206,10 @@ const renderCompanyLogo = (company: string) => {
       );
     case "Uber":
       return (
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-            <path d="M5 3v9c0 3.87 3.13 7 7 7s7-3.13 7-7V3h-3v9c0 2.21-1.79 4-4 4s-4-1.79-4-4V3H5z" fill="#ffffff" />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <svg width="54" height="18" viewBox="0 7.8 24 8.4" fill="currentColor" style={{ flexShrink: 0, color: "#ffffff" }}>
+            <path d="M0 7.97v4.958c0 1.867 1.302 3.101 3 3.101.826 0 1.562-.316 2.094-.87v.736H6.27V7.97H5.082v4.888c0 1.257-.85 2.106-1.947 2.106-1.11 0-1.946-.827-1.946-2.106V7.971H0zm7.44 0v7.925h1.13v-.725c.521.532 1.257.86 2.06.86a3.006 3.006 0 0 0 3.034-3.01 3.01 3.01 0 0 0-3.033-3.024 2.86 2.86 0 0 0-2.049.861V7.971H7.439zm9.869 2.038c-1.687 0-2.965 1.37-2.965 3 0 1.72 1.334 3.01 3.066 3.01 1.053 0 1.913-.463 2.49-1.233l-.826-.611c-.43.577-.996.847-1.664.847-.973 0-1.753-.7-1.912-1.64h4.697v-.373c0-1.72-1.222-3-2.886-3zm6.295.068c-.634 0-1.098.294-1.381.758v-.713h-1.131v5.774h1.142V12.61c0-.894.544-1.47 1.291-1.47H24v-1.065h-.396zm-6.319.928c.85 0 1.564.588 1.756 1.47H15.52c.203-.882.916-1.47 1.765-1.47zm-6.732.012c1.086 0 1.98.883 1.98 2.004a1.993 1.993 0 0 1-1.98 2.001A1.989 1.989 0 0 1 8.56 13.02a1.99 1.99 0 0 1 1.992-2.004z" />
           </svg>
-          <span style={{ fontWeight: "700", fontSize: "0.95rem", color: "#ffffff", fontFamily: "sans-serif", letterSpacing: "-0.03em" }}>Uber</span>
         </div>
       );
     case "Custom":
@@ -391,6 +373,7 @@ export default function SetupPage() {
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const lastScrollY = useRef(0);
+  const lastToastTimes = useRef<Record<string, number>>({});
 
   // Setup options
   const companies = ["Google", "Amazon", "Microsoft", "Meta", "Netflix", "Apple", "Uber", "TCS", "Infosys", "Accenture", "Custom"];
@@ -436,14 +419,14 @@ export default function SetupPage() {
     completedSections === 1
       ? "#ef4444"
       : completedSections === 2
-      ? "#f97316"
-      : completedSections === 3
-      ? "#fbbf24"
-      : completedSections === 4
-      ? "#10b981"
-      : completedSections === 5
-      ? "#22c55e"
-      : "var(--text-muted)";
+        ? "#f97316"
+        : completedSections === 3
+          ? "#fbbf24"
+          : completedSections === 4
+            ? "#10b981"
+            : completedSections === 5
+              ? "#22c55e"
+              : "var(--text-muted)";
 
   // Scroll logic for navbar
   useEffect(() => {
@@ -473,14 +456,10 @@ export default function SetupPage() {
         if (data.success && data.user) {
           setAvatar(data.user.avatar || "");
           setFullName(data.user.fullName || "");
-          const initials = data.user.fullName
-            ? data.user.fullName
-              .split(" ")
-              .map((n: string) => n[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase()
-            : "U";
+          const parts = (data.user.fullName || "").trim().split(/\s+/);
+          const firstInitial = parts[0] ? parts[0][0] : "";
+          const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
+          const initials = (firstInitial + lastInitial).toUpperCase() || "U";
           setUserInitials(initials);
         } else {
           localStorage.removeItem("token");
@@ -492,13 +471,22 @@ export default function SetupPage() {
       });
   }, []);
 
+  const showWarningToast = (section: string, message: string) => {
+    const now = Date.now();
+    const lastTime = lastToastTimes.current[section] || 0;
+    if (now - lastTime > 2500) {
+      toast.error(message);
+      lastToastTimes.current[section] = now;
+    }
+  };
+
   // Toggle Type Selection
   const toggleQuestionType = (type: string) => {
     if (selectedQuestionTypes.includes(type)) {
       if (selectedQuestionTypes.length > 1) {
         setSelectedQuestionTypes((p) => p.filter((t) => t !== type));
       } else {
-        toast.error("Please select at least one question type.");
+        showWarningToast("questionTypes", "Please select at least one question type.");
       }
     } else {
       setSelectedQuestionTypes((p) => [...p, type]);
@@ -571,7 +559,6 @@ export default function SetupPage() {
           </div>
 
           <div className={nav.navActions}>
-            <ThemeToggle />
             <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
               {avatar ? (
                 <img
@@ -616,11 +603,6 @@ export default function SetupPage() {
 
         {mobileMenu && (
           <div className={nav.mobileMenu}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" }}>
-              <span className={nav.mobileLink} style={{ margin: 0 }}>Theme</span>
-              <ThemeToggle />
-            </div>
-            <div className={nav.mobileDivider} />
             <Link href="/resume" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={nav.mobileLink} onClick={() => setMobileMenu(false)} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
             <Link href="/profile" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Profile</Link>
@@ -671,8 +653,7 @@ export default function SetupPage() {
                           className={`${styles.logoItem} ${activeClass}`}
                           onClick={() => {
                             if (selectedCompany === c) {
-                              setSelectedCompany("");
-                              if (c === "Custom") setCustomCompany("");
+                              showWarningToast("company", "Please select at least one company.");
                             } else {
                               setSelectedCompany(c);
                             }
@@ -684,42 +665,44 @@ export default function SetupPage() {
                     })}
                   </div>
 
-                  {selectedCompany === "Custom" && (
-                    <div style={{ marginTop: "1rem", width: "100%", maxWidth: "320px" }}>
+                  <div
+                    style={{
+                      height: selectedCompany === "Custom" ? "62px" : "0px",
+                      opacity: selectedCompany === "Custom" ? 1 : 0,
+                      visibility: selectedCompany === "Custom" ? "visible" : "hidden",
+                      overflow: "hidden",
+                      transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                      width: "100%",
+                      maxWidth: "320px",
+                    }}
+                  >
+                    <div style={{ marginTop: "1rem" }}>
                       <input
                         type="text"
                         placeholder="Enter custom company name..."
                         value={customCompany}
                         onChange={(e) => setCustomCompany(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "0.55rem 0.85rem",
-                          borderRadius: "var(--radius-sm)",
-                          background: "rgba(255, 255, 255, 0.02)",
-                          border: "1px solid rgba(255, 255, 255, 0.08)",
-                          color: "var(--text-primary)",
-                          fontSize: "0.85rem",
-                          outline: "none",
-                          transition: "all var(--transition-fast)",
-                        }}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = "rgba(16, 185, 129, 0.5)";
-                          e.target.style.boxShadow = "0 0 10px rgba(16, 185, 129, 0.15)";
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = "rgba(255, 255, 255, 0.08)";
-                          e.target.style.boxShadow = "none";
-                        }}
+                        className={styles.setupInput}
                       />
                     </div>
-                  )}
+                  </div>
                 </div>
 
                 <div className={styles.field}>
                   <span className={styles.fieldLabel}>Role</span>
                   <div className={styles.chipGroup}>
                     {roles.map((r) => (
-                      <span key={r} className={`${styles.chip} ${selectedRole === r ? styles.chipSelectedRole : ""}`} onClick={() => setSelectedRole(r)}>
+                      <span
+                        key={r}
+                        className={`${styles.chip} ${selectedRole === r ? styles.chipSelectedRole : ""}`}
+                        onClick={() => {
+                          if (selectedRole === r) {
+                            showWarningToast("role", "Please select at least one role.");
+                          } else {
+                            setSelectedRole(r);
+                          }
+                        }}
+                      >
                         {getRoleAvatar(r)}
                         <span>{r}</span>
                       </span>
@@ -731,7 +714,17 @@ export default function SetupPage() {
                   <span className={styles.fieldLabel}>Experience level</span>
                   <div className={styles.chipGroup}>
                     {experienceLevels.map((l) => (
-                      <span key={l} className={`${styles.chip} ${selectedLevel === l ? styles.chipSelectedLevel : ""}`} onClick={() => setSelectedLevel(l)}>
+                      <span
+                        key={l}
+                        className={`${styles.chip} ${selectedLevel === l ? styles.chipSelectedLevel : ""}`}
+                        onClick={() => {
+                          if (selectedLevel === l) {
+                            showWarningToast("level", "Please select at least one experience level.");
+                          } else {
+                            setSelectedLevel(l);
+                          }
+                        }}
+                      >
                         {getLevelAvatar(l)}
                         <span>{l}</span>
                       </span>
@@ -743,7 +736,17 @@ export default function SetupPage() {
                   <span className={styles.fieldLabel}>Duration</span>
                   <div className={styles.chipGroup}>
                     {durations.map((d) => (
-                      <span key={d.value} className={`${styles.chip} ${selectedDuration === d.value ? styles.chipSelectedRole : ""}`} onClick={() => setSelectedDuration(d.value)}>
+                      <span
+                        key={d.value}
+                        className={`${styles.chip} ${selectedDuration === d.value ? styles.chipSelectedDuration : ""}`}
+                        onClick={() => {
+                          if (selectedDuration === d.value) {
+                            showWarningToast("duration", "Please select at least one duration.");
+                          } else {
+                            setSelectedDuration(d.value);
+                          }
+                        }}
+                      >
                         {d.icon}
                         <span>{d.label}</span>
                       </span>
@@ -755,17 +758,6 @@ export default function SetupPage() {
                   <span className={styles.fieldLabel}>Question types</span>
                   <div className={styles.typeGrid}>
                     <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Technical") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Technical")}>
-                      <span className={styles.typeCardCheckbox}>
-                        {selectedQuestionTypes.includes("Technical") ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                        ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                          </svg>
-                        )}
-                      </span>
                       <div className={styles.tcTitle}>
                         <IconCode />Technical
                       </div>
@@ -773,17 +765,6 @@ export default function SetupPage() {
                     </div>
 
                     <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Behavioral") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Behavioral")}>
-                      <span className={styles.typeCardCheckbox}>
-                        {selectedQuestionTypes.includes("Behavioral") ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                        ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                          </svg>
-                        )}
-                      </span>
                       <div className={styles.tcTitle}>
                         <IconUsers />Behavioral
                       </div>
@@ -791,17 +772,6 @@ export default function SetupPage() {
                     </div>
 
                     <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("HR") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("HR")}>
-                      <span className={styles.typeCardCheckbox}>
-                        {selectedQuestionTypes.includes("HR") ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                        ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                          </svg>
-                        )}
-                      </span>
                       <div className={styles.tcTitle}>
                         <IconBriefcase />HR
                       </div>
@@ -809,75 +779,31 @@ export default function SetupPage() {
                     </div>
 
                     <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("System design") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("System design")}>
-                      <span className={styles.typeCardCheckbox}>
-                        {selectedQuestionTypes.includes("System design") ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                        ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                          </svg>
-                        )}
-                      </span>
                       <div className={styles.tcTitle}>
                         <IconLayout />System design
                       </div>
                       <div className={styles.tcSub}>Scalability, trade-offs</div>
                     </div>
 
-                    <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Coding & Algorithms") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Coding & Algorithms")}>
-                      <span className={styles.typeCardCheckbox}>
-                        {selectedQuestionTypes.includes("Coding & Algorithms") ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                        ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                          </svg>
-                        )}
-                      </span>
+                    <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Scenario & Case study") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Scenario & Case study")}>
                       <div className={styles.tcTitle}>
-                        <IconTerminal />Coding & Algorithms
+                        <IconCaseStudy />Scenario &amp; Case study
                       </div>
-                      <div className={styles.tcSub}>Data structures, efficiency, problem solving</div>
+                      <div className={styles.tcSub}>Real-world cases, analysis, strategy</div>
                     </div>
 
                     <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Database & SQL") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Database & SQL")}>
-                      <span className={styles.typeCardCheckbox}>
-                        {selectedQuestionTypes.includes("Database & SQL") ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                        ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                          </svg>
-                        )}
-                      </span>
                       <div className={styles.tcTitle}>
-                        <IconDatabase />Database & SQL
+                        <IconDatabase />Database &amp; SQL
                       </div>
                       <div className={styles.tcSub}>Query design, normalization, indexing</div>
                     </div>
 
-                    <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Scenario & Case study") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Scenario & Case study")}>
-                      <span className={styles.typeCardCheckbox}>
-                        {selectedQuestionTypes.includes("Scenario & Case study") ? (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                          </svg>
-                        ) : (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                          </svg>
-                        )}
-                      </span>
+                    <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Coding & Algorithms") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Coding & Algorithms")}>
                       <div className={styles.tcTitle}>
-                        <IconCaseStudy />Scenario & Case study
+                        <IconTerminal />Coding &amp; Algorithms
                       </div>
-                      <div className={styles.tcSub}>Real-world cases, analysis, strategy</div>
+                      <div className={styles.tcSub}>Data structures, efficiency, problem solving</div>
                     </div>
                   </div>
                 </div>
@@ -1000,6 +926,19 @@ export default function SetupPage() {
       </main>
 
       <SiteFooter />
+
+      {/* SVG filter to make Amazon logo text white while keeping the arrow orange */}
+      <svg width="0" height="0" style={{ position: "absolute", pointerEvents: "none" }}>
+        <filter id="amazon-orange-arrow">
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 1
+                    -1 1 0 0 1
+                    -1 0 1 0 1
+                    0 0 0 1 0"
+          />
+        </filter>
+      </svg>
     </div>
   );
 }

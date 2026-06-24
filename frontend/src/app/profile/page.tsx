@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./profile.module.css";
 import nav from "../home.module.css";
-import ThemeToggle from "../components/ThemeToggle";
 import { useToast } from "../components/Toast";
 import SiteFooter from "../components/SiteFooter";
 import HomeBackdrop from "../components/HomeBackdrop";
@@ -264,7 +263,6 @@ export default function ProfilePage() {
           </div>
 
           <div className={nav.navActions}>
-            <ThemeToggle />
             <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
               {avatar ? (
                 <img
@@ -313,11 +311,6 @@ export default function ProfilePage() {
 
         {mobileMenu && (
           <div className={nav.mobileMenu}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" }}>
-              <span className={nav.mobileLink} style={{ margin: 0 }}>Theme</span>
-              <ThemeToggle />
-            </div>
-            <div className={nav.mobileDivider} />
             <Link href="/resume" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
             <Link href="/#features" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Features</Link>

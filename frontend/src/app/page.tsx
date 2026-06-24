@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import styles from "./home.module.css";
-import ThemeToggle from "./components/ThemeToggle";
 import SiteFooter from "./components/SiteFooter";
 import HomeBackdrop from "./components/HomeBackdrop";
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from "framer-motion";
@@ -1167,7 +1166,6 @@ export default function Home() {
           </div>
 
           <div className={styles.navActions}>
-            <ThemeToggle />
             {isLoggedIn ? (
               <>
                 <Link href="/profile" className={styles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
@@ -1226,11 +1224,6 @@ export default function Home() {
         {/* Mobile Menu */}
         {mobileMenu && (
           <div className={styles.mobileMenu}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" }}>
-              <span className={styles.mobileLink} style={{ margin: 0 }}>Theme</span>
-              <ThemeToggle />
-            </div>
-            <div className={styles.mobileDivider} />
             <Link href="/resume" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
             <a href="#features" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Features</a>

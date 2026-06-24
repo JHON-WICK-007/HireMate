@@ -3,7 +3,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./auth.module.css";
-import ThemeToggle from "../components/ThemeToggle";
 import { useToast } from "../components/Toast";
 import HomeBackdrop from "../components/HomeBackdrop";
 
@@ -170,11 +169,6 @@ export default function AuthPage() {
   return (
     <>
     <div className={styles.container}>
-      {/* Floating Theme Toggle */}
-      <div style={{ position: "fixed", top: "20px", right: "20px", zIndex: 100 }}>
-        <ThemeToggle />
-      </div>
-
       {/* Animated Background */}
       <HomeBackdrop />
 

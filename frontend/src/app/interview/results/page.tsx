@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../interview.module.css";
 import nav from "../../home.module.css";
-import ThemeToggle from "../../components/ThemeToggle";
 import { useToast } from "../../components/Toast";
 import SiteFooter from "../../components/SiteFooter";
 import HomeBackdrop from "../../components/HomeBackdrop";
@@ -24,6 +23,58 @@ const IconSpinner = () => (
     <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
   </svg>
 );
+
+const IconScoreExcellent = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
+
+const IconScoreGood = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+  </svg>
+);
+
+const IconScoreAverage = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="8" y1="12" x2="16" y2="12" />
+  </svg>
+);
+
+const IconScoreOk = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12" y2="12" />
+    <line x1="12" y1="16" x2="12.01" y2="16" />
+  </svg>
+);
+
+const IconScoreBad = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+    <line x1="12" y1="9" x2="12" y2="13" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+  </svg>
+);
+
+const IconScorePoor = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <circle cx="12" cy="12" r="10" />
+    <line x1="15" y1="9" x2="9" y2="15" />
+    <line x1="9" y1="9" x2="15" y2="15" />
+  </svg>
+);
+
+const getScoreDetails = (score: number) => {
+  if (score >= 90) return { icon: <IconScoreExcellent />, label: "Excellent Performance", style: "scorePillExcellent" };
+  if (score >= 75) return { icon: <IconScoreGood />, label: "Good Performance", style: "scorePillGood" };
+  if (score >= 50) return { icon: <IconScoreAverage />, label: "Average Performance", style: "scorePillAverage" };
+  if (score >= 25) return { icon: <IconScoreOk />, label: "Below Average", style: "scorePillOk" };
+  return { icon: <IconScorePoor />, label: "Requires Practice", style: "scorePillPoor" };
+};
 
 interface QuestionBreakdown {
   questionText: string;
@@ -90,14 +141,10 @@ function ResultsContent() {
         if (data.success && data.user) {
           setAvatar(data.user.avatar || "");
           setFullName(data.user.fullName || "");
-          const initials = data.user.fullName
-            ? data.user.fullName
-                .split(" ")
-                .map((n: string) => n[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase()
-            : "U";
+          const parts = (data.user.fullName || "").trim().split(/\s+/);
+          const firstInitial = parts[0] ? parts[0][0] : "";
+          const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
+          const initials = (firstInitial + lastInitial).toUpperCase() || "U";
           setUserInitials(initials);
         } else {
           localStorage.removeItem("token");
@@ -184,7 +231,6 @@ function ResultsContent() {
           </div>
 
           <div className={nav.navActions}>
-            <ThemeToggle />
             <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
               {avatar ? (
                 <img
@@ -229,11 +275,6 @@ function ResultsContent() {
 
         {mobileMenu && (
           <div className={nav.mobileMenu}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" }}>
-              <span className={nav.mobileLink} style={{ margin: 0 }}>Theme</span>
-              <ThemeToggle />
-            </div>
-            <div className={nav.mobileDivider} />
             <Link href="/resume" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={nav.mobileLink} onClick={() => setMobileMenu(false)} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
             <Link href="/profile" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Profile</Link>
@@ -265,9 +306,15 @@ function ResultsContent() {
 
               <div className={styles.scoreLabel}>Overall score · {company} {role}</div>
               <div className={styles.verdictBadge}>
-                <span className={styles.scorePill} style={{ display: "inline-flex", fontSize: "0.8rem", padding: "4px 12px" }}>
-                  <IconCheck /> {overallScore >= 80 ? "Good Performance" : overallScore >= 60 ? "Average Performance" : "Requires Practice"}
-                </span>
+                {(() => {
+                  const scoreInfo = getScoreDetails(overallScore);
+                  return (
+                    <span className={`${styles.scorePill} ${styles[scoreInfo.style]}`} style={{ display: "inline-flex", fontSize: "0.8rem", padding: "4px 12px" }}>
+                      {scoreInfo.icon}
+                      <span style={{ marginLeft: "4px" }}>{scoreInfo.label}</span>
+                    </span>
+                  );
+                })()}
               </div>
             </div>
 
@@ -307,7 +354,14 @@ function ResultsContent() {
                     </div>
                   )}
                   {q.score !== undefined && (
-                    <span className={`${styles.qaScore} ${q.score >= 80 ? styles.scoreGood : q.score >= 60 ? styles.scoreOk : styles.scorePoor}`}>
+                    <span className={`${styles.qaScore} ${q.score >= 75 ? styles.scoreGood : q.score >= 50 ? styles.scoreOk : styles.scorePoor}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                      {q.score >= 75 ? (
+                        <IconScoreGood />
+                      ) : q.score >= 50 ? (
+                        <IconScoreOk />
+                      ) : (
+                        <IconScoreBad />
+                      )}
                       Score: {q.score}/100
                     </span>
                   )}
