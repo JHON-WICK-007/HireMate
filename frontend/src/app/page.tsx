@@ -778,101 +778,6 @@ function StatCounter({ target, duration = 2000 }: { target: number; duration?: n
   return <>{count.toLocaleString()}</>;
 }
 
-function LottieHeroGraphic({ user }: { user: any }) {
-  const spotlightRef = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useSpring(useTransform(y, [-200, 200], [12, -12]), { damping: 25, stiffness: 200 });
-  const rotateY = useSpring(useTransform(x, [-200, 200], [-12, 12]), { damping: 25, stiffness: 200 });
-  const shadowX = useSpring(useTransform(x, [-200, 200], [20, -20]), { damping: 25, stiffness: 200 });
-  const shadowY = useSpring(useTransform(y, [-200, 200], [20, -20]), { damping: 25, stiffness: 200 });
-  const rectRef = useRef<DOMRect | null>(null);
-
-  function handleMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    if (!rectRef.current) {
-      rectRef.current = event.currentTarget.getBoundingClientRect();
-    }
-    const rect = rectRef.current;
-    const mouseX = event.clientX - rect.left - rect.width / 2;
-    const mouseY = event.clientY - rect.top - rect.height / 2;
-    x.set(mouseX);
-    y.set(mouseY);
-    if (spotlightRef.current) {
-      const mx = event.clientX - rect.left;
-      const my = event.clientY - rect.top;
-      spotlightRef.current.style.background =
-        `radial-gradient(circle 350px at ${mx}px ${my}px, rgba(168, 85, 247, 0.15), transparent 60%)`;
-    }
-  }
-
-  function handleMouseEnter() {
-    rectRef.current = null;
-  }
-
-  function handleMouseLeave() {
-    x.set(0);
-    y.set(0);
-    if (spotlightRef.current) {
-      spotlightRef.current.style.background = "transparent";
-    }
-  }
-
-  const welcomeText = user?.fullName
-    ? `Welcome, ${user.fullName.split(" ")[0]}! 🎉`
-    : "Welcome to HireMate AI! 🚀";
-
-  return (
-    <div className={styles.heroRight}>
-      <motion.div
-        className={styles.consoleContainer}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          rotateX,
-          rotateY,
-          "--shadow-dx": useTransform(shadowX, (v) => `${v}px`),
-          "--shadow-dy": useTransform(shadowY, (v) => `${v}px`),
-        } as any}
-      >
-        <div
-          style={{
-            position: "absolute",
-            width: "350px",
-            height: "350px",
-            background: "radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%)",
-            filter: "blur(40px)",
-            zIndex: 1,
-            pointerEvents: "none"
-          }}
-        />
-
-        <div className={styles.consoleCard} style={{ zIndex: 2, padding: "2rem", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between" }}>
-          <div ref={spotlightRef} className={styles.consoleCardSpotlight} />
-          
-          <div style={{ textAlign: "center", width: "100%", marginTop: "0.5rem" }}>
-            <h3 style={{ fontSize: "1.5rem", fontWeight: "800", background: "linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
-              {welcomeText}
-            </h3>
-            <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginTop: "0.5rem", marginBottom: 0 }}>
-              {user?.fullName ? "Your personalized dashboard is ready." : "Unlock your career potential with AI."}
-            </p>
-          </div>
-
-          <div style={{ width: "100%", flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <DotLottieReact
-              src="/RJaN4bTA8T.lottie"
-              loop
-              autoplay
-              style={{ width: "100%", height: "100%", maxWidth: "300px", maxHeight: "300px" }}
-            />
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  );
-}
-
 export default function Home() {
   const companies = ["Google", "Amazon", "Meta", "Microsoft", "Apple", "Netflix", "Uber", "NVIDIA"];
   const [currentCompanyIndex, setCurrentCompanyIndex] = useState(0);
@@ -889,49 +794,33 @@ export default function Home() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [showLottie, setShowLottie] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
   const lastScrollY = useRef(0);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeUserName, setWelcomeUserName] = useState("");
   const initials = user?.fullName
     ? user.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
     : "U";
 
   useEffect(() => {
     setMounted(true);
-    const token = localStorage.getItem("token");
-
-    // Check if we should show the Lottie animation (first visit or first login)
-    const hasSeenAnon = localStorage.getItem("lottie-shown-anonymous");
-    if (!token) {
-      if (!hasSeenAnon) {
-        setShowLottie(true);
-        localStorage.setItem("lottie-shown-anonymous", "true");
-      }
-    } else {
-      const savedUserStr = localStorage.getItem("user");
-      if (savedUserStr) {
+    
+    // Check if we should display the welcome modal
+    const showWelcomeFlag = localStorage.getItem("showWelcomeModal");
+    if (showWelcomeFlag === "true") {
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
         try {
-          const parsed = JSON.parse(savedUserStr);
-          const key = `lottie-shown-user-${parsed.id || parsed.email || "unknown"}`;
-          if (!localStorage.getItem(key)) {
-            setShowLottie(true);
-            localStorage.setItem(key, "true");
-          }
-        } catch (_) {
-          if (!localStorage.getItem("lottie-shown-logged-in")) {
-            setShowLottie(true);
-            localStorage.setItem("lottie-shown-logged-in", "true");
-          }
-        }
-      } else {
-        if (!localStorage.getItem("lottie-shown-logged-in")) {
-          setShowLottie(true);
-          localStorage.setItem("lottie-shown-logged-in", "true");
-        }
+          const parsedUser = JSON.parse(savedUser);
+          setWelcomeUserName(parsedUser.fullName || "");
+          setShowWelcome(true);
+        } catch (e) {}
       }
+      localStorage.removeItem("showWelcomeModal");
     }
 
+    const token = localStorage.getItem("token");
     if (token) {
       document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
       document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
@@ -1539,13 +1428,7 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {mounted && (
-            showLottie ? (
-              <LottieHeroGraphic user={user} />
-            ) : (
-              <Interactive3DConsole />
-            )
-          )}
+          <Interactive3DConsole />
         </motion.div>
       </section>
 
@@ -1823,6 +1706,123 @@ export default function Home() {
       </section>
 
       <SiteFooter showCta={true} />
+
+      {/* Welcome Modal Overlay */}
+      <AnimatePresence>
+        {showWelcome && (
+          <motion.div
+            className={styles.welcomeOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className={styles.welcomeCard}
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+            >
+              {/* Violet Header */}
+              <div className={styles.welcomeHeader}>
+                {/* 5 dots row */}
+                <div className={styles.dotRow}>
+                  <div className={styles.dot} style={{ background: "#fbbf24" }} />
+                  <div className={styles.dot} style={{ background: "#22d3ee" }} />
+                  <div className={styles.dot} style={{ background: "#f87171" }} />
+                  <div className={styles.dot} style={{ background: "#4ade80" }} />
+                  <div className={styles.dot} style={{ background: "#e5e7eb" }} />
+                </div>
+                
+                {/* Success animation wrapper */}
+                <div className={styles.checkmarkContainer}>
+                  <div className={styles.lottieWrapper}>
+                    <DotLottieReact
+                      src="/RJaN4bTA8T.lottie"
+                      loop={false}
+                      autoplay={true}
+                    />
+                  </div>
+                </div>
+
+                <h2 className={styles.welcomeTitle}>
+                  Welcome to HireMate AI,<br />
+                  {welcomeUserName ? welcomeUserName.split(" ")[0] : "Friend"}!
+                </h2>
+
+                <div className={styles.successBadge}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M5 12l5 5L20 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span>Account created successfully</span>
+                </div>
+              </div>
+
+              {/* Dark Body */}
+              <div className={styles.welcomeBody}>
+                <p className={styles.welcomeDesc}>
+                  Your account has been created successfully. Let's start your career journey and land the job you've been working toward.
+                </p>
+
+                {/* 3-Column Grid */}
+                <div className={styles.welcomeGrid}>
+                  <div className={styles.welcomeGridItem}>
+                    <div className={styles.gridItemIcon}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round"/>
+                        <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round"/>
+                        <line x1="16" y1="13" x2="8" y2="13" strokeLinecap="round" strokeLinejoin="round"/>
+                        <line x1="16" y1="17" x2="8" y2="17" strokeLinecap="round" strokeLinejoin="round"/>
+                        <polyline points="10 9 9 9 8 9" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <span className={styles.gridItemText}>Upload your resume</span>
+                  </div>
+
+                  <div className={styles.welcomeGridItem}>
+                    <div className={styles.gridItemIcon}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <line x1="12" y1="19" x2="12" y2="23" strokeLinecap="round" strokeLinejoin="round"/>
+                        <line x1="8" y1="23" x2="16" y2="23" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <span className={styles.gridItemText}>Start mock interview</span>
+                  </div>
+
+                  <div className={styles.welcomeGridItem}>
+                    <div className={styles.gridItemIcon}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M4 22h16" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 2a5 5 0 0 1 5 5v5a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <span className={styles.gridItemText}>Track your progress</span>
+                  </div>
+                </div>
+
+                {/* Primary Button */}
+                <button className={styles.welcomeButton} onClick={() => setShowWelcome(false)}>
+                  <span>Get started</span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+
+                {/* Secondary Link */}
+                <button className={styles.exploreLink} onClick={() => setShowWelcome(false)}>
+                  Explore on my own
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

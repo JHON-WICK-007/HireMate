@@ -153,13 +153,10 @@ export default function AuthPage() {
           router.push("/");
         }, 1500);
       } else {
-        toast.success("Account created successfully! 🚀 Welcome to HireMate AI!");
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        // Redirect to homepage after 1.5s
-        setTimeout(() => {
-          router.push("/");
-        }, 1500);
+        localStorage.setItem("showWelcomeModal", "true");
+        router.push("/");
       }
     } catch (err) {
       toast.error("Unable to connect to server. Please try again.");

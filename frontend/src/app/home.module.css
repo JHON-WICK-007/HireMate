@@ -3347,3 +3347,198 @@
   font-weight: 800;
   color: var(--text-primary);
 }
+
+/* ─── Signup Success Welcome Modal ─── */
+.welcomeOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.welcomeCard {
+  width: 90%;
+  max-width: 440px;
+  background: #111318;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.welcomeHeader {
+  position: relative;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  padding: 2.25rem 1.5rem 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+}
+
+.dotRow {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  opacity: 0.85;
+}
+
+.checkmarkContainer {
+  width: 76px;
+  height: 76px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.lottieWrapper {
+  width: 64px;
+  height: 64px;
+}
+
+.welcomeTitle {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 0.85rem 0;
+  letter-spacing: -0.01em;
+}
+
+.successBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 5px 12px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.welcomeBody {
+  padding: 1.75rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.welcomeDesc {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+}
+
+.welcomeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.welcomeGridItem {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 14px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.welcomeGridItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.gridItemIcon {
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.welcomeGridItem:hover .gridItemIcon {
+  color: #ffffff;
+}
+
+.gridItemText {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.25;
+  transition: color 0.2s ease;
+}
+
+.welcomeGridItem:hover .gridItemText {
+  color: var(--text-primary);
+}
+
+.welcomeButton {
+  background: #ffffff;
+  color: #0b0c10;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.welcomeButton:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+.exploreLink {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: center;
+  transition: color 0.2s ease;
+  padding: 2px 8px;
+  text-align: center;
+}
+
+.exploreLink:hover {
+  color: #9ca3af;
+  text-decoration: underline;
+}
