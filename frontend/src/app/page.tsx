@@ -6,6 +6,7 @@ import styles from "./home.module.css";
 import SiteFooter from "./components/SiteFooter";
 import HomeBackdrop from "./components/HomeBackdrop";
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 25 },
@@ -777,6 +778,85 @@ function StatCounter({ target, duration = 2000 }: { target: number; duration?: n
   return <>{count.toLocaleString()}</>;
 }
 
+function LottieHeroGraphic() {
+  const spotlightRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useSpring(useTransform(y, [-200, 200], [12, -12]), { damping: 25, stiffness: 200 });
+  const rotateY = useSpring(useTransform(x, [-200, 200], [-12, 12]), { damping: 25, stiffness: 200 });
+  const shadowX = useSpring(useTransform(x, [-200, 200], [20, -20]), { damping: 25, stiffness: 200 });
+  const shadowY = useSpring(useTransform(y, [-200, 200], [20, -20]), { damping: 25, stiffness: 200 });
+  const rectRef = useRef<DOMRect | null>(null);
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    if (!rectRef.current) {
+      rectRef.current = event.currentTarget.getBoundingClientRect();
+    }
+    const rect = rectRef.current;
+    const mouseX = event.clientX - rect.left - rect.width / 2;
+    const mouseY = event.clientY - rect.top - rect.height / 2;
+    x.set(mouseX);
+    y.set(mouseY);
+    if (spotlightRef.current) {
+      const mx = event.clientX - rect.left;
+      const my = event.clientY - rect.top;
+      spotlightRef.current.style.background =
+        `radial-gradient(circle 350px at ${mx}px ${my}px, rgba(168, 85, 247, 0.15), transparent 60%)`;
+    }
+  }
+
+  function handleMouseEnter() {
+    rectRef.current = null;
+  }
+
+  function handleMouseLeave() {
+    x.set(0);
+    y.set(0);
+    if (spotlightRef.current) {
+      spotlightRef.current.style.background = "transparent";
+    }
+  }
+
+  return (
+    <div className={styles.heroRight}>
+      <motion.div
+        className={styles.consoleContainer}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateX,
+          rotateY,
+          "--shadow-dx": useTransform(shadowX, (v) => `${v}px`),
+          "--shadow-dy": useTransform(shadowY, (v) => `${v}px`),
+        } as any}
+      >
+        <div
+          style={{
+            position: "absolute",
+            width: "350px",
+            height: "350px",
+            background: "radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%)",
+            filter: "blur(40px)",
+            zIndex: 1,
+            pointerEvents: "none"
+          }}
+        />
+
+        <div className={styles.consoleCard} style={{ zIndex: 2, padding: "1.5rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div ref={spotlightRef} className={styles.consoleCardSpotlight} />
+          <DotLottieReact
+            src="/RJaN4bTA8T.lottie"
+            loop
+            autoplay
+            style={{ width: "100%", height: "100%", maxWidth: "360px", maxHeight: "360px" }}
+          />
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 export default function Home() {
   const companies = ["Google", "Amazon", "Meta", "Microsoft", "Apple", "Netflix", "Uber", "NVIDIA"];
   const [currentCompanyIndex, setCurrentCompanyIndex] = useState(0);
@@ -1410,7 +1490,7 @@ export default function Home() {
             </motion.div>
           </div>
 
-          <Interactive3DConsole />
+          {mounted && <LottieHeroGraphic />}
         </motion.div>
       </section>
 
