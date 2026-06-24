@@ -791,8 +791,23 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("token");
+    }
+    return false;
+  });
+  const [user, setUser] = useState<any>(() => {
+    if (typeof window !== "undefined") {
+      const u = localStorage.getItem("user");
+      try {
+        return u ? JSON.parse(u) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
   const [mounted, setMounted] = useState(false);
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
   const lastScrollY = useRef(0);
@@ -805,12 +820,6 @@ export default function Home() {
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
-      const savedUser = localStorage.getItem("user");
-      if (savedUser) {
-        try {
-          setUser(JSON.parse(savedUser));
-        } catch (e) {}
-      }
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       fetch(`${API_URL}/api/auth/me`, {
         headers: {
@@ -1176,7 +1185,7 @@ export default function Home() {
             <a href="#stats" className={styles.navLink}>Results</a>
           </div>
 
-          <div className={styles.navActions} style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.15s ease" }}>
+          <div className={styles.navActions} suppressHydrationWarning>
             {isLoggedIn ? (
               <>
                 <Link href="/profile" className={styles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>

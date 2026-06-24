@@ -113,10 +113,28 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState<string | null>(null);
 
   // User state
-  const [email, setEmail] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [email, setEmail] = useState(() => {
+    if (typeof window !== "undefined") {
+      const u = localStorage.getItem("user");
+      try { return u ? JSON.parse(u).email || "" : ""; } catch(e) { return ""; }
+    }
+    return "";
+  });
+  const [avatar, setAvatar] = useState(() => {
+    if (typeof window !== "undefined") {
+      const u = localStorage.getItem("user");
+      try { return u ? JSON.parse(u).avatar || "" : ""; } catch(e) { return ""; }
+    }
+    return "";
+  });
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-  const [fullName, setFullName] = useState("");
+  const [fullName, setFullName] = useState(() => {
+    if (typeof window !== "undefined") {
+      const u = localStorage.getItem("user");
+      try { return u ? JSON.parse(u).fullName || "" : ""; } catch(e) { return ""; }
+    }
+    return "";
+  });
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -253,7 +271,7 @@ export default function ProfilePage() {
     </div>
   );
 
-  const initials = fullName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase() || "U";
+  const initials = fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || "U";
 
   return (
     <div className={styles.page}>
@@ -285,7 +303,7 @@ export default function ProfilePage() {
             <Link href="/#stats" className={nav.navLink}>Results</Link>
           </div>
 
-          <div className={nav.navActions} style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.15s ease" }}>
+          <div className={nav.navActions} suppressHydrationWarning>
             <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
               {avatar ? (
                 <img

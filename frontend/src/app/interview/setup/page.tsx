@@ -366,9 +366,35 @@ export default function SetupPage() {
   const toast = useToast();
 
   // User Profile information for Navbar
-  const [avatar, setAvatar] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [userInitials, setUserInitials] = useState("U");
+  const [avatar, setAvatar] = useState(() => {
+    if (typeof window !== "undefined") {
+      const u = localStorage.getItem("user");
+      try { return u ? JSON.parse(u).avatar || "" : ""; } catch(e) { return ""; }
+    }
+    return "";
+  });
+  const [fullName, setFullName] = useState(() => {
+    if (typeof window !== "undefined") {
+      const u = localStorage.getItem("user");
+      try { return u ? JSON.parse(u).fullName || "" : ""; } catch(e) { return ""; }
+    }
+    return "";
+  });
+  const [userInitials, setUserInitials] = useState(() => {
+    if (typeof window !== "undefined") {
+      const u = localStorage.getItem("user");
+      try {
+        if (u) {
+          const parsed = JSON.parse(u);
+          const parts = (parsed.fullName || "").trim().split(/\s+/);
+          const firstInitial = parts[0] ? parts[0][0] : "";
+          const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
+          return (firstInitial + lastInitial).toUpperCase() || "U";
+        }
+      } catch(e) {}
+    }
+    return "U";
+  });
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
@@ -575,7 +601,7 @@ export default function SetupPage() {
             <Link href="/profile" className={nav.navLink}>Profile</Link>
           </div>
 
-          <div className={nav.navActions} style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.15s ease" }}>
+          <div className={nav.navActions} suppressHydrationWarning>
             <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
               {avatar ? (
                 <img

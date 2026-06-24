@@ -189,8 +189,23 @@ const checkCategories = [
 export default function ResumePage() {
   const router = useRouter();
   const toast = useToast();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("token");
+    }
+    return false;
+  });
+  const [user, setUser] = useState<any>(() => {
+    if (typeof window !== "undefined") {
+      const u = localStorage.getItem("user");
+      try {
+        return u ? JSON.parse(u) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
   const [mounted, setMounted] = useState(false);
 
   const [file, setFile] = useState<File | null>(null);
@@ -230,12 +245,6 @@ export default function ResumePage() {
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
-      const savedUser = localStorage.getItem("user");
-      if (savedUser) {
-        try {
-          setUser(JSON.parse(savedUser));
-        } catch (e) {}
-      }
       fetch(`${API_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` }, credentials: "include" })
         .then(r => r.json())
         .then(data => {
@@ -382,7 +391,7 @@ export default function ResumePage() {
             <Link href="/#stats" className={homeStyles.navLink}>Results</Link>
           </div>
 
-          <div className={homeStyles.navActions} style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.15s ease" }}>
+          <div className={homeStyles.navActions} suppressHydrationWarning>
             {isLoggedIn ? (
               <>
                 <Link href="/profile" className={homeStyles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
