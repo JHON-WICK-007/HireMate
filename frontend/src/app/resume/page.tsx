@@ -359,7 +359,7 @@ export default function ResumePage() {
           </Link>
 
           <div className={homeStyles.navLinks}>
-            <Link href="/resume" className={homeStyles.navLink}>Resume Builder</Link>
+            <Link href="/resume" className={homeStyles.navLink}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.navLink}>Mock Interview</Link>
             <Link href="/#features" className={homeStyles.navLink}>Features</Link>
             <Link href="/#how-it-works" className={homeStyles.navLink}>How It Works</Link>
@@ -431,7 +431,7 @@ export default function ResumePage() {
               <ThemeToggle />
             </div>
             <div className={homeStyles.mobileDivider} />
-            <Link href="/resume" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Builder</Link>
+            <Link href="/resume" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
             <Link href="/#features" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Features</Link>
             <Link href="/#how-it-works" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</Link>

@@ -291,7 +291,7 @@ All badges: `radius-full`, `px-2.5 py-0.5`, Body-sm (`text-xs`), optional leadin
 | **Linear progress** | `h-2 --radius-full` track `--surface-200`, fill `--primary`; optional domain color when tied to a feature | Roadmap completion, upload progress |
 | **Circular score** | `size 120–160px`, `stroke 8–12`, track `--border`, value arc `--primary` (or domain color); center: `Stat` number + `/100` caption | ATS score, interview score (reuses hero HUD dial pattern from `3d_model_specification.md`) |
 | **Skill meter** | Row: H5 label left, `Stat`-sm % right; below, linear progress in domain/semantic color | Skill breakdown |
-| **Stepper** | Horizontal at top of multi-step forms; numbered circles (`--radius-full`, `h-8 w-8`), connector line `--border`; complete = `--primary` fill + check; current = `--primary` ring; pending = `--surface-200` | Resume builder, roadmap generator |
+| **Stepper** | Horizontal at top of multi-step forms; numbered circles (`--radius-full`, `h-8 w-8`), connector line `--border`; complete = `--primary` fill + check; current = `--primary` ring; pending = `--surface-200` | Resume optimizer, roadmap generator |
 
 ### 5.9 Charts / graphs (performance dashboard)
 
@@ -349,7 +349,7 @@ Custom component set (no suitable Shadcn primitive):
 - **Upload:** H2 + Body-lg intro, large file-upload dropzone (5.2), recent uploads list (table-lite).
 - **Results:** top stat row — **ATS score circular** (left, resume-cyan arc) + 3 stat cards (keyword match, formatting, impact). Below: 2-col layout — left: skill/strength breakdown (skill meters), right: keyword gaps (chips, weak-area style) + AI recommendations (accordion). Sticky right rail "Download report" + "Generate interview" (primary).
 
-### 6.5 Resume builder (multi-step)
+### 6.5 Resume optimizer (multi-step)
 - 3-pane: top stepper, left form sections accordion (Contact / Summary / Experience / Education / Skills), right live preview (`--surface-100` A4-ish page, `--radius-lg`, `shadow-lg`). Footer: Back / Continue / "Export DOCX/PDF" (uses `docx` + `html2pdf.js` deps). Each experience entry = repeatable card with add/remove.
 
 ### 6.6 Interview setup
@@ -545,7 +545,7 @@ frontend/
 │   │   │   ├── resume/
 │   │   │   │   ├── page.tsx             # Upload + list
 │   │   │   │   ├── analyze/[id]/page.tsx
-│   │   │   │   └── builder/page.tsx
+│   │   │   │   └── optimizer/page.tsx
 │   │   │   ├── interview/
 │   │   │   │   ├── setup/page.tsx
 │   │   │   │   ├── chat/[id]/page.tsx
@@ -616,7 +616,7 @@ frontend/
 │   │   │   │   ├── AtsScoreHud.tsx
 │   │   │   │   ├── SkillBreakdown.tsx
 │   │   │   │   ├── KeywordGaps.tsx
-│   │   │   │   └── BuilderPreview.tsx
+│   │   │   │   └── OptimizerPreview.tsx
 │   │   │   ├── hooks/
 │   │   │   │   └── useResumeAnalysis.ts
 │   │   │   └── types.ts

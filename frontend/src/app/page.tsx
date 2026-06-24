@@ -1159,7 +1159,7 @@ export default function Home() {
           </Link>
 
           <div className={styles.navLinks}>
-            <Link href="/resume" className={styles.navLink}>Resume Builder</Link>
+            <Link href="/resume" className={styles.navLink}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={styles.navLink}>Mock Interview</Link>
             <a href="#features" className={styles.navLink}>Features</a>
             <a href="#how-it-works" className={styles.navLink}>How It Works</a>
@@ -1231,7 +1231,7 @@ export default function Home() {
               <ThemeToggle />
             </div>
             <div className={styles.mobileDivider} />
-            <Link href="/resume" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Builder</Link>
+            <Link href="/resume" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
             <a href="#features" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Features</a>
             <a href="#how-it-works" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</a>

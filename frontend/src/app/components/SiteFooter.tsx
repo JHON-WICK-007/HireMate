@@ -52,7 +52,7 @@ export default function SiteFooter({ showCta = false }: SiteFooterProps) {
                 <strong className={styles.footerInfoTitle}>Platform</strong>
                 <Link href="/#features">Mock Interviews</Link>
                 <Link href="/#features">Resume Analysis</Link>
-                <Link href="/resume">Resume Builder</Link>
+                <Link href="/resume">Resume Optimizer</Link>
               </div>
               <div className={styles.footerInfoCol}>
                 <strong className={styles.footerInfoTitle}>Company</strong>

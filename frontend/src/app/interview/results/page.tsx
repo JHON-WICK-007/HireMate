@@ -178,7 +178,7 @@ function ResultsContent() {
           </Link>
 
           <div className={nav.navLinks}>
-            <Link href="/resume" className={nav.navLink}>Resume Builder</Link>
+            <Link href="/resume" className={nav.navLink}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={`${nav.navLink} ${nav.navActive || ""}`} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
             <Link href="/profile" className={nav.navLink}>Profile</Link>
           </div>
@@ -234,7 +234,7 @@ function ResultsContent() {
               <ThemeToggle />
             </div>
             <div className={nav.mobileDivider} />
-            <Link href="/resume" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Resume Builder</Link>
+            <Link href="/resume" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={nav.mobileLink} onClick={() => setMobileMenu(false)} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
             <Link href="/profile" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Profile</Link>
           </div>
