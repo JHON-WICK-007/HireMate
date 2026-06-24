@@ -1384,7 +1384,7 @@ export default function Home() {
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
             <span className={styles.sectionLabel}>Powerful Features</span>
-            <h2 className={styles.sectionTitle}>Everything you need to land your dream job</h2>
+            <h2 className={styles.gradientSectionTitle}>Everything you need to land your dream job</h2>
             <p className={styles.sectionSubtitle}>
               From resume review to live mock interviews — one platform, zero guesswork.
             </p>
