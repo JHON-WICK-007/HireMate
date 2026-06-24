@@ -1298,10 +1298,7 @@ export default function Home() {
           variants={staggerContainer}
         >
           <div className={styles.heroLeft}>
-            <motion.div className={styles.heroBadge} variants={fadeInUp}>
-              <span className={styles.heroBadgeDot} />
-              AI-Powered Interview Platform
-            </motion.div>
+
 
             <motion.h1 className={styles.heroTitle} variants={fadeInUp}>
               Prepare Smarter.
