@@ -189,23 +189,8 @@ const checkCategories = [
 export default function ResumePage() {
   const router = useRouter();
   const toast = useToast();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      return !!localStorage.getItem("token");
-    }
-    return false;
-  });
-  const [user, setUser] = useState<any>(() => {
-    if (typeof window !== "undefined") {
-      const u = localStorage.getItem("user");
-      try {
-        return u ? JSON.parse(u) : null;
-      } catch (e) {
-        return null;
-      }
-    }
-    return null;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
 
   const [file, setFile] = useState<File | null>(null);
@@ -244,7 +229,15 @@ export default function ResumePage() {
     setMounted(true);
     const token = localStorage.getItem("token");
     if (token) {
+      document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
+      document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
       setIsLoggedIn(true);
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        try {
+          setUser(JSON.parse(savedUser));
+        } catch (e) {}
+      }
       fetch(`${API_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` }, credentials: "include" })
         .then(r => r.json())
         .then(data => {
@@ -254,11 +247,15 @@ export default function ResumePage() {
           } else {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
+            document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
+            document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
             router.push("/auth?mode=signin");
           }
         })
         .catch(() => { });
     } else {
+      document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
+      document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
       router.push("/auth?mode=signin");
     }
   }, [router]);
@@ -393,7 +390,7 @@ export default function ResumePage() {
 
           <div className={homeStyles.navActions} suppressHydrationWarning>
             {/* Logged-in profile link (instantly toggled via head script) */}
-            <div className="auth-logged-in-only" style={{ display: isLoggedIn ? "flex" : "none" }}>
+            <div className="auth-logged-in-only">
               <Link href="/profile" className={homeStyles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
                 {user?.avatar ? (
                   <img
@@ -430,7 +427,7 @@ export default function ResumePage() {
             </div>
 
             {/* Logged-out buttons (instantly toggled via head script) */}
-            <div className="auth-logged-out-only" style={{ display: !isLoggedIn ? "flex" : "none" }}>
+            <div className="auth-logged-out-only">
               <Link href="/auth?mode=signin" className={homeStyles.navBtnGhost}>Sign In</Link>
               <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid}>Get Started</Link>
             </div>

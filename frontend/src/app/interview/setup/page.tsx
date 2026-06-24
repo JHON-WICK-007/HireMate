@@ -365,36 +365,9 @@ export default function SetupPage() {
   const router = useRouter();
   const toast = useToast();
 
-  // User Profile information for Navbar
-  const [avatar, setAvatar] = useState(() => {
-    if (typeof window !== "undefined") {
-      const u = localStorage.getItem("user");
-      try { return u ? JSON.parse(u).avatar || "" : ""; } catch(e) { return ""; }
-    }
-    return "";
-  });
-  const [fullName, setFullName] = useState(() => {
-    if (typeof window !== "undefined") {
-      const u = localStorage.getItem("user");
-      try { return u ? JSON.parse(u).fullName || "" : ""; } catch(e) { return ""; }
-    }
-    return "";
-  });
-  const [userInitials, setUserInitials] = useState(() => {
-    if (typeof window !== "undefined") {
-      const u = localStorage.getItem("user");
-      try {
-        if (u) {
-          const parsed = JSON.parse(u);
-          const parts = (parsed.fullName || "").trim().split(/\s+/);
-          const firstInitial = parts[0] ? parts[0][0] : "";
-          const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
-          return (firstInitial + lastInitial).toUpperCase() || "U";
-        }
-      } catch(e) {}
-    }
-    return "U";
-  });
+  const [avatar, setAvatar] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [userInitials, setUserInitials] = useState("U");
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);

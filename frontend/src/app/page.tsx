@@ -791,23 +791,8 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      return !!localStorage.getItem("token");
-    }
-    return false;
-  });
-  const [user, setUser] = useState<any>(() => {
-    if (typeof window !== "undefined") {
-      const u = localStorage.getItem("user");
-      try {
-        return u ? JSON.parse(u) : null;
-      } catch (e) {
-        return null;
-      }
-    }
-    return null;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
   const lastScrollY = useRef(0);
@@ -819,7 +804,15 @@ export default function Home() {
     setMounted(true);
     const token = localStorage.getItem("token");
     if (token) {
+      document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
+      document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
       setIsLoggedIn(true);
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        try {
+          setUser(JSON.parse(savedUser));
+        } catch (e) {}
+      }
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       fetch(`${API_URL}/api/auth/me`, {
         headers: {
@@ -835,12 +828,18 @@ export default function Home() {
           } else {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
+            document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
+            document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
             setIsLoggedIn(false);
           }
         })
         .catch(() => {
           // Fallback: keep logged in state if fetch fails
         });
+    } else {
+      document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
+      document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
+      setIsLoggedIn(false);
     }
   }, []);
 
@@ -856,6 +855,8 @@ export default function Home() {
     }
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
+    document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
     setIsLoggedIn(false);
     setUser(null);
     window.location.reload();
@@ -1187,7 +1188,7 @@ export default function Home() {
 
           <div className={styles.navActions} suppressHydrationWarning>
             {/* Logged-in profile link (instantly toggled via head script) */}
-            <div className="auth-logged-in-only" style={{ display: isLoggedIn ? "flex" : "none" }}>
+            <div className="auth-logged-in-only">
               <Link href="/profile" className={styles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
                 {user?.avatar ? (
                   <img
@@ -1224,7 +1225,7 @@ export default function Home() {
             </div>
 
             {/* Logged-out buttons (instantly toggled via head script) */}
-            <div className="auth-logged-out-only" style={{ display: !isLoggedIn ? "flex" : "none" }}>
+            <div className="auth-logged-out-only">
               <Link href="/auth?mode=signin" className={styles.navBtnGhost}>Sign In</Link>
               <Link href="/auth?mode=signup" className={styles.navBtnSolid}>Get Started</Link>
             </div>

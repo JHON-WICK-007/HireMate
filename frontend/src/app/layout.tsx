@@ -46,9 +46,13 @@ export default function RootLayout({
                 if (localStorage.getItem('token')) {
                   document.documentElement.classList.add('auth-logged-in');
                   document.documentElement.classList.remove('auth-logged-out');
+                  document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
+                  document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
                 } else {
                   document.documentElement.classList.add('auth-logged-out');
                   document.documentElement.classList.remove('auth-logged-in');
+                  document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
+                  document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
                 }
               } catch (e) {}
             `,

@@ -400,23 +400,24 @@ a {
 }
 
 /* ─── Instant Auth Actions Visibility Control ─── */
+:root {
+  --auth-logged-in-display: none;
+  --auth-logged-out-display: flex;
+}
+
+html.auth-logged-in {
+  --auth-logged-in-display: flex;
+  --auth-logged-out-display: none;
+}
+
+html.auth-logged-out {
+  --auth-logged-in-display: none;
+  --auth-logged-out-display: flex;
+}
+
 .auth-logged-in-only {
-  display: none !important;
+  display: var(--auth-logged-in-display) !important;
 }
 .auth-logged-out-only {
-  display: flex !important;
-}
-
-html.auth-logged-in .auth-logged-in-only {
-  display: flex !important;
-}
-html.auth-logged-in .auth-logged-out-only {
-  display: none !important;
-}
-
-html.auth-logged-out .auth-logged-in-only {
-  display: none !important;
-}
-html.auth-logged-out .auth-logged-out-only {
-  display: flex !important;
+  display: var(--auth-logged-out-display) !important;
 }

@@ -112,29 +112,10 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState<string | null>(null);
 
-  // User state
-  const [email, setEmail] = useState(() => {
-    if (typeof window !== "undefined") {
-      const u = localStorage.getItem("user");
-      try { return u ? JSON.parse(u).email || "" : ""; } catch(e) { return ""; }
-    }
-    return "";
-  });
-  const [avatar, setAvatar] = useState(() => {
-    if (typeof window !== "undefined") {
-      const u = localStorage.getItem("user");
-      try { return u ? JSON.parse(u).avatar || "" : ""; } catch(e) { return ""; }
-    }
-    return "";
-  });
+  const [email, setEmail] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-  const [fullName, setFullName] = useState(() => {
-    if (typeof window !== "undefined") {
-      const u = localStorage.getItem("user");
-      try { return u ? JSON.parse(u).fullName || "" : ""; } catch(e) { return ""; }
-    }
-    return "";
-  });
+  const [fullName, setFullName] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
