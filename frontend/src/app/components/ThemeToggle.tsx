@@ -7,8 +7,8 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
 
   useEffect(() => {
     const activeTheme = (document.documentElement.getAttribute("data-theme") ||
-                         localStorage.getItem("theme") ||
-                         "dark") as "light" | "dark";
+      localStorage.getItem("theme") ||
+      "dark") as "light" | "dark";
     setTheme(activeTheme);
   }, []);
 
@@ -19,36 +19,17 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
     document.documentElement.setAttribute("data-theme", newTheme);
   };
 
-  // Inline fallback styles in case global CSS doesn't load or gets purged
-  const fallbackStyle: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 36,
-    height: 36,
-    minWidth: 36,
-    minHeight: 36,
-    borderRadius: 0,
-    border: "none",
-    background: "transparent",
-    outline: "none",
-    boxShadow: "none",
-    color: "inherit",
-    cursor: "pointer",
-    padding: 0,
-    flexShrink: 0,
-    opacity: 0.7,
-    transition: "all 250ms cubic-bezier(0.4, 0, 0.2, 1)",
-  };
+  // Tailwind‑based styling using design tokens
+  const baseClasses = "flex items-center justify-center w-9 h-9 rounded-none bg-transparent border-none text-inherit cursor-pointer opacity-70 transition-all";
 
   if (theme === null) {
     return (
       <button
-        className={`theme-toggle ${className}`}
+        className={`theme-toggle ${baseClasses} ${className}`}
         aria-label="Toggle theme"
-        style={{ ...fallbackStyle, opacity: 0 }}
+        style={{ opacity: 0 }}
       >
-        <div style={{ width: 20, height: 20 }} />
+        <div className="w-5 h-5" />
       </button>
     );
   }
@@ -56,13 +37,12 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
   return (
     <button
       onClick={toggleTheme}
-      className={`theme-toggle ${className}`}
+      className={`theme-toggle ${baseClasses} ${className}`}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
       title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      style={fallbackStyle}
     >
       {theme === "dark" ? (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="block">
           <circle cx="12" cy="12" r="5" />
           <line x1="12" y1="1" x2="12" y2="3" />
           <line x1="12" y1="21" x2="12" y2="23" />
@@ -74,7 +54,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
         </svg>
       ) : (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block" }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="block">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
       )}
