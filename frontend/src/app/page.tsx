@@ -1740,7 +1740,7 @@ export default function Home() {
                   <div className={styles.lottieWrapper}>
                     <DotLottieReact
                       src="/RJaN4bTA8T.lottie"
-                      loop={false}
+                      loop={true}
                       autoplay={true}
                     />
                   </div>
