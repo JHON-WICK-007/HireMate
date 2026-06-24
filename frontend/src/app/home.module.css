@@ -3375,9 +3375,23 @@
   flex-direction: column;
 }
 
+@keyframes neonGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .welcomeHeader {
   position: relative;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  background: linear-gradient(270deg, #6366f1, #d946ef, #06b6d4, #8b5cf6);
+  background-size: 400% 400%;
+  animation: neonGradientShift 8s ease infinite;
   padding: 2.25rem 1.5rem 1.75rem 1.5rem;
   display: flex;
   flex-direction: column;
