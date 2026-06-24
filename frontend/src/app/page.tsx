@@ -778,7 +778,7 @@ function StatCounter({ target, duration = 2000 }: { target: number; duration?: n
   return <>{count.toLocaleString()}</>;
 }
 
-function LottieHeroGraphic() {
+function LottieHeroGraphic({ user }: { user: any }) {
   const spotlightRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -817,6 +817,10 @@ function LottieHeroGraphic() {
     }
   }
 
+  const welcomeText = user?.fullName
+    ? `Welcome, ${user.fullName.split(" ")[0]}! 🎉`
+    : "Welcome to HireMate AI! 🚀";
+
   return (
     <div className={styles.heroRight}>
       <motion.div
@@ -843,14 +847,26 @@ function LottieHeroGraphic() {
           }}
         />
 
-        <div className={styles.consoleCard} style={{ zIndex: 2, padding: "1.5rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className={styles.consoleCard} style={{ zIndex: 2, padding: "2rem", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between" }}>
           <div ref={spotlightRef} className={styles.consoleCardSpotlight} />
-          <DotLottieReact
-            src="/RJaN4bTA8T.lottie"
-            loop
-            autoplay
-            style={{ width: "100%", height: "100%", maxWidth: "360px", maxHeight: "360px" }}
-          />
+          
+          <div style={{ textAlign: "center", width: "100%", marginTop: "0.5rem" }}>
+            <h3 style={{ fontSize: "1.5rem", fontWeight: "800", background: "linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>
+              {welcomeText}
+            </h3>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginTop: "0.5rem", marginBottom: 0 }}>
+              {user?.fullName ? "Your personalized dashboard is ready." : "Unlock your career potential with AI."}
+            </p>
+          </div>
+
+          <div style={{ width: "100%", flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <DotLottieReact
+              src="/RJaN4bTA8T.lottie"
+              loop
+              autoplay
+              style={{ width: "100%", height: "100%", maxWidth: "300px", maxHeight: "300px" }}
+            />
+          </div>
         </div>
       </motion.div>
     </div>
@@ -873,6 +889,7 @@ export default function Home() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [showLottie, setShowLottie] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
   const lastScrollY = useRef(0);
@@ -883,6 +900,38 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
     const token = localStorage.getItem("token");
+
+    // Check if we should show the Lottie animation (first visit or first login)
+    const hasSeenAnon = localStorage.getItem("lottie-shown-anonymous");
+    if (!token) {
+      if (!hasSeenAnon) {
+        setShowLottie(true);
+        localStorage.setItem("lottie-shown-anonymous", "true");
+      }
+    } else {
+      const savedUserStr = localStorage.getItem("user");
+      if (savedUserStr) {
+        try {
+          const parsed = JSON.parse(savedUserStr);
+          const key = `lottie-shown-user-${parsed.id || parsed.email || "unknown"}`;
+          if (!localStorage.getItem(key)) {
+            setShowLottie(true);
+            localStorage.setItem(key, "true");
+          }
+        } catch (_) {
+          if (!localStorage.getItem("lottie-shown-logged-in")) {
+            setShowLottie(true);
+            localStorage.setItem("lottie-shown-logged-in", "true");
+          }
+        }
+      } else {
+        if (!localStorage.getItem("lottie-shown-logged-in")) {
+          setShowLottie(true);
+          localStorage.setItem("lottie-shown-logged-in", "true");
+        }
+      }
+    }
+
     if (token) {
       document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
       document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
@@ -1490,7 +1539,13 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {mounted && <LottieHeroGraphic />}
+          {mounted && (
+            showLottie ? (
+              <LottieHeroGraphic user={user} />
+            ) : (
+              <Interactive3DConsole />
+            )
+          )}
         </motion.div>
       </section>
 
