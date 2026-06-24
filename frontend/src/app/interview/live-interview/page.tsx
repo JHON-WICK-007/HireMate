@@ -344,6 +344,7 @@ function LiveInterviewContent() {
   const [avatar, setAvatar] = useState("");
   const [fullName, setFullName] = useState("");
   const [userInitials, setUserInitials] = useState("U");
+  const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -388,10 +389,24 @@ function LiveInterviewContent() {
 
   // Fetch authentication and session data
   useEffect(() => {
+    setMounted(true);
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/auth?mode=signin");
       return;
+    }
+    const savedUserStr = localStorage.getItem("user");
+    if (savedUserStr) {
+      try {
+        const savedUser = JSON.parse(savedUserStr);
+        setAvatar(savedUser.avatar || "");
+        setFullName(savedUser.fullName || "");
+        const parts = (savedUser.fullName || "").trim().split(/\s+/);
+        const firstInitial = parts[0] ? parts[0][0] : "";
+        const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
+        const initials = (firstInitial + lastInitial).toUpperCase() || "U";
+        setUserInitials(initials);
+      } catch (e) {}
     }
 
     // Fetch user details for navbar
@@ -409,8 +424,10 @@ function LiveInterviewContent() {
           const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
           const initials = (firstInitial + lastInitial).toUpperCase() || "U";
           setUserInitials(initials);
+          localStorage.setItem("user", JSON.stringify(data.user));
         } else {
           localStorage.removeItem("token");
+          localStorage.removeItem("user");
           router.push("/auth?mode=signin");
         }
       })
@@ -658,7 +675,7 @@ function LiveInterviewContent() {
             <Link href="/profile" className={nav.navLink} onClick={blockNavigation}>Profile</Link>
           </div>
 
-          <div className={nav.navActions}>
+          <div className={nav.navActions} style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.15s ease" }}>
             <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }} onClick={blockNavigation}>
               {avatar ? (
                 <img

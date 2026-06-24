@@ -793,6 +793,7 @@ export default function Home() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [mounted, setMounted] = useState(false);
   const [flippedCard, setFlippedCard] = useState<number | null>(null);
   const lastScrollY = useRef(0);
   const initials = user?.fullName
@@ -800,9 +801,16 @@ export default function Home() {
     : "U";
 
   useEffect(() => {
+    setMounted(true);
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        try {
+          setUser(JSON.parse(savedUser));
+        } catch (e) {}
+      }
       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       fetch(`${API_URL}/api/auth/me`, {
         headers: {
@@ -814,8 +822,10 @@ export default function Home() {
         .then(data => {
           if (data.success && data.user) {
             setUser(data.user);
+            localStorage.setItem("user", JSON.stringify(data.user));
           } else {
             localStorage.removeItem("token");
+            localStorage.removeItem("user");
             setIsLoggedIn(false);
           }
         })
@@ -836,6 +846,7 @@ export default function Home() {
       console.error("Logout error:", err);
     }
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setIsLoggedIn(false);
     setUser(null);
     window.location.reload();
@@ -1165,7 +1176,7 @@ export default function Home() {
             <a href="#stats" className={styles.navLink}>Results</a>
           </div>
 
-          <div className={styles.navActions}>
+          <div className={styles.navActions} style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.15s ease" }}>
             {isLoggedIn ? (
               <>
                 <Link href="/profile" className={styles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
@@ -1230,7 +1241,8 @@ export default function Home() {
             <a href="#how-it-works" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</a>
             <a href="#stats" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Results</a>
             <div className={styles.mobileDivider} />
-            {isLoggedIn ? (
+            {mounted && (
+              isLoggedIn ? (
               <>
                 <Link href="/profile" className={styles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   {user?.avatar ? (
@@ -1263,15 +1275,18 @@ export default function Home() {
                       {initials}
                     </div>
                   )}
-                  <span>Profile</span>
+                  <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
                 </Link>
+                <button onClick={handleSignOut} className={styles.mobileLink} style={{ color: "var(--color-error)", border: "none", background: "none", cursor: "pointer", padding: "12px 16px", textAlign: "left", fontSize: "1.1rem", fontWeight: "600", width: "100%" }}>
+                  Sign Out
+                </button>
               </>
             ) : (
               <>
                 <Link href="/auth?mode=signin" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Sign In</Link>
                 <Link href="/auth?mode=signup" className={styles.navBtnSolid} style={{ width: "100%", textAlign: "center" }} onClick={() => setMobileMenu(false)}>Get Started</Link>
               </>
-            )}
+            ))}
           </div>
         )}
       </nav>

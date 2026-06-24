@@ -191,6 +191,7 @@ export default function ResumePage() {
   const toast = useToast();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [mounted, setMounted] = useState(false);
 
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -225,12 +226,28 @@ export default function ResumePage() {
   }, []);
 
   useEffect(() => {
+    setMounted(true);
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        try {
+          setUser(JSON.parse(savedUser));
+        } catch (e) {}
+      }
       fetch(`${API_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` }, credentials: "include" })
         .then(r => r.json())
-        .then(data => { if (data.success) setUser(data.user); else router.push("/auth?mode=signin"); })
+        .then(data => {
+          if (data.success) {
+            setUser(data.user);
+            localStorage.setItem("user", JSON.stringify(data.user));
+          } else {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            router.push("/auth?mode=signin");
+          }
+        })
         .catch(() => { });
     } else {
       router.push("/auth?mode=signin");
@@ -365,7 +382,7 @@ export default function ResumePage() {
             <Link href="/#stats" className={homeStyles.navLink}>Results</Link>
           </div>
 
-          <div className={homeStyles.navActions}>
+          <div className={homeStyles.navActions} style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.15s ease" }}>
             {isLoggedIn ? (
               <>
                 <Link href="/profile" className={homeStyles.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
@@ -430,7 +447,8 @@ export default function ResumePage() {
             <Link href="/#how-it-works" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</Link>
             <Link href="/#stats" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Results</Link>
             <div className={homeStyles.mobileDivider} />
-            {isLoggedIn ? (
+            {mounted && (
+              isLoggedIn ? (
               <>
                 <Link href="/profile" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   {user?.avatar ? (
@@ -463,7 +481,7 @@ export default function ResumePage() {
                       {initials}
                     </div>
                   )}
-                  <span>Profile</span>
+                  <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
                 </Link>
               </>
             ) : (
@@ -471,7 +489,7 @@ export default function ResumePage() {
                 <Link href="/auth?mode=signin" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Sign In</Link>
                 <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid} style={{ width: "100%", textAlign: "center" }} onClick={() => setMobileMenu(false)}>Get Started</Link>
               </>
-            )}
+            ))}
           </div>
         )}
       </nav>

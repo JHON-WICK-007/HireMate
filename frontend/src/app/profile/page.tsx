@@ -146,9 +146,22 @@ export default function ProfilePage() {
   // Section edit states
   const [editing, setEditing] = useState({ personal: false, skills: false, experience: false, education: false, goals: false });
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     const token = localStorage.getItem("token");
     if (!token) { router.push("/auth?mode=signin"); return; }
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        const u = JSON.parse(savedUser);
+        setEmail(u.email || ""); setAvatar(u.avatar || ""); setFullName(u.fullName || "");
+        setPhone(u.phone || ""); setBio(u.bio || ""); setSkills(u.skills || []);
+        setExperienceList(u.experience || []); setEducationList(u.education || []);
+        setCareerGoal(u.careerGoal || ""); setTargetRole(u.targetRole || ""); setTargetCompany(u.targetCompany || "");
+      } catch (e) {}
+    }
     fetch(`${API_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` }, credentials: "include" })
       .then(r => r.json())
       .then(data => {
@@ -158,7 +171,12 @@ export default function ProfilePage() {
           setPhone(u.phone || ""); setBio(u.bio || ""); setSkills(u.skills || []);
           setExperienceList(u.experience || []); setEducationList(u.education || []);
           setCareerGoal(u.careerGoal || ""); setTargetRole(u.targetRole || ""); setTargetCompany(u.targetCompany || "");
-        } else { localStorage.removeItem("token"); router.push("/auth?mode=signin"); }
+          localStorage.setItem("user", JSON.stringify(u));
+        } else {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          router.push("/auth?mode=signin");
+        }
       })
       .catch(() => toast.error("Failed to load profile."))
       .finally(() => setIsLoading(false));
@@ -179,6 +197,7 @@ export default function ProfilePage() {
       if (data.success) {
         toast.success("Changes saved successfully.");
         setEditing(p => ({ ...p, [section]: false }));
+        localStorage.setItem("user", JSON.stringify(data.user));
       } else toast.error(data.message || "Failed to save.");
     } catch { toast.error("Network error."); }
     finally { setIsSaving(null); }
@@ -203,7 +222,11 @@ export default function ProfilePage() {
           body: JSON.stringify({ avatar: base64 }),
         });
         const data = await res.json();
-        if (data.success) { setAvatar(base64); toast.success("Profile photo updated."); }
+        if (data.success) {
+          setAvatar(base64);
+          toast.success("Profile photo updated.");
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
         else toast.error(data.message || "Upload failed.");
       } catch { toast.error("Upload error."); }
       finally { setIsUploadingAvatar(false); }
@@ -262,7 +285,7 @@ export default function ProfilePage() {
             <Link href="/#stats" className={nav.navLink}>Results</Link>
           </div>
 
-          <div className={nav.navActions}>
+          <div className={nav.navActions} style={{ opacity: mounted ? 1 : 0, transition: "opacity 0.15s ease" }}>
             <Link href="/profile" className={nav.navBtnGhost} style={{ paddingLeft: "6px", paddingRight: "16px" }}>
               {avatar ? (
                 <img
@@ -317,39 +340,41 @@ export default function ProfilePage() {
             <Link href="/#how-it-works" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</Link>
             <Link href="/#stats" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Results</Link>
             <div className={nav.mobileDivider} />
-            <Link href="/profile" className={nav.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              {avatar ? (
-                <img
-                  src={avatar}
-                  alt="Profile"
-                  style={{
-                    width: "42px",
-                    height: "42px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    border: "1.5px solid var(--border-default)"
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: "42px",
-                    height: "42px",
-                    borderRadius: "50%",
-                    background: "var(--surface-300)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.95rem",
-                    fontWeight: "bold",
-                    color: "var(--text-primary)"
-                  }}
-                >
-                  {initials}
-                </div>
-              )}
-              <span>Profile</span>
-            </Link>
+            {mounted && (
+              <Link href="/profile" className={nav.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                {avatar ? (
+                  <img
+                    src={avatar}
+                    alt="Profile"
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "1.5px solid var(--border-default)"
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      borderRadius: "50%",
+                      background: "var(--surface-300)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "0.95rem",
+                      fontWeight: "bold",
+                      color: "var(--text-primary)"
+                    }}
+                  >
+                    {initials}
+                  </div>
+                )}
+                <span>{fullName ? fullName.split(" ")[0] : "Profile"}</span>
+              </Link>
+            )}
           </div>
         )}
       </nav>

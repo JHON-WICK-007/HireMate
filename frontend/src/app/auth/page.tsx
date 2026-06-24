@@ -147,6 +147,7 @@ export default function AuthPage() {
         toast.success(`Welcome back, ${data.user.fullName}! 🎉`);
         // Store token for API calls
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
         // Redirect to homepage after 1.5s
         setTimeout(() => {
           router.push("/");
@@ -154,6 +155,7 @@ export default function AuthPage() {
       } else {
         toast.success("Account created successfully! 🚀 Welcome to HireMate AI!");
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
         // Redirect to homepage after 1.5s
         setTimeout(() => {
           router.push("/");
