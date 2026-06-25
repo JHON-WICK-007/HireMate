@@ -359,6 +359,7 @@ function LiveInterviewContent() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(5);
+  const [questionTypes, setQuestionTypes] = useState<string[]>([]);
   const [isLoadingSession, setIsLoadingSession] = useState(true);
 
   // DOM Refs
@@ -457,6 +458,7 @@ function LiveInterviewContent() {
           setRole(session.role);
           setSessionName(session.sessionName || "");
           setTotalQuestions(session.totalQuestions);
+          setQuestionTypes(session.questionTypes || []);
           setCurrentQuestionIndex(session.currentQuestionIndex);
 
           // Restore elapsed time from session's createdAt timestamp
@@ -527,6 +529,12 @@ function LiveInterviewContent() {
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const getMaxTimeForQuestions = (q: number): number => {
+    if (q <= 5) return 25 * 60;
+    if (q <= 10) return 45 * 60;
+    return 90 * 60;
   };
 
   const handleSend = async (e: FormEvent) => {
@@ -791,12 +799,12 @@ function LiveInterviewContent() {
                       {sessionName || `HireMate AI — ${fullName ? fullName.split(" ")[0] : "Candidate"} · ${role}`}
                     </div>
                     <div className={styles.metaRole}>
-                      {([...messages].reverse().find(m => m.sender === "ai")?.type || "Technical")} round · {totalQuestions} questions
+                      {questionTypes.length > 0 ? questionTypes.join(", ") : "Technical"} · {totalQuestions} questions
                     </div>
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <div className={`${styles.timer} ${(totalQuestions * 120 - elapsedTime <= 60) ? styles.timerWarning : ""}`}>
+                  <div className={`${styles.timer} ${elapsedTime > getMaxTimeForQuestions(totalQuestions) ? styles.timerWarning : ""}`}>
                     <IconClock /> {formatTime(elapsedTime)}
                   </div>
                   <button className={styles.endBtn} onClick={forceEndSession} disabled={isEndingSession || isAiTyping}>

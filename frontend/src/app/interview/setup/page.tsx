@@ -445,15 +445,16 @@ export default function SetupPage() {
   const isSessionNameFilled = !!sessionName.trim();
   const isSessionNameValid = isSessionNameFilled && sessionNameStatus !== "taken";
   const allFieldsSelected = isCompanySelected && !!selectedRole && !!selectedLevel && selectedQuestionTypes.length > 0 && !!selectedDuration;
+  const nameFieldsReady = isCompanySelected && !!selectedRole && !!selectedLevel;
 
-  // Auto-validate session name as soon as all fields are selected
-  const prevAllFieldsSelected = useRef(false);
+  // Auto-validate session name whenever it changes and name fields are ready
+  const prevSessionName = useRef(sessionName);
   useEffect(() => {
-    if (allFieldsSelected && !prevAllFieldsSelected.current && sessionName.trim()) {
+    if (nameFieldsReady && sessionName.trim() && sessionName !== prevSessionName.current) {
       checkSessionNameUnique(sessionName);
     }
-    prevAllFieldsSelected.current = allFieldsSelected;
-  }, [allFieldsSelected, sessionName, checkSessionNameUnique]);
+    prevSessionName.current = sessionName;
+  }, [sessionName, nameFieldsReady, checkSessionNameUnique]);
 
   // Calculate completed sections count
   const completedSections = [
@@ -934,7 +935,7 @@ export default function SetupPage() {
                         setIsSessionNameManuallyEdited(true);
                       }}
                       onBlur={() => {
-                        if (allFieldsSelected && sessionName.trim()) {
+                        if (nameFieldsReady && sessionName.trim()) {
                           checkSessionNameUnique(sessionName);
                         }
                       }}
@@ -971,7 +972,7 @@ export default function SetupPage() {
                           <line x1="15" y1="9" x2="9" y2="15" />
                           <line x1="9" y1="9" x2="15" y2="15" />
                         </svg>
-                        This session name already exists. Please choose a different name.
+                        Session name already taken.
                       </div>
                     )}
                     {sessionNameStatus === "available" && (
@@ -1093,12 +1094,16 @@ export default function SetupPage() {
                 <button
                   className={styles.startBtn}
                   onClick={startInterview}
-                  disabled={isStartingSession || completedSections < 6}
+                  disabled={isStartingSession || completedSections < 6 || sessionNameStatus === "taken"}
                   style={{ marginTop: "1rem" }}
                 >
                   {isStartingSession ? (
                     <>
                       <IconSpinner /> Initializing AI Interviewer...
+                    </>
+                  ) : sessionNameStatus === "taken" ? (
+                    <>
+                      Please select correct name
                     </>
                   ) : completedSections < 6 ? (
                     <>
