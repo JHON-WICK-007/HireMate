@@ -39,9 +39,10 @@ router.get("/check-session-name", protect, async (req: Request, res: Response): 
       res.status(200).json({ success: true, exists: false });
       return;
     }
+    const norm = name.toLowerCase();
     const existing = await Interview.findOne({
       user: req.user?._id,
-      sessionName: { $regex: new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+      sessionNameNorm: norm,
     });
     res.status(200).json({ success: true, exists: !!existing });
   } catch (error: any) {
@@ -62,9 +63,10 @@ router.post("/start", protect, async (req: Request, res: Response): Promise<void
     // Enforce unique session name per user
     const trimmedName = (sessionName || "").trim();
     if (trimmedName) {
+      const norm = trimmedName.toLowerCase();
       const duplicate = await Interview.findOne({
         user: req.user?._id,
-        sessionName: { $regex: new RegExp(`^${trimmedName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+        sessionNameNorm: norm,
       });
       if (duplicate) {
         res.status(409).json({
@@ -122,6 +124,7 @@ Respond ONLY with a valid JSON object matching this exact schema:
     };
 
     // Save Interview session
+    const finalName = sessionName?.trim() || `${role} Session`;
     const interview = new Interview({
       user: req.user?._id,
       company,
@@ -132,7 +135,8 @@ Respond ONLY with a valid JSON object matching this exact schema:
       currentQuestionIndex: 0,
       totalQuestions: qCount,
       status: "in-progress",
-      sessionName: sessionName?.trim() || `${role} Session`,
+      sessionName: finalName,
+      sessionNameNorm: finalName.toLowerCase(),
     });
 
     await interview.save();

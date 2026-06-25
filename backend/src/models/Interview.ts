@@ -27,6 +27,7 @@ export interface IInterview extends Document {
   };
   status: "in-progress" | "completed";
   sessionName?: string;
+  sessionNameNorm?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -95,10 +96,21 @@ const interviewSchema = new Schema<IInterview>(
       type: String,
       trim: true,
     },
+    sessionNameNorm: {
+      type: String,
+      trim: true,
+      select: false,
+    },
   },
   {
     timestamps: true,
   }
+);
+
+// Compound unique index: one session name per user (case-insensitive via norm field)
+interviewSchema.index(
+  { user: 1, sessionNameNorm: 1 },
+  { unique: true, partialFilterExpression: { sessionNameNorm: { $type: "string" } } }
 );
 
 const Interview = mongoose.model<IInterview>("Interview", interviewSchema);
