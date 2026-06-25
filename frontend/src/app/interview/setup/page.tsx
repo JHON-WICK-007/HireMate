@@ -406,7 +406,6 @@ export default function SetupPage() {
   const [sessionName, setSessionName] = useState("");
   const [isSessionNameManuallyEdited, setIsSessionNameManuallyEdited] = useState(false);
   const [sessionNameStatus, setSessionNameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
-  const sessionNameCheckTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!isSessionNameManuallyEdited) {
@@ -420,44 +419,41 @@ export default function SetupPage() {
     }
   }, [selectedCompany, customCompany, selectedRole, selectedLevel, isSessionNameManuallyEdited]);
 
-  // Debounced session name uniqueness check
-  const checkSessionNameUnique = useCallback((name: string) => {
-    if (sessionNameCheckTimer.current) {
-      clearTimeout(sessionNameCheckTimer.current);
-    }
+  // Session name uniqueness check — only called explicitly (on blur / before submit)
+  const checkSessionNameUnique = useCallback(async (name: string) => {
     const trimmed = name.trim();
     if (!trimmed) {
       setSessionNameStatus("idle");
       return;
     }
     setSessionNameStatus("checking");
-    sessionNameCheckTimer.current = setTimeout(async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-        const res = await fetch(
-          `${API_URL}/api/interviews/check-session-name?name=${encodeURIComponent(trimmed)}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const data = await res.json();
-        setSessionNameStatus(data.exists ? "taken" : "available");
-      } catch {
-        setSessionNameStatus("idle");
-      }
-    }, 500);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await fetch(
+        `${API_URL}/api/interviews/check-session-name?name=${encodeURIComponent(trimmed)}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      setSessionNameStatus(data.exists ? "taken" : "available");
+    } catch {
+      setSessionNameStatus("idle");
+    }
   }, []);
-
-  // Trigger check whenever sessionName changes
-  useEffect(() => {
-    checkSessionNameUnique(sessionName);
-    return () => {
-      if (sessionNameCheckTimer.current) clearTimeout(sessionNameCheckTimer.current);
-    };
-  }, [sessionName, checkSessionNameUnique]);
 
   const isCompanySelected = selectedCompany === "Custom" ? !!customCompany.trim() : !!selectedCompany;
   const isSessionNameFilled = !!sessionName.trim();
   const isSessionNameValid = isSessionNameFilled && sessionNameStatus !== "taken";
+  const allFieldsSelected = isCompanySelected && !!selectedRole && !!selectedLevel && selectedQuestionTypes.length > 0 && !!selectedDuration;
+
+  // Auto-validate session name as soon as all fields are selected
+  const prevAllFieldsSelected = useRef(false);
+  useEffect(() => {
+    if (allFieldsSelected && !prevAllFieldsSelected.current && sessionName.trim()) {
+      checkSessionNameUnique(sessionName);
+    }
+    prevAllFieldsSelected.current = allFieldsSelected;
+  }, [allFieldsSelected, sessionName, checkSessionNameUnique]);
 
   // Calculate completed sections count
   const completedSections = [
@@ -567,6 +563,26 @@ export default function SetupPage() {
   const startInterview = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
+
+    // Final validation: check session name if not already validated
+    if (sessionName.trim() && sessionNameStatus !== "available") {
+      setSessionNameStatus("checking");
+      try {
+        const res = await fetch(
+          `${API_URL}/api/interviews/check-session-name?name=${encodeURIComponent(sessionName.trim())}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const data = await res.json();
+        if (data.exists) {
+          setSessionNameStatus("taken");
+          toast.error("A session with this name already exists.");
+          return;
+        }
+        setSessionNameStatus("available");
+      } catch {
+        setSessionNameStatus("idle");
+      }
+    }
 
     setIsStartingSession(true);
     try {
@@ -916,6 +932,11 @@ export default function SetupPage() {
                       onChange={(e) => {
                         setSessionName(e.target.value);
                         setIsSessionNameManuallyEdited(true);
+                      }}
+                      onBlur={() => {
+                        if (allFieldsSelected && sessionName.trim()) {
+                          checkSessionNameUnique(sessionName);
+                        }
                       }}
                       className={styles.setupInput}
                       style={{
