@@ -146,7 +146,7 @@
   border-radius: var(--radius-lg);
   padding: 3rem 2rem;
   background: var(--glass-bg);
-  border: none;
+  border: 2px dashed rgba(255, 255, 255, 0.12);
   backdrop-filter: var(--glass-blur);
   transition: all var(--transition-base);
   cursor: pointer;
@@ -157,67 +157,48 @@
   overflow: visible;
 }
 
-.uploadArea::before {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: inherit;
-  padding: 3px;
-  background:
-      repeating-linear-gradient(90deg,
-          #a855f7 0px, #a855f7 12px,
-          transparent 12px, transparent 18px,
-          #ef4444 18px, #ef4444 30px,
-          transparent 30px, transparent 36px,
-          #f97316 36px, #f97316 48px,
-          transparent 48px, transparent 54px,
-          #eab308 54px, #eab308 66px,
-          transparent 66px, transparent 72px,
-          #10b981 72px, #10b981 84px,
-          transparent 84px, transparent 90px,
-          #3b82f6 90px, #3b82f6 102px,
-          transparent 102px, transparent 108px);
-  background-size: 200% 100%;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0.8;
-  transition: opacity var(--transition-base);
-  pointer-events: none;
-  animation: borderFlowDash 3s linear infinite;
-}
-
-[data-theme="light"] .uploadArea::before {
-  opacity: 0.6;
+:global([data-theme="light"]) .uploadArea {
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .uploadArea:hover {
   background: var(--glass-bg-hover);
   box-shadow: var(--glass-shadow-hover);
   transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
-.uploadArea:hover::before {
-  opacity: 1;
+:global([data-theme="light"]) .uploadArea:hover {
+  border-color: rgba(0, 0, 0, 0.25);
 }
 
 .uploadAreaActive::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  padding: 3px;
   background: linear-gradient(135deg,
-      rgba(168, 85, 247, 0.5),
-      rgba(239, 68, 68, 0.5),
-      rgba(249, 115, 22, 0.5),
-      rgba(234, 179, 8, 0.5),
-      rgba(16, 185, 129, 0.5),
-      rgba(59, 130, 246, 0.5),
-      rgba(168, 85, 247, 0.5));
+      rgba(168, 85, 247, 0.55),
+      rgba(239, 68, 68, 0.55),
+      rgba(249, 115, 22, 0.55),
+      rgba(234, 179, 8, 0.55),
+      rgba(16, 185, 129, 0.55),
+      rgba(59, 130, 246, 0.55),
+      rgba(168, 85, 247, 0.55));
   background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
   opacity: 1;
+  pointer-events: none;
   animation: borderFlow 8s ease infinite;
 }
 
 .uploadAreaActive {
   background: rgba(168, 85, 247, 0.04) !important;
+  border-color: transparent !important;
 }
 
 .uploadIconWrap {
