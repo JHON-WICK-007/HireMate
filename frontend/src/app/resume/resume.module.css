@@ -1163,7 +1163,7 @@
 
 /* ─── Checks Section ─────────────────────────────────────── */
 .checksSection {
-  padding: 4rem 2rem 8rem;
+  padding: 4rem 2rem 3rem;
   background: transparent;
   width: 100%;
 }
@@ -1473,15 +1473,14 @@
 
 /* ─── FAQ Section ────────────────────────────────────────── */
 .faqSection {
-  padding: 6rem 2rem 8rem;
+  padding: 1.5rem 2rem 8rem;
   position: relative;
   overflow: hidden;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .faqContent {
   width: 100%;
-  max-width: 800px;
+  max-width: 1120px;
   margin: 0 auto;
   text-align: center;
 }
@@ -1575,7 +1574,7 @@
 
 .faqBody {
   overflow: hidden;
-  transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: max-height 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .faqAnswer {
