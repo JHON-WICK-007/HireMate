@@ -1293,9 +1293,6 @@ export default function Home() {
           <div className={styles.mobileMenu}>
             <Link href="/resume" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
-            <a href="#features" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Features</a>
-            <a href="#how-it-works" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</a>
-            <a href="#stats" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Results</a>
             <div className={styles.mobileDivider} />
             {mounted && (
               isLoggedIn ? (

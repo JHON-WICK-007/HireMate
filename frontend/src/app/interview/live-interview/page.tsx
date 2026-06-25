@@ -696,7 +696,6 @@ function LiveInterviewContent() {
           <div className={nav.navLinks}>
             <Link href="/resume" className={nav.navLink} onClick={blockNavigation}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={`${nav.navLink} ${nav.navActive || ""}`} style={{ color: "var(--domain-interview)" }} onClick={blockNavigation}>Mock Interview</Link>
-            <Link href="/profile" className={nav.navLink} onClick={blockNavigation}>Profile</Link>
           </div>
 
           <div className={nav.navActions} suppressHydrationWarning>

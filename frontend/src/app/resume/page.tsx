@@ -381,9 +381,6 @@ export default function ResumePage() {
           <div className={homeStyles.navLinks}>
             <Link href="/resume" className={homeStyles.navLink}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.navLink}>Mock Interview</Link>
-            <Link href="/#features" className={homeStyles.navLink}>Features</Link>
-            <Link href="/#how-it-works" className={homeStyles.navLink}>How It Works</Link>
-            <Link href="/#stats" className={homeStyles.navLink}>Results</Link>
           </div>
 
           <div className={homeStyles.navActions} suppressHydrationWarning>
@@ -467,9 +464,6 @@ export default function ResumePage() {
           <div className={homeStyles.mobileMenu}>
             <Link href="/resume" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
-            <Link href="/#features" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Features</Link>
-            <Link href="/#how-it-works" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</Link>
-            <Link href="/#stats" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Results</Link>
             <div className={homeStyles.mobileDivider} />
             {mounted && (
               isLoggedIn ? (

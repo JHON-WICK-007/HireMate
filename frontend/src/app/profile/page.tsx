@@ -274,9 +274,6 @@ export default function ProfilePage() {
           <div className={nav.navLinks}>
             <Link href="/resume" className={nav.navLink}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={nav.navLink}>Mock Interview</Link>
-            <Link href="/#features" className={nav.navLink}>Features</Link>
-            <Link href="/#how-it-works" className={nav.navLink}>How It Works</Link>
-            <Link href="/#stats" className={nav.navLink}>Results</Link>
           </div>
 
           <div className={nav.navActions} suppressHydrationWarning>
@@ -350,9 +347,6 @@ export default function ProfilePage() {
           <div className={nav.mobileMenu}>
             <Link href="/resume" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
-            <Link href="/#features" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Features</Link>
-            <Link href="/#how-it-works" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>How It Works</Link>
-            <Link href="/#stats" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Results</Link>
             <div className={nav.mobileDivider} />
             {mounted && (
               <Link href="/profile" className={nav.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>

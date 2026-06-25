@@ -629,7 +629,6 @@ export default function SetupPage() {
           <div className={nav.navLinks}>
             <Link href="/resume" className={nav.navLink}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={`${nav.navLink} ${nav.navActive || ""}`} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
-            <Link href="/profile" className={nav.navLink}>Profile</Link>
           </div>
 
           <div className={nav.navActions} suppressHydrationWarning>
