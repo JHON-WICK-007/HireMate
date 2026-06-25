@@ -638,16 +638,14 @@ export default function ResumePage() {
                 <input id="fileInput" type="file" accept=".pdf,.docx" className={styles.uploadInput} onChange={handleFileChange} />
               </div>
 
-              <motion.button
+              <button
                 onClick={handleUpload}
                 className={`${styles.btn} ${styles.btnPrimary}`}
                 disabled={!file || isUploading}
                 style={{ minWidth: "220px", justifyContent: "center", padding: "0.85rem 2rem" }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
               >
                 {isUploading ? "Analyzing…" : "Analyze Resume"}
-              </motion.button>
+              </button>
             </motion.div>
 
             <motion.div className={styles.featuresRow} variants={fadeInUp}>
