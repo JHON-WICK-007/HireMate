@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "../interview.module.css";
@@ -405,6 +405,8 @@ export default function SetupPage() {
   const [isStartingSession, setIsStartingSession] = useState(false);
   const [sessionName, setSessionName] = useState("");
   const [isSessionNameManuallyEdited, setIsSessionNameManuallyEdited] = useState(false);
+  const [sessionNameStatus, setSessionNameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+  const sessionNameCheckTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!isSessionNameManuallyEdited) {
@@ -418,8 +420,44 @@ export default function SetupPage() {
     }
   }, [selectedCompany, customCompany, selectedRole, selectedLevel, isSessionNameManuallyEdited]);
 
+  // Debounced session name uniqueness check
+  const checkSessionNameUnique = useCallback((name: string) => {
+    if (sessionNameCheckTimer.current) {
+      clearTimeout(sessionNameCheckTimer.current);
+    }
+    const trimmed = name.trim();
+    if (!trimmed) {
+      setSessionNameStatus("idle");
+      return;
+    }
+    setSessionNameStatus("checking");
+    sessionNameCheckTimer.current = setTimeout(async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        const res = await fetch(
+          `${API_URL}/api/interviews/check-session-name?name=${encodeURIComponent(trimmed)}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const data = await res.json();
+        setSessionNameStatus(data.exists ? "taken" : "available");
+      } catch {
+        setSessionNameStatus("idle");
+      }
+    }, 500);
+  }, []);
+
+  // Trigger check whenever sessionName changes
+  useEffect(() => {
+    checkSessionNameUnique(sessionName);
+    return () => {
+      if (sessionNameCheckTimer.current) clearTimeout(sessionNameCheckTimer.current);
+    };
+  }, [sessionName, checkSessionNameUnique]);
+
   const isCompanySelected = selectedCompany === "Custom" ? !!customCompany.trim() : !!selectedCompany;
   const isSessionNameFilled = !!sessionName.trim();
+  const isSessionNameValid = isSessionNameFilled && sessionNameStatus !== "taken";
 
   // Calculate completed sections count
   const completedSections = [
@@ -428,7 +466,7 @@ export default function SetupPage() {
     !!selectedLevel,
     selectedQuestionTypes.length > 0,
     !!selectedDuration,
-    isSessionNameFilled
+    isSessionNameValid
   ].filter(Boolean).length;
 
   const progressColor =
@@ -552,6 +590,9 @@ export default function SetupPage() {
       if (data.success) {
         // Redirect directly to the live interview screen with the new interview session ID
         router.push(`/interview/live-interview?id=${data.interviewId}`);
+      } else if (res.status === 409) {
+        setSessionNameStatus("taken");
+        toast.error(data.message || "A session with this name already exists.");
       } else {
         toast.error(data.message || "Failed to initialize interview.");
       }
@@ -882,8 +923,64 @@ export default function SetupPage() {
                         width: "100%",
                         padding: "8px 12px",
                         fontSize: "0.85rem",
+                        borderColor:
+                          sessionNameStatus === "taken"
+                            ? "#ef4444"
+                            : sessionNameStatus === "available"
+                              ? "#22c55e"
+                              : undefined,
+                        boxShadow:
+                          sessionNameStatus === "taken"
+                            ? "0 0 0 2px rgba(239, 68, 68, 0.25)"
+                            : sessionNameStatus === "available"
+                              ? "0 0 0 2px rgba(34, 197, 94, 0.2)"
+                              : undefined,
                       }}
                     />
+                    {sessionNameStatus === "taken" && (
+                      <div style={{
+                        color: "#ef4444",
+                        fontSize: "0.75rem",
+                        marginTop: "0.35rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="15" y1="9" x2="9" y2="15" />
+                          <line x1="9" y1="9" x2="15" y2="15" />
+                        </svg>
+                        This session name already exists. Please choose a different name.
+                      </div>
+                    )}
+                    {sessionNameStatus === "available" && (
+                      <div style={{
+                        color: "#22c55e",
+                        fontSize: "0.75rem",
+                        marginTop: "0.35rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Session name is available
+                      </div>
+                    )}
+                    {sessionNameStatus === "checking" && (
+                      <div style={{
+                        color: "var(--text-muted)",
+                        fontSize: "0.75rem",
+                        marginTop: "0.35rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}>
+                        Checking availability...
+                      </div>
+                    )}
                   </div>
                 </div>
 

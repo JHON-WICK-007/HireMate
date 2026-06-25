@@ -29,6 +29,27 @@ async function callWithRetry<T>(fn: () => Promise<T>, maxRetries = 3, baseDelayM
 // @route   POST /api/interviews/start
 // @desc    Initialize a mock interview session and generate the first question
 // @access  Protected
+// @route   GET /api/interviews/check-session-name
+// @desc    Check if a session name already exists for the current user
+// @access  Protected
+router.get("/check-session-name", protect, async (req: Request, res: Response): Promise<void> => {
+  try {
+    const name = (req.query.name as string || "").trim();
+    if (!name) {
+      res.status(200).json({ success: true, exists: false });
+      return;
+    }
+    const existing = await Interview.findOne({
+      user: req.user?._id,
+      sessionName: { $regex: new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+    });
+    res.status(200).json({ success: true, exists: !!existing });
+  } catch (error: any) {
+    console.error("Check session name error:", error);
+    res.status(500).json({ success: false, message: "Failed to check session name." });
+  }
+});
+
 router.post("/start", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { company, role, level, questionTypes, totalQuestions, sessionName } = req.body;
@@ -36,6 +57,22 @@ router.post("/start", protect, async (req: Request, res: Response): Promise<void
     if (!company || !role || !level) {
       res.status(400).json({ success: false, message: "Please provide company, role, and experience level." });
       return;
+    }
+
+    // Enforce unique session name per user
+    const trimmedName = (sessionName || "").trim();
+    if (trimmedName) {
+      const duplicate = await Interview.findOne({
+        user: req.user?._id,
+        sessionName: { $regex: new RegExp(`^${trimmedName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+      });
+      if (duplicate) {
+        res.status(409).json({
+          success: false,
+          message: `A session named "${trimmedName}" already exists. Please choose a different name.`,
+        });
+        return;
+      }
     }
 
     const qTypes = questionTypes && questionTypes.length > 0 ? questionTypes : ["Technical", "Behavioral"];
@@ -288,6 +325,135 @@ If isEnded is true:
   } catch (error: any) {
     console.error("Submit answer error:", error);
     res.status(500).json({ success: false, message: error.message || "Failed to process answer." });
+  }
+});
+
+// @route   POST /api/interviews/:id/end
+// @desc    End interview session early — finalize scores from answered questions
+// @access  Protected
+router.post("/:id/end", protect, async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const interview = await Interview.findById(id);
+
+    if (!interview) {
+      res.status(404).json({ success: false, message: "Interview session not found." });
+      return;
+    }
+
+    if (interview.user.toString() !== req.user?._id.toString()) {
+      res.status(403).json({ success: false, message: "Access denied." });
+      return;
+    }
+
+    if (interview.status === "completed") {
+      res.status(400).json({ success: false, message: "This interview has already been completed." });
+      return;
+    }
+
+    // Collect only answered questions (those with a userAnswer and score)
+    const answeredQuestions = interview.questions.filter(q => q.userAnswer && q.score !== undefined);
+
+    if (answeredQuestions.length === 0) {
+      // No answers submitted — just mark completed with zero scores
+      interview.status = "completed";
+      interview.overallScore = 0;
+      interview.metrics = { technicalAccuracy: 0, communication: 0, problemSolving: 0 };
+      // Remove unanswered questions to keep data clean
+      interview.questions = interview.questions.filter(q => q.userAnswer);
+      interview.totalQuestions = interview.questions.length;
+      await interview.save();
+
+      await User.findByIdAndUpdate(req.user?._id, {
+        $push: { interviewHistory: interview._id },
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Interview ended early with no answered questions.",
+        interviewId: interview._id,
+      });
+      return;
+    }
+
+    // Build a summary for Gemini to compute overall metrics
+    const formattedHistory = answeredQuestions
+      .map((q, idx) => {
+        return `Question ${idx + 1} [Type: ${q.type}]: ${q.questionText}
+Candidate Answer: ${q.userAnswer}
+Score: ${q.score}/100
+Feedback: ${q.feedback || "N/A"}`;
+      })
+      .join("\n\n");
+
+    const prompt = `You are an expert recruiter evaluating a mock interview that was ended early.
+
+Company: ${interview.company}
+Role: ${interview.role}
+Experience Level: ${interview.level}
+Questions Answered: ${answeredQuestions.length} out of ${interview.totalQuestions} planned
+
+Here is the conversation history:
+${formattedHistory}
+
+Based on the questions answered so far, calculate the final overall score (0 to 100) and the final sub-metrics (each 0 to 100):
+- technicalAccuracy
+- communication
+- problemSolving
+
+Respond ONLY with a valid JSON object:
+{
+  "overallScore": number,
+  "metrics": {
+    "technicalAccuracy": number,
+    "communication": number,
+    "problemSolving": number
+  }
+}`;
+
+    if (!process.env.GEMINI_API_KEY) {
+      res.status(500).json({ success: false, message: "AI configuration key is missing on the server." });
+      return;
+    }
+
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const response = await callWithRetry(() =>
+      ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+        },
+      })
+    );
+
+    const resultText = response.text || "{}";
+    const parsedData = JSON.parse(resultText);
+
+    // Finalize the interview
+    interview.status = "completed";
+    interview.overallScore = parsedData.overallScore;
+    interview.metrics = parsedData.metrics;
+    // Remove unanswered questions and update total count
+    interview.questions = interview.questions.filter(q => q.userAnswer);
+    interview.totalQuestions = interview.questions.length;
+    await interview.save();
+
+    // Push to user's interview history
+    await User.findByIdAndUpdate(req.user?._id, {
+      $push: { interviewHistory: interview._id },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Interview ended successfully.",
+      interviewId: interview._id,
+      overallScore: interview.overallScore,
+      metrics: interview.metrics,
+    });
+  } catch (error: any) {
+    console.error("End interview error:", error);
+    res.status(500).json({ success: false, message: error.message || "Failed to end interview session." });
   }
 });
 

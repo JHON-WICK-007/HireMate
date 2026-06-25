@@ -632,9 +632,39 @@ function LiveInterviewContent() {
     };
   }, []);
 
-  const forceEndSession = () => {
-    if (confirm("Are you sure you want to end this interview early? Your answers up to this point will not be finalized.")) {
-      router.push("/interview/setup");
+  const [isEndingSession, setIsEndingSession] = useState(false);
+
+  const forceEndSession = async () => {
+    if (!confirm("Are you sure you want to end this interview early? Your answered questions will be scored and finalized.")) {
+      return;
+    }
+
+    if (!id) return;
+    setIsEndingSession(true);
+
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${API_URL}/api/interviews/${id}/end`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Session ended. Loading your results...");
+        setTimeout(() => {
+          router.push(`/interview/results?id=${id}`);
+        }, 1000);
+      } else {
+        toast.error(data.message || "Failed to end session.");
+      }
+    } catch (err) {
+      toast.error("Network error ending session.");
+    } finally {
+      setIsEndingSession(false);
     }
   };
 
@@ -770,8 +800,8 @@ function LiveInterviewContent() {
                   <div className={`${styles.timer} ${(totalQuestions * 120 - elapsedTime <= 60) ? styles.timerWarning : ""}`}>
                     <IconClock /> {formatTime(elapsedTime)}
                   </div>
-                  <button className={styles.endBtn} onClick={forceEndSession}>
-                    End session
+                  <button className={styles.endBtn} onClick={forceEndSession} disabled={isEndingSession || isAiTyping}>
+                    {isEndingSession ? <><IconSpinner /> Ending...</> : "End session"}
                   </button>
                 </div>
               </div>
