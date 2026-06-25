@@ -1207,13 +1207,10 @@ export default function Home() {
             <span>HireMate AI</span>
           </Link>
 
-          <div className={styles.navLinks}>
-            <Link href="/resume" className={styles.navLink}>Resume Optimizer</Link>
-            <Link href="/interview/setup" className={styles.navLink}>Mock Interview</Link>
-            <a href="#features" className={styles.navLink}>Features</a>
-            <a href="#how-it-works" className={styles.navLink}>How It Works</a>
-            <a href="#stats" className={styles.navLink}>Results</a>
-          </div>
+           <div className={styles.navLinks}>
+             <Link href="/resume" className={styles.navLink}>Resume Optimizer</Link>
+             <Link href="/interview/setup" className={styles.navLink}>Mock Interview</Link>
+           </div>
 
           <div className={styles.navActions} suppressHydrationWarning>
             {/* Logged-in profile link (instantly toggled via head script) */}
