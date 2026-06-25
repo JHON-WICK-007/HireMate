@@ -6,6 +6,8 @@ export interface IQuestionLog {
   userAnswer?: string;
   score?: number; // 0 to 100
   feedback?: string;
+  strongAnswer?: string;
+  competencies?: string[];
 }
 
 export interface IInterview extends Document {
@@ -24,6 +26,7 @@ export interface IInterview extends Document {
     problemSolving: number;
   };
   status: "in-progress" | "completed";
+  sessionName?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -63,6 +66,8 @@ const interviewSchema = new Schema<IInterview>(
         userAnswer: { type: String },
         score: { type: Number },
         feedback: { type: String },
+        strongAnswer: { type: String },
+        competencies: [{ type: String }],
       },
     ],
     currentQuestionIndex: {
@@ -85,6 +90,10 @@ const interviewSchema = new Schema<IInterview>(
       type: String,
       enum: ["in-progress", "completed"],
       default: "in-progress",
+    },
+    sessionName: {
+      type: String,
+      trim: true,
     },
   },
   {

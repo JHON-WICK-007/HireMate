@@ -31,7 +31,7 @@ async function callWithRetry<T>(fn: () => Promise<T>, maxRetries = 3, baseDelayM
 // @access  Protected
 router.post("/start", protect, async (req: Request, res: Response): Promise<void> => {
   try {
-    const { company, role, level, questionTypes, totalQuestions } = req.body;
+    const { company, role, level, questionTypes, totalQuestions, sessionName } = req.body;
 
     if (!company || !role || !level) {
       res.status(400).json({ success: false, message: "Please provide company, role, and experience level." });
@@ -95,6 +95,7 @@ Respond ONLY with a valid JSON object matching this exact schema:
       currentQuestionIndex: 0,
       totalQuestions: qCount,
       status: "in-progress",
+      sessionName: sessionName?.trim() || `${role} Session`,
     });
 
     await interview.save();
@@ -175,7 +176,7 @@ Question: ${currentQuestion.questionText}
 Candidate Answer: ${answer}
 
 Your tasks:
-1. Evaluate the candidate's answer to this specific question. Assign an integer score between 0 and 100 based on accuracy, depth, and clarity, and write short constructive feedback (under 3 sentences).
+1. Evaluate the candidate's answer to this specific question. Assign an integer score between 0 and 100 based on accuracy, depth, and clarity, and write short constructive feedback (under 3 sentences). Also provide what a strong response looks like in 1-2 sentences (using the STAR method if appropriate), and an array of 2-4 key competencies tested by this question (e.g. "Active listening", "Conflict resolution", "Technical accuracy", "Problem solving", etc.).
 2. Determine if the interview has reached the last question (${currentIdx + 1} == ${totalQuestions}).
 3. If NOT finished (isEnded = false), generate the next question. It MUST match one of the requested question types: ${interview.questionTypes.join(", ")}. Vary the question type from the current question if possible.
 4. If FINISHED (isEnded = true), calculate the final overall score (0 to 100) and the final sub-metrics (each 0 to 100):
@@ -189,7 +190,9 @@ If isEnded is false:
 {
   "evaluation": {
     "score": number,
-    "feedback": "string"
+    "feedback": "string",
+    "strongAnswer": "string",
+    "competencies": ["string"]
   },
   "isEnded": false,
   "nextQuestion": {
@@ -202,7 +205,9 @@ If isEnded is true:
 {
   "evaluation": {
     "score": number,
-    "feedback": "string"
+    "feedback": "string",
+    "strongAnswer": "string",
+    "competencies": ["string"]
   },
   "isEnded": true,
   "overallEvaluation": {
@@ -238,6 +243,8 @@ If isEnded is true:
     // Save evaluation of current answer
     currentQuestion.score = parsedData.evaluation.score;
     currentQuestion.feedback = parsedData.evaluation.feedback;
+    currentQuestion.strongAnswer = parsedData.evaluation.strongAnswer;
+    currentQuestion.competencies = parsedData.evaluation.competencies;
 
     if (parsedData.isEnded) {
       // Complete interview

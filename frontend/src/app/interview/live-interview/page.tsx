@@ -352,6 +352,7 @@ function LiveInterviewContent() {
   // Interview Session states
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
+  const [sessionName, setSessionName] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [userAnswer, setUserAnswer] = useState("");
   const [isAiTyping, setIsAiTyping] = useState(false);
@@ -454,6 +455,7 @@ function LiveInterviewContent() {
 
           setCompany(session.company);
           setRole(session.role);
+          setSessionName(session.sessionName || "");
           setTotalQuestions(session.totalQuestions);
           setCurrentQuestionIndex(session.currentQuestionIndex);
 
@@ -757,7 +759,7 @@ function LiveInterviewContent() {
                 <div className={styles.metaLeft}>
                   <div>
                     <div className={styles.metaCompany}>
-                      HireMate AI — {fullName ? fullName.split(" ")[0] : "Candidate"} · {role}
+                      {sessionName || `HireMate AI — ${fullName ? fullName.split(" ")[0] : "Candidate"} · ${role}`}
                     </div>
                     <div className={styles.metaRole}>
                       {([...messages].reverse().find(m => m.sender === "ai")?.type || "Technical")} round · {totalQuestions} questions

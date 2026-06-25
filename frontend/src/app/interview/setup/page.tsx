@@ -403,8 +403,23 @@ export default function SetupPage() {
   const [selectedQuestionTypes, setSelectedQuestionTypes] = useState<string[]>([]);
   const [selectedDuration, setSelectedDuration] = useState<number | null>(null);
   const [isStartingSession, setIsStartingSession] = useState(false);
+  const [sessionName, setSessionName] = useState("");
+  const [isSessionNameManuallyEdited, setIsSessionNameManuallyEdited] = useState(false);
+
+  useEffect(() => {
+    if (!isSessionNameManuallyEdited) {
+      const comp = selectedCompany === "Custom" ? customCompany.trim() : selectedCompany;
+      const parts = [comp, selectedRole, selectedLevel].filter((p) => p && p.trim() !== "");
+      if (parts.length > 0) {
+        setSessionName(parts.join(" - ") + " Session");
+      } else {
+        setSessionName("");
+      }
+    }
+  }, [selectedCompany, customCompany, selectedRole, selectedLevel, isSessionNameManuallyEdited]);
 
   const isCompanySelected = selectedCompany === "Custom" ? !!customCompany.trim() : !!selectedCompany;
+  const isSessionNameFilled = !!sessionName.trim();
 
   // Calculate completed sections count
   const completedSections = [
@@ -412,19 +427,20 @@ export default function SetupPage() {
     !!selectedRole,
     !!selectedLevel,
     selectedQuestionTypes.length > 0,
-    !!selectedDuration
+    !!selectedDuration,
+    isSessionNameFilled
   ].filter(Boolean).length;
 
   const progressColor =
-    completedSections === 1
+    completedSections <= 2
       ? "#ef4444"
-      : completedSections === 2
+      : completedSections === 3
         ? "#f97316"
-        : completedSections === 3
+        : completedSections === 4
           ? "#fbbf24"
-          : completedSections === 4
+          : completedSections === 5
             ? "#10b981"
-            : completedSections === 5
+            : completedSections === 6
               ? "#22c55e"
               : "var(--text-muted)";
 
@@ -528,6 +544,7 @@ export default function SetupPage() {
           level: selectedLevel,
           questionTypes: selectedQuestionTypes,
           totalQuestions: selectedDuration || 5,
+          sessionName: sessionName.trim(),
         }),
       });
 
@@ -660,14 +677,14 @@ export default function SetupPage() {
               <div className={styles.topProgressText}>
                 <span>Configuration Progress</span>
                 <span className={styles.topProgressCount} style={{ color: progressColor }}>
-                  {completedSections}/5
+                  {completedSections}/6
                 </span>
               </div>
               <div className={styles.topProgressBar}>
                 <div
                   className={styles.topProgressFill}
                   style={{
-                    width: `${(completedSections / 5) * 100}%`,
+                    width: `${(completedSections / 6) * 100}%`,
                     background: "linear-gradient(90deg, #ef4444 0%, #f97316 50%, #22c55e 100%)",
                     boxShadow: completedSections > 0 ? `0 0 10px ${progressColor}` : "none",
                   }}
@@ -850,6 +867,27 @@ export default function SetupPage() {
                 <div className={styles.sidebarTitle}>Session Summary</div>
 
                 <div className={styles.sidebarSection}>
+                  <span className={styles.sidebarSectionLabel}>Session Name</span>
+                  <div style={{ marginTop: "0.5rem" }}>
+                    <input
+                      type="text"
+                      placeholder="e.g. Google Front-End Mock"
+                      value={sessionName}
+                      onChange={(e) => {
+                        setSessionName(e.target.value);
+                        setIsSessionNameManuallyEdited(true);
+                      }}
+                      className={styles.setupInput}
+                      style={{
+                        width: "100%",
+                        padding: "8px 12px",
+                        fontSize: "0.85rem",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.sidebarSection}>
                   <span className={styles.sidebarSectionLabel}>Company</span>
                   <div className={styles.sidebarSectionValue}>
                     {selectedCompany ? (
@@ -938,14 +976,14 @@ export default function SetupPage() {
                 <button
                   className={styles.startBtn}
                   onClick={startInterview}
-                  disabled={isStartingSession || completedSections < 5}
+                  disabled={isStartingSession || completedSections < 6}
                   style={{ marginTop: "1rem" }}
                 >
                   {isStartingSession ? (
                     <>
                       <IconSpinner /> Initializing AI Interviewer...
                     </>
-                  ) : completedSections < 5 ? (
+                  ) : completedSections < 6 ? (
                     <>
                       Please select all options
                     </>
