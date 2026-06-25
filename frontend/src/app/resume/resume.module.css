@@ -1505,15 +1505,45 @@
 }
 
 .faqLink {
-  color: #a855f7;
-  text-decoration: none;
+  background: linear-gradient(to right,
+      #00e5ff 0%,
+      #8c7cff 30%,
+      #ff70a6 60%,
+      #00ffcc 85%,
+      #00e5ff 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: textShimmer 6s linear infinite;
+  display: inline-block;
   font-weight: 600;
-  transition: color var(--transition-base);
+  text-decoration: none;
+  transition: opacity var(--transition-base);
+}
+
+:global([data-theme="light"]) .faqLink {
+  background: linear-gradient(to right,
+      #00a8cc 0%,
+      #6366f1 30%,
+      #db2777 60%,
+      #0d9488 85%,
+      #00a8cc 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .faqLink:hover {
-  color: #c084fc;
-  text-decoration: underline;
+  opacity: 0.85;
+  text-decoration: none;
+}
+
+@keyframes textShimmer {
+  to {
+    background-position: 200% center;
+  }
 }
 
 .faqList {
