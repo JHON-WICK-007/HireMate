@@ -240,44 +240,165 @@
   cursor: pointer;
 }
 
+.uploadAreaActive .uploadInput {
+  pointer-events: none;
+}
+
 .uploadFileInfo {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 1rem;
-  background: transparent;
-  border-radius: var(--radius-sm);
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+  backdrop-filter: var(--glass-blur);
+  position: relative;
+  z-index: 10;
+  cursor: default;
+}
+
+:global([data-theme="light"]) .uploadFileInfo {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
 
 .uploadFileIcon {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 12px;
+  color: #c084fc;
   flex-shrink: 0;
+  transition: all var(--transition-base);
+}
+
+:global([data-theme="light"]) .uploadFileIcon {
+  background: rgba(147, 51, 234, 0.06);
+  border-color: rgba(147, 51, 234, 0.15);
+  color: #7c3aed;
 }
 
 .uploadFileIcon svg {
-  opacity: 0.6;
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+}
+
+.uploadFileDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
 }
 
 .uploadFileName {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-primary);
-  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.uploadFileSize {
+.uploadFileMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.78rem;
+}
+
+.uploadFileSize {
+  color: var(--text-secondary);
+}
+
+.uploadFileDivider {
   color: var(--text-muted);
+}
+
+.uploadFileStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #10b981;
+  font-weight: 500;
+}
+
+:global([data-theme="light"]) .uploadFileStatus {
+  color: #059669;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.removeFileBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
   flex-shrink: 0;
+  transition: all var(--transition-base);
+  padding: 0;
+}
+
+:global([data-theme="light"]) .removeFileBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.removeFileBtn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  transform: scale(1.05);
+}
+
+:global([data-theme="light"]) .removeFileBtn:hover {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.2);
+  color: #dc2626;
+}
+
+.removeFileBtn svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* ─── Buttons ────────────────────────────────────────────── */

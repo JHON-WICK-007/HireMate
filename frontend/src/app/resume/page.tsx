@@ -597,14 +597,37 @@ export default function ResumePage() {
                   </defs>
                   <rect className={styles.uploadBorderRect} width="100%" height="100%" rx="16" ry="16" />
                 </svg>
-                <div className={styles.uploadIconWrap}>
-                  <IconUpload />
-                </div>
+                {!file && (
+                  <div className={styles.uploadIconWrap}>
+                    <IconUpload />
+                  </div>
+                )}
                 {file ? (
-                  <div className={styles.uploadFileInfo}>
-                    <div className={styles.uploadFileIcon}><IconFile /></div>
-                    <span className={styles.uploadFileName}>{file.name}</span>
-                    <span className={styles.uploadFileSize}>{formatFileSize(file.size)}</span>
+                  <div className={styles.uploadFileInfo} onClick={(e) => e.stopPropagation()}>
+                    <div className={styles.uploadFileIcon}>
+                      <IconFile />
+                    </div>
+                    <div className={styles.uploadFileDetails}>
+                      <span className={styles.uploadFileName}>{file.name}</span>
+                      <div className={styles.uploadFileMeta}>
+                        <span className={styles.uploadFileSize}>{formatFileSize(file.size)}</span>
+                        <span className={styles.uploadFileDivider}>•</span>
+                        <span className={styles.uploadFileStatus}>
+                          Ready to analyze
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.removeFileBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFile(null);
+                      }}
+                      title="Remove file"
+                    >
+                      <IconX />
+                    </button>
                   </div>
                 ) : (
                   <>
