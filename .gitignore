@@ -40,3 +40,5 @@ AGENTS.md
 CLAUDE.md
 GEMINI.md
 skills-lock.json
+b.md
+backend/src/scripts/testEnd.ts
