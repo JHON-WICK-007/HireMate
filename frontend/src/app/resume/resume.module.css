@@ -146,7 +146,6 @@
   border-radius: var(--radius-lg);
   padding: 3rem 2rem;
   background: var(--glass-bg);
-  border: 2px dashed rgba(255, 255, 255, 0.12);
   backdrop-filter: var(--glass-blur);
   transition: all var(--transition-base);
   cursor: pointer;
@@ -157,47 +156,51 @@
   overflow: visible;
 }
 
-:global([data-theme="light"]) .uploadArea {
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
 .uploadArea:hover {
   background: var(--glass-bg-hover);
   box-shadow: var(--glass-shadow-hover);
-  border-color: rgba(255, 255, 255, 0.25);
 }
 
-:global([data-theme="light"]) .uploadArea:hover {
-  border-color: rgba(0, 0, 0, 0.25);
-}
-
-.uploadAreaActive::before {
-  content: '';
+.uploadBorderSvg {
   position: absolute;
-  inset: -3px;
-  border-radius: inherit;
-  padding: 3px;
-  background: linear-gradient(135deg,
-      rgba(168, 85, 247, 0.55),
-      rgba(239, 68, 68, 0.55),
-      rgba(249, 115, 22, 0.55),
-      rgba(234, 179, 8, 0.55),
-      rgba(16, 185, 129, 0.55),
-      rgba(59, 130, 246, 0.55),
-      rgba(168, 85, 247, 0.55));
-  background-size: 300% 300%;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 1;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
   pointer-events: none;
-  animation: borderFlow 8s ease infinite;
+  overflow: visible;
+}
+
+.uploadBorderRect {
+  stroke-dasharray: 6 4;
+  stroke-width: 1px;
+  fill: none;
+  stroke: url(#uploadActiveGrad);
+  transition: opacity var(--transition-base), stroke-width var(--transition-base);
+  opacity: 0.12;
+  animation: borderFlowDash 8s linear infinite;
+}
+
+:global([data-theme="light"]) .uploadBorderRect {
+  opacity: 0.22;
+}
+
+.uploadArea:hover .uploadBorderRect {
+  opacity: 0.3;
+}
+
+:global([data-theme="light"]) .uploadArea:hover .uploadBorderRect {
+  opacity: 0.4;
+}
+
+.uploadAreaActive .uploadBorderRect {
+  opacity: 1 !important;
+  stroke-width: 1.5px;
+  animation: borderFlowDash 4s linear infinite;
 }
 
 .uploadAreaActive {
   background: rgba(168, 85, 247, 0.04) !important;
-  border-color: transparent !important;
 }
 
 .uploadIconWrap {
@@ -431,9 +434,9 @@
 .scoreBanner::before {
   content: '';
   position: absolute;
-  inset: -2px;
+  inset: -1.5px;
   border-radius: inherit;
-  padding: 2px;
+  padding: 1.5px;
   background: linear-gradient(135deg,
       rgba(168, 85, 247, 0.5),
       rgba(239, 68, 68, 0.5),
@@ -953,12 +956,8 @@
 }
 
 @keyframes borderFlowDash {
-  0% {
-    background-position: 0% 0%;
-  }
-
-  100% {
-    background-position: 200% 0%;
+  to {
+    stroke-dashoffset: -20;
   }
 }
 

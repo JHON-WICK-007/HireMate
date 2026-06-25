@@ -575,6 +575,20 @@ export default function ResumePage() {
 
             <motion.div className={styles.uploadWrapper} variants={fadeInUp}>
               <div className={`${styles.uploadArea} ${file ? styles.uploadAreaActive : ""}`}>
+                <svg className={styles.uploadBorderSvg}>
+                  <defs>
+                    <linearGradient id="uploadActiveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#a855f7" />
+                      <stop offset="16%" stopColor="#ef4444" />
+                      <stop offset="33%" stopColor="#f97316" />
+                      <stop offset="50%" stopColor="#eab308" />
+                      <stop offset="66%" stopColor="#10b981" />
+                      <stop offset="83%" stopColor="#3b82f6" />
+                      <stop offset="100%" stopColor="#a855f7" />
+                    </linearGradient>
+                  </defs>
+                  <rect className={styles.uploadBorderRect} width="100%" height="100%" rx="16" ry="16" />
+                </svg>
                 <div className={styles.uploadIconWrap}>
                   <IconUpload />
                 </div>
