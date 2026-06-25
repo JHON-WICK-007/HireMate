@@ -633,13 +633,13 @@ export default function ResumePage() {
               variants={staggerContainer}
             >
               {checkCategories.map((category, index) => {
-                const isSpanFull = index === 6; // 7th card spans full width
+                const isLastCard = index === checkCategories.length - 1;
                 const isExpanded = expandedCardId === index;
 
                 return (
                   <motion.div
                     key={index}
-                    className={`${styles.checkCard} ${isSpanFull ? styles.cardSpanFull : ""} ${isExpanded ? styles.isExpanded : ""}`}
+                    className={`${styles.checkCard} ${isLastCard ? styles.cardLast : ""} ${isExpanded ? styles.isExpanded : ""}`}
                     variants={fadeInUp}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setExpandedCardId(isExpanded ? null : index)}

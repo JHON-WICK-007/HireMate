@@ -146,7 +146,7 @@
   border-radius: var(--radius-lg);
   padding: 3rem 2rem;
   background: var(--glass-bg);
-  border: 2px dashed var(--glass-border);
+  border: none;
   backdrop-filter: var(--glass-blur);
   transition: all var(--transition-base);
   cursor: pointer;
@@ -154,27 +154,70 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .uploadArea::before {
-  display: none;
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  padding: 3px;
+  background:
+      repeating-linear-gradient(90deg,
+          #a855f7 0px, #a855f7 12px,
+          transparent 12px, transparent 18px,
+          #ef4444 18px, #ef4444 30px,
+          transparent 30px, transparent 36px,
+          #f97316 36px, #f97316 48px,
+          transparent 48px, transparent 54px,
+          #eab308 54px, #eab308 66px,
+          transparent 66px, transparent 72px,
+          #10b981 72px, #10b981 84px,
+          transparent 84px, transparent 90px,
+          #3b82f6 90px, #3b82f6 102px,
+          transparent 102px, transparent 108px);
+  background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.8;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+  animation: borderFlowDash 3s linear infinite;
 }
 
 [data-theme="light"] .uploadArea::before {
-  display: none;
+  opacity: 0.6;
 }
 
 .uploadArea:hover {
   background: var(--glass-bg-hover);
-  border-color: var(--glass-border-hover);
   box-shadow: var(--glass-shadow-hover);
   transform: translateY(-2px);
 }
 
+.uploadArea:hover::before {
+  opacity: 1;
+}
+
+.uploadAreaActive::before {
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.5),
+      rgba(239, 68, 68, 0.5),
+      rgba(249, 115, 22, 0.5),
+      rgba(234, 179, 8, 0.5),
+      rgba(16, 185, 129, 0.5),
+      rgba(59, 130, 246, 0.5),
+      rgba(168, 85, 247, 0.5));
+  background-size: 300% 300%;
+  opacity: 1;
+  animation: borderFlow 8s ease infinite;
+}
+
 .uploadAreaActive {
-  border-color: var(--success) !important;
-  background: rgba(34, 197, 94, 0.04) !important;
+  background: rgba(168, 85, 247, 0.04) !important;
 }
 
 .uploadIconWrap {
@@ -391,6 +434,7 @@
 }
 
 .scoreBanner {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -398,15 +442,49 @@
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  border: none;
   border-radius: var(--radius-lg);
   margin-bottom: 1.5rem;
   box-shadow: var(--glass-shadow);
   transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  overflow: visible;
+}
+
+.scoreBanner::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg,
+      rgba(168, 85, 247, 0.5),
+      rgba(239, 68, 68, 0.5),
+      rgba(249, 115, 22, 0.5),
+      rgba(234, 179, 8, 0.5),
+      rgba(16, 185, 129, 0.5),
+      rgba(59, 130, 246, 0.5),
+      rgba(168, 85, 247, 0.5));
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0.8;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+  animation: borderFlow 8s ease infinite;
+}
+
+.scoreBanner:hover::before {
+  opacity: 1;
+}
+
+.scoreBanner > * {
+  position: relative;
+  z-index: 1;
 }
 
 .scoreBanner:hover {
-  border-color: var(--glass-border-hover);
   box-shadow: var(--glass-shadow-hover);
 }
 
@@ -896,6 +974,16 @@
   }
 }
 
+@keyframes borderFlowDash {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  100% {
+    background-position: 200% 0%;
+  }
+}
+
 @keyframes scoreReveal {
   from {
     transform: scale(0.8);
@@ -905,6 +993,18 @@
   to {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes borderFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
@@ -1032,9 +1132,12 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
 }
 
-/* 7th card spans full width of 2 columns */
-.cardSpanFull {
-  grid-column: span 2;
+/* Last card centered in grid */
+.cardLast {
+  grid-column: 1 / -1;
+  justify-self: center;
+  max-width: calc(50% - 0.875rem);
+  width: 100%;
 }
 
 .cardVisual {
@@ -1220,8 +1323,9 @@
     gap: 1.25rem;
   }
 
-  .cardSpanFull {
-    grid-column: span 1;
+  .cardLast {
+    grid-column: 1 / -1;
+    max-width: 100%;
   }
 }
 
