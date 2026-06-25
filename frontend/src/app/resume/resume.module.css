@@ -173,12 +173,12 @@
 
 .uploadBorderRect {
   stroke-dasharray: 6 4;
-  stroke-width: 1px;
+  stroke-width: 0.8px;
   fill: none;
   stroke: url(#uploadActiveGrad);
   transition: opacity var(--transition-base), stroke-width var(--transition-base);
   opacity: 0.12;
-  animation: borderFlowDash 8s linear infinite;
+  animation: borderFlowDash 2s linear infinite;
 }
 
 :global([data-theme="light"]) .uploadBorderRect {
@@ -187,6 +187,7 @@
 
 .uploadArea:hover .uploadBorderRect {
   opacity: 0.3;
+  stroke-width: 0.8px;
 }
 
 :global([data-theme="light"]) .uploadArea:hover .uploadBorderRect {
@@ -195,8 +196,8 @@
 
 .uploadAreaActive .uploadBorderRect {
   opacity: 1 !important;
-  stroke-width: 1.5px;
-  animation: borderFlowDash 4s linear infinite;
+  stroke-width: 1px;
+  animation: borderFlowDash 0.8s linear infinite;
 }
 
 .uploadAreaActive {
