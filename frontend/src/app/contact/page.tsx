@@ -145,6 +145,7 @@ export default function ContactPage() {
           <div className={homeStyles.navLinks}>
             <Link href="/resume" className={homeStyles.navLink}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.navLink}>Mock Interview</Link>
+            <Link href="/contact" className={homeStyles.navLink} style={{ color: "var(--text-primary)" }}>Contact Us</Link>
           </div>
 
           <div className={homeStyles.navActions} suppressHydrationWarning>
@@ -225,6 +226,7 @@ export default function ContactPage() {
           <div className={homeStyles.mobileMenu}>
             <Link href="/resume" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
+            <Link href="/contact" className={homeStyles.mobileLink} style={{ color: "var(--text-primary)" }} onClick={() => setMobileMenu(false)}>Contact Us</Link>
             <div className={homeStyles.mobileDivider} />
             {mounted && (
               isLoggedIn ? (
