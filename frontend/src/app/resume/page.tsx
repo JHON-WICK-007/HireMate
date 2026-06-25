@@ -59,6 +59,7 @@ const checkCategories = [
   {
     title: "ATS essentials",
     description: "Master the fundamentals of ATS optimization. Learn file format, design, and compliance checks.",
+    image: "/ats_essentials.png",
     gradient: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
     checks: [
       "File format and size",
@@ -79,6 +80,7 @@ const checkCategories = [
   {
     title: "Content",
     description: "Improve readability and impact. Analyze parse rate, word repetition, and AI rewrite suggestions.",
+    image: "/resume_content.png",
     gradient: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
     checks: [
       "ATS parse rate",
@@ -98,6 +100,7 @@ const checkCategories = [
   {
     title: "Recruiter red flags",
     description: "Avoid major pitfalls. Detect credibility issues, risk signals, and LinkedIn mismatches.",
+    image: "/red_flags.png",
     gradient: "linear-gradient(135deg, #f43f5e 0%, #be123c 100%)",
     checks: [
       "Resume credibility",
@@ -116,6 +119,7 @@ const checkCategories = [
   {
     title: "Resume sections",
     description: "Organize your profile structure. Verify essential sections, order, and contact info completeness.",
+    image: "/resume_sections.png",
     gradient: "linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)",
     checks: [
       "Essential sections",
@@ -135,6 +139,7 @@ const checkCategories = [
   {
     title: "Job tailoring",
     description: "Match job descriptions precisely. Check hard and soft skills, action verbs, and titles.",
+    image: "/job_tailoring.png",
     gradient: "linear-gradient(135deg, #10b981 0%, #047857 100%)",
     checks: [
       "Hard skills match",
@@ -154,6 +159,7 @@ const checkCategories = [
   {
     title: "Bias & discrimination",
     description: "Ensure fair evaluation. Detect age, location, and employment gap bias patterns.",
+    image: "/bias_discrimination.png",
     gradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
     checks: [
       "Age and date bias",
@@ -170,6 +176,7 @@ const checkCategories = [
   {
     title: "Seniority & impact",
     description: "Demonstrate career level and authority. Assess leadership signals and skill evidence.",
+    image: "/seniority_impact.png",
     gradient: "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
     checks: [
       "Career progression",
@@ -690,7 +697,7 @@ export default function ResumePage() {
                     {/* Left Column: Visual Image Box */}
                     <div className={styles.cardVisual}>
                       <img
-                        src="/de-niro.jpg"
+                        src={category.image}
                         alt={category.title}
                         className={styles.cardVisualBg}
                         style={{ objectFit: "cover", width: "100%", height: "100%" }}
