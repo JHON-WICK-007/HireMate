@@ -175,28 +175,26 @@
   stroke-dasharray: 6 4;
   stroke-width: 0.6px;
   fill: none;
-  stroke: url(#uploadActiveGrad);
-  transition: opacity var(--transition-base), stroke-width var(--transition-base);
-  opacity: 0.12;
+  stroke: rgba(255, 255, 255, 0.15);
+  transition: opacity var(--transition-base), stroke var(--transition-base), stroke-width var(--transition-base);
+  opacity: 1;
   animation: borderFlowDash 1s linear infinite;
 }
 
 :global([data-theme="light"]) .uploadBorderRect {
-  opacity: 0.22;
+  stroke: rgba(0, 0, 0, 0.15);
 }
 
 .uploadArea:hover .uploadBorderRect {
-  opacity: 0.3;
-  stroke-width: 0.6px;
+  stroke: rgba(255, 255, 255, 0.3);
 }
 
 :global([data-theme="light"]) .uploadArea:hover .uploadBorderRect {
-  opacity: 0.4;
+  stroke: rgba(0, 0, 0, 0.3);
 }
 
 .uploadAreaActive .uploadBorderRect {
-  opacity: 1 !important;
-  stroke-width: 0.6px;
+  stroke: url(#uploadActiveGrad) !important;
   animation: borderFlowDash 0.5s linear infinite;
 }
 
