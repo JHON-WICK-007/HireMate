@@ -193,6 +193,37 @@ const checkCategories = [
   }
 ];
 
+const faqItems = [
+  {
+    question: "Do I get free updates?",
+    answer: "Yes, absolutely! We continuously refine our platform, incorporating new ATS algorithm adjustments, UI enhancements, and diagnostic parameters. You will receive all updates automatically and for free."
+  },
+  {
+    question: "What does the number of \"Projects\" refer to?",
+    answer: "Projects represent distinct workspaces where you can optimize, manage, and version-control different resumes. You can keep multiple versions tailored for different job profiles (e.g., Software Engineer, Product Manager) simultaneously."
+  },
+  {
+    question: "Can I upgrade to a higher plan?",
+    answer: "Yes, you can upgrade your plan at any time through your Profile Billing dashboard. Upgrades take effect immediately, unlocking additional project slots, faster processing, and advanced mock interview sessions."
+  },
+  {
+    question: "What does \"Unlimited Projects\" mean?",
+    answer: "Unlimited Projects means there is no cap on the number of resume optimization workspaces you can create. This is ideal for job seekers targeting multiple diverse roles who want separate, customized resume versions for every single application."
+  },
+  {
+    question: "How can I add Gemini API Key?",
+    answer: "You can securely add your Gemini API Key in your Profile Settings panel. By providing your own key, you bypass public rate limits and ensure maximum performance during peak hours."
+  },
+  {
+    question: "How does the AI Resume Optimizer analyze my resume?",
+    answer: "HireMate runs your resume through a comprehensive 27-parameter diagnostic scanner. It checks ATS parsing compatibility, sections order, recruiter red flags, content density, and job tailoring matching to output a ready-to-use analysis report."
+  },
+  {
+    question: "Is my resume data secure?",
+    answer: "Yes. All resumes uploaded to HireMate are encrypted in transit and at rest, processed within isolated secure servers, and never sold, shared, or used for AI training without your explicit authorization."
+  }
+];
+
 export default function ResumePage() {
   const router = useRouter();
   const toast = useToast();
@@ -205,6 +236,7 @@ export default function ResumePage() {
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [activeTab, setActiveTab] = useState<"analysis" | "data" | "preview">("analysis");
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
+  const [expandedFaqId, setExpandedFaqId] = useState<number | null>(null);
 
   const resumeRef = useRef<HTMLDivElement>(null);
 
@@ -665,7 +697,8 @@ export default function ResumePage() {
       )}
 
       {!resumeData && (
-        <section className={styles.checksSection}>
+        <>
+          <section className={styles.checksSection}>
           <div className={styles.checksContent}>
             <h2 className={styles.checksTitle}>
               Advanced AI Diagnostics <br />
@@ -748,7 +781,57 @@ export default function ResumePage() {
             </motion.div>
           </div>
         </section>
-      )}
+
+        {/* FAQ Section */}
+        <section className={styles.faqSection}>
+          <div className={styles.faqContent}>
+            <h2 className={styles.faqTitle}>Frequently Asked Questions</h2>
+            <p className={styles.faqSubtitle}>
+              Answered all frequently asked questions. Still confused?{" "}
+              <Link href="/profile" className={styles.faqLink}>
+                feel free contact with us
+              </Link>
+            </p>
+
+            <div className={styles.faqList}>
+              {faqItems.map((item, idx) => {
+                const isOpen = expandedFaqId === idx;
+                return (
+                  <div
+                    key={idx}
+                    className={`${styles.faqItem} ${isOpen ? styles.faqItemOpen : ""}`}
+                  >
+                    <button
+                      type="button"
+                      className={styles.faqHeader}
+                      onClick={() => setExpandedFaqId(isOpen ? null : idx)}
+                    >
+                      <span className={styles.faqQuestion}>{item.question}</span>
+                      <span className={styles.faqToggle}>
+                        {isOpen ? (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                        ) : (
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                        )}
+                      </span>
+                    </button>
+                    <div
+                      className={styles.faqBody}
+                      style={{
+                        maxHeight: isOpen ? "150px" : "0px",
+                        opacity: isOpen ? 1 : 0
+                      }}
+                    >
+                      <p className={styles.faqAnswer}>{item.answer}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      </>
+    )}
 
       {/* ─── Results Section ───────────────────────────────── */}
       {resumeData && (
