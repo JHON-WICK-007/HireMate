@@ -440,78 +440,72 @@ function ResultsContent() {
 
             <div className={styles.resultsBody}>
               <div className={styles.resultsHeader}>
-                <div className={styles.scoreCircle}>
-                  <svg className={styles.scoreSvg} viewBox="0 0 140 140">
-                    <circle className={styles.scoreCircleBackground} cx="70" cy="70" r="60" />
-                    <circle
-                      className={styles.scoreCircleFill}
-                      cx="70"
-                      cy="70"
-                      r="60"
-                      strokeDasharray={2 * Math.PI * 60}
-                      strokeDashoffset={getStrokeDashOffset(overallScore)}
-                    />
-                  </svg>
-                  <div className={styles.bigScore}>{overallScore}</div>
+                <div className={styles.scoreCircleInfo}>
+                  <div className={styles.scoreCircleWrap}>
+                    <svg className={styles.scoreSvg} viewBox="0 0 140 140">
+                      <circle className={styles.scoreCircleBackground} cx="70" cy="70" r="60" />
+                      <circle
+                        className={styles.scoreCircleFill}
+                        cx="70"
+                        cy="70"
+                        r="60"
+                        strokeDasharray={2 * Math.PI * 60}
+                        strokeDashoffset={getStrokeDashOffset(overallScore)}
+                      />
+                    </svg>
+                    <div className={styles.bigScore}>{overallScore}</div>
+                  </div>
+                  <div className={styles.scoreLabel}>/100</div>
+                  <div className={styles.verdictBadge}>
+                    {(() => {
+                      const scoreInfo = getScoreDetails(overallScore);
+                      return (
+                        <span className={`${styles.scorePill} ${styles[scoreInfo.style]}`} style={{ display: "inline-flex", fontSize: "0.8rem", padding: "4px 12px" }}>
+                          {scoreInfo.icon}
+                          <span style={{ marginLeft: "4px" }}>{scoreInfo.label}</span>
+                        </span>
+                      );
+                    })()}
+                  </div>
+                  <div className={styles.sessionName}>{sessionName || `${company} ${role}`}</div>
                 </div>
 
-                <div className={styles.scoreLabel}>Overall score · {sessionName || `${company} ${role}`}</div>
-                <div className={styles.verdictBadge}>
-                  {(() => {
-                    const scoreInfo = getScoreDetails(overallScore);
-                    return (
-                      <span className={`${styles.scorePill} ${styles[scoreInfo.style]}`} style={{ display: "inline-flex", fontSize: "0.8rem", padding: "4px 12px" }}>
-                        {scoreInfo.icon}
-                        <span style={{ marginLeft: "4px" }}>{scoreInfo.label}</span>
-                      </span>
-                    );
-                  })()}
-                </div>
-              </div>
-
-              {/* Metrics Grid */}
-            <div className={styles.metricsGrid}>
-              <div className={`${styles.metricCard} ${styles.metricTechnical}`}>
-                <div className={styles.metricVal}>
-                  {metrics.technicalAccuracy}
-                  <span className={styles.metricMax}>/100</span>
-                </div>
-                <div className={styles.metricLbl}>Technical accuracy</div>
-                <div className={styles.metricTrack}>
-                  <div 
-                    className={styles.metricFill} 
-                    style={{ width: `${metrics.technicalAccuracy}%` }}
-                  />
-                </div>
-              </div>
-
-              <div className={`${styles.metricCard} ${styles.metricCommunication}`}>
-                <div className={styles.metricVal}>
-                  {metrics.communication}
-                  <span className={styles.metricMax}>/100</span>
-                </div>
-                <div className={styles.metricLbl}>Communication</div>
-                <div className={styles.metricTrack}>
-                  <div 
-                    className={styles.metricFill} 
-                    style={{ width: `${metrics.communication}%` }}
-                  />
-                </div>
-              </div>
-
-              <div className={`${styles.metricCard} ${styles.metricProblemSolving}`}>
-                <div className={styles.metricVal}>
-                  {metrics.problemSolving}
-                  <span className={styles.metricMax}>/100</span>
-                </div>
-                <div className={styles.metricLbl}>Problem solving</div>
-                <div className={styles.metricTrack}>
-                  <div 
-                    className={styles.metricFill} 
-                    style={{ width: `${metrics.problemSolving}%` }}
-                  />
-                </div>
-              </div>
+                {/* Metrics Grid */}
+                <div className={styles.metricsGrid}>
+              {[
+                { score: metrics.technicalAccuracy, label: "Technical accuracy", metricClass: styles.metricTechnical },
+                { score: metrics.communication, label: "Communication", metricClass: styles.metricCommunication },
+                { score: metrics.problemSolving, label: "Problem solving", metricClass: styles.metricProblemSolving },
+              ].map(({ score, label, metricClass }) => {
+                const s = getScoreDetails(score);
+                const perfColors: Record<string, { bg: string; color: string; border: string }> = {
+                  scorePillExcellent: { bg: "rgba(59, 130, 246, 0.08)", color: "#3b82f6", border: "rgba(59, 130, 246, 0.25)" },
+                  scorePillGood: { bg: "rgba(34, 197, 94, 0.06)", color: "#22c55e", border: "rgba(34, 197, 94, 0.2)" },
+                  scorePillAverage: { bg: "rgba(245, 158, 11, 0.06)", color: "#f59e0b", border: "rgba(245, 158, 11, 0.2)" },
+                  scorePillOk: { bg: "rgba(249, 115, 22, 0.06)", color: "#f97316", border: "rgba(249, 115, 22, 0.2)" },
+                  scorePillPoor: { bg: "rgba(239, 68, 68, 0.06)", color: "#ef4444", border: "rgba(239, 68, 68, 0.2)" },
+                };
+                const pc = perfColors[s.style] || perfColors.scorePillAverage;
+                return (
+                  <div key={label} className={`${styles.metricCard} ${metricClass}`}>
+                    <div className={styles.metricVal}>
+                      {score}
+                      <span className={styles.metricMax}>/100</span>
+                    </div>
+                    <div className={styles.metricLbl}>{label}</div>
+                    <div className={styles.metricTrack}>
+                      <div 
+                        className={styles.metricFill} 
+                        style={{ width: `${score}%` }}
+                      />
+                    </div>
+                    <div className={styles.metricPerf} style={{ background: pc.bg, color: pc.color, border: `1px solid ${pc.border}` }}>
+                      {s.icon} {s.label}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
             </div>
 
               {/* Question Breakdown List */}

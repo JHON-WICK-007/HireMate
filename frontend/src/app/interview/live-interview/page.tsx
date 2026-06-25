@@ -390,6 +390,7 @@ function LiveInterviewContent() {
 
   // Fetch authentication and session data
   useEffect(() => {
+    window.scrollTo(0, 0);
     setMounted(true);
     const token = localStorage.getItem("token");
     if (!token) {
@@ -808,7 +809,7 @@ function LiveInterviewContent() {
                     <IconClock /> {formatTime(elapsedTime)}
                   </div>
                   <button className={styles.endBtn} onClick={forceEndSession} disabled={isEndingSession || isAiTyping}>
-                    {isEndingSession ? <><IconSpinner /> Ending...</> : "End session"}
+                    {isEndingSession ? <><IconSpinner /> Ending..</> : "End session"}
                   </button>
                 </div>
               </div>
@@ -884,7 +885,6 @@ function LiveInterviewContent() {
                           )}
                         </div>
                         <div className={styles.msgBody}>
-                          {m.sender === "ai" && m.type && <div className={styles.qBadge}>{m.type}</div>}
                           <div className={`${styles.bubble} ${m.sender === "ai" ? styles.bubbleAi : styles.bubbleUser}`}>
                             {m.text}
                           </div>
