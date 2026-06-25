@@ -380,17 +380,21 @@ router.post("/:id/end", protect, async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    // Build a summary for Gemini to compute overall metrics
-    const formattedHistory = answeredQuestions
-      .map((q, idx) => {
-        return `Question ${idx + 1} [Type: ${q.type}]: ${q.questionText}
+    // Try Gemini scoring, fall back to local average if it fails
+    let overallScore = 0;
+    let metrics = { technicalAccuracy: 0, communication: 0, problemSolving: 0 };
+
+    try {
+      const formattedHistory = answeredQuestions
+        .map((q, idx) => {
+          return `Question ${idx + 1} [Type: ${q.type}]: ${q.questionText}
 Candidate Answer: ${q.userAnswer}
 Score: ${q.score}/100
 Feedback: ${q.feedback || "N/A"}`;
-      })
-      .join("\n\n");
+        })
+        .join("\n\n");
 
-    const prompt = `You are an expert recruiter evaluating a mock interview that was ended early.
+      const prompt = `You are an expert recruiter evaluating a mock interview that was ended early.
 
 Company: ${interview.company}
 Role: ${interview.role}
@@ -415,29 +419,35 @@ Respond ONLY with a valid JSON object:
   }
 }`;
 
-    if (!process.env.GEMINI_API_KEY) {
-      res.status(500).json({ success: false, message: "AI configuration key is missing on the server." });
-      return;
+      if (process.env.GEMINI_API_KEY) {
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const response = await callWithRetry(() =>
+          ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+              responseMimeType: "application/json",
+            },
+          })
+        );
+
+        const resultText = response.text || "{}";
+        const parsedData = JSON.parse(resultText);
+        overallScore = parsedData.overallScore ?? 0;
+        metrics = parsedData.metrics ?? metrics;
+      }
+    } catch (geminiErr: any) {
+      console.error("Gemini scoring failed, using local fallback:", geminiErr.message);
+      // Local fallback: average the answered question scores
+      const avgScore = Math.round(answeredQuestions.reduce((sum, q) => sum + (q.score || 0), 0) / answeredQuestions.length);
+      overallScore = avgScore;
+      metrics = { technicalAccuracy: avgScore, communication: avgScore, problemSolving: avgScore };
     }
-
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const response = await callWithRetry(() =>
-      ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-        },
-      })
-    );
-
-    const resultText = response.text || "{}";
-    const parsedData = JSON.parse(resultText);
 
     // Finalize the interview
     interview.status = "completed";
-    interview.overallScore = parsedData.overallScore;
-    interview.metrics = parsedData.metrics;
+    interview.overallScore = overallScore;
+    interview.metrics = metrics;
     // Remove unanswered questions and update total count
     interview.questions = interview.questions.filter(q => q.userAnswer);
     interview.totalQuestions = interview.questions.length;
