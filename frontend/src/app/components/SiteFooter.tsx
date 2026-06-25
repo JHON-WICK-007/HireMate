@@ -16,7 +16,7 @@ export default function SiteFooter({ showCta = false }: SiteFooterProps) {
             </h2>
             <div className={styles.footerCtaLinks}>
               <Link href="/auth?mode=signup">Get Started</Link>
-              <a href="#">Contact</a>
+              <Link href="/contact">Contact</Link>
             </div>
           </div>
         </div>

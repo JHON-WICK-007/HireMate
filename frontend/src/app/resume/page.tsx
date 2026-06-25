@@ -788,7 +788,7 @@ export default function ResumePage() {
             <h2 className={styles.faqTitle}>Frequently Asked Questions</h2>
             <p className={styles.faqSubtitle}>
               Answered all frequently asked questions. Still confused?{" "}
-              <Link href="/profile" className={styles.faqLink}>
+              <Link href="/contact" className={styles.faqLink}>
                 feel free contact with us
               </Link>
             </p>

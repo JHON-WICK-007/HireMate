@@ -1551,16 +1551,15 @@
 .faqList {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-:global([data-theme="light"]) .faqList {
-  border-top-color: rgba(0, 0, 0, 0.08);
 }
 
 .faqItem {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: background-color var(--transition-base);
+}
+
+.faqItem:last-child {
+  border-bottom: none;
 }
 
 :global([data-theme="light"]) .faqItem {
@@ -1589,11 +1588,6 @@
   transition: color var(--transition-base);
 }
 
-.faqHeader:hover .faqQuestion {
-  color: var(--text-primary);
-  opacity: 0.85;
-}
-
 .faqToggle {
   display: flex;
   align-items: center;
@@ -1604,7 +1598,6 @@
 }
 
 .faqItemOpen .faqToggle {
-  color: #a855f7;
   transform: rotate(180deg);
 }
 
