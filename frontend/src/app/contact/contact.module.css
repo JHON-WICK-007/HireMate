@@ -253,7 +253,7 @@ a.infoValue:hover {
 .input,
 .textarea {
   width: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--input-bg);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 14px 16px;
@@ -265,8 +265,6 @@ a.infoValue:hover {
   height: 52px;
   box-sizing: border-box;
   caret-color: #f1f5f9;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 .textarea {
