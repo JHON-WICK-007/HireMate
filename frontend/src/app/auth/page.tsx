@@ -85,6 +85,7 @@ export default function AuthPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setFormErrors({});
+    setShowPasswordErrors(false);
 
     const newErrors: {
       fullName?: string;
@@ -97,23 +98,36 @@ export default function AuthPage() {
       newErrors.fullName = "Full name is required.";
     }
     if (!email) {
-      newErrors.email = "Email address is required.";
+      newErrors.email = "Email is required.";
     }
     if (!password) {
       newErrors.password = "Password is required.";
     }
 
+    if (Object.keys(newErrors).length > 0) {
+      setFormErrors(newErrors);
+      if (newErrors.password && !newErrors.fullName && !newErrors.email) {
+        setIsPasswordFocused(true);
+      }
+      return;
+    }
+
     if (!isLogin) {
-      if (password && password !== confirmPassword) {
+      if (password !== confirmPassword) {
         newErrors.confirmPassword = "Passwords do not match.";
+        setIsConfirmFocused(true);
+        setIsPasswordFocused(false);
+        setFormErrors(newErrors);
+        return;
       }
 
-      if (password) {
-        const rulesErrors = getPasswordErrors();
-        if (rulesErrors.length > 0) {
-          newErrors.password = "Please satisfy all password rules.";
-          setShowPasswordErrors(true);
-        }
+      const rulesErrors = getPasswordErrors();
+      if (rulesErrors.length > 0) {
+        newErrors.password = "Please satisfy all password rules.";
+        setShowPasswordErrors(true);
+        setIsPasswordFocused(true);
+        setFormErrors(newErrors);
+        return;
       }
     }
 
@@ -419,11 +433,11 @@ export default function AuthPage() {
                     <rect x="3" y="11" width="18" height="11" rx="3" stroke="currentColor" strokeWidth="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    className={`${styles.input} ${formErrors.password ? styles.inputError : ""}`}
-                    placeholder="••••••••"
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      className={styles.input}
+                      placeholder="••••••••"
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
@@ -528,17 +542,6 @@ export default function AuthPage() {
                   )}
                 </div>
 
-                {/* Password field missing validation error */}
-                {!showPasswordErrors && formErrors.password && (
-                  <div className={styles.fieldError}>
-                    <svg viewBox="0 0 24 24" className={styles.fieldErrorIcon} fill="currentColor">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
-                    </svg>
-                    <span>{formErrors.password}</span>
-                  </div>
-                )}
-
                 {/* Inline Validation Error Messages (Shown below field if validation is broken) */}
                 {!isLogin && showPasswordErrors && getPasswordErrors().map((err, idx) => (
                   <div key={idx} className={styles.fieldError}>
@@ -564,8 +567,8 @@ export default function AuthPage() {
                     <input
                       id="confirmPassword"
                       type="password"
-                      className={`${styles.input} ${formErrors.confirmPassword ? styles.inputError : ""}`}
-                      placeholder="••••••••"
+                      className={styles.input}
+                      placeholder={getPasswordErrors().length === 0 && password.length >= 8 ? "••••••••" : "Complete password first"}
                       value={confirmPassword}
                       onChange={(e) => {
                         setConfirmPassword(e.target.value);
@@ -573,18 +576,20 @@ export default function AuthPage() {
                       }}
                       onFocus={() => setIsConfirmFocused(true)}
                       onBlur={() => setIsConfirmFocused(false)}
+                      disabled={getPasswordErrors().length > 0 || password.length < 8}
                       autoComplete="new-password"
+                      style={getPasswordErrors().length > 0 || password.length < 8 ? { opacity: 0.4, cursor: "not-allowed" } : {}}
                     />
 
                     {/* Confirm Password Match Tooltip */}
-                    {isConfirmFocused && confirmPassword.length > 0 && (
+                    {isConfirmFocused && (
                       <div className={styles.passwordRulesTooltip} onMouseDown={(e) => e.preventDefault()}>
                         <div className={styles.tooltipArrow} />
                         <h4 className={styles.rulesTitle}>MATCH CHECK</h4>
                         <ul className={styles.rulesList}>
-                          <li className={confirmPassword === password ? styles.ruleValid : styles.ruleInvalid}>
+                          <li className={confirmPassword.length > 0 && confirmPassword === password ? styles.ruleValid : styles.ruleInvalid}>
                             <span className={styles.ruleIcon}>
-                              {confirmPassword === password ? (
+                              {confirmPassword.length > 0 && confirmPassword === password ? (
                                 <svg viewBox="0 0 24 24" className={styles.checkIcon} fill="currentColor">
                                   <circle cx="12" cy="12" r="10" />
                                   <path d="M8.5 12.5l2 2 5-5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -602,15 +607,6 @@ export default function AuthPage() {
                       </div>
                     )}
                   </div>
-                  {formErrors.confirmPassword && (
-                    <div className={styles.fieldError}>
-                      <svg viewBox="0 0 24 24" className={styles.fieldErrorIcon} fill="currentColor">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
-                      </svg>
-                      <span>{formErrors.confirmPassword}</span>
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -631,7 +627,10 @@ export default function AuthPage() {
               >
                 {isLoading ? (
                   <>
-                    <div className={styles.spinner} />
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "authSpin 1s linear infinite" }}>
+                      <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+                      <style>{`@keyframes authSpin { 100% { transform: rotate(360deg); } }`}</style>
+                    </svg>
                     <span>{isLogin ? "Signing In..." : "Creating Account..."}</span>
                   </>
                 ) : isLogin ? (
