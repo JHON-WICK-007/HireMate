@@ -1,0 +1,9 @@
+.git
+.agents
+.agent
+.claude
+.kilocode
+node_modules
+*.pdf
+*.md
+!docker-compose.yml
