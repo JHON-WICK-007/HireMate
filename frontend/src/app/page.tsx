@@ -1733,8 +1733,28 @@ export default function Home() {
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 350 }}
             >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowWelcome(false)}
+                className={styles.closeBtn}
+                aria-label="Close"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+
               {/* Left Side: Dynamic Animated Neon Lottie Box */}
               <div className={styles.welcomeLeft}>
+                {/* 5 dots row */}
+                <div className={styles.dotRow}>
+                  <div className={styles.dot} style={{ background: "#fbbf24" }} />
+                  <div className={styles.dot} style={{ background: "#22d3ee" }} />
+                  <div className={styles.dot} style={{ background: "#f87171" }} />
+                  <div className={styles.dot} style={{ background: "#4ade80" }} />
+                  <div className={styles.dot} style={{ background: "#e5e7eb" }} />
+                </div>
                 <div className={styles.lottieWrapper}>
                   <DotLottieReact
                     src="/508T6DecB3.json"
@@ -1746,14 +1766,6 @@ export default function Home() {
 
               {/* Right Side: Welcome Details */}
               <div className={styles.welcomeRight}>
-                {/* 5 dots row */}
-                <div className={styles.dotRow}>
-                  <div className={styles.dot} style={{ background: "#fbbf24" }} />
-                  <div className={styles.dot} style={{ background: "#22d3ee" }} />
-                  <div className={styles.dot} style={{ background: "#f87171" }} />
-                  <div className={styles.dot} style={{ background: "#4ade80" }} />
-                  <div className={styles.dot} style={{ background: "#e5e7eb" }} />
-                </div>
 
                 <div className={styles.successBadge}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -1814,7 +1826,7 @@ export default function Home() {
 
                 <div className={styles.welcomeActions}>
                   {/* Primary Button */}
-                  <button className={styles.welcomeButton} onClick={() => setShowWelcome(false)}>
+                  <button className={styles.welcomeButton} onClick={() => setShowWelcome(false)} style={{ transform: 'none' }}>
                     <span>Get started</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />

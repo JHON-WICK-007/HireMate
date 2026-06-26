@@ -21,6 +21,7 @@ export default function AuthPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isConfirmFocused, setIsConfirmFocused] = useState(false);
   const [showPasswordErrors, setShowPasswordErrors] = useState(false);
   const [formErrors, setFormErrors] = useState<{
     fullName?: string;
@@ -570,8 +571,36 @@ export default function AuthPage() {
                         setConfirmPassword(e.target.value);
                         setFormErrors((prev) => ({ ...prev, confirmPassword: undefined }));
                       }}
+                      onFocus={() => setIsConfirmFocused(true)}
+                      onBlur={() => setIsConfirmFocused(false)}
                       autoComplete="new-password"
                     />
+
+                    {/* Confirm Password Match Tooltip */}
+                    {isConfirmFocused && confirmPassword.length > 0 && (
+                      <div className={styles.passwordRulesTooltip} onMouseDown={(e) => e.preventDefault()}>
+                        <div className={styles.tooltipArrow} />
+                        <h4 className={styles.rulesTitle}>MATCH CHECK</h4>
+                        <ul className={styles.rulesList}>
+                          <li className={confirmPassword === password ? styles.ruleValid : styles.ruleInvalid}>
+                            <span className={styles.ruleIcon}>
+                              {confirmPassword === password ? (
+                                <svg viewBox="0 0 24 24" className={styles.checkIcon} fill="currentColor">
+                                  <circle cx="12" cy="12" r="10" />
+                                  <path d="M8.5 12.5l2 2 5-5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              ) : (
+                                <svg viewBox="0 0 24 24" className={styles.alertIcon} fill="currentColor">
+                                  <circle cx="12" cy="12" r="10" />
+                                  <path d="M12 7v5M12 16h.01" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                                </svg>
+                              )}
+                            </span>
+                            Passwords match
+                          </li>
+                        </ul>
+                      </div>
+                    )}
                   </div>
                   {formErrors.confirmPassword && (
                     <div className={styles.fieldError}>
@@ -601,7 +630,10 @@ export default function AuthPage() {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <div className={styles.spinner} />
+                  <>
+                    <div className={styles.spinner} />
+                    <span>{isLogin ? "Signing In..." : "Creating Account..."}</span>
+                  </>
                 ) : isLogin ? (
                   <>
                     Sign In

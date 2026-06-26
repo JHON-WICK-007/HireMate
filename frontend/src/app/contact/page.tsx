@@ -398,8 +398,28 @@ export default function ContactPage() {
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 350 }}
             >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className={styles.closeBtn}
+                aria-label="Close"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+
               {/* Left Side: Glowing Lottie */}
               <div className={homeStyles.welcomeLeft}>
+                {/* 5 dots row */}
+                <div className={homeStyles.dotRow}>
+                  <div className={homeStyles.dot} style={{ background: "#fbbf24" }} />
+                  <div className={homeStyles.dot} style={{ background: "#22d3ee" }} />
+                  <div className={homeStyles.dot} style={{ background: "#f87171" }} />
+                  <div className={homeStyles.dot} style={{ background: "#a855f7" }} />
+                  <div className={homeStyles.dot} style={{ background: "#34d399" }} />
+                </div>
                 <div className={homeStyles.lottieWrapper}>
                   <DotLottieReact
                     src="/IQfvNaggtl.json"
@@ -411,14 +431,6 @@ export default function ContactPage() {
 
               {/* Right Side: Details */}
               <div className={homeStyles.welcomeRight}>
-                {/* 5 dots row */}
-                <div className={homeStyles.dotRow}>
-                  <div className={homeStyles.dot} style={{ background: "#fbbf24" }} />
-                  <div className={homeStyles.dot} style={{ background: "#22d3ee" }} />
-                  <div className={homeStyles.dot} style={{ background: "#f87171" }} />
-                  <div className={homeStyles.dot} style={{ background: "#a855f7" }} />
-                  <div className={homeStyles.dot} style={{ background: "#34d399" }} />
-                </div>
 
                 <div className={homeStyles.successBadge}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

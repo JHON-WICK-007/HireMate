@@ -3475,6 +3475,7 @@ his
   overflow: hidden;
   display: flex;
   flex-direction: row;
+  position: relative;
 }
 
 @keyframes neonOrbit1 {
@@ -3510,19 +3511,16 @@ his
   overflow: hidden;
 }
 
-/* Layered Cyberpunk Neon Glowing Auras */
+/* Static Subtle Gradient Background */
 .welcomeLeft::before {
   content: '';
   position: absolute;
-  top: -20%;
-  left: -20%;
-  width: 140%;
-  height: 140%;
-  background: radial-gradient(circle at 30% 30%, rgba(0, 217, 255, 0.22) 0%, transparent 45%),
-    /* Neon Cyan (#00D9FF) */
-    radial-gradient(circle at 70% 70%, rgba(255, 0, 110, 0.22) 0%, transparent 45%);
-  /* Neon Magenta (#FF006E) */
-  animation: neonOrbit1 16s linear infinite;
+  inset: 0;
+  background:
+    radial-gradient(circle at 25% 25%, rgba(0, 217, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(255, 0, 110, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 75% 25%, rgba(157, 0, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 25% 75%, rgba(255, 85, 0, 0.06) 0%, transparent 50%);
   pointer-events: none;
   z-index: 1;
 }
@@ -3530,15 +3528,9 @@ his
 .welcomeLeft::after {
   content: '';
   position: absolute;
-  top: -20%;
-  left: -20%;
-  width: 140%;
-  height: 140%;
-  background: radial-gradient(circle at 70% 30%, rgba(157, 0, 255, 0.22) 0%, transparent 45%),
-    /* Neon Purple (#9D00FF) */
-    radial-gradient(circle at 30% 70%, rgba(255, 85, 0, 0.18) 0%, transparent 45%);
-  /* Neon Orange (#FF5500) */
-  animation: neonOrbit2 20s linear infinite;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
   pointer-events: none;
   z-index: 1;
 }
@@ -3556,7 +3548,7 @@ his
 .dotRow {
   position: absolute;
   top: 24px;
-  right: 24px;
+  left: 24px;
   display: flex;
   gap: 6px;
 }
@@ -3702,6 +3694,33 @@ his
 .exploreLink:hover {
   color: #9ca3af;
   text-decoration: underline;
+}
+
+/* ─── Success Modal Close Button ─── */
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #f1f5f9;
 }
 
 /* Responsive Stacking */
