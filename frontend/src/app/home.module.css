@@ -113,7 +113,6 @@ his
 
 .navBtnSolid:hover {
   background: var(--btn-solid-hover);
-  transform: translateY(-1px);
 }
 
 .hamburger {
