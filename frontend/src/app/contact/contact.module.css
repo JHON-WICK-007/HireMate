@@ -321,9 +321,6 @@ a.infoValue:hover {
   transition: none;
 }
 
-.submitBtn:hover:not(:disabled) svg {
-}
-
 /* ─── Privacy Text ──────────────────────────────────────── */
 .privacyText {
   font-size: 0.78rem;
