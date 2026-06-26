@@ -420,6 +420,7 @@ export default function ResumePage() {
           <div className={homeStyles.navLinks}>
             <Link href="/resume" className={homeStyles.navLink}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.navLink}>Mock Interview</Link>
+            <Link href="/pricing" className={homeStyles.navLink}>Pricing</Link>
             <Link href="/contact" className={homeStyles.navLink}>Contact Us</Link>
           </div>
 
@@ -504,6 +505,7 @@ export default function ResumePage() {
           <div className={homeStyles.mobileMenu}>
             <Link href="/resume" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
+            <Link href="/pricing" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Pricing</Link>
             <Link href="/contact" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Contact Us</Link>
             <div className={homeStyles.mobileDivider} />
             {mounted && (

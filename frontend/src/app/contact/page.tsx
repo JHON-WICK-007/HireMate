@@ -8,7 +8,8 @@ import homeStyles from "../home.module.css";
 import { useToast } from "../components/Toast";
 import SiteFooter from "../components/SiteFooter";
 import HomeBackdrop from "../components/HomeBackdrop";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -27,10 +28,10 @@ const staggerContainer = {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 // Icons
-const IconMail = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>;
-const IconMapPin = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>;
-const IconClock = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>;
-const IconSend = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>;
+const IconMail = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>;
+const IconMapPin = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>;
+const IconClock = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>;
+const IconSend = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>;
 
 export default function ContactPage() {
   const router = useRouter();
@@ -51,6 +52,7 @@ export default function ContactPage() {
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -107,7 +109,7 @@ export default function ContactPage() {
     // Simulate API request
     setTimeout(() => {
       setIsSubmitting(false);
-      toast.success("Message sent! We'll get back to you shortly.");
+      setShowSuccessModal(true);
       setFormData((prev) => ({
         ...prev,
         subject: "",
@@ -145,6 +147,7 @@ export default function ContactPage() {
           <div className={homeStyles.navLinks}>
             <Link href="/resume" className={homeStyles.navLink}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.navLink}>Mock Interview</Link>
+            <Link href="/pricing" className={homeStyles.navLink}>Pricing</Link>
             <Link href="/contact" className={homeStyles.navLink} style={{ color: "var(--text-primary)" }}>Contact Us</Link>
           </div>
 
@@ -226,6 +229,7 @@ export default function ContactPage() {
           <div className={homeStyles.mobileMenu}>
             <Link href="/resume" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
+            <Link href="/pricing" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Pricing</Link>
             <Link href="/contact" className={homeStyles.mobileLink} style={{ color: "var(--text-primary)" }} onClick={() => setMobileMenu(false)}>Contact Us</Link>
             <div className={homeStyles.mobileDivider} />
             {mounted && (
@@ -244,10 +248,6 @@ export default function ContactPage() {
 
       {/* ─── Hero / Content Section ─────────────────────────── */}
       <section className={styles.heroSection}>
-        <div className={styles.heroGlow} />
-        <div className={`${styles.heroOrb} ${styles.heroOrb1}`} />
-        <div className={`${styles.heroOrb} ${styles.heroOrb2}`} />
-
         <motion.div
           className={styles.container}
           initial="hidden"
@@ -257,10 +257,7 @@ export default function ContactPage() {
           <div className={styles.grid}>
             {/* Left Column: Info Card */}
             <motion.div className={styles.infoCard} variants={fadeInUp}>
-              <div className={styles.titleBadge}>
-                <span className={styles.titleBadgeDot} />
-                Contact Support
-              </div>
+
               <h1 className={styles.title}>Let&apos;s build your career together</h1>
               <p className={styles.subtitle}>
                 Have questions about resume optimization, mock interviews, or enterprise pricing? Reach out to our team, we are ready to assist you.
@@ -342,6 +339,7 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     className={styles.input}
                     placeholder="How can we help?"
+                    autoComplete="off"
                   />
                 </div>
 
@@ -373,11 +371,127 @@ export default function ContactPage() {
                     </>
                   )}
                 </button>
+
+                <p className={styles.privacyText}>
+                  Your data is encrypted and never sold. By sending, you agree to our{" "}
+                  <Link href="/privacy" className={styles.privacyLink}>Privacy Policy</Link>
+                </p>
               </form>
             </motion.div>
           </div>
         </motion.div>
       </section>
+
+      <AnimatePresence>
+        {showSuccessModal && (
+          <motion.div
+            className={homeStyles.welcomeOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className={homeStyles.welcomeCard}
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+            >
+              {/* Left Side: Glowing Lottie */}
+              <div className={homeStyles.welcomeLeft}>
+                <div className={homeStyles.lottieWrapper}>
+                  <DotLottieReact
+                    src="/IQfvNaggtl.json"
+                    loop={true}
+                    autoplay={true}
+                  />
+                </div>
+              </div>
+
+              {/* Right Side: Details */}
+              <div className={homeStyles.welcomeRight}>
+                {/* 5 dots row */}
+                <div className={homeStyles.dotRow}>
+                  <div className={homeStyles.dot} style={{ background: "#fbbf24" }} />
+                  <div className={homeStyles.dot} style={{ background: "#22d3ee" }} />
+                  <div className={homeStyles.dot} style={{ background: "#f87171" }} />
+                  <div className={homeStyles.dot} style={{ background: "#a855f7" }} />
+                  <div className={homeStyles.dot} style={{ background: "#34d399" }} />
+                </div>
+
+                <div className={homeStyles.successBadge}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>Message Received</span>
+                </div>
+
+                <h2 className={homeStyles.welcomeTitle}>
+                  Thanks for reaching out!
+                </h2>
+
+                <p className={homeStyles.welcomeDesc}>
+                  We have received your message successfully. Our team will review your inquiry and get back to you shortly (typically within 2 to 4 hours).
+                </p>
+
+                {/* 3-Column Grid */}
+                <div className={homeStyles.welcomeGrid}>
+                  <div className={homeStyles.welcomeGridItem} onClick={() => { setShowSuccessModal(false); }} style={{ cursor: "pointer" }}>
+                    <div className={homeStyles.gridItemIcon}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                    </div>
+                    <span className={homeStyles.gridItemText}>Replies in 2-4 hours</span>
+                  </div>
+
+                  <div className={homeStyles.welcomeGridItem} onClick={() => { setShowSuccessModal(false); router.push("/"); }} style={{ cursor: "pointer" }}>
+                    <div className={homeStyles.gridItemIcon}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                      </svg>
+                    </div>
+                    <span className={homeStyles.gridItemText}>Return to Homepage</span>
+                  </div>
+
+                  <div className={homeStyles.welcomeGridItem} onClick={() => { setShowSuccessModal(false); router.push("/resume"); }} style={{ cursor: "pointer" }}>
+                    <div className={homeStyles.gridItemIcon}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                      </svg>
+                    </div>
+                    <span className={homeStyles.gridItemText}>Optimize your Resume</span>
+                  </div>
+                </div>
+
+                <div className={homeStyles.welcomeActions}>
+                  {/* Primary Button */}
+                  <button 
+                    className={homeStyles.welcomeButton} 
+                    onClick={() => { setShowSuccessModal(false); router.push("/"); }}
+                    style={{ transform: 'none' }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; }}
+                  >
+                    <span>Go to Dashboard</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+
+                  {/* Secondary Link */}
+                  <button className={homeStyles.exploreLink} onClick={() => setShowSuccessModal(false)}>
+                    Stay on this page
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <SiteFooter showCta={false} />
     </main>

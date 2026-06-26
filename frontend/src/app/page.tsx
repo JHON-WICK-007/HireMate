@@ -1207,10 +1207,11 @@ export default function Home() {
             <span>HireMate AI</span>
           </Link>
 
-           <div className={styles.navLinks}>
-             <Link href="/resume" className={styles.navLink}>Resume Optimizer</Link>
-             <Link href="/interview/setup" className={styles.navLink}>Mock Interview</Link>
-             <Link href="/contact" className={styles.navLink}>Contact Us</Link>
+            <div className={styles.navLinks}>
+              <Link href="/resume" className={styles.navLink}>Resume Optimizer</Link>
+              <Link href="/interview/setup" className={styles.navLink}>Mock Interview</Link>
+              <Link href="/pricing" className={styles.navLink}>Pricing</Link>
+              <Link href="/contact" className={styles.navLink}>Contact Us</Link>
            </div>
 
           <div className={styles.navActions} suppressHydrationWarning>
@@ -1294,6 +1295,7 @@ export default function Home() {
           <div className={styles.mobileMenu}>
             <Link href="/resume" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
+            <Link href="/pricing" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Pricing</Link>
             <Link href="/contact" className={styles.mobileLink} onClick={() => setMobileMenu(false)}>Contact Us</Link>
             <div className={styles.mobileDivider} />
             {mounted && (
