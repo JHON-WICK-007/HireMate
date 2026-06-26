@@ -165,12 +165,14 @@ export default function AuthPage() {
         localStorage.setItem("user", JSON.stringify(data.user));
         // Redirect to homepage after 1.5s
         setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: "instant" });
           router.push("/");
         }, 1500);
       } else {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("showWelcomeModal", "true");
+        window.scrollTo({ top: 0, behavior: "instant" });
         router.push("/");
       }
     } catch (err) {

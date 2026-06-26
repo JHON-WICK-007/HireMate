@@ -110,6 +110,7 @@ export default function ContactPage() {
     setTimeout(() => {
       setIsSubmitting(false);
       setShowSuccessModal(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
       setFormData((prev) => ({
         ...prev,
         subject: "",
