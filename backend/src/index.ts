@@ -12,6 +12,7 @@ import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import resumeRoutes from "./routes/resume";
 import interviewRoutes from "./routes/interview";
+import mlRoutes from "./routes/ml";
 
 
 const app = express();
@@ -35,6 +36,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/interviews", interviewRoutes);
+app.use("/api/ml", mlRoutes);
 
 // ─── Health Check Route ─────────────────────────────────────
 app.get("/api/health", (_req, res) => {
