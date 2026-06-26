@@ -306,8 +306,9 @@ a.infoValue:hover {
 .textarea:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4) inset !important;
   -webkit-text-fill-color: #f1f5f9 !important;
-  caret-color: #f1f5f9;
-  transition: background-color 99999s ease-in-out 0s;
+  caret-color: #f1f5f9 !important;
+  transition: background-color 99999s ease-in-out 0s, -webkit-box-shadow 0s !important;
+  animation: none !important;
   background-color: rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -315,6 +316,7 @@ a.infoValue:hover {
 .textarea:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4) inset, 0 0 0 3px rgba(255, 255, 255, 0.05) !important;
   border-color: rgba(255, 255, 255, 0.25) !important;
+  transition: background-color 99999s ease-in-out 0s, -webkit-box-shadow 0s, border-color 0.2s ease-out !important;
 }
 
 [data-theme="light"] .input,
@@ -344,8 +346,9 @@ a.infoValue:hover {
 [data-theme="light"] .textarea:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 9999px rgba(255, 255, 255, 0.7) inset !important;
   -webkit-text-fill-color: #0f172a !important;
-  caret-color: #0f172a;
-  transition: background-color 99999s ease-in-out 0s;
+  caret-color: #0f172a !important;
+  transition: background-color 99999s ease-in-out 0s, -webkit-box-shadow 0s !important;
+  animation: none !important;
   background-color: rgba(255, 255, 255, 0.7) !important;
 }
 
@@ -353,6 +356,7 @@ a.infoValue:hover {
 [data-theme="light"] .textarea:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 9999px rgba(255, 255, 255, 0.7) inset, 0 0 0 3px rgba(0, 0, 0, 0.05) !important;
   border-color: rgba(0, 0, 0, 0.25) !important;
+  transition: background-color 99999s ease-in-out 0s, -webkit-box-shadow 0s, border-color 0.2s ease-out !important;
 }
 
 /* ─── Submit Button Styling ─── */
