@@ -702,9 +702,9 @@
 
 .endBtn {
   font-size: 0.8rem;
-  color: #ffffff;
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: var(--error);
+  border: 1px solid var(--error);
+  background: transparent;
   border-radius: var(--radius-md);
   padding: 0.5rem 1.2rem;
   width: 140px;
@@ -717,12 +717,14 @@
   font-weight: 600;
   letter-spacing: 0.01em;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+  box-shadow: none;
 }
 
 .endBtn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
-  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+  background: var(--error);
+  color: #fff;
+  border-color: var(--error);
+  box-shadow: none;
 }
 
 .endBtn:active:not(:disabled) {
@@ -1082,12 +1084,238 @@
 }
 
 .breakdownTitle {
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
+}
+
+.breakdownTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 0.85rem;
+  padding-left: 1.5rem;
+}
+
+.filterWrapper {
+  position: relative;
+}
+
+.filterColorDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.filterColumns {
+  display: flex;
+  gap: 0;
+  min-width: 380px;
+}
+
+.filterCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+
+.filterColHeader {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  padding: 4px 12px 6px;
+  user-select: none;
+}
+
+.filterDivider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 4px 0;
+  flex-shrink: 0;
+}
+
+:global([data-theme="light"]) .filterDivider {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.filterTypeIcon {
+  display: inline-flex;
+  align-items: center;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.filterRange {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-left: 4px;
+  font-weight: 400;
+}
+
+.filterReset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: 40px;
+  margin: 8px auto 0;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0 2.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--error);
+  background: transparent;
+  color: var(--error);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.filterReset:hover {
+  border-color: var(--error);
+  color: #fff;
+  background: var(--error);
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.filterBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--text-primary);
+}
+
+:global([data-theme="light"]) .filterBtn {
+  border-color: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+:global([data-theme="light"]) .filterBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.filterActiveDot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.7);
+}
+
+.filterDropdown {
+  min-width: 200px;
+  background: rgba(15, 15, 20, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  z-index: 9999;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  animation: filterFadeIn 0.15s ease-out;
+}
+
+:global([data-theme="light"]) .filterDropdown {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+@keyframes filterFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.filterOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  gap: 6px;
+}
+
+.filterOption:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+:global([data-theme="light"]) .filterOption:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.filterOptionActive {
+  font-weight: 600;
+}
+
+.filterOptionActive:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.filterOptionLabel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filterCheckSlot {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filterEmpty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
 }
 
 .qaReview {
@@ -1408,11 +1636,12 @@
   display: flex;
   gap: 0.75rem;
   margin-top: 2.5rem;
+  justify-content: center;
 }
 
 .btnPrimary {
-  flex: 1;
-  padding: 0.85rem;
+  flex: 0 1 auto;
+  padding: 0.85rem 2.5rem;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   font-weight: 600;
@@ -1426,27 +1655,32 @@
 
 .btnPrimary:hover {
   background: var(--btn-solid-hover);
-  transform: translateY(-1px);
 }
 
 .btnSecondary {
-  flex: 1;
-  padding: 0.85rem;
+  flex: 0 1 auto;
+  padding: 0.85rem 2.5rem;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: var(--text-primary);
   transition: all var(--transition-fast);
   text-align: center;
 }
 
+:global([data-theme="light"]) .btnSecondary {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
 .btnSecondary:hover {
-  background: var(--surface-100);
-  border-color: var(--border-strong);
-  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+:global([data-theme="light"]) .btnSecondary:hover {
+  border-color: rgba(0, 0, 0, 0.35);
 }
 
 /* ─── Keyframe Animations ───────────────────────────────── */

@@ -18,6 +18,8 @@ interface ToastOptions {
   description?: string;
   duration?: number;
   onRetry?: () => void;
+  onConfirm?: () => void;
+  confirmLabel?: string;
 }
 
 interface Toast {
@@ -28,13 +30,15 @@ interface Toast {
   duration: number;
   exiting?: boolean;
   onRetry?: () => void;
+  onConfirm?: () => void;
+  confirmLabel?: string;
 }
 
 interface ToastContextValue {
   success: (message: string, descriptionOrDuration?: string | number, duration?: number) => void;
   error: (message: string, descriptionOrDuration?: string | number, options?: ToastOptions | number) => void;
   info: (message: string, descriptionOrDuration?: string | number, duration?: number) => void;
-  warning: (message: string, descriptionOrDuration?: string | number, duration?: number) => void;
+  warning: (message: string, descriptionOrDuration?: string | number | ToastOptions, duration?: number) => void;
   dismiss: (id: string) => void;
   dismissAll: () => void;
 }
@@ -134,6 +138,29 @@ function ToastCard({
             </button>
           </div>
         )}
+        {toast.onConfirm && (
+          <div className={styles.actions}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (toast.onConfirm) toast.onConfirm();
+                onDismiss(toast.id);
+              }}
+              className={styles.actionRetry}
+            >
+              {toast.confirmLabel || "Yes"}
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDismiss(toast.id);
+              }}
+              className={styles.actionDismiss}
+            >
+              No
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Close Button */}
@@ -189,10 +216,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       message: string,
       description?: string,
       duration = 4000,
-      onRetry?: () => void
+      onRetry?: () => void,
+      onConfirm?: () => void,
+      confirmLabel?: string
     ) => {
       const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-      const newToast: Toast = { id, message, description, type, duration, onRetry };
+      const newToast: Toast = { id, message, description, type, duration, onRetry, onConfirm, confirmLabel };
 
       setToasts((prev) => [...prev, newToast]);
 
@@ -279,18 +308,28 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 
   const warning = useCallback(
-    (message: string, descriptionOrDuration?: string | number, duration?: number) => {
+    (message: string, descriptionOrDuration?: string | number | ToastOptions, options?: number) => {
       let desc: string | undefined = undefined;
       let dur = 4000;
+      let onConfirm: (() => void) | undefined = undefined;
+      let confirmLabel: string | undefined = undefined;
 
       if (typeof descriptionOrDuration === "string") {
         desc = descriptionOrDuration;
-        if (typeof duration === "number") dur = duration;
+        if (typeof options === "number") {
+          dur = options;
+        }
       } else if (typeof descriptionOrDuration === "number") {
         dur = descriptionOrDuration;
+      } else if (descriptionOrDuration && typeof descriptionOrDuration === "object") {
+        const opts = descriptionOrDuration as ToastOptions;
+        desc = opts.description;
+        if (opts.duration !== undefined) dur = opts.duration;
+        if (opts.onConfirm !== undefined) onConfirm = opts.onConfirm;
+        if (opts.confirmLabel !== undefined) confirmLabel = opts.confirmLabel;
       }
 
-      addToast("warning", message, desc, dur);
+      addToast("warning", message, desc, dur, undefined, onConfirm, confirmLabel);
     },
     [addToast]
   );

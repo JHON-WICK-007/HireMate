@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../interview.module.css";
@@ -160,6 +161,17 @@ const IconUserBlue = () => (
   </svg>
 );
 
+const IconFilter = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+  </svg>
+);
+const IconCheckSmall = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
 const IconSparklesPurple = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "6px", flexShrink: 0, color: "#c084fc" }}>
     <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
@@ -223,10 +235,99 @@ function ResultsContent() {
   const [qaBreakdown, setQaBreakdown] = useState<QuestionBreakdown[]>([]);
   const [isLoadingResults, setIsLoadingResults] = useState(true);
   const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
+  const [filterType, setFilterType] = useState("all");
+  const [filterScore, setFilterScore] = useState("all");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+  const filterBtnRef = useRef<HTMLButtonElement>(null);
+  const filterDropdownRef = useRef<HTMLDivElement>(null);
+  const [filterPos, setFilterPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
 
   const toggleQuestion = (idx: number) => {
     setExpandedQuestion((prev) => (prev === idx ? null : idx));
   };
+
+  const FILTER_TYPE_OPTIONS = [
+    { value: "all", label: "All Types" },
+    { value: "technical", label: "Technical", icon: <IconCode />, color: "#3b82f6" },
+    { value: "behavioral", label: "Behavioral", icon: <IconUsers />, color: "#14b8a6" },
+    { value: "hr", label: "HR", icon: <IconBriefcase />, color: "#f43f5e" },
+    { value: "system design", label: "System Design", icon: <IconLayout />, color: "#f97316" },
+    { value: "scenario", label: "Scenario / Case Study", icon: <IconCaseStudy />, color: "#a855f7" },
+    { value: "database", label: "Database / SQL", icon: <IconDatabase />, color: "#10b981" },
+    { value: "coding", label: "Coding / Algo", icon: <IconTerminal />, color: "#f59e0b" },
+  ];
+
+  const FILTER_SCORE_OPTIONS = [
+    { value: "all", label: "All Scores" },
+    { value: "excellent", label: "Excellent", range: "90–100", color: "#3b82f6" },
+    { value: "good", label: "Good", range: "75–89", color: "#22c55e" },
+    { value: "average", label: "Average", range: "50–74", color: "#f59e0b" },
+    { value: "below", label: "Below Avg", range: "25–49", color: "#f97316" },
+    { value: "poor", label: "Poor", range: "0–24", color: "#ef4444" },
+  ];
+
+  const matchesFilter = (type: string | undefined, filter: string) => {
+    if (filter === "all") return true;
+    if (!type) return false;
+    const t = type.toLowerCase().trim();
+    if (filter === "technical") return t.includes("technical");
+    if (filter === "behavioral") return t.includes("behavioral");
+    if (filter === "hr") return t.includes("hr");
+    if (filter === "system design") return t.includes("system design");
+    if (filter === "scenario") return t.includes("scenario") || t.includes("case study");
+    if (filter === "database") return t.includes("database") || t.includes("sql");
+    if (filter === "coding") return t.includes("coding") || t.includes("algo");
+    return true;
+  };
+
+  const matchesScoreFilter = (score: number | undefined, filter: string) => {
+    if (filter === "all") return true;
+    if (score === undefined) return false;
+    if (filter === "excellent") return score >= 90;
+    if (filter === "good") return score >= 75 && score < 90;
+    if (filter === "average") return score >= 50 && score < 75;
+    if (filter === "below") return score >= 25 && score < 50;
+    if (filter === "poor") return score < 25;
+    return true;
+  };
+
+  const filteredQaBreakdown = qaBreakdown.filter(
+    (q) => matchesFilter(q.type, filterType) && matchesScoreFilter(q.score, filterScore)
+  );
+
+  const hasActiveFilter = filterType !== "all" || filterScore !== "all";
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      const inBtn = filterRef.current?.contains(target);
+      const inDropdown = filterDropdownRef.current?.contains(target);
+      if (!inBtn && !inDropdown) {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Update dropdown position on scroll
+  useEffect(() => {
+    if (!filterOpen) return;
+    const updatePos = () => {
+      if (filterBtnRef.current) {
+        const rect = filterBtnRef.current.getBoundingClientRect();
+        setFilterPos({ top: rect.bottom + 6, right: window.innerWidth - rect.right });
+      }
+    };
+    const onScroll = () => requestAnimationFrame(updatePos);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    updatePos();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [filterOpen]);
 
   // Scroll logic for navbar
   useEffect(() => {
@@ -509,19 +610,129 @@ function ResultsContent() {
             </div>
 
               {/* Question Breakdown List */}
-              <div className={styles.breakdownTitle}>Question breakdown</div>
+              <div className={styles.breakdownTitleRow}>
+                <div className={styles.breakdownTitle}>Question breakdown</div>
+                <div className={styles.filterWrapper} ref={filterRef}>
+                  <button
+                    ref={filterBtnRef}
+                    className={styles.filterBtn}
+                    onClick={() => {
+                      if (!filterOpen && filterBtnRef.current) {
+                        const rect = filterBtnRef.current.getBoundingClientRect();
+                        setFilterPos({ top: rect.bottom + 6, right: window.innerWidth - rect.right });
+                      }
+                      setFilterOpen((o) => !o);
+                    }}
+                    title="Filter questions"
+                  >
+                    <IconFilter />
+                    {hasActiveFilter && <span className={styles.filterActiveDot} />}
+                  </button>
+                  {filterOpen && createPortal(
+                    <div
+                      ref={filterDropdownRef}
+                      className={styles.filterDropdown}
+                      style={{ position: "fixed", top: filterPos.top, right: filterPos.right }}
+                    >
+                      <div className={styles.filterColumns}>
+                        {/* Left: Question Type */}
+                        <div className={styles.filterCol}>
+                          <div className={styles.filterColHeader}>Question Type</div>
+                          {FILTER_TYPE_OPTIONS.map((opt) => {
+                            const isActive = filterType === opt.value;
+                            const activeColor = opt.color || "#a855f7";
+                            return (
+                              <button
+                                key={opt.value}
+                                className={`${styles.filterOption} ${isActive ? styles.filterOptionActive : ""}`}
+                                style={isActive ? { color: activeColor } : undefined}
+                                onClick={() => {
+                                  setFilterType(opt.value);
+                                  setExpandedQuestion(null);
+                                }}
+                              >
+                                <span className={styles.filterOptionLabel}>
+                                  {opt.icon && (
+                                    <span className={styles.filterTypeIcon} style={{ color: activeColor }}>
+                                      {opt.icon}
+                                    </span>
+                                  )}
+                                  {opt.label}
+                                </span>
+                                <span className={styles.filterCheckSlot} style={isActive ? { color: activeColor } : undefined}>
+                                  {isActive && <IconCheckSmall />}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {/* Divider */}
+                        <div className={styles.filterDivider} />
+                        {/* Right: Score */}
+                        <div className={styles.filterCol}>
+                          <div className={styles.filterColHeader}>Score</div>
+                          {FILTER_SCORE_OPTIONS.map((opt) => {
+                            const isActive = filterScore === opt.value;
+                            const activeColor = opt.color || "#a855f7";
+                            return (
+                              <button
+                                key={opt.value}
+                                className={`${styles.filterOption} ${isActive ? styles.filterOptionActive : ""}`}
+                                style={isActive ? { color: activeColor } : undefined}
+                                onClick={() => {
+                                  setFilterScore(opt.value);
+                                  setExpandedQuestion(null);
+                                }}
+                              >
+                                <span className={styles.filterOptionLabel}>
+                                  {opt.color && (
+                                    <span className={styles.filterColorDot} style={{ background: opt.color }} />
+                                  )}
+                                  <span>{opt.label}</span>
+                                  {opt.range && <span className={styles.filterRange}>{opt.range}</span>}
+                                </span>
+                                <span className={styles.filterCheckSlot} style={isActive ? { color: activeColor } : undefined}>
+                                  {isActive && <IconCheckSmall />}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      {/* Reset */}
+                      {hasActiveFilter && (
+                        <button
+                          className={styles.filterReset}
+                          onClick={() => {
+                            setFilterType("all");
+                            setFilterScore("all");
+                            setExpandedQuestion(null);
+                          }}
+                        >
+                          Reset filters
+                        </button>
+                      )}
+                    </div>,
+                    document.body
+                  )}
+                </div>
+              </div>
               <div className={styles.qaReview}>
-                {qaBreakdown.map((q, idx) => {
-                  const isExpanded = expandedQuestion === idx;
+                {filteredQaBreakdown.length === 0 && (
+                  <div className={styles.filterEmpty}>No questions match this filter.</div>
+                )}
+                {filteredQaBreakdown.map((q, idx) => {
+                  const origIdx = qaBreakdown.indexOf(q);
+                  const isExpanded = expandedQuestion === origIdx;
                   return (
-                    <div key={idx} className={`${styles.qaItem} ${isExpanded ? styles.qaItemExpanded : ""}`}>
+                    <div key={origIdx} className={`${styles.qaItem} ${isExpanded ? styles.qaItemExpanded : ""}`}>
                       <div
                         className={styles.qaHeader}
-                        onClick={() => toggleQuestion(idx)}
+                        onClick={() => toggleQuestion(origIdx)}
                       >
                         <div className={styles.qaHeaderLeft}>
                           <div className={styles.qaQTextRow}>
-                            <span className={styles.qaQNumber}>Q{idx + 1}</span>
+                            <span className={styles.qaQNumber}>Q{origIdx + 1}</span>
                             <span className={styles.qaQText}>{q.questionText}</span>
                           </div>
                           {(() => {

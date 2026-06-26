@@ -644,37 +644,42 @@ function LiveInterviewContent() {
   const [isEndingSession, setIsEndingSession] = useState(false);
 
   const forceEndSession = async () => {
-    if (!confirm("Are you sure you want to end this interview early? Your answered questions will be scored and finalized.")) {
-      return;
-    }
+    toast.warning(
+      "Are you sure you want to end this interview early? Your answered questions will be scored and finalized.",
+      {
+        duration: 10000,
+        onConfirm: async () => {
+          if (!id) return;
+          setIsEndingSession(true);
 
-    if (!id) return;
-    setIsEndingSession(true);
+          const token = localStorage.getItem("token");
+          try {
+            const res = await fetch(`${API_URL}/api/interviews/${id}/end`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            });
 
-    const token = localStorage.getItem("token");
-    try {
-      const res = await fetch(`${API_URL}/api/interviews/${id}/end`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+            const data = await res.json();
+            if (data.success) {
+              toast.success("Session ended. Loading your results...");
+              setTimeout(() => {
+                router.push(`/interview/results?id=${id}`);
+              }, 1000);
+            } else {
+              toast.error(data.message || "Failed to end session.");
+            }
+          } catch (err) {
+            toast.error("Network error ending session.");
+          } finally {
+            setIsEndingSession(false);
+          }
         },
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        toast.success("Session ended. Loading your results...");
-        setTimeout(() => {
-          router.push(`/interview/results?id=${id}`);
-        }, 1000);
-      } else {
-        toast.error(data.message || "Failed to end session.");
+        confirmLabel: "Yes, end it",
       }
-    } catch (err) {
-      toast.error("Network error ending session.");
-    } finally {
-      setIsEndingSession(false);
-    }
+    );
   };
 
 
