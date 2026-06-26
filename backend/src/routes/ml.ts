@@ -1,26 +1,83 @@
 import express, { Request, Response } from "express";
 import { protect } from "../middleware/auth";
+import http from "http";
 
 const router = express.Router();
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://localhost:8000";
 
 /**
- * Proxy helper — forwards requests to the Python ML service.
+ * Proxy helper — forwards POST requests to the Python ML service.
+ * Uses Node.js built-in http module (no external dependencies needed).
  */
-async function mlProxy(endpoint: string, body: Record<string, unknown>): Promise<any> {
-  const response = await fetch(`${ML_SERVICE_URL}${endpoint}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+function mlProxy(endpoint: string, body: Record<string, unknown>): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const url = new URL(`${ML_SERVICE_URL}${endpoint}`);
+    const postData = JSON.stringify(body);
+
+    const options: http.RequestOptions = {
+      hostname: url.hostname,
+      port: url.port,
+      path: url.pathname,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(postData),
+      },
+    };
+
+    const req = http.request(options, (res) => {
+      let data = "";
+      res.on("data", (chunk) => (data += chunk));
+      res.on("end", () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (res.statusCode && res.statusCode >= 400) {
+            reject(new Error(parsed.detail || `ML service error: ${res.statusCode}`));
+          } else {
+            resolve(parsed);
+          }
+        } catch {
+          reject(new Error(`ML service returned invalid JSON (status ${res.statusCode})`));
+        }
+      });
+    });
+
+    req.on("error", (err) => {
+      reject(new Error(`ML service unavailable: ${err.message}`));
+    });
+
+    req.write(postData);
+    req.end();
   });
+}
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.detail || `ML service error: ${response.status}`);
-  }
+/**
+ * GET proxy helper — for health check.
+ */
+function mlGet(endpoint: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const url = new URL(`${ML_SERVICE_URL}${endpoint}`);
 
-  return response.json();
+    const req = http.get(
+      { hostname: url.hostname, port: url.port, path: url.pathname },
+      (res) => {
+        let data = "";
+        res.on("data", (chunk) => (data += chunk));
+        res.on("end", () => {
+          try {
+            resolve(JSON.parse(data));
+          } catch {
+            reject(new Error("ML service returned invalid JSON"));
+          }
+        });
+      }
+    );
+
+    req.on("error", (err) => {
+      reject(new Error(`ML service unavailable: ${err.message}`));
+    });
+  });
 }
 
 // ─── Resume ML Score ─────────────────────────────────────────
@@ -146,8 +203,7 @@ router.post("/train-model", protect, async (req: Request, res: Response): Promis
 // @access  Public
 router.get("/health", async (_req: Request, res: Response): Promise<void> => {
   try {
-    const response = await fetch(`${ML_SERVICE_URL}/health`);
-    const data = await response.json();
+    const data = await mlGet("/health");
     res.status(200).json({ success: true, ml_service: data });
   } catch (error: any) {
     res.status(503).json({ success: false, message: "ML service is not available.", error: error.message });

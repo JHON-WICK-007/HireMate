@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 *.pyo
+venv/
 .env
 models/saved/
 mlruns/
@@ -8,3 +9,4 @@ mlruns/
 dist/
 build/
 .pytest_cache/
+pyrightconfig.json

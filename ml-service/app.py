@@ -2,22 +2,41 @@
 HireMate ML Service — FastAPI Application
 Main API server that exposes all ML endpoints.
 """
+import os
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
 from resume_scorer import predict_score, train_model
 from skill_analyzer import extract_skills, skill_gap_analysis
 from job_matcher import match_resume_to_job, batch_match
 from interview_analytics import analyze_interviews
-from config import ML_SERVICE_PORT
+from config import ML_SERVICE_PORT, MODEL_DIR
+
+
+# ─── Startup / Shutdown ──────────────────────────────────────
+@asynccontextmanager
+async def lifespan(application: FastAPI):
+    """Train model on startup if not already saved."""
+    model_path = os.path.join(MODEL_DIR, "resume_scorer.joblib")
+    if not os.path.exists(model_path):
+        print("🔧 Training initial resume scoring model...")
+        metrics = train_model()
+        print(f"✅ Model trained: MAE={metrics['mae']}, R²={metrics['r2_score']}")
+    else:
+        print("✅ Resume scoring model already exists, skipping training.")
+    yield
+
 
 # ─── FastAPI App ──────────────────────────────────────────────
 app = FastAPI(
     title="HireMate ML Service",
     description="Machine Learning microservice for resume scoring, skill analysis, job matching, and interview analytics.",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -151,15 +170,6 @@ def api_interview_analytics(req: InterviewAnalyticsRequest):
 # ─── Run Server ──────────────────────────────────────────────
 if __name__ == "__main__":
     import uvicorn
-
-    # Train model on startup if not exists
-    import os
-    from config import MODEL_DIR
-    model_path = os.path.join(MODEL_DIR, "resume_scorer.joblib")
-    if not os.path.exists(model_path):
-        print("🔧 Training initial resume scoring model...")
-        metrics = train_model()
-        print(f"✅ Model trained: MAE={metrics['mae']}, R²={metrics['r2_score']}")
 
     print(f"\n🚀 HireMate ML Service starting on port {ML_SERVICE_PORT}")
     uvicorn.run(app, host="0.0.0.0", port=ML_SERVICE_PORT)

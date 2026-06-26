@@ -11,12 +11,12 @@ import pandas as pd
 import joblib
 import mlflow
 import mlflow.sklearn
-from sklearn.feature_extraction.text import TfidfVectorizer
+
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, r2_score
 
-from config import MODEL_DIR, MLFLOW_TRACKING_URI, TECH_SKILLS
+from config import MODEL_DIR, MLFLOW_TRACKING_URI
 from skill_analyzer import extract_skills
 
 
@@ -121,7 +121,7 @@ FEATURE_COLS = [
 ]
 
 MODEL_PATH = os.path.join(MODEL_DIR, "resume_scorer.joblib")
-VECTORIZER_PATH = os.path.join(MODEL_DIR, "tfidf_vectorizer.joblib")
+
 
 
 def train_model() -> Dict[str, float]:
