@@ -801,13 +801,13 @@ function LiveInterviewContent() {
               <div className={styles.chatMeta}>
                 <div className={styles.metaLeft}>
                   <div>
-                    <div className={styles.metaCompany}>
-                      {sessionName || `HireMate AI — ${fullName ? fullName.split(" ")[0] : "Candidate"} · ${role}`}
-                    </div>
                     <div className={styles.metaRole}>
-                      {questionTypes.length > 0 ? questionTypes.join(", ") : "Technical"} · {totalQuestions} questions
+                      {role || "Interview"} · {questionTypes.length > 0 ? questionTypes.join(", ") : "Technical"} · {totalQuestions} questions
                     </div>
                   </div>
+                </div>
+                <div className={styles.sessionNameCenter}>
+                  {sessionName || `${company || "HireMate"} — ${role || "Full Stack"} · ${totalQuestions} questions`}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <div className={`${styles.timer} ${elapsedTime > getMaxTimeForQuestions(totalQuestions) ? styles.timerWarning : ""}`}>

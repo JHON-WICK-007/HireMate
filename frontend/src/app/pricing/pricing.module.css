@@ -332,6 +332,148 @@
   border-color: rgba(255, 255, 255, 0.15);
 }
 
+/* ─── FAQ Section ───────────────────────────────────────── */
+.faqSection {
+  padding: 2rem 2rem 6rem;
+  position: relative;
+  z-index: 1;
+}
+
+.faqContainer {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.faqTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  background: linear-gradient(135deg, var(--gradient-text-start) 0%, var(--gradient-text-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.faqSubtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 4rem;
+  line-height: 1.6;
+}
+
+.faqLink {
+  background: linear-gradient(to right,
+      #00e5ff 0%,
+      #8c7cff 30%,
+      #ff70a6 60%,
+      #00ffcc 85%,
+      #00e5ff 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: textShimmer 6s linear infinite;
+  display: inline-block;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity var(--transition-base);
+}
+
+:global([data-theme="light"]) .faqLink {
+  background: linear-gradient(to right,
+      #00a8cc 0%,
+      #6366f1 30%,
+      #db2777 60%,
+      #0d9488 85%,
+      #00a8cc 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.faqLink:hover {
+  opacity: 0.85;
+  text-decoration: none;
+}
+
+@keyframes textShimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+}
+
+.faqItem {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color var(--transition-base);
+}
+
+.faqItem:last-child {
+  border-bottom: none;
+}
+
+:global([data-theme="light"]) .faqItem {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.faqHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.75rem 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-primary);
+  text-align: left;
+  gap: 1.5rem;
+  transition: padding var(--transition-base);
+}
+
+.faqQuestion {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color var(--transition-base);
+}
+
+.faqToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: transform 0.3s ease, color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.faqItemOpen .faqToggle {
+  transform: rotate(180deg);
+}
+
+.faqBody {
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.faqAnswer {
+  padding: 0 0.5rem 1.75rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  text-align: left;
+}
+
 /* ─── Responsive ────────────────────────────────────────── */
 @media (max-width: 960px) {
   .cardsGrid {
@@ -343,6 +485,10 @@
   .heroWord {
     font-size: clamp(60px, 12vw, 120px);
     top: 0;
+  }
+
+  .faqSection {
+    padding: 2rem 1.5rem 5rem;
   }
 }
 
@@ -361,6 +507,19 @@
   .plansPillContainer {
     grid-row: 1;
     /* Place plans pill above toggle on small screens */
+  }
+
+  .faqTitle {
+    font-size: 2rem;
+  }
+
+  .faqSubtitle {
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .faqQuestion {
+    font-size: 1.05rem;
   }
 }
 
@@ -381,5 +540,14 @@
 
   .price {
     font-size: 2.6rem;
+  }
+
+  .faqSection {
+    padding: 2rem 1rem 4rem;
+  }
+
+  .faqAnswer {
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
 }

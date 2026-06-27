@@ -22,13 +22,13 @@
 
 @media (min-width: 850px) {
   .layout {
-    max-width: 1200px;
+    max-width: 1400px;
   }
 }
 
 @media (min-width: 1200px) {
   .layout {
-    max-width: 1400px;
+    max-width: 1600px;
   }
 }
 
@@ -86,7 +86,7 @@
 
 @media (min-width: 850px) {
   .setupBody {
-    max-width: 960px;
+    max-width: 1120px;
   }
 }
 
@@ -368,6 +368,7 @@
   justify-content: space-between;
   padding: 0.9rem 1.25rem 0.85rem;
   background: transparent;
+  position: relative;
 }
 
 .progressContainer {
@@ -404,6 +405,23 @@
   font-weight: 500;
   color: var(--text-secondary);
   margin-top: 2px;
+}
+
+.sessionNameCenter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-align: center;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 500px;
+  font-family: var(--font-display);
+  pointer-events: none;
 }
 
 .timer {
@@ -1997,4 +2015,10 @@
   color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.2);
   box-shadow: 0 0 10px rgba(239, 68, 68, 0.05);
+}
+
+@media (max-width: 768px) {
+  .sessionNameCenter {
+    display: none;
+  }
 }

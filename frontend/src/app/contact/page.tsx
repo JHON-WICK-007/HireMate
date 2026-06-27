@@ -94,14 +94,27 @@ export default function ContactPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (showSuccessModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showSuccessModal]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const allFieldsFilled = formData.name.trim() && formData.email.trim() && formData.message.trim();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+    if (!allFieldsFilled) {
       toast.error("Please fill in all required fields.");
       return;
     }
@@ -243,7 +256,7 @@ export default function ContactPage() {
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !allFieldsFilled}
                   className={styles.submitBtn}
                 >
                   {isSubmitting ? (
@@ -253,6 +266,10 @@ export default function ContactPage() {
                         <style>{`@keyframes contactSpin { 100% { transform: rotate(360deg); } }`}</style>
                       </svg>
                       <span>Sending...</span>
+                    </>
+                  ) : !allFieldsFilled ? (
+                    <>
+                      <span>Please fill all fields</span>
                     </>
                   ) : (
                     <>
@@ -395,7 +412,7 @@ export default function ContactPage() {
         )}
       </AnimatePresence>
 
-      <SiteFooter showCta={true} />
+      <SiteFooter />
     </main>
   );
 }
