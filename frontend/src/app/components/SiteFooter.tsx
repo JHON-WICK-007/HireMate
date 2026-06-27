@@ -50,8 +50,8 @@ export default function SiteFooter({ showCta = false }: SiteFooterProps) {
             <div className={styles.footerInfoCols}>
               <div className={styles.footerInfoCol}>
                 <strong className={styles.footerInfoTitle}>Platform</strong>
-                <Link href="/#features">Mock Interviews</Link>
-                <Link href="/#features">Resume Analysis</Link>
+                <Link href="/interview/setup">Mock Interviews</Link>
+                <Link href="/resume-builder">Resume Builder</Link>
                 <Link href="/resume-optimizer">Resume Optimizer</Link>
               </div>
               <div className={styles.footerInfoCol}>
