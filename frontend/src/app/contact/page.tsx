@@ -395,7 +395,7 @@ export default function ContactPage() {
         )}
       </AnimatePresence>
 
-      <SiteFooter showCta={false} />
+      <SiteFooter showCta={true} />
     </main>
   );
 }
