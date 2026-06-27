@@ -3047,6 +3047,7 @@ his
   font-size: 0.85rem;
   line-height: 1.55;
   color: var(--text-secondary);
+  opacity: 0.75;
 }
 
 .footerInfoTitle {
@@ -3059,11 +3060,13 @@ his
 .footerInfoCol a {
   color: var(--text-secondary);
   text-decoration: none;
-  transition: color var(--transition-fast);
+  opacity: 0.75;
+  transition: all var(--transition-fast);
 }
 
 .footerInfoCol a:hover {
   color: var(--text-primary);
+  opacity: 1;
 }
 
 .footerWordmark {
