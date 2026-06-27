@@ -8,6 +8,9 @@ import nav from "../../home.module.css";
 import { useToast } from "../../components/Toast";
 import SiteFooter from "../../components/SiteFooter";
 import HomeBackdrop from "../../components/HomeBackdrop";
+import { motion, AnimatePresence } from "framer-motion";
+import homeStyles from "../../home.module.css";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -642,44 +645,52 @@ function LiveInterviewContent() {
   }, []);
 
   const [isEndingSession, setIsEndingSession] = useState(false);
+  const [showEndModal, setShowEndModal] = useState(false);
 
-  const forceEndSession = async () => {
-    toast.warning(
-      "Are you sure you want to end this interview early? Your answered questions will be scored and finalized.",
-      {
-        duration: 10000,
-        onConfirm: async () => {
-          if (!id) return;
-          setIsEndingSession(true);
+  useEffect(() => {
+    if (showEndModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showEndModal]);
 
-          const token = localStorage.getItem("token");
-          try {
-            const res = await fetch(`${API_URL}/api/interviews/${id}/end`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            });
+  const confirmEndSession = async () => {
+    if (!id) return;
+    setShowEndModal(false);
+    setIsEndingSession(true);
 
-            const data = await res.json();
-            if (data.success) {
-              toast.success("Session ended. Loading your results...");
-              setTimeout(() => {
-                router.push(`/interview/results?id=${id}`);
-              }, 1000);
-            } else {
-              toast.error(data.message || "Failed to end session.");
-            }
-          } catch (err) {
-            toast.error("Network error ending session.");
-          } finally {
-            setIsEndingSession(false);
-          }
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${API_URL}/api/interviews/${id}/end`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        confirmLabel: "Yes, end it",
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Session ended. Loading your results...");
+        setTimeout(() => {
+          router.push(`/interview/results?id=${id}`);
+        }, 1000);
+      } else {
+        toast.error(data.message || "Failed to end session.");
       }
-    );
+    } catch (err) {
+      toast.error("Network error ending session.");
+    } finally {
+      setIsEndingSession(false);
+    }
+  };
+
+  const forceEndSession = () => {
+    setShowEndModal(true);
   };
 
 
@@ -999,6 +1010,123 @@ function LiveInterviewContent() {
       )}
 
       <SiteFooter />
+
+      {/* End Session Confirmation Modal */}
+      <AnimatePresence>
+        {showEndModal && (
+          <motion.div
+            className={homeStyles.welcomeOverlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className={homeStyles.welcomeCard}
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+            >
+              <button
+                onClick={() => setShowEndModal(false)}
+                className={homeStyles.closeBtn}
+                aria-label="Close"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+
+              <div className={homeStyles.welcomeLeft}>
+                <div className={homeStyles.dotRow}>
+                  <div className={homeStyles.dot} style={{ background: "#ef4444" }} />
+                  <div className={homeStyles.dot} style={{ background: "#f97316" }} />
+                  <div className={homeStyles.dot} style={{ background: "#fbbf24" }} />
+                  <div className={homeStyles.dot} style={{ background: "#22c55e" }} />
+                  <div className={homeStyles.dot} style={{ background: "#3b82f6" }} />
+                </div>
+                <div className={homeStyles.lottieWrapper}>
+                  <DotLottieReact
+                    src="/doodle-motif-292-clock-time-hover-pinch.json"
+                    loop={true}
+                    autoplay={true}
+                  />
+                </div>
+              </div>
+
+              <div className={homeStyles.welcomeRight}>
+                <div className={homeStyles.successBadge} style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444", borderColor: "rgba(239,68,68,0.2)" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>End Interview</span>
+                </div>
+
+                <h2 className={homeStyles.welcomeTitle}>
+                  End this session?
+                </h2>
+
+                <p className={homeStyles.welcomeDesc}>
+                  Your answered questions will be scored and finalized. You will be redirected to the results page.
+                </p>
+
+                <div className={homeStyles.welcomeGrid}>
+                  <div className={homeStyles.welcomeGridItem}>
+                    <div className={homeStyles.gridItemIcon}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
+                        <polyline points="22 4 12 14.01 9 11.01" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                    <span className={homeStyles.gridItemText}>Score will be calculated</span>
+                  </div>
+
+                  <div className={homeStyles.welcomeGridItem}>
+                    <div className={homeStyles.gridItemIcon}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" strokeLinecap="round" strokeLinejoin="round" />
+                        <polyline points="14 2 14 8 20 8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                    <span className={homeStyles.gridItemText}>Results will be saved</span>
+                  </div>
+
+                  <div className={homeStyles.welcomeGridItem}>
+                    <div className={homeStyles.gridItemIcon}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                    <span className={homeStyles.gridItemText}>Cannot undo this action</span>
+                  </div>
+                </div>
+
+                <div className={homeStyles.welcomeActions}>
+                  <button
+                    className={homeStyles.welcomeButton}
+                    onClick={confirmEndSession}
+                    style={{ transform: "none", background: "#ef4444", color: "#fff" }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = "none"; }}
+                  >
+                    <span>Yes, end session</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+
+                  <button className={homeStyles.exploreLink} onClick={() => setShowEndModal(false)}>
+                    Continue interview
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
