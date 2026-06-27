@@ -3046,7 +3046,7 @@ his
   gap: 0.35rem;
   font-size: 0.85rem;
   line-height: 1.55;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
 .footerInfoTitle {
@@ -3057,7 +3057,7 @@ his
 }
 
 .footerInfoCol a {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
