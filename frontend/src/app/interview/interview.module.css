@@ -1138,10 +1138,19 @@
 }
 
 .filterCol {
-  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 4px 0;
+}
+
+.filterCol:first-child {
+  flex: 1.15;
+  min-width: 0;
+}
+
+.filterCol:last-child {
+  flex: 1;
+  min-width: 0;
 }
 
 .filterColHeader {
