@@ -1287,7 +1287,7 @@
   font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
   text-align: left;
   gap: 6px;
 }
@@ -1302,7 +1302,7 @@
 }
 
 .filterOptionActive {
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .filterOptionActive:hover {
