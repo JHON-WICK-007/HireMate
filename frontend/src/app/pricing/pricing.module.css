@@ -12,20 +12,20 @@
 /* ─── Hero Background Word ──────────────────────────────── */
 .heroWord {
   position: absolute;
-  top: 80px;
+  top: 0;
   left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-display, "Inter", sans-serif);
-  font-size: clamp(120px, 22vw, 240px);
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display, "Outfit", "Inter", sans-serif);
+  font-size: clamp(70px, 11vw, 140px);
   font-weight: 900;
   letter-spacing: -0.04em;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.06);
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
   white-space: nowrap;
   pointer-events: none;
   z-index: 0;
   user-select: none;
-  filter: blur(2px);
 }
 
 /* ─── Content ───────────────────────────────────────────── */
@@ -37,37 +37,25 @@
   flex-direction: column;
   align-items: center;
   padding: 0 1.5rem;
+  width: 100%;
 }
 
-/* ─── Header ────────────────────────────────────────────── */
-.header {
-  text-align: center;
-  margin-top: 160px;
-  margin-bottom: 60px;
-}
-
-.title {
-  font-family: var(--font-display, "Inter", sans-serif);
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  margin: 0 0 1rem;
-  color: #fff;
-}
-
-.subtitle {
-  font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.45);
-  margin: 0;
-  line-height: 1.5;
+/* ─── Cards Container ───────────────────────────────────── */
+.cardsContainer {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  margin: 220px auto 5rem;
+  display: flex;
+  justify-content: center;
 }
 
 /* ─── Cards Wrap ────────────────────────────────────────── */
 .cardsWrap {
   width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
 }
 
 /* ─── Cards Grid ────────────────────────────────────────── */
@@ -81,42 +69,33 @@
 /* ─── Card ──────────────────────────────────────────────── */
 .card {
   position: relative;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(10, 10, 10, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 2rem 1.75rem;
+  border-radius: 24px;
+  padding: 3rem 2.25rem 2.5rem;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes cardFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
 }
 
 .card:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.16);
   transform: translateY(-6px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(255, 255, 255, 0.02);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 80px rgba(255, 255, 255, 0.02);
 }
 
 .card.featured {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(18, 18, 18, 0.55);
   border-color: rgba(255, 255, 255, 0.12);
 }
 
 .card.featured:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 100px rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 100px rgba(255, 255, 255, 0.04);
 }
 
 /* ─── Card Glow ─────────────────────────────────────────── */
@@ -127,7 +106,7 @@
   transform: translateX(-50%);
   width: 180px;
   height: 80px;
-  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
   pointer-events: none;
   filter: blur(20px);
 }
@@ -193,11 +172,24 @@
   animation: featureFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @keyframes featureFadeIn {
   from {
     opacity: 0;
     transform: translateX(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -257,13 +249,21 @@
   transform: translateY(-1px);
 }
 
-/* ─── Toggle Section ────────────────────────────────────── */
-.toggleSection {
+/* ─── Toggle & Bottom Section ───────────────────────────── */
+.bottomSection {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+  margin-top: 3.5rem;
+  align-items: center;
+}
+
+.toggleContainer {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 3rem;
-  margin-bottom: 4rem;
+  justify-content: flex-start;
 }
 
 .toggle {
@@ -301,6 +301,35 @@
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.4);
   font-weight: 500;
+  white-space: nowrap;
+}
+
+.plansPillContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plansPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 100px;
+  user-select: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.plansPill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* ─── Responsive ────────────────────────────────────────── */
@@ -312,13 +341,26 @@
   }
 
   .heroWord {
-    font-size: clamp(80px, 18vw, 160px);
-    top: 60px;
+    font-size: clamp(60px, 12vw, 120px);
+    top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .bottomSection {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    justify-items: center;
+    margin-top: 2.5rem;
   }
 
-  .header {
-    margin-top: 120px;
-    margin-bottom: 40px;
+  .toggleContainer {
+    justify-content: center;
+  }
+
+  .plansPillContainer {
+    grid-row: 1;
+    /* Place plans pill above toggle on small screens */
   }
 }
 
@@ -329,17 +371,12 @@
   }
 
   .heroWord {
-    font-size: clamp(60px, 16vw, 120px);
-    top: 50px;
-  }
-
-  .header {
-    margin-top: 100px;
-    margin-bottom: 32px;
+    font-size: clamp(50px, 10vw, 90px);
+    top: 0;
   }
 
   .card {
-    padding: 1.5rem 1.25rem;
+    padding: 2.25rem 1.5rem 2rem;
   }
 
   .price {
