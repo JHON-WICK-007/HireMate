@@ -39,6 +39,12 @@ const IconRefresh = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="
 const IconShield = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>;
 const IconZap = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>;
 const IconTarget = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>;
+const IconSpinner = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
+    <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+    <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+  </svg>
+);
 
 interface ResumeData {
   personalInfo: { fullName: string; email: string; phone: string; links: string[] };
@@ -685,9 +691,9 @@ export default function ResumePage() {
                 onClick={handleUpload}
                 className={`${styles.btn} ${styles.btnPrimary}`}
                 disabled={!file || isUploading}
-                style={{ minWidth: "220px", justifyContent: "center", padding: "0.85rem 2rem" }}
+                style={{ minWidth: "220px", justifyContent: "center", padding: "0.85rem 2rem", gap: "0.5rem" }}
               >
-                {isUploading ? "Analyzing…" : "Analyze Resume"}
+                {isUploading ? <><IconSpinner /> Analyzing…</> : "Analyze Resume"}
               </button>
             </motion.div>
 
@@ -849,13 +855,36 @@ export default function ResumePage() {
           >
             <motion.div
               className={styles.scoreBannerRing}
-              style={{ "--score-pct": `${resumeData.analysis.atsScore}%` } as React.CSSProperties}
-              initial={{ scale: 0.7, rotate: -45 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] as const }}
+              style={{
+                "--score-color": resumeData.analysis.atsScore > 80 ? "#10b981" : resumeData.analysis.atsScore > 60 ? "#f59e0b" : "#ef4444",
+                "--score-glow": resumeData.analysis.atsScore > 80 ? "rgba(16, 185, 129, 0.45)" : resumeData.analysis.atsScore > 60 ? "rgba(245, 158, 11, 0.45)" : "rgba(239, 68, 68, 0.45)"
+              } as React.CSSProperties}
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] as const }}
             >
+              <svg className={styles.scoreRingSvg} viewBox="0 0 100 100">
+                <circle
+                  className={styles.scoreRingBg}
+                  cx="50" cy="50" r="42"
+                />
+                <circle
+                  className={styles.scoreRingTrack}
+                  cx="50" cy="50" r="42"
+                />
+                <circle
+                  className={styles.scoreRingFill}
+                  cx="50" cy="50" r="42"
+                  style={{
+                    strokeDasharray: 263.89,
+                    strokeDashoffset: 263.89 - (263.89 * resumeData.analysis.atsScore) / 100,
+                    stroke: resumeData.analysis.atsScore > 80 ? "#10b981" : resumeData.analysis.atsScore > 60 ? "#f59e0b" : "#ef4444",
+                  } as React.CSSProperties}
+                />
+              </svg>
               <div className={styles.scoreBannerInner}>
                 <span className={styles.scoreBannerNumber}>{resumeData.analysis.atsScore}</span>
+                <span className={styles.scoreBannerLabel}>ATS</span>
               </div>
             </motion.div>
             <div className={styles.scoreBannerInfo}>

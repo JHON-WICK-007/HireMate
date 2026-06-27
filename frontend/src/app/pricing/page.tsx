@@ -2,198 +2,164 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import styles from "./pricing.module.css";
-import homeStyles from "../home.module.css";
 import SiteFooter from "../components/SiteFooter";
+import Navbar from "../components/Navbar";
 import HomeBackdrop from "../components/HomeBackdrop";
 
 const CheckIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
 const plans = [
   {
-    name: "Starter",
+    name: "Free",
     monthlyPrice: 0,
     yearlyPrice: 0,
-    period: "Free forever",
+    period: "",
     featured: false,
     features: [
-      "1 resume analysis per month",
-      "Basic ATS score",
-      "Standard resume templates",
-      "Email support",
-      "Basic interview tips",
+      "3 AI Resume Analyses / month",
+      "5 Mock Interviews",
+      "Basic ATS Score",
+      "Community Support",
     ],
     cta: "Get Started",
-    ctaStyle: "secondary",
   },
   {
     name: "Professional",
-    monthlyPrice: 19,
-    yearlyPrice: 190,
+    monthlyPrice: 499,
+    yearlyPrice: 4790,
     period: "/month",
     yearlyPeriod: "/year",
     featured: true,
     features: [
-      "Unlimited resume analysis",
-      "Advanced ATS optimization",
-      "Premium resume templates",
-      "AI mock interviews",
-      "Priority email support",
-      "Career insights dashboard",
+      "Unlimited Resume Analysis",
+      "Unlimited AI Interviews",
+      "Company-specific Questions",
+      "Career Roadmap",
+      "Resume Builder",
+      "AI Feedback",
+      "Learning Recommendations",
     ],
     cta: "Get Started",
-    ctaStyle: "primary",
   },
   {
     name: "Enterprise",
-    monthlyPrice: 49,
-    yearlyPrice: 490,
+    monthlyPrice: 999,
+    yearlyPrice: 9590,
     period: "/month",
     yearlyPeriod: "/year",
     featured: false,
     features: [
       "Everything in Professional",
-      "Team management portal",
-      "Custom branding options",
-      "API access",
-      "Dedicated account manager",
-      "Advanced analytics",
-      "SSO integration",
+      "Recruiter Dashboard",
+      "Team Management",
+      "Advanced Analytics",
+      "Priority AI Processing",
+      "API Access",
+      "Dedicated Support",
     ],
-    cta: "Contact Sales",
-    ctaStyle: "secondary",
+    cta: "Get Started",
   },
 ];
 
 export default function PricingPage() {
-  const router = useRouter();
   const [yearly, setYearly] = useState(false);
-  const [mobileMenu, setMobileMenu] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!cardsRef.current) return;
+      const rect = cardsRef.current.getBoundingClientRect();
+      setMousePos({
+        x: (e.clientX - rect.left) / rect.width - 0.5,
+        y: (e.clientY - rect.top) / rect.height - 0.5,
+      });
+    };
+    const el = cardsRef.current;
+    el?.addEventListener("mousemove", handleMouseMove);
+    return () => el?.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   return (
     <div className={styles.page}>
       <HomeBackdrop />
+      <Navbar activePage="pricing" />
 
-      {/* Nav */}
-      <nav className={homeStyles.nav}>
-        <div className={homeStyles.navInner}>
-          <Link href="/" className={homeStyles.logo}>
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-              <rect x="2" y="2" width="36" height="36" rx="10" fill="url(#navLogoGrad)" />
-              <path d="M12 14h16M12 20h10M12 26h14" stroke="var(--logo-stroke)" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="30" cy="26" r="4" fill="var(--logo-stroke)" opacity="0.8" />
-              <path d="M29 25.5l1 1 2-2" stroke="var(--logo-check-bg)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <defs>
-                <linearGradient id="navLogoGrad" x1="0" y1="0" x2="40" y2="40">
-                  <stop stopColor="var(--logo-grad-start)" />
-                  <stop offset="1" stopColor="var(--logo-grad-end)" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <span>HireMate AI</span>
-          </Link>
+      <div className={styles.heroWord}>Pricing</div>
 
-          <div className={homeStyles.navLinks}>
-            <Link href="/" className={homeStyles.navLink}>Home</Link>
-            <Link href="/resume" className={homeStyles.navLink}>Resume Optimizer</Link>
-            <Link href="/interview/setup" className={homeStyles.navLink}>Mock Interview</Link>
-            <Link href="/pricing" className={homeStyles.navLink} style={{ color: "var(--text-primary)" }}>Pricing</Link>
-            <Link href="/contact" className={homeStyles.navLink}>Contact</Link>
-          </div>
-
-          <div className={homeStyles.navActions}>
-            <Link href="/auth?mode=signin" className={homeStyles.navBtnGhost}>Sign In</Link>
-            <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid}>Get Started</Link>
-          </div>
-
-          <button
-            className={homeStyles.hamburger}
-            onClick={() => setMobileMenu(!mobileMenu)}
-            aria-label="Menu"
-          >
-            <span className={`${homeStyles.hamburgerLine} ${mobileMenu ? homeStyles.hamburgerOpen1 : ""}`} />
-            <span className={`${homeStyles.hamburgerLine} ${mobileMenu ? homeStyles.hamburgerOpen2 : ""}`} />
-            <span className={`${homeStyles.hamburgerLine} ${mobileMenu ? homeStyles.hamburgerOpen3 : ""}`} />
-          </button>
+      <section className={styles.content}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Simple, transparent pricing</h1>
+          <p className={styles.subtitle}>Start for free, upgrade when you need more.</p>
         </div>
 
-        {mobileMenu && (
-          <div className={homeStyles.mobileMenu}>
-            <Link href="/" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Home</Link>
-            <Link href="/resume" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
-            <Link href="/interview/setup" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
-            <Link href="/pricing" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Pricing</Link>
-            <Link href="/contact" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Contact</Link>
+        <div className={styles.cardsWrap} ref={cardsRef}>
+          <div
+            className={styles.cardsGrid}
+            style={{
+              transform: `perspective(1200px) rotateY(${mousePos.x * 1.5}deg) rotateX(${-mousePos.y * 1.5}deg)`,
+            }}
+          >
+            {plans.map((plan, idx) => (
+              <div
+                key={plan.name}
+                className={`${styles.card} ${plan.featured ? styles.featured : ""}`}
+                style={{ animationDelay: `${idx * 0.12}s` }}
+              >
+                <div className={styles.cardGlow} />
+
+                <div className={styles.cardHeader}>
+                  <span className={styles.planLabel}>{plan.name} Plan</span>
+                </div>
+
+                <div className={styles.priceBlock}>
+                  {plan.monthlyPrice === 0 ? (
+                    <span className={styles.price}>Free</span>
+                  ) : (
+                    <span className={styles.price}>
+                      ₹{yearly ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice}
+                      <span className={styles.pricePeriod}>/m</span>
+                    </span>
+                  )}
+                </div>
+
+                <div className={styles.divider} />
+
+                <ul className={styles.features}>
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className={styles.feature} style={{ animationDelay: `${idx * 0.12 + i * 0.05}s` }}>
+                      <span className={styles.featureCheck}>
+                        <CheckIcon />
+                      </span>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href={plan.name === "Enterprise" ? "/contact" : "/auth?mode=signup"}
+                  className={`${styles.cta} ${plan.featured ? styles.ctaPrimary : styles.ctaSecondary}`}
+                >
+                  {plan.cta}
+                </Link>
+              </div>
+            ))}
           </div>
-        )}
-      </nav>
+        </div>
 
-      {/* Hero */}
-      <section className={styles.hero}>
-        <div className={styles.orb1} />
-        <div className={styles.orb2} />
-        <h1 className={styles.heroTitle}>Pricing</h1>
-        <p className={styles.heroSubtitle}>
-          Simple, transparent pricing. Start for free, upgrade when you need more.
-        </p>
-
-        <div className={styles.toggleWrap}>
-          <span className={`${styles.toggleLabel} ${!yearly ? styles.active : ""}`}>Monthly</span>
+        <div className={styles.toggleSection}>
           <button
-            className={`${styles.toggle} ${yearly ? styles.active : ""}`}
+            className={`${styles.toggle} ${yearly ? styles.toggleActive : ""}`}
             onClick={() => setYearly(!yearly)}
           >
             <div className={styles.toggleKnob} />
           </button>
-          <span className={`${styles.toggleLabel} ${yearly ? styles.active : ""}`}>Yearly</span>
-          {yearly && <span className={styles.saveBadge}>Save 20%</span>}
-        </div>
-      </section>
-
-      {/* Cards */}
-      <section className={styles.cardsSection}>
-        <div className={styles.cardsGrid}>
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`${styles.card} ${plan.featured ? styles.featured : ""}`}
-            >
-              <div className={styles.cardName}>{plan.name}</div>
-              <div className={styles.cardPrice}>
-                {plan.monthlyPrice === 0 ? "Free" : `$${yearly ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice}`}
-              </div>
-              <div className={styles.cardPeriod}>
-                {plan.monthlyPrice === 0
-                  ? plan.period
-                  : yearly
-                    ? `$${plan.yearlyPrice}${plan.yearlyPeriod} billed annually`
-                    : plan.period}
-              </div>
-
-              <div className={styles.features}>
-                {plan.features.map((feature, i) => (
-                  <div key={i} className={styles.feature}>
-                    <div className={styles.featureIcon}>
-                      <CheckIcon />
-                    </div>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href={plan.name === "Enterprise" ? "/contact" : "/auth?mode=signup"}
-                className={`${styles.cta} ${plan.ctaStyle === "primary" ? styles.ctaPrimary : styles.ctaSecondary}`}
-              >
-                {plan.cta}
-              </Link>
-            </div>
-          ))}
+          <span className={styles.toggleLabel}>Billed Yearly</span>
         </div>
       </section>
 

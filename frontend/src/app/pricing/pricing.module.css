@@ -2,216 +2,219 @@
 .page {
   min-height: 100vh;
   background: transparent;
-  color: var(--text-primary);
+  color: #fff;
   display: flex;
   flex-direction: column;
-}
-
-/* ─── Hero ──────────────────────────────────────────────── */
-.hero {
-  padding: 12rem 2rem 4rem;
-  text-align: center;
   position: relative;
+  overflow: hidden;
 }
 
-.heroTitle {
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 800;
+/* ─── Hero Background Word ──────────────────────────────── */
+.heroWord {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display, "Inter", sans-serif);
+  font-size: clamp(120px, 22vw, 240px);
+  font-weight: 900;
   letter-spacing: -0.04em;
   line-height: 1;
-  margin: 0 0 1.5rem;
-  background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-muted) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+  filter: blur(2px);
 }
 
-.heroSubtitle {
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  max-width: 480px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
-
-/* ─── Toggle ────────────────────────────────────────────── */
-.toggleWrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 2.5rem;
-}
-
-.toggleLabel {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.toggleLabel.active {
-  color: var(--text-primary);
-}
-
-.toggle {
+/* ─── Content ───────────────────────────────────────────── */
+.content {
   position: relative;
-  width: 48px;
-  height: 26px;
-  background: var(--surface-300);
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  border: none;
-  padding: 0;
-  transition: background var(--transition-base);
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1.5rem;
 }
 
-.toggle.active {
-  background: var(--text-primary);
+/* ─── Header ────────────────────────────────────────────── */
+.header {
+  text-align: center;
+  margin-top: 160px;
+  margin-bottom: 60px;
 }
 
-.toggleKnob {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 20px;
-  height: 20px;
-  background: var(--surface-0);
-  border-radius: 50%;
-  transition: transform var(--transition-base);
+.title {
+  font-family: var(--font-display, "Inter", sans-serif);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin: 0 0 1rem;
+  color: #fff;
 }
 
-.toggle.active .toggleKnob {
-  transform: translateX(22px);
+.subtitle {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+  line-height: 1.5;
 }
 
-.saveBadge {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--success);
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-}
-
-/* ─── Cards Grid ────────────────────────────────────────── */
-.cardsSection {
-  padding: 2rem 2rem 6rem;
-}
-
-.cardsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+/* ─── Cards Wrap ────────────────────────────────────────── */
+.cardsWrap {
+  width: 100%;
   max-width: 1100px;
   margin: 0 auto;
 }
 
-@media (max-width: 900px) {
-  .cardsGrid {
-    grid-template-columns: 1fr;
-    max-width: 420px;
-  }
+/* ─── Cards Grid ────────────────────────────────────────── */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ─── Card ──────────────────────────────────────────────── */
 .card {
   position: relative;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  padding: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 2rem 1.75rem;
   display: flex;
   flex-direction: column;
-  transition: all var(--transition-base);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card:hover {
-  border-color: var(--glass-border-hover);
-  box-shadow: var(--glass-shadow-hover);
-  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(255, 255, 255, 0.02);
 }
 
 .card.featured {
-  border-color: var(--border-strong);
-  background: var(--surface-100);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
-.card.featured::before {
-  content: '';
+.card.featured:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 100px rgba(255, 255, 255, 0.04);
+}
+
+/* ─── Card Glow ─────────────────────────────────────────── */
+.cardGlow {
   position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--text-primary), transparent 50%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: composite;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  height: 80px;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
   pointer-events: none;
+  filter: blur(20px);
 }
 
 /* ─── Card Header ───────────────────────────────────────── */
-.cardName {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 0.75rem;
+.cardHeader {
+  margin-bottom: 0.5rem;
 }
 
-.cardPrice {
-  font-family: var(--font-display);
-  font-size: 3rem;
+.planLabel {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.02em;
+}
+
+/* ─── Price Block ───────────────────────────────────────── */
+.priceBlock {
+  margin-bottom: 1.5rem;
+}
+
+.price {
+  font-family: var(--font-display, "Inter", sans-serif);
+  font-size: 3.2rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   line-height: 1;
-  margin-bottom: 0.25rem;
+  color: #fff;
 }
 
-.cardPeriod {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 2rem;
+.pricePeriod {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  margin-left: 2px;
+}
+
+/* ─── Divider ───────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin-bottom: 1.5rem;
 }
 
 /* ─── Features ──────────────────────────────────────────── */
 .features {
+  list-style: none;
+  margin: 0 0 2rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 0.85rem;
   flex: 1;
-  margin-bottom: 2rem;
 }
 
 .feature {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+  gap: 0.75rem;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.6);
   line-height: 1.4;
+  animation: featureFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.featureIcon {
-  width: 20px;
-  height: 20px;
+@keyframes featureFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.featureCheck {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: var(--surface-200);
-  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-.featureIcon svg {
-  width: 12px;
-  height: 12px;
-  color: var(--text-primary);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* ─── CTA Button ────────────────────────────────────────── */
@@ -220,68 +223,126 @@
   align-items: center;
   justify-content: center;
   height: 48px;
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
+  border-radius: 100px;
+  font-size: 0.88rem;
   font-weight: 600;
-  font-family: var(--font-sans);
+  font-family: var(--font-sans, "Inter", sans-serif);
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
   border: none;
   width: 100%;
 }
 
 .ctaPrimary {
-  background: var(--btn-solid-bg);
-  color: var(--btn-solid-fg);
+  background: #fff;
+  color: #000;
 }
 
 .ctaPrimary:hover {
-  background: var(--btn-solid-hover);
+  background: rgba(255, 255, 255, 0.88);
   transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.12);
 }
 
 .ctaSecondary {
   background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-default);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .ctaSecondary:hover {
-  background: var(--surface-200);
-  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
 }
 
-/* ─── Glow orbs ─────────────────────────────────────────── */
-.orb {
+/* ─── Toggle Section ────────────────────────────────────── */
+.toggleSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 3rem;
+  margin-bottom: 4rem;
+}
+
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0;
+  transition: background 0.3s ease;
+}
+
+.toggleActive {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.toggleKnob {
   position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
   border-radius: 50%;
-  filter: blur(120px);
-  pointer-events: none;
-  z-index: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.orb1 {
-  width: 500px;
-  height: 500px;
-  background: rgba(99, 102, 241, 0.06);
-  top: -10%;
-  left: -10%;
+.toggleActive .toggleKnob {
+  transform: translateX(20px);
 }
 
-.orb2 {
-  width: 400px;
-  height: 400px;
-  background: rgba(168, 85, 247, 0.05);
-  bottom: 10%;
-  right: -5%;
+.toggleLabel {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
 }
 
-[data-theme="light"] .orb1 {
-  background: rgba(99, 102, 241, 0.08);
+/* ─── Responsive ────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .cardsGrid {
+    grid-template-columns: 1fr 1fr;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .heroWord {
+    font-size: clamp(80px, 18vw, 160px);
+    top: 60px;
+  }
+
+  .header {
+    margin-top: 120px;
+    margin-bottom: 40px;
+  }
 }
 
-[data-theme="light"] .orb2 {
-  background: rgba(168, 85, 247, 0.06);
+@media (max-width: 640px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .heroWord {
+    font-size: clamp(60px, 16vw, 120px);
+    top: 50px;
+  }
+
+  .header {
+    margin-top: 100px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .price {
+    font-size: 2.6rem;
+  }
 }
