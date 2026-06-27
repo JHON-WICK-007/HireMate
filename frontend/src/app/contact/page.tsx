@@ -8,6 +8,7 @@ import homeStyles from "../home.module.css";
 import { useToast } from "../components/Toast";
 import SiteFooter from "../components/SiteFooter";
 import HomeBackdrop from "../components/HomeBackdrop";
+import Navbar from "../components/Navbar";
 import { motion, AnimatePresence } from "framer-motion";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
@@ -127,125 +128,7 @@ export default function ContactPage() {
     <main className={styles.main}>
       <HomeBackdrop />
       {/* ─── Navbar ─────────────────────────────────────────── */}
-      <nav className={`${homeStyles.nav} ${scrolled ? homeStyles.navScrolled : ""} ${navHidden ? homeStyles.navHidden : ""}`}>
-        <div className={homeStyles.navInner}>
-          <Link href="/" className={homeStyles.navLogo}>
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-              <rect x="2" y="2" width="36" height="36" rx="10" fill="url(#navLogoGrad)" />
-              <path d="M12 14h16M12 20h10M12 26h14" stroke="var(--logo-stroke)" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="30" cy="26" r="4" fill="var(--logo-stroke)" opacity="0.8" />
-              <path d="M29 25.5l1 1 2-2" stroke="var(--logo-check-bg)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <defs>
-                <linearGradient id="navLogoGrad" x1="0" y1="0" x2="40" y2="40">
-                  <stop stopColor="var(--logo-grad-start)" />
-                  <stop offset="1" stopColor="var(--logo-grad-end)" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <span>HireMate AI</span>
-          </Link>
-
-          <div className={homeStyles.navLinks}>
-            <Link href="/resume" className={homeStyles.navLink}>Resume Optimizer</Link>
-            <Link href="/interview/setup" className={homeStyles.navLink}>Mock Interview</Link>
-            <Link href="/pricing" className={homeStyles.navLink}>Pricing</Link>
-            <Link href="/contact" className={homeStyles.navLink} style={{ color: "var(--text-primary)" }}>Contact Us</Link>
-          </div>
-
-          <div className={homeStyles.navActions} suppressHydrationWarning>
-            <div className="auth-logged-in-only">
-              <Link
-                href="/profile"
-                className={homeStyles.navBtnGhost}
-                style={{
-                  width: "136px",
-                  paddingLeft: "6px",
-                  paddingRight: "16px",
-                  justifyContent: "flex-start"
-                }}
-              >
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt="Profile"
-                    style={{
-                      width: "42px",
-                      height: "42px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "1.5px solid var(--border-default)"
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: "42px",
-                      height: "42px",
-                      borderRadius: "50%",
-                      background: "var(--surface-300)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "0.95rem",
-                      fontWeight: "bold",
-                      color: "var(--text-primary)"
-                    }}
-                  >
-                    {initials}
-                  </div>
-                )}
-                <span
-                  style={{
-                    display: "inline-block",
-                    width: "64px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    textAlign: "left"
-                  }}
-                >
-                  {user?.fullName ? user.fullName.split(" ")[0] : "Profile"}
-                </span>
-              </Link>
-            </div>
-
-            <div className="auth-logged-out-only">
-              <Link href="/auth?mode=signin" className={homeStyles.navBtnGhost}>Sign In</Link>
-              <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid}>Get Started</Link>
-            </div>
-          </div>
-
-          <button
-            className={homeStyles.hamburger}
-            onClick={() => setMobileMenu(!mobileMenu)}
-            aria-label="Menu"
-          >
-            <span className={`${homeStyles.hamburgerLine} ${mobileMenu ? homeStyles.hamburgerOpen1 : ""}`} />
-            <span className={`${homeStyles.hamburgerLine} ${mobileMenu ? homeStyles.hamburgerOpen2 : ""}`} />
-            <span className={`${homeStyles.hamburgerLine} ${mobileMenu ? homeStyles.hamburgerOpen3 : ""}`} />
-          </button>
-        </div>
-
-        {mobileMenu && (
-          <div className={homeStyles.mobileMenu}>
-            <Link href="/resume" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
-            <Link href="/interview/setup" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
-            <Link href="/pricing" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Pricing</Link>
-            <Link href="/contact" className={homeStyles.mobileLink} style={{ color: "var(--text-primary)" }} onClick={() => setMobileMenu(false)}>Contact Us</Link>
-            <div className={homeStyles.mobileDivider} />
-            {mounted && (
-              isLoggedIn ? (
-                <Link href="/profile" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Profile</Link>
-              ) : (
-                <>
-                  <Link href="/auth?mode=signin" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Sign In</Link>
-                  <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid} style={{ width: "100%", textAlign: "center" }} onClick={() => setMobileMenu(false)}>Get Started</Link>
-                </>
-              )
-            )}
-          </div>
-        )}
-      </nav>
+      <Navbar activePage="contact" />
 
       {/* ─── Hero / Content Section ─────────────────────────── */}
       <section className={styles.heroSection}>
@@ -476,7 +359,7 @@ export default function ContactPage() {
                     <span className={homeStyles.gridItemText}>Return to Homepage</span>
                   </div>
 
-                  <div className={homeStyles.welcomeGridItem} onClick={() => { setShowSuccessModal(false); router.push("/resume"); }} style={{ cursor: "pointer" }}>
+                  <div className={homeStyles.welcomeGridItem} onClick={() => { setShowSuccessModal(false); router.push("/resume-optimizer"); }} style={{ cursor: "pointer" }}>
                     <div className={homeStyles.gridItemIcon}>
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />

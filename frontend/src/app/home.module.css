@@ -3746,3 +3746,80 @@ his
     padding: 2rem 1.75rem;
   }
 }
+
+/* Resume Dropdown Styles */
+.dropdownContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.dropdownTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color var(--transition-fast);
+}
+
+.dropdownTrigger:hover,
+.dropdownTriggerActive {
+  color: var(--text-primary) !important;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  z-index: 10;
+  min-width: 185px;
+  background: transparent !important;
+  border: 1px solid var(--border-default) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: none !important;
+}
+
+/* Invisible bridge so mouse transitions smoothly over the 8px top offset gap */
+.dropdownMenu::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: transparent;
+}
+
+.dropdownLink {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  font-weight: 500;
+  padding: 8px 14px;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--radius-sm) !important;
+  display: block;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.dropdownLink:hover,
+.dropdownLinkActive {
+  color: var(--text-primary) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="light"] .dropdownLink:hover,
+[data-theme="light"] .dropdownLinkActive {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.02) !important;
+}

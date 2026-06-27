@@ -9,6 +9,7 @@ import nav from "../../home.module.css";
 import { useToast } from "../../components/Toast";
 import SiteFooter from "../../components/SiteFooter";
 import HomeBackdrop from "../../components/HomeBackdrop";
+import Navbar from "../../components/Navbar";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -434,100 +435,7 @@ function ResultsContent() {
       <HomeBackdrop />
 
       {/* ── Navbar ── */}
-      <nav className={`${nav.nav} ${scrolled ? nav.navScrolled : ""} ${navHidden ? nav.navHidden : ""}`}>
-        <div className={nav.navInner}>
-          <Link href="/" className={nav.navLogo}>
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-              <rect x="2" y="2" width="36" height="36" rx="10" fill="url(#navGrad)" />
-              <path d="M12 14h16M12 20h10M12 26h14" stroke="var(--logo-stroke)" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="30" cy="26" r="4" fill="var(--logo-stroke)" opacity="0.8" />
-              <path d="M29 25.5l1 1 2-2" stroke="var(--logo-check-bg)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <defs>
-                <linearGradient id="navGrad" x1="0" y1="0" x2="40" y2="40">
-                  <stop stopColor="var(--logo-grad-start)" />
-                  <stop offset="1" stopColor="var(--logo-grad-end)" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <span>HireMate AI</span>
-          </Link>
-
-          <div className={nav.navLinks}>
-            <Link href="/resume" className={nav.navLink}>Resume Optimizer</Link>
-            <Link href="/interview/setup" className={`${nav.navLink} ${nav.navActive || ""}`} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
-          </div>
-
-          <div className={nav.navActions} suppressHydrationWarning>
-            <Link
-              href="/profile"
-              className={nav.navBtnGhost}
-              style={{
-                width: "136px",
-                paddingLeft: "6px",
-                paddingRight: "16px",
-                justifyContent: "flex-start"
-              }}
-            >
-              {avatar ? (
-                <img
-                  src={avatar}
-                  alt="Profile"
-                  style={{
-                    width: "42px",
-                    height: "42px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    border: "1.5px solid var(--border-default)",
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: "42px",
-                    height: "42px",
-                    borderRadius: "50%",
-                    background: "var(--surface-300)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.95rem",
-                    fontWeight: "bold",
-                    color: "var(--text-primary)",
-                  }}
-                >
-                  {userInitials}
-                </div>
-              )}
-              <span
-                style={{
-                  display: "inline-block",
-                  width: "64px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  textAlign: "left"
-                }}
-              >
-                {fullName ? fullName.split(" ")[0] : "Profile"}
-              </span>
-            </Link>
-          </div>
-
-          <button className={nav.hamburger} onClick={() => setMobileMenu(!mobileMenu)} aria-label="Menu">
-            <span className={`${nav.hamburgerLine} ${mobileMenu ? nav.hamburgerOpen1 : ""}`} />
-            <span className={`${nav.hamburgerLine} ${mobileMenu ? nav.hamburgerOpen2 : ""}`} />
-            <span className={`${nav.hamburgerLine} ${mobileMenu ? nav.hamburgerOpen3 : ""}`} />
-          </button>
-        </div>
-
-        {mobileMenu && (
-          <div className={nav.mobileMenu}>
-            <Link href="/resume" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
-            <Link href="/interview/setup" className={nav.mobileLink} onClick={() => setMobileMenu(false)} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
-            <Link href="/profile" className={nav.mobileLink} onClick={() => setMobileMenu(false)}>Profile</Link>
-          </div>
-        )}
-      </nav>
+      <Navbar activePage="interview" />
 
       {isLoadingResults ? (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "12px", color: "var(--text-secondary)" }}>

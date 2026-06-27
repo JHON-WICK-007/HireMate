@@ -7,6 +7,7 @@ export default function HomeBackdrop() {
       <div className={styles.heroOrb2} />
       <div className={styles.heroOrb3} />
       <div className={styles.heroNoise} />
+      <div className={styles.heroGrid} />
     </>
   );
 }

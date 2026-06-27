@@ -708,7 +708,7 @@ function LiveInterviewContent() {
           </Link>
 
           <div className={nav.navLinks}>
-            <Link href="/resume" className={nav.navLink} onClick={blockNavigation}>Resume Optimizer</Link>
+            <Link href="/resume-optimizer" className={nav.navLink} onClick={blockNavigation}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={`${nav.navLink} ${nav.navActive || ""}`} style={{ color: "var(--domain-interview)" }} onClick={blockNavigation}>Mock Interview</Link>
           </div>
 
@@ -778,7 +778,7 @@ function LiveInterviewContent() {
 
         {mobileMenu && (
           <div className={nav.mobileMenu}>
-            <Link href="/resume" className={nav.mobileLink} onClick={(e) => { blockNavigation(e); setMobileMenu(false); }}>Resume Optimizer</Link>
+            <Link href="/resume-optimizer" className={nav.mobileLink} onClick={(e) => { blockNavigation(e); setMobileMenu(false); }}>Resume Optimizer</Link>
             <Link href="/interview/setup" className={nav.mobileLink} onClick={(e) => { blockNavigation(e); setMobileMenu(false); }} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
             <Link href="/profile" className={nav.mobileLink} onClick={(e) => { blockNavigation(e); setMobileMenu(false); }}>Profile</Link>
           </div>
