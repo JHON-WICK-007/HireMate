@@ -47,7 +47,7 @@ export default function Navbar({ activePage }: NavbarProps) {
       if (savedUser) {
         try {
           setUser(JSON.parse(savedUser));
-        } catch (e) {}
+        } catch (e) { }
       }
       fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -65,7 +65,7 @@ export default function Navbar({ activePage }: NavbarProps) {
             document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     } else {
       document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
       document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
