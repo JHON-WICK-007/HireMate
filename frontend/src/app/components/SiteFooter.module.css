@@ -1,0 +1,231 @@
+/* ─── Footer Styles ──────────────────────────────── */
+.footer {
+  margin-top: 0;
+  background: transparent;
+}
+
+.footerCtaBand {
+  background: transparent;
+  padding: 2.75rem 2rem;
+}
+
+.footerCtaInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.footerCtaHeading {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.footerCtaHeading strong {
+  font-weight: 700;
+}
+
+.footerCtaLinks {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  flex-shrink: 0;
+}
+
+.footerCtaLinks a {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color var(--transition-fast);
+}
+
+.footerCtaLinks a:hover {
+  color: var(--text-secondary);
+}
+
+.footerBody {
+  background: transparent;
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.footerBodyInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem 0;
+}
+
+.footerMetaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 3rem;
+}
+
+.footerLeftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.footerBody .footerSocials {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.footerBody .footerSocials a {
+  display: flex;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.footerBody .footerSocials a:hover {
+  color: var(--text-primary);
+}
+
+.footerLegalRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footerCopyright {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.footerLegalLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.footerLegalLinks a {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footerLegalLinks a:hover {
+  color: var(--text-primary);
+}
+
+.footerInfoCols {
+  display: flex;
+  gap: clamp(3rem, 8vw, 7rem);
+}
+
+.footerInfoCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  opacity: 0.75;
+}
+
+.footerInfoTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.footerInfoCol a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  opacity: 0.75;
+  transition: all var(--transition-fast);
+}
+
+.footerInfoCol a:hover {
+  color: var(--text-primary);
+  opacity: 1;
+}
+
+.footerWordmark {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 20vw, 16rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.8;
+  background: none;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.22);
+  -webkit-text-stroke: 0 transparent;
+  opacity: 1;
+  text-align: center;
+  margin: 2rem 0 -2rem;
+  padding: 0 1.5rem;
+  user-select: none;
+  cursor: default;
+  -webkit-mask-image: linear-gradient(180deg,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.9) 34%,
+      rgba(0, 0, 0, 0.38) 68%,
+      rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(180deg,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.9) 34%,
+      rgba(0, 0, 0, 0.38) 68%,
+      rgba(0, 0, 0, 0) 100%);
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.13),
+    0 0 22px rgba(255, 255, 255, 0.095),
+    0 24px 58px rgba(0, 0, 0, 0.82);
+  filter: blur(0.25px);
+}
+
+[data-theme="light"] .footerWordmark {
+  background: none;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.22);
+  -webkit-text-stroke: 0 transparent;
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.1),
+    0 0 22px rgba(0, 0, 0, 0.055),
+    0 24px 58px rgba(255, 255, 255, 0.82);
+}
+
+@media (max-width: 768px) {
+  .footerCtaInner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .footerMetaRow {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .footerInfoCols {
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+  }
+
+  .footerLegalRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .footerWordmark {
+    padding: 0 1rem;
+    margin-top: 2rem;
+  }
+}

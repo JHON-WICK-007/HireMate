@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "../home.module.css";
+import styles from "./SiteFooter.module.css";
 
 interface SiteFooterProps {
   showCta?: boolean;
