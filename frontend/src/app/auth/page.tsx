@@ -302,8 +302,8 @@ export default function AuthPage() {
                     alt={`User ${i + 1}`}
                     style={{
                       zIndex: 5 - i,
-                      transform: `translateX(${i * -10}px)`,
-                    }}
+                      '--tx': `${i * -10}px`,
+                    } as React.CSSProperties}
                   />
                 ))}
               </div>

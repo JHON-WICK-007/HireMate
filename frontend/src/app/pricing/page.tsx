@@ -6,6 +6,8 @@ import styles from "./pricing.module.css";
 import SiteFooter from "../components/SiteFooter";
 import Navbar from "../components/Navbar";
 import HomeBackdrop from "../components/HomeBackdrop";
+import BorderGlow from "../components/BorderGlow";
+import ShinyText from "../components/ShinyText";
 
 const faqItems = [
   {
@@ -111,75 +113,227 @@ export default function PricingPage() {
       <HomeBackdrop />
       <Navbar activePage="pricing" />
 
+      <ShinyText
+        text="Pricing"
+        speed={3}
+        delay={0.5}
+        color="rgba(255,255,255,0.6)"
+        shineColor="#ffffff"
+        spread={100}
+        direction="left"
+        className={styles.heroWord}
+      />
+
       <section className={styles.content}>
+
         <div className={styles.cardsContainer}>
-          <div className={styles.heroWord}>Pricing</div>
 
           <div className={styles.cardsWrap} ref={cardsRef}>
-            <div className={styles.cardsGrid}>
-              {plans.map((plan, idx) => (
-                <div
-                  key={plan.name}
-                  className={`${styles.card} ${plan.featured ? styles.featured : ""}`}
-                  style={{ animationDelay: `${idx * 0.12}s` }}
+            <div className={styles.bottomSection}>
+              <div className={styles.billingToggle}>
+                <button
+                  className={`${styles.billingOption} ${!yearly ? styles.billingOptionActive : ""}`}
+                  onClick={() => setYearly(false)}
                 >
-                  <div className={styles.cardGlow} />
-
-                  <div className={styles.cardHeader}>
-                    <span className={styles.planLabel}>{plan.name} Plan</span>
-                  </div>
-
-                  <div className={styles.priceBlock}>
-                    {plan.monthlyPrice === 0 ? (
-                      <span className={styles.price}>Free</span>
-                    ) : (
-                      <span className={styles.price}>
-                        ₹{yearly ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice}
-                        <span className={styles.pricePeriod}>/m</span>
-                      </span>
-                    )}
-                  </div>
-
-                  <div className={styles.divider} />
-
-                  <ul className={styles.features}>
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className={styles.feature} style={{ animationDelay: `${idx * 0.12 + i * 0.05}s` }}>
-                        <span className={styles.featureCheck}>
-                          <CheckIcon />
-                        </span>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    href={plan.name === "Enterprise" ? "/contact" : "/auth?mode=signup"}
-                    className={`${styles.cta} ${plan.featured ? styles.ctaPrimary : styles.ctaSecondary}`}
-                  >
-                    {plan.cta}
-                  </Link>
-                </div>
-              ))}
+                  Monthly
+                </button>
+                <button
+                  className={`${styles.billingOption} ${yearly ? styles.billingOptionActive : ""}`}
+                  onClick={() => setYearly(true)}
+                >
+                  Yearly
+                </button>
+              </div>
             </div>
 
-            <div className={styles.bottomSection}>
-              <div className={styles.toggleContainer}>
-                <button
-                  className={`${styles.toggle} ${yearly ? styles.toggleActive : ""}`}
-                  onClick={() => setYearly(!yearly)}
-                >
-                  <div className={styles.toggleKnob} />
-                </button>
-                <span className={styles.toggleLabel}>Billed Yearly</span>
-              </div>
+            <div className={styles.cardsGrid}>
+              {plans.map((plan, idx) => {
+                const cardContent = (
+                  <>
+                    <div className={styles.cardHeader}>
+                      <span className={styles.planLabel}>{plan.name} Plan</span>
+                    </div>
 
-              <div className={styles.plansPillContainer}>
-                <div className={styles.plansPill}>
-                  Plans
-                </div>
-              </div>
-              <div />
+                    <div className={styles.priceBlock}>
+                      {plan.monthlyPrice === 0 ? (
+                        <span className={styles.price}>Free</span>
+                      ) : (
+                        <span className={styles.price}>
+                          ₹{yearly ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice}
+                          <span className={styles.pricePeriod}>/m</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className={styles.divider} />
+
+                    <ul className={styles.features}>
+                      {plan.features.map((feature, i) => (
+                        <li key={i} className={styles.feature} style={{ animationDelay: `${idx * 0.12 + i * 0.05}s` }}>
+                          <span className={styles.featureCheck}>
+                            <CheckIcon />
+                          </span>
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Link
+                      href={plan.name === "Enterprise" ? "/contact" : "/auth?mode=signup"}
+                      className={`${styles.cta} ${plan.featured ? styles.ctaPrimary : styles.ctaSecondary}`}
+                    >
+                      {plan.cta}
+                    </Link>
+                  </>
+                );
+
+                if (plan.featured) {
+                  return (
+                    <div key={plan.name} className={styles.cardWrapper}>
+                      <span className={styles.recommendedBadge}>Recommended</span>
+                      <BorderGlow
+                        edgeSensitivity={30}
+                        glowColor="40 80 80"
+                        backgroundColor="rgba(255, 255, 255, 0.04)"
+                        fillColor="#0c0c14"
+                        borderRadius={24}
+                        glowRadius={40}
+                        glowIntensity={1}
+                        coneSpread={25}
+                        animated={true}
+                        glass={true}
+                        colors={['#c084fc', '#f472b6', '#38bdf8']}
+                        className={`${styles.card} ${styles.featured}`}
+                      >
+                        {cardContent}
+                      </BorderGlow>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div
+                    key={plan.name}
+                    className={styles.card}
+                    style={{ animationDelay: `${idx * 0.12}s` }}
+                  >
+                    <div className={styles.cardGlow} />
+                    {cardContent}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Table */}
+      <section className={styles.comparisonSection}>
+        <div className={styles.comparisonContainer}>
+          <h2 className={styles.comparisonTitle}>Compare Plans</h2>
+          <div className={styles.comparisonTable}>
+            {/* Header Row */}
+            <div className={styles.comparisonRow + ' ' + styles.comparisonHeader}>
+              <div className={styles.comparisonFeature}></div>
+              <div className={styles.comparisonPlan}>Free</div>
+              <div className={styles.comparisonPlan}>Professional</div>
+              <div className={styles.comparisonPlan}>Enterprise</div>
+            </div>
+
+            {/* Resume Section */}
+            <div className={styles.comparisonCategory}>Resume</div>
+
+            <div className={styles.comparisonRow}>
+              <div className={styles.comparisonFeature}>AI Resume Analysis</div>
+              <div className={styles.comparisonValue}>3 / month</div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            <div className={styles.comparisonRow + ' ' + styles.comparisonAlt}>
+              <div className={styles.comparisonFeature}>Resume Builder</div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            <div className={styles.comparisonRow}>
+              <div className={styles.comparisonFeature}>ATS Score</div>
+              <div className={styles.comparisonValue}>Basic</div>
+              <div className={styles.comparisonValue}>Advanced</div>
+              <div className={styles.comparisonValue}>Advanced</div>
+            </div>
+
+            {/* Interview Section */}
+            <div className={styles.comparisonCategory}>Interview</div>
+
+            <div className={styles.comparisonRow}>
+              <div className={styles.comparisonFeature}>Mock Interviews</div>
+              <div className={styles.comparisonValue}>5</div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            <div className={styles.comparisonRow + ' ' + styles.comparisonAlt}>
+              <div className={styles.comparisonFeature}>Company-specific Questions</div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            <div className={styles.comparisonRow}>
+              <div className={styles.comparisonFeature}>AI Feedback</div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            {/* Career Section */}
+            <div className={styles.comparisonCategory}>Career</div>
+
+            <div className={styles.comparisonRow}>
+              <div className={styles.comparisonFeature}>Career Roadmap</div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            <div className={styles.comparisonRow + ' ' + styles.comparisonAlt}>
+              <div className={styles.comparisonFeature}>Learning Recommendations</div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            {/* Team Section */}
+            <div className={styles.comparisonCategory}>Team & Enterprise</div>
+
+            <div className={styles.comparisonRow}>
+              <div className={styles.comparisonFeature}>Recruiter Dashboard</div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            <div className={styles.comparisonRow + ' ' + styles.comparisonAlt}>
+              <div className={styles.comparisonFeature}>Team Management</div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            <div className={styles.comparisonRow}>
+              <div className={styles.comparisonFeature}>API Access</div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
+            </div>
+
+            <div className={styles.comparisonRow + ' ' + styles.comparisonAlt}>
+              <div className={styles.comparisonFeature}>Dedicated Support</div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.crossIcon}>✕</span></div>
+              <div className={styles.comparisonValue}><span className={styles.checkIcon}>✓</span></div>
             </div>
           </div>
         </div>

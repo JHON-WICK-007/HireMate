@@ -1714,9 +1714,6 @@ export default function Home() {
 {/* --- Social Proof / CTA Section --- */}
       <section className={styles.ctaSection}>
         <div className={styles.ctaGridBg} />
-        <div className={styles.ctaGlow} />
-        <div className={styles.ctaGlowCyan} />
-        <div className={styles.ctaGlowPurple} />
         <div className={styles.sectionInner}>
           <motion.div
             className={styles.ctaBox}
@@ -1745,7 +1742,7 @@ export default function Home() {
                   transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 >
                   Ready to land your<br />
-                  <span className={styles.ctaTitleFaded}>dream engineering job?</span>
+                  <span className={styles.ctaTitleFaded}>Dream engineering job?</span>
                 </motion.h2>
                 <motion.p
                   className={styles.ctaSubtitle}
@@ -1771,67 +1768,6 @@ export default function Home() {
                     </svg>
                   </Link>
                   <span className={styles.ctaTrust}>Free — No credit card required</span>
-                </motion.div>
-              </div>
-
-              {/* Right: Stat Cards */}
-              <div className={styles.ctaStats}>
-                <motion.div
-                  className={`${styles.ctaStatCard} ${styles.ctaStatFloat1}`}
-                  initial={{ opacity: 0, x: 40, y: 20 }}
-                  whileInView={{ opacity: 1, x: 0, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <div className={`${styles.ctaStatIcon} ${styles.ctaStatIconCyan}`}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                      <circle cx="9" cy="7" r="4" />
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
-                  </div>
-                  <div className={styles.ctaStatInfo}>
-                    <span className={styles.ctaStatNumber}>10,000+</span>
-                    <span className={styles.ctaStatLabel}>Engineers Hired</span>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  className={`${styles.ctaStatCard} ${styles.ctaStatFloat2}`}
-                  initial={{ opacity: 0, x: 40, y: 20 }}
-                  whileInView={{ opacity: 1, x: 0, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.45, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <div className={`${styles.ctaStatIcon} ${styles.ctaStatIconPurple}`}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                    </svg>
-                  </div>
-                  <div className={styles.ctaStatInfo}>
-                    <span className={styles.ctaStatNumber}>92%</span>
-                    <span className={styles.ctaStatLabel}>Interview Success</span>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  className={`${styles.ctaStatCard} ${styles.ctaStatFloat3}`}
-                  initial={{ opacity: 0, x: 40, y: 20 }}
-                  whileInView={{ opacity: 1, x: 0, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.6, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <div className={`${styles.ctaStatIcon} ${styles.ctaStatIconOrange}`}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                    </svg>
-                  </div>
-                  <div className={styles.ctaStatInfo}>
-                    <span className={styles.ctaStatNumber}>500+</span>
-                    <span className={styles.ctaStatLabel}>Top Companies</span>
-                  </div>
                 </motion.div>
               </div>
             </div>

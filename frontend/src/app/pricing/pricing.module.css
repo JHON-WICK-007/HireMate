@@ -12,20 +12,20 @@
 /* ─── Hero Background Word ──────────────────────────────── */
 .heroWord {
   position: absolute;
-  top: 0;
+  top: 80px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   font-family: var(--font-display, "Outfit", "Inter", sans-serif);
-  font-size: clamp(70px, 11vw, 140px);
+  font-size: clamp(70px, 12vw, 160px);
   font-weight: 900;
   letter-spacing: -0.04em;
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.9);
+  line-height: 1.3;
   white-space: nowrap;
   pointer-events: none;
   z-index: 0;
   user-select: none;
+  overflow: visible;
+  filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.15)) drop-shadow(0 0 60px rgba(255, 255, 255, 0.08));
 }
 
 /* ─── Content ───────────────────────────────────────────── */
@@ -45,7 +45,7 @@
   position: relative;
   width: 100%;
   max-width: 1100px;
-  margin: 220px auto 5rem;
+  margin: 320px auto 5rem;
   display: flex;
   justify-content: center;
 }
@@ -99,8 +99,10 @@
 }
 
 .card.featured {
-  background: rgba(255, 255, 255, 0.04);
+  background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 40%, rgba(255,255,255,0.05) 100%);
   border-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
 }
 
 .card.featured::after {
@@ -138,6 +140,40 @@
   letter-spacing: 0.02em;
 }
 
+.cardWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.recommendedBadge {
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: fit-content;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 5px 16px;
+  border-radius: 100px;
+  line-height: 1;
+  z-index: 10;
+  white-space: nowrap;
+  background: linear-gradient(to right, #c084fc, #f472b6, #38bdf8, #c084fc);
+  background-size: 200% auto;
+  color: #fff;
+  animation: badgeShimmer 3s linear infinite;
+  box-shadow: 0 2px 12px rgba(192, 132, 252, 0.4), 0 0 20px rgba(244, 114, 182, 0.2);
+}
+
+@keyframes badgeShimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
 /* ─── Price Block ───────────────────────────────────────── */
 .priceBlock {
   margin-bottom: 1.5rem;
@@ -150,6 +186,10 @@
   letter-spacing: -0.04em;
   line-height: 1;
   color: #fff;
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
 }
 
 .pricePeriod {
@@ -248,7 +288,6 @@
 
 .ctaPrimary:hover {
   background: rgba(255, 255, 255, 0.88);
-  transform: translateY(-1px);
   box-shadow: 0 8px 30px rgba(255, 255, 255, 0.12);
 }
 
@@ -261,90 +300,169 @@
 .ctaSecondary:hover {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
 }
 
 /* ─── Toggle & Bottom Section ───────────────────────────── */
 .bottomSection {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  width: 100%;
-  margin-top: 3.5rem;
-  align-items: center;
-}
-
-.toggleContainer {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  justify-content: flex-start;
-}
-
-.toggle {
-  position: relative;
-  width: 44px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 100px;
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0;
-  transition: background 0.3s ease;
-}
-
-.toggleActive {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.toggleKnob {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 18px;
-  height: 18px;
-  background: #fff;
-  border-radius: 50%;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.toggleActive .toggleKnob {
-  transform: translateX(20px);
-}
-
-.toggleLabel {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.4);
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.plansPillContainer {
   display: flex;
   justify-content: center;
-  align-items: center;
+  width: 100%;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
-.plansPill {
+.billingToggle {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  padding: 4px;
+  gap: 0;
+}
+
+.billingOption {
+  padding: 8px 24px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-sans, "Inter", sans-serif);
+}
+
+.billingOptionActive {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.billingOption:hover:not(.billingOptionActive) {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ─── Comparison Table ──────────────────────────────────── */
+.comparisonSection {
+  padding: 2rem 1.5rem 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.comparisonContainer {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.comparisonTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 2.5rem;
+  font-family: var(--font-display);
+  text-align: center;
+}
+
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+.comparisonRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.comparisonRow:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.comparisonAlt {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.comparisonAlt:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.comparisonHeader {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1.25rem;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.comparisonHeader:hover {
+  background: transparent;
+}
+
+.comparisonFeature {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.comparisonPlan {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.comparisonValue {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  font-weight: 500;
+}
+
+.comparisonCategory {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 1.5rem 1.5rem 0.75rem;
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+
+.checkIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 20px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: 100px;
-  user-select: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 
-.plansPill:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.15);
+.crossIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.65rem;
+  font-weight: 700;
 }
 
 /* ─── FAQ Section ───────────────────────────────────────── */
@@ -555,6 +673,25 @@
 
   .price {
     font-size: 2.6rem;
+  }
+
+  .comparisonRow {
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .comparisonFeature {
+    font-size: 0.8rem;
+  }
+
+  .comparisonValue {
+    font-size: 0.75rem;
+  }
+
+  .comparisonCategory {
+    font-size: 0.85rem;
+    padding: 1.25rem 1rem 0.5rem;
   }
 
   .faqSection {
