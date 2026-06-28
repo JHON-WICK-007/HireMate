@@ -88,7 +88,7 @@ export default function ContactPage() {
             }));
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
 
     return () => window.removeEventListener("scroll", handleScroll);
@@ -197,7 +197,7 @@ export default function ContactPage() {
             <motion.div className={styles.formCard} variants={fadeInUp}>
               <form onSubmit={handleSubmit} className={styles.form}>
                 <h2 className={styles.formTitle}>Send us a message</h2>
-                
+
                 <div className={styles.formGroup}>
                   <label htmlFor="name" className={styles.label}>Full Name *</label>
                   <input
@@ -389,8 +389,8 @@ export default function ContactPage() {
 
                 <div className={homeStyles.welcomeActions}>
                   {/* Primary Button */}
-                  <button 
-                    className={homeStyles.welcomeButton} 
+                  <button
+                    className={homeStyles.welcomeButton}
                     onClick={() => { setShowSuccessModal(false); router.push("/"); }}
                     style={{ transform: 'none' }}
                     onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; }}
