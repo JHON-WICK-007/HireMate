@@ -129,6 +129,8 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
     const y = e.clientY - rect.top;
     setEdgeProximity(getEdgeProximity(card, x, y));
     setCursorAngle(getCursorAngle(card, x, y));
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
   }, [getEdgeProximity, getCursorAngle]);
 
   useEffect(() => {
@@ -207,6 +209,23 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
         }}
       />
 
+      {/* inner glow spotlight that follows the cursor inside the card */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute rounded-[inherit] overflow-hidden"
+        style={{
+          inset: `${bw}px`,
+          borderRadius: `max(0px, ${borderRadius}px - ${bw}px)`,
+          opacity: isHovered ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+          background: `radial-gradient(180px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), ${
+            colors[0]?.startsWith('#') && colors[0].length === 7 ? `${colors[0]}12` : 'rgba(168, 85, 247, 0.08)'
+          } 0%, ${
+            colors[1]?.startsWith('#') && colors[1].length === 7 ? `${colors[1]}05` : 'rgba(244, 114, 182, 0.03)'
+          } 50%, transparent 100%)`,
+        }}
+      />
+
       {/* outer glow — wider single arc */}
       <span
         aria-hidden
@@ -242,7 +261,7 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
         />
       )}
 
-      <div className="relative z-[1] flex flex-col overflow-auto">
+      <div className="relative z-[1] flex flex-col flex-1 h-full overflow-auto">
         {children}
       </div>
     </div>

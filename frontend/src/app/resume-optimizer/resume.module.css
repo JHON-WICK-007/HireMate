@@ -2307,7 +2307,9 @@
 
 .faqLink:hover {
   opacity: 0.85;
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: var(--domain-resume);
+  text-decoration-thickness: 1px;
 }
 
 @keyframes textShimmer {

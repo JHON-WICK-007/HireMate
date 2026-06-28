@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import HomeBackdrop from "../components/HomeBackdrop";
 import BorderGlow from "../components/BorderGlow";
 import ShinyText from "../components/ShinyText";
+import { motion, AnimatePresence } from "framer-motion";
 
 const faqItems = [
   {
@@ -103,6 +104,21 @@ const plans = [
   },
 ];
 
+const priceVariants = {
+  enter: (direction: "up" | "down") => ({
+    y: direction === "up" ? 24 : -24,
+    opacity: 0
+  }),
+  center: {
+    y: 0,
+    opacity: 1
+  },
+  exit: (direction: "up" | "down") => ({
+    y: direction === "up" ? -24 : 24,
+    opacity: 0
+  })
+};
+
 export default function PricingPage() {
   const [yearly, setYearly] = useState(false);
   const [expandedFaqId, setExpandedFaqId] = useState<number | null>(null);
@@ -132,16 +148,32 @@ export default function PricingPage() {
             <div className={styles.bottomSection}>
               <div className={styles.billingToggle}>
                 <button
+                  type="button"
                   className={`${styles.billingOption} ${!yearly ? styles.billingOptionActive : ""}`}
                   onClick={() => setYearly(false)}
                 >
-                  Monthly
+                  {!yearly && (
+                    <motion.div
+                      layoutId="activeBillingPill"
+                      className={styles.activeBillingBg}
+                      transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                    />
+                  )}
+                  <span style={{ position: "relative", zIndex: 2 }}>Monthly</span>
                 </button>
                 <button
+                  type="button"
                   className={`${styles.billingOption} ${yearly ? styles.billingOptionActive : ""}`}
                   onClick={() => setYearly(true)}
                 >
-                  Yearly
+                  {yearly && (
+                    <motion.div
+                      layoutId="activeBillingPill"
+                      className={styles.activeBillingBg}
+                      transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                    />
+                  )}
+                  <span style={{ position: "relative", zIndex: 2 }}>Yearly</span>
                 </button>
               </div>
             </div>
@@ -154,33 +186,65 @@ export default function PricingPage() {
                       <span className={styles.planLabel}>{plan.name} Plan</span>
                     </div>
 
-                    <div className={styles.priceBlock}>
-                      {plan.monthlyPrice === 0 ? (
-                        <span className={styles.price}>Free</span>
-                      ) : (
-                        <span className={styles.price}>
-                          ₹{yearly ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice}
-                          <span className={styles.pricePeriod}>/m</span>
-                        </span>
-                      )}
-                    </div>
+                     <div className={styles.priceBlock}>
+                       {plan.monthlyPrice === 0 ? (
+                         <span className={styles.price}>Free</span>
+                       ) : (
+                         <span className={styles.price} style={{ display: "inline-flex", alignItems: "baseline" }}>
+                           <span>₹</span>
+                           {String(yearly ? Math.round(plan.yearlyPrice / 12) : plan.monthlyPrice).split("").map((digit, charIdx) => (
+                             <span key={charIdx} style={{ display: "inline-block", overflow: "hidden", position: "relative", verticalAlign: "baseline", width: "0.58em", textAlign: "center" }}>
+                               <AnimatePresence mode="popLayout" custom={yearly ? "down" : "up"}>
+                                 <motion.span
+                                   key={digit}
+                                   custom={yearly ? "down" : "up"}
+                                   variants={priceVariants}
+                                   initial="enter"
+                                   animate="center"
+                                   exit="exit"
+                                   transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                                   style={{ display: "block", width: "100%", textAlign: "center" }}
+                                 >
+                                   {digit}
+                                 </motion.span>
+                               </AnimatePresence>
+                             </span>
+                           ))}
+                           <span className={styles.pricePeriod}>/m</span>
+                         </span>
+                       )}
+                     </div>
 
                     <div className={styles.divider} />
 
                     <ul className={styles.features}>
-                      {plan.features.map((feature, i) => (
-                        <li key={i} className={styles.feature} style={{ animationDelay: `${idx * 0.12 + i * 0.05}s` }}>
-                          <span className={styles.featureCheck}>
-                            <CheckIcon />
-                          </span>
-                          <span>{feature}</span>
-                        </li>
-                      ))}
+                      {plan.features.map((feature, i) => {
+                        let checkClass = styles.featureCheck;
+                        if (plan.name === "Professional") {
+                          checkClass = `${styles.featureCheck} ${styles.featureCheckProfessional}`;
+                        } else if (plan.name === "Enterprise") {
+                          checkClass = `${styles.featureCheck} ${styles.featureCheckEnterprise}`;
+                        }
+                        return (
+                          <li key={i} className={styles.feature} style={{ animationDelay: `${idx * 0.12 + i * 0.05}s` }}>
+                            <span className={checkClass}>
+                              <CheckIcon />
+                            </span>
+                            <span>{feature}</span>
+                          </li>
+                        );
+                      })}
                     </ul>
 
                     <Link
                       href={plan.name === "Enterprise" ? "/contact" : "/auth?mode=signup"}
-                      className={`${styles.cta} ${plan.featured ? styles.ctaPrimary : styles.ctaSecondary}`}
+                      className={`${styles.cta} ${
+                        plan.featured
+                          ? styles.ctaPrimary
+                          : plan.name === "Enterprise"
+                          ? styles.ctaEnterprise
+                          : styles.ctaSecondary
+                      }`}
                     >
                       {plan.cta}
                     </Link>
@@ -194,8 +258,8 @@ export default function PricingPage() {
                       <BorderGlow
                         edgeSensitivity={30}
                         glowColor="40 80 80"
-                        backgroundColor="rgba(255, 255, 255, 0.04)"
-                        fillColor="#0c0c14"
+                        backgroundColor="rgba(255, 255, 255, 0.02)"
+                        fillColor="var(--surface-50)"
                         borderRadius={24}
                         glowRadius={40}
                         glowIntensity={1}
@@ -203,7 +267,31 @@ export default function PricingPage() {
                         animated={true}
                         glass={true}
                         colors={['#c084fc', '#f472b6', '#38bdf8']}
-                        className={`${styles.card} ${styles.featured}`}
+                        className={styles.card}
+                      >
+                        {cardContent}
+                      </BorderGlow>
+                    </div>
+                  );
+                }
+
+                if (plan.name === "Enterprise") {
+                  return (
+                    <div key={plan.name} className={styles.cardWrapper}>
+                      <span className={styles.enterpriseBadge}>Enterprise</span>
+                      <BorderGlow
+                        edgeSensitivity={30}
+                        glowColor="24 95 55"
+                        backgroundColor="rgba(255, 255, 255, 0.02)"
+                        fillColor="var(--surface-50)"
+                        borderRadius={24}
+                        glowRadius={40}
+                        glowIntensity={1}
+                        coneSpread={25}
+                        animated={true}
+                        glass={true}
+                        colors={['#fbbf24', '#f97316', '#ea580c', '#e11d48']}
+                        className={styles.card}
                       >
                         {cardContent}
                       </BorderGlow>
