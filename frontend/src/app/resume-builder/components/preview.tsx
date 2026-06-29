@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useResumeStore } from "../store";
 import styles from "../builder.module.css";
-import { LayoutTemplate, X, Check, ZoomIn } from "lucide-react";
+import { LayoutTemplate, X, Check, ZoomIn, Plus, Minus, Maximize } from "lucide-react";
 import { useToast } from "../../components/Toast";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -3047,6 +3047,7 @@ export const LivePreviewPanel: React.FC = () => {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [zoomScale, setZoomScale] = useState(0.85);
   const [tempTemplateId, setTempTemplateId] = useState(selectedTemplateId);
   const [tempColor, setTempColor] = useState(selectedColor);
 
@@ -3061,14 +3062,14 @@ export const LivePreviewPanel: React.FC = () => {
             </div>
           </div>
 
-          {/* Zoom button on downright blur bg */}
+          {/* Zoom button on downright glass blur bg */}
           <button
             type="button"
-            className="absolute bottom-3 right-3 p-2.5 rounded-full bg-black/45 hover:bg-black/65 backdrop-blur-md border border-white/10 text-white cursor-pointer transition-all active:scale-95 z-10 shadow-lg flex items-center justify-center"
+            className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-[#18181b]/60 hover:bg-[#18181b]/80 backdrop-blur-md text-white border border-white/10 shadow-lg flex items-center justify-center cursor-pointer transition-all active:scale-95 z-10"
             onClick={() => setIsZoomOpen(true)}
             aria-label="Zoom Preview"
           >
-            <ZoomIn size={16} />
+            <ZoomIn size={20} strokeWidth={2.5} />
           </button>
         </div>
 
@@ -3170,36 +3171,113 @@ export const LivePreviewPanel: React.FC = () => {
         </div>
       )}
 
-      {/* Glassmorphic Full Resolution Zoom Modal */}
+      {/* Full-screen high-res preview modal matching user reference design */}
       <AnimatePresence>
         {isZoomOpen && (
-          <div className="fixed inset-0 bg-black/85 z-[99999] flex items-center justify-center backdrop-blur-xl p-4 animate-fadeIn">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative max-w-4xl w-full h-[90vh] bg-[#0c0c0e]/95 border border-[#27272a] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-white"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[#27272a] bg-black/40">
-                <h3 className="font-display font-bold text-lg text-white">Resume High-Resolution Preview</h3>
+          <div className="fixed inset-0 bg-white/20 backdrop-blur-lg z-[99999] flex flex-col animate-fadeIn select-none">
+            {/* Top black header bar */}
+            <div className="w-full h-14 bg-black border-b border-[#27272a] px-6 flex items-center justify-between">
+              <div className="text-sm font-sans font-medium text-gray-400">
+                Preview Mode
+              </div>
+              <div className="flex items-center gap-4">
                 <button
                   type="button"
-                  className="text-gray-400 hover:text-white transition-colors cursor-pointer p-1.5 rounded-lg hover:bg-white/5 active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300 hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
+                  onClick={() => {
+                    setIsZoomOpen(false);
+                    setIsModalOpen(true);
+                  }}
+                >
+                  <LayoutTemplate size={14} />
+                  Change template
+                </button>
+                <div className="w-px h-6 bg-[#27272a]" />
+                <button
+                  type="button"
+                  className="text-gray-400 hover:text-white transition-colors cursor-pointer p-1 rounded-md hover:bg-white/5 active:scale-95"
                   onClick={() => setIsZoomOpen(false)}
                   aria-label="Close Preview"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
+            </div>
 
-              {/* Scrollable Document Container */}
-              <div className="flex-1 overflow-y-auto p-8 flex justify-center items-start bg-[#0e0e11]">
-                <div className="bg-white shadow-2xl rounded-sm overflow-hidden" style={{ width: "794px", minHeight: "1123px", color: "#000000" }}>
-                  <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
+            {/* Document Viewport Wrapper with Slate Background */}
+            <div className="flex-1 overflow-auto p-12 flex justify-center items-start bg-[#a3a6b5] relative">
+              {/* Document Container scaled dynamically */}
+              <div
+                className="bg-white shadow-2xl rounded-sm overflow-hidden"
+                style={{
+                  width: "794px",
+                  minHeight: "1123px",
+                  color: "#000000",
+                  zoom: zoomScale,
+                  margin: "0 auto"
+                }}
+              >
+                <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
+              </div>
+
+              {/* Floating Zoom Controls Widget on the right */}
+              <div className="fixed right-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-30 select-none">
+                {/* Fit / Reset button */}
+                <button
+                  type="button"
+                  onClick={() => setZoomScale(0.85)}
+                  className="w-10 h-10 bg-white border border-gray-200 shadow-xl rounded-lg text-gray-700 hover:text-black hover:bg-gray-50 hover:border-gray-300 active:scale-90 flex items-center justify-center cursor-pointer transition-all"
+                  title="Fit to Screen"
+                >
+                  <Maximize size={16} />
+                </button>
+
+                {/* Vertical Range Bar */}
+                <div className="w-10 bg-white border border-gray-200 shadow-xl rounded-lg flex flex-col items-center py-4 gap-3">
+                  {/* Plus */}
+                  <button
+                    type="button"
+                    onClick={() => setZoomScale((prev) => Math.min(1.8, prev + 0.1))}
+                    className="w-8 h-8 text-gray-700 hover:text-black hover:bg-gray-50 rounded-md active:scale-75 flex items-center justify-center cursor-pointer transition-all"
+                    title="Zoom In"
+                  >
+                    <Plus size={16} />
+                  </button>
+
+                  {/* Slider Input */}
+                  <div className="h-40 flex items-center justify-center">
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="1.8"
+                      step="0.05"
+                      value={zoomScale}
+                      onChange={(e) => setZoomScale(parseFloat(e.target.value))}
+                      style={{
+                        writingMode: "vertical-lr",
+                        direction: "rtl",
+                        WebkitAppearance: "slider-vertical",
+                        width: "4px",
+                        height: "100%",
+                        cursor: "pointer",
+                        accentColor: "#000000",
+                        background: "#e2e8f0"
+                      }}
+                    />
+                  </div>
+
+                  {/* Minus */}
+                  <button
+                    type="button"
+                    onClick={() => setZoomScale((prev) => Math.max(0.5, prev - 0.1))}
+                    className="w-8 h-8 text-gray-700 hover:text-black hover:bg-gray-50 rounded-md active:scale-75 flex items-center justify-center cursor-pointer transition-all"
+                    title="Zoom Out"
+                  >
+                    <Minus size={16} />
+                  </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
       </AnimatePresence>
