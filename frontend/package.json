@@ -13,11 +13,13 @@
     "docx": "^9.7.1",
     "file-saver": "^2.0.5",
     "framer-motion": "^12.40.0",
+    "html2canvas": "npm:html2canvas-pro@^2.2.1",
     "html2pdf.js": "^0.14.0",
     "lucide-react": "^1.21.0",
     "next": "16.2.7",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@21st-dev/cli": "^0.0.29",

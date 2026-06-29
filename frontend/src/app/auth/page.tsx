@@ -63,13 +63,19 @@ export default function AuthPage() {
     setParticles(generated);
   }, []);
 
+  const [redirectPath, setRedirectPath] = useState("/");
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const mode = params.get("mode");
+    const redirect = params.get("redirect");
     if (mode === "signup") {
       setIsLogin(false);
     } else if (mode === "signin") {
       setIsLogin(true);
+    }
+    if (redirect) {
+      setRedirectPath(redirect);
     }
   }, []);
 
@@ -166,14 +172,14 @@ export default function AuthPage() {
         // Redirect to homepage after 1.5s
         setTimeout(() => {
           window.scrollTo({ top: 0, behavior: "instant" });
-          router.push("/");
+          router.push(redirectPath);
         }, 1500);
       } else {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("showWelcomeModal", "true");
         window.scrollTo({ top: 0, behavior: "instant" });
-        router.push("/");
+        router.push(redirectPath);
       }
     } catch (err) {
       toast.error("Unable to connect to server. Please try again.");

@@ -4,6 +4,7 @@ import { PDFParse } from "pdf-parse";
 import mammoth from "mammoth";
 import { GoogleGenAI } from "@google/genai";
 import { protect } from "../middleware/auth";
+import { generatePDF } from "../utils/pdf";
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -129,6 +130,30 @@ ${extractedText.substring(0, 15000)}
     } else {
       res.status(500).json({ success: false, message: "An error occurred during resume analysis. Please try again." });
     }
+  }
+});
+
+router.post("/download", protect, async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { html } = req.body;
+    if (!html) {
+      res.status(400).json({ success: false, message: "No HTML content provided." });
+      return;
+    }
+
+    console.log("Generating A4 PDF from HTML payload...");
+    const pdfBuffer = await generatePDF(html);
+
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment; filename=resume.pdf",
+      "Content-Length": pdfBuffer.length.toString(),
+    });
+
+    res.status(200).send(pdfBuffer);
+  } catch (error: any) {
+    console.error("PDF generation error:", error);
+    res.status(500).json({ success: false, message: "An error occurred during PDF generation." });
   }
 });
 

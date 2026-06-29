@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HireMate — Premium Resume Template</title>
+
+    <!-- Google Fonts: Playfair Display (display) + Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        /* =====================================================
+       HIREMATE — PREMIUM RESUME TEMPLATE
+       Designer: HireMate AI
+       Architecture: Single-column, ATS-safe, print-ready
+       Signature: Copper hairline rule system
+    ===================================================== */
+
+        /* --- TOKENS ---------------------------------------- */
+        :root {
+            --color-bg: #FAFAFA;
+            --color-surface: #FFFFFF;
+            --color-ink-heavy: #0D1B2A;
+            /* name, section headings */
+            --color-ink-mid: #2D3748;
+            /* job titles, strong labels */
+            --color-ink-light: #4A5568;
+            /* body copy */
+            --color-ink-muted: #718096;
+            /* dates, subtitles */
+            --color-accent: #B87333;
+            /* copper — signature rule */
+            --color-rule: #E2D9CE;
+            /* soft dividers */
+            --color-tag-bg: #F0EBE3;
+            /* skill / interest chip bg */
+
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Inter', system-ui, sans-serif;
+
+            /* type scale */
+            --size-name: 2.6rem;
+            --size-title: 0.875rem;
+            --size-section: 0.8rem;
+            --size-role: 1rem;
+            --size-body: 0.845rem;
+            --size-small: 0.78rem;
+
+            /* spacing */
+            --page-padding-x: 2.6rem;
+            --page-padding-y: 2.2rem;
+            --section-gap: 1.8rem;
+            --entry-gap: 1.2rem;
+            --inner-gap: 0.35rem;
+        }
+
+        /* --- RESET ----------------------------------------- */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- BASE ------------------------------------------ */
+        body {
+            font-family: var(--font-body);
+            font-size: var(--size-body);
+            line-height: 1.65;
+            color: var(--color-ink-light);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =====================================================
+       RESUME WRAPPER
+       Max-width locks to A4 proportions (794px wide).
+       Centered in browser; becomes full-width on print.
+    ===================================================== */
+        .resume {
+            max-width: 794px;
+            margin: 2.5rem auto 4rem;
+            background: var(--color-surface);
+            padding: var(--page-padding-y) var(--page-padding-x);
+            box-shadow: 0 4px 40px rgba(13, 27, 42, 0.10), 0 1px 8px rgba(13, 27, 42, 0.06);
+        }
+
+        /* =====================================================
+       HEADER — Two-column: identity left / contact right
+    ===================================================== */
+        .resume-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: end;
+            gap: 1.2rem;
+            padding-bottom: 1.15rem;
+            /* Copper accent line below header — the signature element */
+            border-bottom: 2.5px solid var(--color-accent);
+            margin-bottom: var(--section-gap);
+        }
+
+        .header-identity {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        /* Candidate name — Playfair Display, dominant */
+        .resume-name {
+            font-family: var(--font-display);
+            font-size: var(--size-name);
+            font-weight: 700;
+            color: var(--color-ink-heavy);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        /* Professional title beneath name */
+        .resume-title {
+            font-size: var(--size-title);
+            font-weight: 500;
+            color: var(--color-accent);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        /* Tagline / one-liner pitch (optional) */
+        .resume-tagline {
+            font-size: var(--size-small);
+            font-style: italic;
+            font-family: var(--font-display);
+            color: var(--color-ink-muted);
+            margin-top: 0.1rem;
+        }
+
+        /* Contact block — right-aligned */
+        .header-contact {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.22rem;
+        }
+
+        .contact-item {
+            font-size: var(--size-small);
+            color: var(--color-ink-muted);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* Small inline icon-like label */
+        .contact-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-ink-heavy);
+            opacity: 0.45;
+        }
+
+        /* =====================================================
+       SECTION — base component
+    ===================================================== */
+        .resume-section {
+            margin-bottom: var(--section-gap);
+        }
+
+        /* Last section gets no bottom margin */
+        .resume-section:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Section heading — copper left-border signature */
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: var(--size-section);
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--color-ink-heavy);
+            margin-bottom: 0.85rem;
+        }
+
+        /* Copper left bar */
+        .section-heading::before {
+            content: '';
+            display: block;
+            width: 3px;
+            height: 0.85em;
+            background: var(--color-accent);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        /* Hairline rule extending from heading to right edge */
+        .section-heading::after {
+            content: '';
+            display: block;
+            flex: 1;
+            height: 1px;
+            background: var(--color-rule);
+        }
+
+        /* =====================================================
+       PROFESSIONAL SUMMARY
+    ===================================================== */
+        .summary-text {
+            font-size: var(--size-body);
+            line-height: 1.75;
+            color: var(--color-ink-light);
+            max-width: 72ch;
+        }
+
+        /* =====================================================
+       EXPERIENCE & PROJECTS — entry card
+    ===================================================== */
+        .entry-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--entry-gap);
+        }
+
+        .entry {
+            display: grid;
+            /* Left gutter for date, rest for content */
+            grid-template-columns: 8rem 1fr;
+            gap: 0 1.1rem;
+        }
+
+        /* Date column */
+        .entry-date {
+            font-size: var(--size-small);
+            color: var(--color-ink-muted);
+            font-weight: 400;
+            padding-top: 0.18rem;
+            /* optically aligns with role title */
+            line-height: 1.5;
+            text-align: right;
+        }
+
+        .entry-date .date-current {
+            display: inline-block;
+            font-weight: 600;
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+        }
+
+        /* Content column */
+        .entry-content {
+            border-left: 1.5px solid var(--color-rule);
+            padding-left: 1rem;
+        }
+
+        .entry-role {
+            font-size: var(--size-role);
+            font-weight: 600;
+            color: var(--color-ink-mid);
+            line-height: 1.25;
+        }
+
+        .entry-company {
+            font-size: var(--size-small);
+            font-weight: 500;
+            color: var(--color-ink-muted);
+            margin-top: 0.12rem;
+        }
+
+        /* Inline location badge */
+        .entry-location {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--color-ink-muted);
+            letter-spacing: 0.04em;
+        }
+
+        .entry-divider {
+            display: inline-block;
+            margin: 0 0.3rem;
+            color: var(--color-rule);
+        }
+
+        .entry-description {
+            margin-top: 0.4rem;
+            font-size: var(--size-body);
+            line-height: 1.7;
+            color: var(--color-ink-light);
+        }
+
+        /* Bullet list inside an entry */
+        .entry-bullets {
+            margin-top: 0.45rem;
+            padding-left: 1.1rem;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .entry-bullets li {
+            font-size: var(--size-body);
+            line-height: 1.65;
+            color: var(--color-ink-light);
+            position: relative;
+        }
+
+        /* Custom copper bullet */
+        .entry-bullets li::before {
+            content: '▸';
+            position: absolute;
+            left: -1.1rem;
+            color: var(--color-accent);
+            font-size: 0.7rem;
+            top: 0.18em;
+        }
+
+        /* Tech / stack tags within an entry */
+        .entry-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-top: 0.5rem;
+        }
+
+        .entry-tag {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            color: var(--color-ink-mid);
+            background: var(--color-tag-bg);
+            border: 1px solid var(--color-rule);
+            border-radius: 3px;
+            padding: 0.15rem 0.5rem;
+        }
+
+        /* =====================================================
+       EDUCATION
+    ===================================================== */
+        /* Reuses .entry layout — no changes needed */
+
+        /* =====================================================
+       SKILLS — compact tag cloud with category labels
+    ===================================================== */
+        .skills-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .skill-category {
+            display: grid;
+            grid-template-columns: 9rem 1fr;
+            gap: 0 0.8rem;
+            align-items: start;
+        }
+
+        .skill-category-label {
+            font-size: var(--size-small);
+            font-weight: 600;
+            color: var(--color-ink-mid);
+            letter-spacing: 0.04em;
+            padding-top: 0.18rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+
+        .skill-tag {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--color-ink-mid);
+            background: var(--color-tag-bg);
+            border: 1px solid var(--color-rule);
+            border-radius: 3px;
+            padding: 0.18rem 0.55rem;
+            white-space: nowrap;
+        }
+
+        /* =====================================================
+       CERTIFICATIONS & AWARDS — compact two-column table
+    ===================================================== */
+        .cert-list,
+        .award-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .cert-item,
+        .award-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0 1rem;
+            align-items: baseline;
+        }
+
+        .cert-name,
+        .award-name {
+            font-size: var(--size-body);
+            font-weight: 500;
+            color: var(--color-ink-mid);
+        }
+
+        .cert-issuer,
+        .award-org {
+            font-size: var(--size-small);
+            color: var(--color-ink-muted);
+        }
+
+        .cert-date,
+        .award-year {
+            font-size: var(--size-small);
+            color: var(--color-ink-muted);
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        /* =====================================================
+       LANGUAGES
+    ===================================================== */
+        .lang-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem 1.6rem;
+        }
+
+        .lang-item {
+            display: flex;
+            align-items: baseline;
+            gap: 0.4rem;
+        }
+
+        .lang-name {
+            font-size: var(--size-body);
+            font-weight: 500;
+            color: var(--color-ink-mid);
+        }
+
+        .lang-level {
+            font-size: var(--size-small);
+            color: var(--color-ink-muted);
+            font-style: italic;
+        }
+
+        /* =====================================================
+       INTERESTS — inline list
+    ===================================================== */
+        .interests-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+
+        .interest-item {
+            font-size: 0.75rem;
+            color: var(--color-ink-light);
+            background: var(--color-tag-bg);
+            border: 1px solid var(--color-rule);
+            border-radius: 20px;
+            /* pill shape for interests */
+            padding: 0.2rem 0.7rem;
+        }
+
+        /* =====================================================
+       REFERENCES
+    ===================================================== */
+        .references-note {
+            font-size: var(--size-body);
+            font-style: italic;
+            color: var(--color-ink-muted);
+        }
+
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .ref-card {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--color-rule);
+            border-left: 3px solid var(--color-accent);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .ref-name {
+            font-size: var(--size-body);
+            font-weight: 600;
+            color: var(--color-ink-mid);
+        }
+
+        .ref-role {
+            font-size: var(--size-small);
+            color: var(--color-ink-muted);
+            margin-top: 0.1rem;
+        }
+
+        .ref-contact {
+            font-size: var(--size-small);
+            color: var(--color-ink-light);
+            margin-top: 0.3rem;
+        }
+
+        /* =====================================================
+       TWO-COLUMN LAYOUT (for certs + languages side-by-side)
+       Use .two-col wrapper around two .resume-section blocks
+    ===================================================== */
+        .two-col-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 2.5rem;
+            margin-bottom: var(--section-gap);
+        }
+
+        .two-col-sections .resume-section {
+            margin-bottom: 0;
+        }
+
+        /* =====================================================
+       UTILITY
+    ===================================================== */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        /* =====================================================
+       PRINT STYLES — A4, no shadows, natural page breaks
+    ===================================================== */
+        @media print {
+            body {
+                background: #fff;
+                font-size: 9.5pt;
+            }
+
+            .resume {
+                max-width: none;
+                margin: 0;
+                padding: 15mm 18mm;
+                box-shadow: none;
+            }
+
+            /* Prevent orphaned headings / entries */
+            .resume-section,
+            .entry {
+                break-inside: avoid;
+            }
+
+            /* Copper accent prints only if CSS colors are enabled */
+            .section-heading::before,
+            .resume-header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+                /* We control margin via .resume padding */
+            }
+        }
+
+        /* =====================================================
+       RESPONSIVE — narrow screens
+    ===================================================== */
+        @media (max-width: 660px) {
+            :root {
+                --page-padding-x: 1.2rem;
+                --page-padding-y: 1.4rem;
+                --size-name: 2rem;
+            }
+
+            .resume {
+                margin: 0;
+                box-shadow: none;
+            }
+
+            .resume-header {
+                grid-template-columns: 1fr;
+            }
+
+            .header-contact {
+                align-items: flex-start;
+            }
+
+            .entry {
+                grid-template-columns: 1fr;
+            }
+
+            .entry-date {
+                text-align: left;
+                padding-top: 0;
+                margin-bottom: 0.2rem;
+            }
+
+            .entry-content {
+                border-left: none;
+                padding-left: 0;
+            }
+
+            .skill-category {
+                grid-template-columns: 1fr;
+            }
+
+            .two-col-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .two-col-sections .resume-section {
+                margin-bottom: var(--section-gap);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--
+    =====================================================
+    RESUME DOCUMENT
+    All sections below are self-contained and removable.
+    To remove a section: delete the entire <section> block.
+    The layout will reflow cleanly.
+    =====================================================
+  -->
+    <article class="resume" role="main" aria-label="Resume">
+
+        <!-- ===================================================
+         HEADER
+    =================================================== -->
+        <header class="resume-header">
+
+            <!-- Left: Identity -->
+            <div class="header-identity">
+                <h1 class="resume-name">Alexandra Chen</h1>
+                <p class="resume-title">Principal Software Engineer &amp; Technical Lead</p>
+                <p class="resume-tagline">Building systems at scale — from 0 to 200 million users</p>
+            </div>
+
+            <!-- Right: Contact -->
+            <address class="header-contact" aria-label="Contact information">
+                <span class="contact-item">
+                    <span class="contact-label">Email</span>
+                    alexandra.chen@email.com
+                </span>
+                <span class="contact-item">
+                    <span class="contact-label">Phone</span>
+                    +1 (415) 892-3041
+                </span>
+                <span class="contact-item">
+                    <span class="contact-label">Location</span>
+                    San Francisco, CA
+                </span>
+                <span class="contact-item">
+                    <span class="contact-label">LinkedIn</span>
+                    linkedin.com/in/alexchen
+                </span>
+                <span class="contact-item">
+                    <span class="contact-label">GitHub</span>
+                    github.com/alexchen-dev
+                </span>
+                <span class="contact-item">
+                    <span class="contact-label">Portfolio</span>
+                    alexchen.io
+                </span>
+            </address>
+
+        </header>
+
+        <!-- ===================================================
+         PROFESSIONAL SUMMARY
+    =================================================== -->
+        <section class="resume-section" aria-labelledby="summary-heading">
+            <h2 class="section-heading" id="summary-heading">Professional Summary</h2>
+            <p class="summary-text">
+                Principal Engineer with 11 years of experience designing distributed systems and leading
+                cross-functional teams at Google, Stripe, and Series-B startups. Specialize in high-throughput backend
+                architecture, platform reliability, and translating ambiguous product vision into precise technical
+                roadmaps. Track record of growing teams from 3 to 40 engineers and shipping products used by 200M+ users
+                across 60 countries.
+            </p>
+        </section>
+
+        <!-- ===================================================
+         EXPERIENCE
+    =================================================== -->
+        <section class="resume-section" aria-labelledby="experience-heading">
+            <h2 class="section-heading" id="experience-heading">Experience</h2>
+
+            <div class="entry-list">
+
+                <!-- Entry 1 -->
+                <article class="entry">
+                    <div class="entry-date" aria-label="Duration">
+                        <span class="date-current">Present</span><br />
+                        Jan 2021
+                    </div>
+                    <div class="entry-content">
+                        <h3 class="entry-role">Principal Software Engineer — Technical Lead</h3>
+                        <p class="entry-company">
+                            Stripe, Inc.
+                            <span class="entry-divider" aria-hidden="true">·</span>
+                            <span class="entry-location">San Francisco, CA (Hybrid)</span>
+                        </p>
+                        <ul class="entry-bullets" aria-label="Responsibilities and achievements">
+                            <li>Architected Stripe's next-generation payment routing engine, reducing transaction
+                                latency by 42% and saving $18M annually in infrastructure costs across 135 markets.</li>
+                            <li>Led a 14-engineer team through a 9-month migration from monolith to event-driven
+                                microservices, achieving 99.999% SLA with zero unplanned downtime.</li>
+                            <li>Designed the fraud detection ML pipeline processing 4.2M events/sec; elevated precision
+                                to 97.3% while reducing false-positive chargebacks by 31%.</li>
+                            <li>Established engineering-wide observability standards adopted by 8 teams, cutting
+                                mean-time-to-resolution from 47 min to 9 min.</li>
+                        </ul>
+                        <div class="entry-tags" aria-label="Technologies">
+                            <span class="entry-tag">Go</span>
+                            <span class="entry-tag">Kafka</span>
+                            <span class="entry-tag">Kubernetes</span>
+                            <span class="entry-tag">PostgreSQL</span>
+                            <span class="entry-tag">Datadog</span>
+                            <span class="entry-tag">gRPC</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Entry 2 -->
+                <article class="entry">
+                    <div class="entry-date">
+                        Dec 2020<br />
+                        Mar 2017
+                    </div>
+                    <div class="entry-content">
+                        <h3 class="entry-role">Senior Software Engineer, Infrastructure</h3>
+                        <p class="entry-company">
+                            Google LLC
+                            <span class="entry-divider" aria-hidden="true">·</span>
+                            <span class="entry-location">Mountain View, CA</span>
+                        </p>
+                        <ul class="entry-bullets">
+                            <li>Built the core scheduling layer of Google Kubernetes Engine (GKE) auto-scaler, deployed
+                                to 1.1M+ active clusters globally.</li>
+                            <li>Reduced cold-start provisioning time by 68% through a novel predictive node-pooling
+                                algorithm; patented as US 11,234,890.</li>
+                            <li>Mentored 7 L3–L5 engineers; 3 received promotions within 18 months.</li>
+                        </ul>
+                        <div class="entry-tags">
+                            <span class="entry-tag">C++</span>
+                            <span class="entry-tag">Python</span>
+                            <span class="entry-tag">Kubernetes</span>
+                            <span class="entry-tag">Spanner</span>
+                            <span class="entry-tag">Borg</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Entry 3 -->
+                <article class="entry">
+                    <div class="entry-date">
+                        Feb 2017<br />
+                        Jun 2014
+                    </div>
+                    <div class="entry-content">
+                        <h3 class="entry-role">Software Engineer, Backend</h3>
+                        <p class="entry-company">
+                            Dropbox, Inc.
+                            <span class="entry-divider" aria-hidden="true">·</span>
+                            <span class="entry-location">San Francisco, CA</span>
+                        </p>
+                        <ul class="entry-bullets">
+                            <li>Re-architected the file sync protocol (Delta Sync v2), cutting bandwidth consumption by
+                                57% for 500M users.</li>
+                            <li>Implemented end-to-end encryption for Dropbox Business at rest and in transit; passed
+                                SOC 2 Type II audit with zero findings.</li>
+                        </ul>
+                        <div class="entry-tags">
+                            <span class="entry-tag">Python</span>
+                            <span class="entry-tag">Rust</span>
+                            <span class="entry-tag">AWS S3</span>
+                            <span class="entry-tag">MySQL</span>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ===================================================
+         PROJECTS
+    =================================================== -->
+        <section class="resume-section" aria-labelledby="projects-heading">
+            <h2 class="section-heading" id="projects-heading">Notable Projects</h2>
+
+            <div class="entry-list">
+
+                <article class="entry">
+                    <div class="entry-date">2023</div>
+                    <div class="entry-content">
+                        <h3 class="entry-role">OpenFlux — Open-Source Workflow Orchestrator</h3>
+                        <p class="entry-company">Personal / Open Source · github.com/alexchen-dev/openflux</p>
+                        <p class="entry-description">
+                            A lightweight, dependency-free task orchestration engine for Python with first-class async
+                            support. Garnered 6.2k GitHub stars and 340+ forks within 6 months; adopted by 3 YC-backed
+                            startups as their core pipeline engine.
+                        </p>
+                        <div class="entry-tags">
+                            <span class="entry-tag">Python</span>
+                            <span class="entry-tag">asyncio</span>
+                            <span class="entry-tag">Redis</span>
+                            <span class="entry-tag">Docker</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="entry">
+                    <div class="entry-date">2022</div>
+                    <div class="entry-content">
+                        <h3 class="entry-role">LatencyLens — Real-Time Distributed Tracing Dashboard</h3>
+                        <p class="entry-company">Side Project · latencylens.dev</p>
+                        <p class="entry-description">
+                            Full-stack observability tool ingesting OpenTelemetry traces from microservice clusters,
+                            visualising P50/P95/P99 latency breakdown with millisecond granularity. 1,200 active users,
+                            self-hosted &amp; SaaS versions.
+                        </p>
+                        <div class="entry-tags">
+                            <span class="entry-tag">Go</span>
+                            <span class="entry-tag">OpenTelemetry</span>
+                            <span class="entry-tag">ClickHouse</span>
+                            <span class="entry-tag">React</span>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ===================================================
+         EDUCATION
+    =================================================== -->
+        <section class="resume-section" aria-labelledby="education-heading">
+            <h2 class="section-heading" id="education-heading">Education</h2>
+
+            <div class="entry-list">
+
+                <article class="entry">
+                    <div class="entry-date">2014<br />2010</div>
+                    <div class="entry-content">
+                        <h3 class="entry-role">M.S. Computer Science — Distributed Systems</h3>
+                        <p class="entry-company">Stanford University · Stanford, CA</p>
+                        <p class="entry-description">
+                            Thesis: <em>Adaptive Consistency Models for Geo-Replicated Key-Value Stores</em>. GPA 3.92 /
+                            4.0. Teaching Assistant for CS245 (Database System Principles).
+                        </p>
+                    </div>
+                </article>
+
+                <article class="entry">
+                    <div class="entry-date">2010<br />2006</div>
+                    <div class="entry-content">
+                        <h3 class="entry-role">B.S. Computer Engineering, Minor Mathematics</h3>
+                        <p class="entry-company">University of California, Berkeley · Berkeley, CA</p>
+                        <p class="entry-description">
+                            Graduated Summa Cum Laude. GPA 3.95 / 4.0. Dean's Honour List (all semesters). President,
+                            ACM Student Chapter.
+                        </p>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ===================================================
+         SKILLS
+    =================================================== -->
+        <section class="resume-section" aria-labelledby="skills-heading">
+            <h2 class="section-heading" id="skills-heading">Skills</h2>
+
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <span class="skill-category-label">Languages</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Go</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Rust</span>
+                        <span class="skill-tag">C++</span>
+                        <span class="skill-tag">TypeScript</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">Bash</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <span class="skill-category-label">Infrastructure</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Terraform</span>
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">GCP</span>
+                        <span class="skill-tag">Istio</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <span class="skill-category-label">Data &amp; ML</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">ClickHouse</span>
+                        <span class="skill-tag">Kafka</span>
+                        <span class="skill-tag">Spark</span>
+                        <span class="skill-tag">PyTorch</span>
+                        <span class="skill-tag">dbt</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <span class="skill-category-label">Practices</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">System Design</span>
+                        <span class="skill-tag">SRE &amp; SLA</span>
+                        <span class="skill-tag">Tech Leadership</span>
+                        <span class="skill-tag">Agile / Scrum</span>
+                        <span class="skill-tag">Code Review</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================
+         CERTIFICATIONS + AWARDS — side-by-side
+    =================================================== -->
+        <div class="two-col-sections">
+
+            <!-- Certifications -->
+            <section class="resume-section" aria-labelledby="certs-heading">
+                <h2 class="section-heading" id="certs-heading">Certifications</h2>
+
+                <div class="cert-list">
+                    <div class="cert-item">
+                        <div>
+                            <p class="cert-name">AWS Solutions Architect — Professional</p>
+                            <p class="cert-issuer">Amazon Web Services</p>
+                        </div>
+                        <p class="cert-date">2023</p>
+                    </div>
+                    <div class="cert-item">
+                        <div>
+                            <p class="cert-name">Certified Kubernetes Administrator (CKA)</p>
+                            <p class="cert-issuer">Cloud Native Computing Foundation</p>
+                        </div>
+                        <p class="cert-date">2022</p>
+                    </div>
+                    <div class="cert-item">
+                        <div>
+                            <p class="cert-name">Google Cloud Professional Data Engineer</p>
+                            <p class="cert-issuer">Google Cloud</p>
+                        </div>
+                        <p class="cert-date">2021</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Awards -->
+            <section class="resume-section" aria-labelledby="awards-heading">
+                <h2 class="section-heading" id="awards-heading">Awards</h2>
+
+                <div class="award-list">
+                    <div class="award-item">
+                        <div>
+                            <p class="award-name">Forbes 30 Under 30 — Enterprise Technology</p>
+                            <p class="award-org">Forbes</p>
+                        </div>
+                        <p class="award-year">2022</p>
+                    </div>
+                    <div class="award-item">
+                        <div>
+                            <p class="award-name">Outstanding Engineer Award</p>
+                            <p class="award-org">Stripe, Inc.</p>
+                        </div>
+                        <p class="award-year">2021</p>
+                    </div>
+                    <div class="award-item">
+                        <div>
+                            <p class="award-name">Best Paper — VLDB '19</p>
+                            <p class="award-org">45th Int'l Conference on VLDB</p>
+                        </div>
+                        <p class="award-year">2019</p>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- /.two-col-sections -->
+
+        <!-- ===================================================
+         LANGUAGES + INTERESTS — side-by-side
+    =================================================== -->
+        <div class="two-col-sections">
+
+            <!-- Languages -->
+            <section class="resume-section" aria-labelledby="languages-heading">
+                <h2 class="section-heading" id="languages-heading">Languages</h2>
+                <div class="lang-list">
+                    <div class="lang-item">
+                        <span class="lang-name">English</span>
+                        <span class="lang-level">Native</span>
+                    </div>
+                    <div class="lang-item">
+                        <span class="lang-name">Mandarin</span>
+                        <span class="lang-level">Native</span>
+                    </div>
+                    <div class="lang-item">
+                        <span class="lang-name">French</span>
+                        <span class="lang-level">Professional</span>
+                    </div>
+                    <div class="lang-item">
+                        <span class="lang-name">German</span>
+                        <span class="lang-level">Conversational</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interests -->
+            <section class="resume-section" aria-labelledby="interests-heading">
+                <h2 class="section-heading" id="interests-heading">Interests</h2>
+                <div class="interests-list">
+                    <span class="interest-item">Competitive Programming</span>
+                    <span class="interest-item">Open Source</span>
+                    <span class="interest-item">Technical Writing</span>
+                    <span class="interest-item">Rock Climbing</span>
+                    <span class="interest-item">Specialty Coffee</span>
+                    <span class="interest-item">Piano</span>
+                    <span class="interest-item">Astrophysics</span>
+                </div>
+            </section>
+
+        </div><!-- /.two-col-sections -->
+
+        <!-- ===================================================
+         REFERENCES (optional — remove entire section if unneeded)
+    =================================================== -->
+        <section class="resume-section" aria-labelledby="references-heading">
+            <h2 class="section-heading" id="references-heading">References</h2>
+
+            <!-- Option A: Just a note -->
+            <!-- <p class="references-note">Available upon request.</p> -->
+
+            <!-- Option B: Named references -->
+            <div class="ref-grid">
+                <div class="ref-card">
+                    <p class="ref-name">Dr. James R. Holloway</p>
+                    <p class="ref-role">VP Engineering, Stripe Inc.</p>
+                    <p class="ref-contact">james.holloway@stripe.com · +1 415 000 0001</p>
+                </div>
+                <div class="ref-card">
+                    <p class="ref-name">Dr. Priya Nair</p>
+                    <p class="ref-role">Principal Researcher, Google DeepMind</p>
+                    <p class="ref-contact">priya.nair@google.com · +1 650 000 0002</p>
+                </div>
+            </div>
+        </section>
+
+    </article><!-- /.resume -->
+
+</body>
+
+</html>
