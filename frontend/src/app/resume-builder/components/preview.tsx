@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { useResumeStore } from "../store";
 import styles from "../builder.module.css";
-import { LayoutTemplate, X, Check } from "lucide-react";
+import { LayoutTemplate, X, Check, ZoomIn } from "lucide-react";
 import { useToast } from "../../components/Toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Premium color swatches
 const COLOR_SWATCHES = [
@@ -3045,6 +3046,7 @@ export const LivePreviewPanel: React.FC = () => {
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [tempTemplateId, setTempTemplateId] = useState(selectedTemplateId);
   const [tempColor, setTempColor] = useState(selectedColor);
 
@@ -3058,6 +3060,16 @@ export const LivePreviewPanel: React.FC = () => {
               <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
             </div>
           </div>
+
+          {/* Zoom button on downright blur bg */}
+          <button
+            type="button"
+            className="absolute bottom-3 right-3 p-2.5 rounded-full bg-black/45 hover:bg-black/65 backdrop-blur-md border border-white/10 text-white cursor-pointer transition-all active:scale-95 z-10 shadow-lg flex items-center justify-center"
+            onClick={() => setIsZoomOpen(true)}
+            aria-label="Zoom Preview"
+          >
+            <ZoomIn size={16} />
+          </button>
         </div>
 
         <button
@@ -3157,6 +3169,40 @@ export const LivePreviewPanel: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Glassmorphic Full Resolution Zoom Modal */}
+      <AnimatePresence>
+        {isZoomOpen && (
+          <div className="fixed inset-0 bg-black/85 z-[99999] flex items-center justify-center backdrop-blur-xl p-4 animate-fadeIn">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative max-w-4xl w-full h-[90vh] bg-[#0c0c0e]/95 border border-[#27272a] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-white"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#27272a] bg-black/40">
+                <h3 className="font-display font-bold text-lg text-white">Resume High-Resolution Preview</h3>
+                <button
+                  type="button"
+                  className="text-gray-400 hover:text-white transition-colors cursor-pointer p-1.5 rounded-lg hover:bg-white/5 active:scale-95"
+                  onClick={() => setIsZoomOpen(false)}
+                  aria-label="Close Preview"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Scrollable Document Container */}
+              <div className="flex-1 overflow-y-auto p-8 flex justify-center items-start bg-[#0e0e11]">
+                <div className="bg-white shadow-2xl rounded-sm overflow-hidden" style={{ width: "794px", minHeight: "1123px", color: "#000000" }}>
+                  <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
