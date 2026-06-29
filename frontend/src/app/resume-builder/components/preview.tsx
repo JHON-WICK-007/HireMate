@@ -3176,30 +3176,30 @@ export const LivePreviewPanel: React.FC = () => {
         {isZoomOpen && (
           <div className="fixed inset-0 bg-white/20 backdrop-blur-lg z-[99999] flex flex-col animate-fadeIn select-none">
             {/* Top black header bar */}
-            <div className="w-full h-14 bg-black border-b border-[#27272a] px-6 flex items-center justify-between">
-              <div className="text-sm font-sans font-medium text-gray-400">
+            <div className="w-full h-9 bg-black border-b border-[#27272a] px-4 flex items-center justify-between">
+              <div className="text-xs font-sans font-medium text-gray-400">
                 Preview Mode
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300 hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold text-gray-300 hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
                   onClick={() => {
                     setIsZoomOpen(false);
                     setIsModalOpen(true);
                   }}
                 >
-                  <LayoutTemplate size={14} />
+                  <LayoutTemplate size={12} />
                   Change template
                 </button>
-                <div className="w-px h-6 bg-[#27272a]" />
+                <div className="w-px h-4 bg-[#27272a]" />
                 <button
                   type="button"
-                  className="text-gray-400 hover:text-white transition-colors cursor-pointer p-1 rounded-md hover:bg-white/5 active:scale-95"
+                  className="text-gray-400 hover:text-white transition-colors cursor-pointer p-0.5 rounded hover:bg-white/5 active:scale-95"
                   onClick={() => setIsZoomOpen(false)}
                   aria-label="Close Preview"
                 >
-                  <X size={18} />
+                  <X size={15} />
                 </button>
               </div>
             </div>
