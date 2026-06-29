@@ -149,7 +149,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   const premiumStyles = `
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
 
-    .resume-container {
+    .resume-container-t1 {
       --color-bg: #FFFFFF;
       --color-surface: #FFFFFF;
       --color-ink-heavy: #0D1B2A;
@@ -177,7 +177,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.5;
     }
 
-    .resume-container .resume {
+    .resume-container-t1 .resume {
       width: 794px;
       min-height: 1123px;
       background: var(--color-surface);
@@ -186,7 +186,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-align: left;
     }
 
-    .resume-container .resume-header {
+    .resume-container-t1 .resume-header {
       display: grid;
       grid-template-columns: 1fr auto;
       align-items: end;
@@ -196,7 +196,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 24px;
     }
 
-    .resume-container .resume-profile-pic {
+    .resume-container-t1 .resume-profile-pic {
       width: 72px;
       height: 72px;
       border-radius: 50%;
@@ -205,13 +205,13 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
-    .resume-container .header-identity {
+    .resume-container-t1 .header-identity {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
-    .resume-container .resume-name {
+    .resume-container-t1 .resume-name {
       font-family: var(--font-display);
       font-size: var(--size-name);
       font-weight: 700;
@@ -220,7 +220,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.1;
     }
 
-    .resume-container .resume-title {
+    .resume-container-t1 .resume-title {
       font-size: var(--size-title);
       font-weight: 600;
       color: var(--color-accent);
@@ -228,21 +228,21 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-transform: uppercase;
     }
 
-    .resume-container .resume-tagline {
+    .resume-container-t1 .resume-tagline {
       font-size: var(--size-small);
       font-style: italic;
       color: var(--color-ink-muted);
       margin-top: 1px;
     }
 
-    .resume-container .header-contact {
+    .resume-container-t1 .header-contact {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 3.5px;
     }
 
-    .resume-container .contact-item {
+    .resume-container-t1 .contact-item {
       font-size: var(--size-small);
       color: var(--color-ink-light);
       white-space: nowrap;
@@ -251,7 +251,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       gap: 4px;
     }
 
-    .resume-container .contact-label {
+    .resume-container-t1 .contact-label {
       font-size: 9px;
       font-weight: 700;
       letter-spacing: 0.04em;
@@ -260,11 +260,11 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       opacity: 0.45;
     }
 
-    .resume-container .resume-section {
+    .resume-container-t1 .resume-section {
       margin-bottom: 24px;
     }
 
-    .resume-container .section-heading {
+    .resume-container-t1 .section-heading {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -276,7 +276,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 12px;
     }
 
-    .resume-container .section-heading::before {
+    .resume-container-t1 .section-heading::before {
       content: '';
       display: block;
       width: 3.5px;
@@ -286,7 +286,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
-    .resume-container .section-heading::after {
+    .resume-container-t1 .section-heading::after {
       content: '';
       display: block;
       flex: 1;
@@ -294,25 +294,25 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       background: var(--color-rule);
     }
 
-    .resume-container .summary-text {
+    .resume-container-t1 .summary-text {
       font-size: var(--size-body);
       line-height: 1.6;
       color: var(--color-ink-light);
     }
 
-    .resume-container .entry-list {
+    .resume-container-t1 .entry-list {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    .resume-container .entry {
+    .resume-container-t1 .entry {
       display: grid;
       grid-template-columns: 110px 1fr;
       gap: 0 14px;
     }
 
-    .resume-container .entry-date {
+    .resume-container-t1 .entry-date {
       font-size: var(--size-small);
       color: var(--color-accent);
       font-weight: 600;
@@ -321,51 +321,51 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-align: right;
     }
 
-    .resume-container .entry-date .date-current {
+    .resume-container-t1 .entry-date .date-current {
       font-weight: 700;
       color: var(--color-accent);
       text-transform: uppercase;
       font-size: 9px;
     }
 
-    .resume-container .entry-content {
+    .resume-container-t1 .entry-content {
       border-left: 1.5px solid var(--color-rule);
       padding-left: 12px;
     }
 
-    .resume-container .entry-role {
+    .resume-container-t1 .entry-role {
       font-size: var(--size-role);
       font-weight: 600;
       color: var(--color-ink-mid);
       line-height: 1.2;
     }
 
-    .resume-container .entry-company {
+    .resume-container-t1 .entry-company {
       font-size: var(--size-small);
       font-weight: 500;
       color: var(--color-ink-muted);
       margin-top: 2px;
     }
 
-    .resume-container .entry-divider {
+    .resume-container-t1 .entry-divider {
       display: inline-block;
       margin: 0 4px;
       color: var(--color-rule);
     }
 
-    .resume-container .entry-location {
+    .resume-container-t1 .entry-location {
       font-size: 11px;
       color: var(--color-ink-muted);
     }
 
-    .resume-container .entry-description {
+    .resume-container-t1 .entry-description {
       margin-top: 4px;
       font-size: var(--size-body);
       line-height: 1.5;
       color: var(--color-ink-light);
     }
 
-    .resume-container .entry-bullets {
+    .resume-container-t1 .entry-bullets {
       margin-top: 6px;
       padding-left: 12px;
       list-style: none;
@@ -374,14 +374,14 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       gap: 3px;
     }
 
-    .resume-container .entry-bullets li {
+    .resume-container-t1 .entry-bullets li {
       font-size: var(--size-body);
       line-height: 1.5;
       color: var(--color-ink-light);
       position: relative;
     }
 
-    .resume-container .entry-bullets li::before {
+    .resume-container-t1 .entry-bullets li::before {
       content: '▸';
       position: absolute;
       left: -12px;
@@ -390,14 +390,14 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       top: 0.1em;
     }
 
-    .resume-container .entry-tags {
+    .resume-container-t1 .entry-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
       margin-top: 6px;
     }
 
-    .resume-container .entry-tag {
+    .resume-container-t1 .entry-tag {
       font-size: 9px;
       font-weight: 500;
       color: var(--color-ink-mid);
@@ -407,20 +407,20 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       padding: 2px 6px;
     }
 
-    .resume-container .skills-grid {
+    .resume-container-t1 .skills-grid {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .resume-container .skill-category {
+    .resume-container-t1 .skill-category {
       display: grid;
       grid-template-columns: 110px 1fr;
       gap: 0 14px;
       align-items: start;
     }
 
-    .resume-container .skill-category-label {
+    .resume-container-t1 .skill-category-label {
       font-size: var(--size-small);
       font-weight: 600;
       color: var(--color-accent);
@@ -429,7 +429,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-align: right;
     }
 
-    .resume-container .skill-tags {
+    .resume-container-t1 .skill-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
@@ -437,7 +437,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       padding-left: 12px;
     }
 
-    .resume-container .skill-tag {
+    .resume-container-t1 .skill-tag {
       font-size: 10.5px;
       font-weight: 500;
       color: var(--color-ink-mid);
@@ -448,25 +448,25 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       white-space: nowrap;
     }
 
-    .resume-container .cert-list {
+    .resume-container-t1 .cert-list {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
 
-    .resume-container .cert-item {
+    .resume-container-t1 .cert-item {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       font-size: var(--size-body);
     }
 
-    .resume-container .cert-name {
+    .resume-container-t1 .cert-name {
       font-weight: 500;
       color: var(--color-ink-mid);
     }
 
-    .resume-container .cert-issuer {
+    .resume-container-t1 .cert-issuer {
       font-size: var(--size-small);
       color: var(--color-ink-muted);
       margin-left: 4px;
@@ -477,7 +477,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   const blueprintStyles = `
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    .resume-container {
+    .resume-container-t2 {
       --navy:          #0F1923;
       --navy-mid:      #1C2D3E;
       --navy-soft:     #233142;
@@ -518,7 +518,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.6;
     }
 
-    .resume-container .resume {
+    .resume-container-t2 .resume {
       width: 794px;
       min-height: 1123px;
       background: var(--surface);
@@ -526,7 +526,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-align: left;
     }
 
-    .resume-container .resume-header {
+    .resume-container-t2 .resume-header {
       background: var(--navy);
       padding: 34px 34px 28px;
       display: grid;
@@ -536,7 +536,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       border-bottom: 3.5px solid var(--gold);
     }
 
-    .resume-container .resume-profile-pic {
+    .resume-container-t2 .resume-profile-pic {
       width: 72px;
       height: 72px;
       border-radius: 50%;
@@ -545,13 +545,13 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
-    .resume-container .header-identity {
+    .resume-container-t2 .header-identity {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
-    .resume-container .resume-name {
+    .resume-container-t2 .resume-name {
       font-family: var(--font-display);
       font-size: var(--size-name);
       font-weight: 700;
@@ -560,7 +560,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.05;
     }
 
-    .resume-container .resume-title {
+    .resume-container-t2 .resume-title {
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.16em;
@@ -569,28 +569,28 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-top: 2px;
     }
 
-    .resume-container .resume-tagline {
+    .resume-container-t2 .resume-tagline {
       font-size: 13px;
       font-style: italic;
       color: var(--sidebar-ink-2);
       margin-top: 4px;
     }
 
-    .resume-container .header-contact {
+    .resume-container-t2 .header-contact {
       display: grid;
       grid-template-columns: auto;
       gap: 3.5px;
       align-content: end;
     }
 
-    .resume-container .contact-item {
+    .resume-container-t2 .contact-item {
       display: flex;
       align-items: baseline;
       gap: 6px;
       white-space: nowrap;
     }
 
-    .resume-container .contact-label {
+    .resume-container-t2 .contact-label {
       font-size: 9px;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -599,35 +599,35 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       min-width: 50px;
     }
 
-    .resume-container .contact-value {
+    .resume-container-t2 .contact-value {
       font-size: var(--size-small);
       color: var(--sidebar-ink-1);
     }
 
-    .resume-container .resume-body {
+    .resume-container-t2 .resume-body {
       display: grid;
       grid-template-columns: var(--sidebar-w) 1fr;
       min-height: calc(1123px - 140px);
     }
 
-    .resume-container .resume-sidebar {
+    .resume-container-t2 .resume-sidebar {
       background: var(--navy-soft);
       padding: 28px 16px;
     }
 
-    .resume-container .sidebar-block {
+    .resume-container-t2 .sidebar-block {
       padding-bottom: 22px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
       margin-bottom: 18px;
     }
 
-    .resume-container .sidebar-block:last-child {
+    .resume-container-t2 .sidebar-block:last-child {
       border-bottom: none;
       padding-bottom: 0;
       margin-bottom: 0;
     }
 
-    .resume-container .sidebar-heading {
+    .resume-container-t2 .sidebar-heading {
       font-size: 9px;
       font-weight: 700;
       letter-spacing: 0.18em;
@@ -639,7 +639,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       gap: 6px;
     }
 
-    .resume-container .sidebar-heading::before {
+    .resume-container-t2 .sidebar-heading::before {
       content: '';
       display: block;
       width: 20px;
@@ -648,15 +648,15 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
-    .resume-container .sidebar-skill-group {
+    .resume-container-t2 .sidebar-skill-group {
       margin-bottom: 12px;
     }
 
-    .resume-container .sidebar-skill-group:last-child {
+    .resume-container-t2 .sidebar-skill-group:last-child {
       margin-bottom: 0;
     }
 
-    .resume-container .sidebar-skill-label {
+    .resume-container-t2 .sidebar-skill-label {
       font-size: 9px;
       font-weight: 600;
       letter-spacing: 0.04em;
@@ -665,13 +665,13 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 4px;
     }
 
-    .resume-container .sidebar-skill-tags {
+    .resume-container-t2 .sidebar-skill-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 3.5px;
     }
 
-    .resume-container .sidebar-tag {
+    .resume-container-t2 .sidebar-tag {
       font-size: var(--size-micro);
       color: var(--sidebar-ink-2);
       background: rgba(255,255,255,0.07);
@@ -682,38 +682,38 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       white-space: nowrap;
     }
 
-    .resume-container .sidebar-cert {
+    .resume-container-t2 .sidebar-cert {
       margin-bottom: 10px;
     }
 
-    .resume-container .sidebar-cert:last-child { margin-bottom: 0; }
+    .resume-container-t2 .sidebar-cert:last-child { margin-bottom: 0; }
 
-    .resume-container .sidebar-cert-name {
+    .resume-container-t2 .sidebar-cert-name {
       font-size: var(--size-small);
       font-weight: 500;
       color: var(--sidebar-ink-1);
       line-height: 1.3;
     }
 
-    .resume-container .sidebar-cert-meta {
+    .resume-container-t2 .sidebar-cert-meta {
       font-size: var(--size-micro);
       color: var(--sidebar-ink-3);
       margin-top: 1.5px;
     }
 
-    .resume-container .resume-content {
+    .resume-container-t2 .resume-content {
       padding: 28px 28px;
     }
 
-    .resume-container .content-section {
+    .resume-container-t2 .content-section {
       margin-bottom: 28px;
     }
 
-    .resume-container .content-section:last-child {
+    .resume-container-t2 .content-section:last-child {
       margin-bottom: 0;
     }
 
-    .resume-container .section-heading {
+    .resume-container-t2 .section-heading {
       display: flex;
       align-items: center;
       gap: 9px;
@@ -725,7 +725,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 16px;
     }
 
-    .resume-container .section-heading::before {
+    .resume-container-t2 .section-heading::before {
       content: '';
       display: block;
       width: 7px;
@@ -735,40 +735,40 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       transform: rotate(45deg);
     }
 
-    .resume-container .section-heading::after {
+    .resume-container-t2 .section-heading::after {
       content: '';
       flex: 1;
       height: 1.2px;
       background: var(--rule);
     }
 
-    .resume-container .summary-text {
+    .resume-container-t2 .summary-text {
       font-size: var(--size-body);
       line-height: 1.65;
       color: var(--ink-3);
     }
 
-    .resume-container .entry-list {
+    .resume-container-t2 .entry-list {
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
 
-    .resume-container .entry {
+    .resume-container-t2 .entry {
       display: grid;
       grid-template-columns: 8px 1fr;
       gap: 0 14px;
       position: relative;
     }
 
-    .resume-container .entry-track {
+    .resume-container-t2 .entry-track {
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
     }
 
-    .resume-container .entry-track::before {
+    .resume-container-t2 .entry-track::before {
       content: '';
       display: block;
       width: 7.5px;
@@ -781,7 +781,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       z-index: 1;
     }
 
-    .resume-container .entry-track::after {
+    .resume-container-t2 .entry-track::after {
       content: '';
       display: block;
       flex: 1;
@@ -790,18 +790,18 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-top: 4px;
     }
 
-    .resume-container .entry:last-child .entry-track::after {
+    .resume-container-t2 .entry:last-child .entry-track::after {
       display: none;
     }
 
-    .resume-container .entry-role {
+    .resume-container-t2 .entry-role {
       font-size: var(--size-role);
       font-weight: 600;
       color: var(--ink-2);
       line-height: 1.25;
     }
 
-    .resume-container .entry-meta {
+    .resume-container-t2 .entry-meta {
       display: flex;
       align-items: baseline;
       flex-wrap: wrap;
@@ -811,14 +811,14 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       color: var(--ink-4);
     }
 
-    .resume-container .entry-company { font-weight: 500; color: var(--ink-3); }
-    .resume-container .entry-date { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--ink-4); white-space: nowrap; }
+    .resume-container-t2 .entry-company { font-weight: 500; color: var(--ink-3); }
+    .resume-container-t2 .entry-date { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--ink-4); white-space: nowrap; }
 
-    .resume-container .entry-sep {
+    .resume-container-t2 .entry-sep {
       color: var(--rule);
     }
 
-    .resume-container .badge-current {
+    .resume-container-t2 .badge-current {
       font-size: 8px;
       font-weight: 700;
       letter-spacing: 0.06em;
@@ -831,7 +831,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       vertical-align: middle;
     }
 
-    .resume-container .entry-bullets {
+    .resume-container-t2 .entry-bullets {
       list-style: none;
       margin-top: 8px;
       padding-left: 0;
@@ -840,7 +840,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       gap: 4px;
     }
 
-    .resume-container .entry-bullets li {
+    .resume-container-t2 .entry-bullets li {
       font-size: var(--size-body);
       line-height: 1.55;
       color: var(--ink-3);
@@ -848,7 +848,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       position: relative;
     }
 
-    .resume-container .entry-bullets li::before {
+    .resume-container-t2 .entry-bullets li::before {
       content: '—';
       position: absolute;
       left: 0;
@@ -858,14 +858,14 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1;
     }
 
-    .resume-container .entry-tags {
+    .resume-container-t2 .entry-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 3.5px;
       margin-top: 8px;
     }
 
-    .resume-container .entry-tag {
+    .resume-container-t2 .entry-tag {
       font-family: var(--font-mono);
       font-size: 10px;
       color: var(--ink-3);
@@ -875,7 +875,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       padding: 1.5px 5.5px;
     }
 
-    .resume-container .entry-description {
+    .resume-container-t2 .entry-description {
       font-size: var(--size-body);
       line-height: 1.6;
       color: var(--ink-3);
@@ -887,7 +887,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   const editorialStyles = `
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
-    .resume-container {
+    .resume-container-t3 {
       --color-primary: #2B2D42;
       --color-secondary: #8D99AE;
       --color-accent: ${color};
@@ -904,7 +904,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.6;
     }
 
-    .resume-container .resume {
+    .resume-container-t3 .resume {
       width: 794px;
       min-height: 1123px;
       background: var(--color-surface);
@@ -916,12 +916,12 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-align: left;
     }
 
-    .resume-container .left-col {
+    .resume-container-t3 .left-col {
       border-right: 1px solid var(--color-bg);
       padding-right: 20px;
     }
 
-    .resume-container .resume-profile-pic {
+    .resume-container-t3 .resume-profile-pic {
       width: 90px;
       height: 90px;
       border-radius: 50%;
@@ -930,7 +930,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 18px;
     }
 
-    .resume-container .name-heading {
+    .resume-container-t3 .name-heading {
       font-family: var(--font-display);
       font-size: 30px;
       font-weight: 700;
@@ -939,7 +939,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       color: var(--color-primary);
     }
 
-    .resume-container .title-sub {
+    .resume-container-t3 .title-sub {
       font-size: 11px;
       font-weight: 600;
       color: var(--color-accent);
@@ -948,19 +948,19 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 20px;
     }
 
-    .resume-container .contact-list {
+    .resume-container-t3 .contact-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
       margin-bottom: 24px;
     }
 
-    .resume-container .contact-item {
+    .resume-container-t3 .contact-item {
       font-size: 12px;
       color: var(--color-text);
     }
 
-    .resume-container .contact-label {
+    .resume-container-t3 .contact-label {
       font-weight: 600;
       color: var(--color-secondary);
       font-size: 9.5px;
@@ -968,7 +968,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       display: block;
     }
 
-    .resume-container .sec-title {
+    .resume-container-t3 .sec-title {
       font-family: var(--font-display);
       font-size: 14.5px;
       font-weight: 700;
@@ -980,13 +980,13 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       letter-spacing: 0.5px;
     }
 
-    .resume-container .skill-tags {
+    .resume-container-t3 .skill-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
     }
 
-    .resume-container .tag {
+    .resume-container-t3 .tag {
       background: var(--color-bg);
       padding: 3px 7px;
       border-radius: 3px;
@@ -995,34 +995,34 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       border: 0.5px solid var(--color-secondary);
     }
 
-    .resume-container .entry {
+    .resume-container-t3 .entry {
       margin-bottom: 18px;
     }
 
-    .resume-container .entry-header {
+    .resume-container-t3 .entry-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
     }
 
-    .resume-container .role-title {
+    .resume-container-t3 .role-title {
       font-family: var(--font-display);
       font-size: 14px;
       font-weight: 700;
       color: var(--color-primary);
     }
 
-    .resume-container .meta {
+    .resume-container-t3 .meta {
       font-size: 11.5px;
       color: var(--color-secondary);
     }
 
-    .resume-container .bullets {
+    .resume-container-t3 .bullets {
       margin-top: 6px;
       padding-left: 14px;
     }
 
-    .resume-container .bullets li {
+    .resume-container-t3 .bullets li {
       font-size: 12.5px;
       margin-bottom: 3px;
       color: var(--color-text);
@@ -1033,7 +1033,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   const technicalGridStyles = `
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap');
 
-    .resume-container {
+    .resume-container-t4 {
       --color-grid: #E5E7EB;
       --color-text: #1F2937;
       --color-accent: ${color};
@@ -1046,7 +1046,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.5;
     }
 
-    .resume-container .resume {
+    .resume-container-t4 .resume {
       width: 794px;
       min-height: 1123px;
       background: #FFFFFF;
@@ -1056,7 +1056,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-align: left;
     }
 
-    .resume-container .grid-header {
+    .resume-container-t4 .grid-header {
       display: grid;
       grid-template-columns: auto 1fr;
       border-bottom: 2px solid var(--color-text);
@@ -1066,7 +1066,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       gap: 18px;
     }
 
-    .resume-container .resume-profile-pic {
+    .resume-container-t4 .resume-profile-pic {
       width: 80px;
       height: 80px;
       border: 2px solid var(--color-accent);
@@ -1074,7 +1074,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
-    .resume-container .name {
+    .resume-container-t4 .name {
       font-family: var(--font-mono);
       font-size: 32px;
       font-weight: 700;
@@ -1082,7 +1082,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       color: var(--color-text);
     }
 
-    .resume-container .contact-grid {
+    .resume-container-t4 .contact-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
@@ -1094,7 +1094,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       color: var(--color-text);
     }
 
-    .resume-container .section-title {
+    .resume-container-t4 .section-title {
       font-family: var(--font-mono);
       font-size: 12.5px;
       font-weight: 700;
@@ -1104,34 +1104,34 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       letter-spacing: 0.5px;
     }
 
-    .resume-container .grid-block {
+    .resume-container-t4 .grid-block {
       border-bottom: 1px solid var(--color-grid);
       padding-bottom: 18px;
       margin-bottom: 18px;
     }
 
-    .resume-container .job-entry {
+    .resume-container-t4 .job-entry {
       display: grid;
       grid-template-columns: 140px 1fr;
       gap: 14px;
       margin-bottom: 14px;
     }
 
-    .resume-container .job-date {
+    .resume-container-t4 .job-date {
       font-family: var(--font-mono);
       font-size: 11.5px;
       color: var(--color-accent);
       font-weight: 500;
     }
 
-    .resume-container .bullets {
+    .resume-container-t4 .bullets {
       list-style-type: square;
       padding-left: 16px;
       margin-top: 4px;
       font-size: 12.5px;
     }
 
-    .resume-container .bullets li {
+    .resume-container-t4 .bullets li {
       margin-bottom: 3px;
     }
   `;
@@ -1140,7 +1140,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   const executiveHeritageStyles = `
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
-    .resume-container {
+    .resume-container-t5 {
       --color-accent: ${color};
       --color-text: #2C3539;
       --font-display: 'Playfair Display', Georgia, serif;
@@ -1152,7 +1152,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.6;
     }
 
-    .resume-container .resume {
+    .resume-container-t5 .resume {
       width: 794px;
       min-height: 1123px;
       background: #FFFFFF;
@@ -1162,7 +1162,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-align: left;
     }
 
-    .resume-container .header-center {
+    .resume-container-t5 .header-center {
       text-align: center;
       border-bottom: 2.5px double var(--color-accent);
       padding-bottom: 18px;
@@ -1173,7 +1173,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       gap: 10px;
     }
 
-    .resume-container .resume-profile-pic {
+    .resume-container-t5 .resume-profile-pic {
       width: 90px;
       height: 90px;
       border-radius: 50%;
@@ -1182,14 +1182,14 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
-    .resume-container .name {
+    .resume-container-t5 .name {
       font-family: var(--font-display);
       font-size: 34px;
       font-weight: 700;
       color: var(--color-accent);
     }
 
-    .resume-container .tagline {
+    .resume-container-t5 .tagline {
       font-family: var(--font-display);
       font-style: italic;
       font-size: 13.5px;
@@ -1197,7 +1197,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-top: 2px;
     }
 
-    .resume-container .contact-bar {
+    .resume-container-t5 .contact-bar {
       display: flex;
       justify-content: center;
       gap: 14px;
@@ -1206,7 +1206,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       color: var(--color-text);
     }
 
-    .resume-container .sec-title {
+    .resume-container-t5 .sec-title {
       font-family: var(--font-display);
       font-size: 14.5px;
       font-weight: 700;
@@ -1218,24 +1218,24 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       letter-spacing: 1px;
     }
 
-    .resume-container .divider {
+    .resume-container-t5 .divider {
       width: 50px;
       height: 1px;
       background: var(--color-accent);
       margin: 0 auto 10px;
     }
 
-    .resume-container .experience-list {
+    .resume-container-t5 .experience-list {
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
 
-    .resume-container .exp-item {
+    .resume-container-t5 .exp-item {
       margin-bottom: 10px;
     }
 
-    .resume-container .exp-header {
+    .resume-container-t5 .exp-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -1244,27 +1244,27 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       color: var(--color-text);
     }
 
-    .resume-container .exp-role {
+    .resume-container-t5 .exp-role {
       font-family: var(--font-display);
       font-weight: 700;
       font-size: var(--size-role);
       color: var(--color-text);
     }
 
-    .resume-container .exp-date {
+    .resume-container-t5 .exp-date {
       font-size: var(--size-small);
       color: var(--color-accent);
       font-weight: 600;
       white-space: nowrap;
     }
 
-    .resume-container .exp-sub {
+    .resume-container-t5 .exp-sub {
       font-size: var(--size-small);
       color: var(--ink-muted, #6C757D);
       margin-bottom: 0.4rem;
     }
 
-    .resume-container .exp-bullets {
+    .resume-container-t5 .exp-bullets {
       list-style-type: none;
       display: flex;
       flex-direction: column;
@@ -1272,7 +1272,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       padding-left: 0;
     }
 
-    .resume-container .exp-bullets li {
+    .resume-container-t5 .exp-bullets li {
       font-size: var(--size-body, 13px);
       position: relative;
       padding-left: 0.75rem;
@@ -1280,7 +1280,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       color: var(--color-text);
     }
 
-    .resume-container .exp-bullets li::before {
+    .resume-container-t5 .exp-bullets li::before {
       content: '\\2014';
       position: absolute;
       left: 0;
@@ -1289,20 +1289,20 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       top: 0.15em;
     }
 
-    .resume-container .skills-grid {
+    .resume-container-t5 .skills-grid {
       display: flex;
       flex-direction: column;
       gap: 0.7rem;
     }
 
-    .resume-container .skill-category {
+    .resume-container-t5 .skill-category {
       display: grid;
       grid-template-columns: 100px 1fr;
       gap: 0 14px;
       align-items: start;
     }
 
-    .resume-container .skill-cat-label {
+    .resume-container-t5 .skill-cat-label {
       font-size: var(--size-small, 11.5px);
       font-weight: 600;
       color: var(--color-accent);
@@ -1311,7 +1311,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-align: right;
     }
 
-    .resume-container .skill-tags {
+    .resume-container-t5 .skill-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
@@ -1319,7 +1319,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       padding-left: 12px;
     }
 
-    .resume-container .skill-tag {
+    .resume-container-t5 .skill-tag {
       font-size: 10.5px;
       font-weight: 500;
       color: var(--color-text);
@@ -1330,50 +1330,50 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       white-space: nowrap;
     }
 
-    .resume-container .project-item {
+    .resume-container-t5 .project-item {
       margin-bottom: 14px;
     }
 
-    .resume-container .project-item:last-child {
+    .resume-container-t5 .project-item:last-child {
       margin-bottom: 0;
     }
 
-    .resume-container .project-header {
+    .resume-container-t5 .project-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       gap: 8px;
     }
 
-    .resume-container .project-name {
+    .resume-container-t5 .project-name {
       font-family: var(--font-display);
       font-weight: 700;
       font-size: var(--size-role, 15px);
       color: var(--color-text);
     }
 
-    .resume-container .project-context {
+    .resume-container-t5 .project-context {
       font-size: var(--size-small, 11.5px);
       color: var(--color-accent);
       font-weight: 600;
       white-space: nowrap;
     }
 
-    .resume-container .project-desc {
+    .resume-container-t5 .project-desc {
       font-size: var(--size-body, 13px);
       color: var(--color-text);
       line-height: 1.6;
       margin-top: 0.2rem;
     }
 
-    .resume-container .project-tags {
+    .resume-container-t5 .project-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
       margin-top: 0.4rem;
     }
 
-    .resume-container .project-tag {
+    .resume-container-t5 .project-tag {
       font-size: 10px;
       font-weight: 500;
       color: var(--color-text);
@@ -1383,67 +1383,67 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       padding: 1.5px 6px;
     }
 
-    .resume-container .edu-list {
+    .resume-container-t5 .edu-list {
       display: flex;
       flex-direction: column;
       gap: 0.8rem;
     }
 
-    .resume-container .edu-item {
+    .resume-container-t5 .edu-item {
       border-left: 2.5px solid var(--ink-muted, #718096);
       padding-left: 1rem;
     }
 
-    .resume-container .edu-header {
+    .resume-container-t5 .edu-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
     }
 
-    .resume-container .edu-degree {
+    .resume-container-t5 .edu-degree {
       font-family: var(--font-display);
       font-weight: 700;
       font-size: var(--size-role, 15px);
       color: var(--color-text);
     }
 
-    .resume-container .edu-date {
+    .resume-container-t5 .edu-date {
       font-size: var(--size-small, 11.5px);
       color: var(--color-accent);
       font-weight: 600;
     }
 
-    .resume-container .edu-sub {
+    .resume-container-t5 .edu-sub {
       font-size: var(--size-small, 11.5px);
       color: var(--ink-muted, #6C757D);
     }
 
-    .resume-container .edu-desc {
+    .resume-container-t5 .edu-desc {
       font-size: var(--size-body, 13px);
       color: var(--color-text);
       margin-top: 0.2rem;
     }
 
-    .resume-container .cert-list {
+    .resume-container-t5 .cert-list {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
     }
 
-    .resume-container .cert-item {
+    .resume-container-t5 .cert-item {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 0 1rem;
       align-items: baseline;
     }
 
-    .resume-container .cert-name {
+    .resume-container-t5 .cert-name {
       font-size: var(--size-body, 13px);
       font-weight: 500;
       color: var(--color-text);
     }
 
-    .resume-container .cert-issuer {
+    .resume-container-t5 .cert-issuer {
       font-size: var(--size-small, 11.5px);
       color: var(--ink-muted, #6C757D);
     }
@@ -1451,7 +1451,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
 
   // Template 6 Style System (Luxury Editorial Gold Sidebar Layout)
   const luxuryGoldStyles = `
-    .resume-container {
+    .resume-container-t6 {
       --color-ink: #1A1916;
       --color-ink-2: #3D3B37;
       --color-ink-3: #706D66;
@@ -1477,7 +1477,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.5;
     }
 
-    .resume-container .resume {
+    .resume-container-t6 .resume {
       width: 794px;
       min-height: 1123px;
       background: var(--color-paper);
@@ -1489,7 +1489,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       contain: layout style paint;
     }
 
-    .resume-container .resume-header {
+    .resume-container-t6 .resume-header {
       grid-column: 1 / -1;
       background: var(--color-sidebar);
       padding: 32px 40px 28px;
@@ -1500,7 +1500,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       border-bottom: 3px solid var(--color-gold);
     }
 
-    .resume-container .resume-profile-pic {
+    .resume-container-t6 .resume-profile-pic {
       width: 80px;
       height: 80px;
       border-radius: 50%;
@@ -1510,7 +1510,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       background: var(--color-sidebar-2);
     }
 
-    .resume-container .header-avatar-initials {
+    .resume-container-t6 .header-avatar-initials {
       width: 80px;
       height: 80px;
       border-radius: 50%;
@@ -1527,13 +1527,13 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       letter-spacing: 0.04em;
     }
 
-    .resume-container .header-identity {
+    .resume-container-t6 .header-identity {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
-    .resume-container .resume-name {
+    .resume-container-t6 .resume-name {
       font-family: var(--font-display);
       font-size: 36px;
       font-weight: 300;
@@ -1543,11 +1543,11 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-transform: uppercase;
     }
 
-    .resume-container .resume-name strong {
+    .resume-container-t6 .resume-name strong {
       font-weight: 500;
     }
 
-    .resume-container .resume-title {
+    .resume-container-t6 .resume-title {
       font-family: var(--font-body);
       font-size: 11px;
       font-weight: 300;
@@ -1557,14 +1557,14 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-top: 4px;
     }
 
-    .resume-container .resume-tagline {
+    .resume-container-t6 .resume-tagline {
       font-style: italic;
       font-size: 12px;
       color: var(--color-ink-3);
       margin-top: 2px;
     }
 
-    .resume-container .header-contact {
+    .resume-container-t6 .header-contact {
       display: flex;
       flex-direction: column;
       gap: 5px;
@@ -1572,7 +1572,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       min-width: 180px;
     }
 
-    .resume-container .contact-item {
+    .resume-container-t6 .contact-item {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -1584,11 +1584,11 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       white-space: nowrap;
     }
 
-    .resume-container .contact-label {
+    .resume-container-t6 .contact-label {
       display: none;
     }
 
-    .resume-container .contact-dot {
+    .resume-container-t6 .contact-dot {
       width: 3px;
       height: 3px;
       background: var(--color-gold);
@@ -1596,7 +1596,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
-    .resume-container .resume-sidebar {
+    .resume-container-t6 .resume-sidebar {
       background: var(--color-sidebar);
       padding: 28px 20px 40px;
       display: flex;
@@ -1604,7 +1604,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       gap: 22px;
     }
 
-    .resume-container .sidebar-section-title {
+    .resume-container-t6 .sidebar-section-title {
       font-family: var(--font-body);
       font-size: 8.5px;
       font-weight: 500;
@@ -1616,15 +1616,15 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       border-bottom: 0.5px solid rgba(180, 150, 90, 0.30);
     }
 
-    .resume-container .skill-group {
+    .resume-container-t6 .skill-group {
       margin-bottom: 10px;
     }
 
-    .resume-container .skill-group:last-child {
+    .resume-container-t6 .skill-group:last-child {
       margin-bottom: 0;
     }
 
-    .resume-container .sidebar-skill-label {
+    .resume-container-t6 .sidebar-skill-label {
       font-size: 9.5px;
       font-weight: 500;
       color: #A09D97;
@@ -1632,13 +1632,13 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 4px;
     }
 
-    .resume-container .sidebar-skill-tags {
+    .resume-container-t6 .sidebar-skill-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 3px;
     }
 
-    .resume-container .sidebar-tag {
+    .resume-container-t6 .sidebar-tag {
       font-size: 9px;
       font-weight: 300;
       color: #D4CFC8;
@@ -1651,36 +1651,36 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       white-space: nowrap;
     }
 
-    .resume-container .sidebar-cert {
+    .resume-container-t6 .sidebar-cert {
       margin-bottom: 8px;
     }
 
-    .resume-container .sidebar-cert:last-child {
+    .resume-container-t6 .sidebar-cert:last-child {
       margin-bottom: 0;
     }
 
-    .resume-container .sidebar-cert-name {
+    .resume-container-t6 .sidebar-cert-name {
       font-size: 10px;
       font-weight: 400;
       color: #EAE6E0;
       line-height: 1.3;
     }
 
-    .resume-container .sidebar-cert-meta {
+    .resume-container-t6 .sidebar-cert-meta {
       font-size: 8.5px;
       color: #706D66;
       margin-top: 1px;
       letter-spacing: 0.04em;
     }
 
-    .resume-container .sidebar-list {
+    .resume-container-t6 .sidebar-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
 
-    .resume-container .sidebar-list li {
+    .resume-container-t6 .sidebar-list li {
       display: flex;
       align-items: flex-start;
       gap: 6px;
@@ -1690,7 +1690,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.4;
     }
 
-    .resume-container .sidebar-list li::before {
+    .resume-container-t6 .sidebar-list li::before {
       content: '';
       width: 4px;
       height: 4px;
@@ -1700,7 +1700,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
-    .resume-container .sidebar-list .list-sub {
+    .resume-container-t6 .sidebar-list .list-sub {
       font-size: 8px;
       color: #706D66;
       display: block;
@@ -1708,22 +1708,22 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       letter-spacing: 0.04em;
     }
 
-    .resume-container .resume-main {
+    .resume-container-t6 .resume-main {
       padding: 28px 32px 40px;
       display: flex;
       flex-direction: column;
       gap: 22px;
     }
 
-    .resume-container .content-section {
+    .resume-container-t6 .content-section {
       margin-bottom: 0;
     }
 
-    .resume-container .content-section:last-child {
+    .resume-container-t6 .content-section:last-child {
       margin-bottom: 0;
     }
 
-    .resume-container .section-heading {
+    .resume-container-t6 .section-heading {
       font-family: var(--font-display);
       font-size: 16px;
       font-weight: 300;
@@ -1736,14 +1736,14 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 12px;
     }
 
-    .resume-container .section-heading::after {
+    .resume-container-t6 .section-heading::after {
       content: '';
       flex: 1;
       height: 0.5px;
       background: var(--color-rule);
     }
 
-    .resume-container .summary-text {
+    .resume-container-t6 .summary-text {
       font-family: var(--font-display);
       font-size: 13px;
       font-weight: 300;
@@ -1754,13 +1754,13 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       border-left: 2px solid var(--color-gold);
     }
 
-    .resume-container .entry-list {
+    .resume-container-t6 .entry-list {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    .resume-container .entry {
+    .resume-container-t6 .entry {
       display: grid;
       grid-template-columns: 1fr;
       gap: 4px;
@@ -1768,12 +1768,12 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       border-bottom: 0.5px solid var(--color-rule-light);
     }
 
-    .resume-container .entry:last-child {
+    .resume-container-t6 .entry:last-child {
       border-bottom: none;
       padding-bottom: 0;
     }
 
-    .resume-container .entry-role {
+    .resume-container-t6 .entry-role {
       font-family: var(--font-display);
       font-size: 14px;
       font-weight: 500;
@@ -1781,7 +1781,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       line-height: 1.2;
     }
 
-    .resume-container .entry-meta {
+    .resume-container-t6 .entry-meta {
       display: flex;
       align-items: baseline;
       flex-wrap: wrap;
@@ -1791,12 +1791,12 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       color: var(--color-ink-4);
     }
 
-    .resume-container .entry-company {
+    .resume-container-t6 .entry-company {
       font-weight: 500;
       color: var(--color-ink-2);
     }
 
-    .resume-container .entry-date {
+    .resume-container-t6 .entry-date {
       margin-left: auto;
       font-size: 9px;
       color: var(--color-gold);
@@ -1806,7 +1806,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       border-radius: 1px;
     }
 
-    .resume-container .badge-current {
+    .resume-container-t6 .badge-current {
       font-size: 8px;
       font-weight: 700;
       letter-spacing: 0.06em;
@@ -1819,11 +1819,11 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       vertical-align: middle;
     }
 
-    .resume-container .entry-sep {
+    .resume-container-t6 .entry-sep {
       color: var(--color-rule);
     }
 
-    .resume-container .entry-bullets {
+    .resume-container-t6 .entry-bullets {
       list-style: none;
       margin-top: 5px;
       padding-left: 10px;
@@ -1832,7 +1832,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       gap: 3px;
     }
 
-    .resume-container .entry-bullets li {
+    .resume-container-t6 .entry-bullets li {
       font-size: 11px;
       line-height: 1.5;
       color: var(--color-ink-2);
@@ -1840,7 +1840,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       padding-left: 10px;
     }
 
-    .resume-container .entry-bullets li::before {
+    .resume-container-t6 .entry-bullets li::before {
       content: '\\2013';
       position: absolute;
       left: 0;
@@ -1849,14 +1849,14 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       top: 0.1em;
     }
 
-    .resume-container .entry-tags {
+    .resume-container-t6 .entry-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 3px;
       margin-top: 6px;
     }
 
-    .resume-container .entry-tag {
+    .resume-container-t6 .entry-tag {
       font-size: 9px;
       font-weight: 400;
       color: var(--color-gold);
@@ -1864,21 +1864,21 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-transform: uppercase;
     }
 
-    .resume-container .entry-description {
+    .resume-container-t6 .entry-description {
       font-size: 11px;
       line-height: 1.55;
       color: var(--color-ink-2);
       margin-top: 4px;
     }
 
-    .resume-container .project-card {
+    .resume-container-t6 .project-card {
       background: #F7F3EC;
       border-left: 2px solid var(--color-gold);
       padding: 10px 12px;
       border-radius: 0 2px 2px 0;
     }
 
-    .resume-container .project-card-header {
+    .resume-container-t6 .project-card-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -1887,14 +1887,14 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 3px;
     }
 
-    .resume-container .project-card-name {
+    .resume-container-t6 .project-card-name {
       font-family: var(--font-display);
       font-size: 13px;
       font-weight: 500;
       color: var(--color-ink);
     }
 
-    .resume-container .project-card-stack {
+    .resume-container-t6 .project-card-stack {
       font-size: 8px;
       font-weight: 400;
       color: var(--color-gold);
@@ -1902,20 +1902,20 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-transform: uppercase;
     }
 
-    .resume-container .project-card-desc {
+    .resume-container-t6 .project-card-desc {
       font-size: 10px;
       font-weight: 300;
       color: var(--color-ink-2);
       line-height: 1.5;
     }
 
-    .resume-container .skills-grid {
+    .resume-container-t6 .skills-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
 
-    .resume-container .skill-category-label {
+    .resume-container-t6 .skill-category-label {
       font-size: 8px;
       font-weight: 600;
       color: var(--color-ink-4);
@@ -1924,13 +1924,13 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 3px;
     }
 
-    .resume-container .skill-tags {
+    .resume-container-t6 .skill-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 3px;
     }
 
-    .resume-container .skill-tag {
+    .resume-container-t6 .skill-tag {
       font-size: 9px;
       font-weight: 300;
       color: var(--color-ink-2);
@@ -1941,25 +1941,25 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       white-space: nowrap;
     }
 
-    .resume-container .cert-list {
+    .resume-container-t6 .cert-list {
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
 
-    .resume-container .cert-item {
+    .resume-container-t6 .cert-item {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       font-size: 11px;
     }
 
-    .resume-container .cert-name {
+    .resume-container-t6 .cert-name {
       font-weight: 400;
       color: var(--color-ink-2);
     }
 
-    .resume-container .cert-issuer {
+    .resume-container-t6 .cert-issuer {
       font-size: 9px;
       color: var(--color-ink-4);
       margin-left: 4px;
@@ -1969,7 +1969,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   // Render Template 6: Luxury Editorial Gold
   if (templateId === 6) {
     return (
-      <div className="resume-container" style={{ '--accent': color } as React.CSSProperties}>
+      <div className="resume-container resume-container-t6" style={{ '--accent': color } as React.CSSProperties}>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -2164,7 +2164,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   // Render Template 3: Creative Editorial
   if (templateId === 3) {
     return (
-      <div className="resume-container">
+      <div className="resume-container resume-container-t3">
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -2313,7 +2313,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   // Render Template 4: Modern Technical Grid
   if (templateId === 4) {
     return (
-      <div className="resume-container">
+      <div className="resume-container resume-container-t4">
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -2465,7 +2465,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   // Render Template 5: Executive Heritage
   if (templateId === 5) {
     return (
-      <div className="resume-container">
+      <div className="resume-container resume-container-t5">
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -2623,7 +2623,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   // Render Template 2: Blueprint Schematic
   if (templateId === 2) {
     return (
-      <div className="resume-container">
+      <div className="resume-container resume-container-t2">
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -2837,7 +2837,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
 
   // Fallback / default: Template 1
   return (
-    <div className="resume-container">
+    <div className="resume-container resume-container-t1">
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link
@@ -3177,13 +3177,13 @@ export const LivePreviewPanel: React.FC = () => {
           <div className="fixed inset-0 bg-white/20 backdrop-blur-lg z-[99999] flex flex-col animate-fadeIn select-none">
             {/* Top black header bar */}
             <div className="w-full h-9 bg-black border-b border-[#27272a] px-4 flex items-center justify-between">
-              {/* Left Side: Preview Mode label moved inwards to the right */}
-              <div className="text-xs font-sans font-medium text-gray-400 pl-[12px]">
+              {/* Left Side: Preview Mode label moved inwards to the right via inline style */}
+              <div className="text-xs font-sans font-medium text-gray-400" style={{ paddingLeft: "24px" }}>
                 Preview Mode
               </div>
 
-              {/* Right Side: Change template & Close button moved inwards to the left */}
-              <div className="flex items-center gap-3 pr-[12px]">
+              {/* Right Side: Change template & Close button moved inwards to the left via inline style */}
+              <div className="flex items-center gap-3" style={{ paddingRight: "24px" }}>
                 <button
                   type="button"
                   className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold text-gray-300 hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
