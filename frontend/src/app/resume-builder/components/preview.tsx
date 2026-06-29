@@ -3052,7 +3052,7 @@ export const LivePreviewPanel: React.FC = () => {
     <div className={styles.previewColumn}>
       {/* Content */}
       <div className={styles.previewContent}>
-        <div style={{ width: "350px", height: "495px", overflow: "hidden", position: "relative", borderRadius: "8px", boxShadow: "0 8px 30px rgba(0,0,0,0.3)" }}>
+        <div style={{ width: "350px", height: "495px", overflow: "hidden", position: "relative" }}>
           <div style={{ transform: "scale(0.44)", transformOrigin: "top left", width: "794px", height: "1123px" }}>
             <div id="resume-print-capture">
               <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
