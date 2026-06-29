@@ -23,13 +23,75 @@ export const StepHeader: React.FC<StepHeaderProps> = ({ title, description }) =>
   );
 };
 
+const validateStep = (step: number, state: any): boolean => {
+  switch (step) {
+    case 1: {
+      const p = state.personalInfo;
+      return !!(
+        p.firstName?.trim() &&
+        p.surname?.trim() &&
+        p.city?.trim() &&
+        p.country?.trim() &&
+        p.pinCode?.trim() &&
+        p.phone?.trim() &&
+        p.email?.trim()
+      );
+    }
+    case 2:
+      return !!state.summary?.trim();
+    case 3:
+      return state.experiences.every(
+        (exp: any) => exp.company?.trim() && exp.role?.trim()
+      );
+    case 4:
+      return state.educations.every(
+        (edu: any) => edu.institution?.trim() && edu.degree?.trim()
+      );
+    case 5:
+      return state.skills.length > 0;
+    case 6:
+      return state.projects.every((proj: any) => proj.name?.trim());
+    case 7:
+      return state.certifications.every(
+        (cert: any) => cert.name?.trim() && cert.organization?.trim()
+      );
+    default:
+      return true;
+  }
+};
+
+const isStepReachable = (step: number, currentStep: number, state: any): boolean => {
+  if (step <= currentStep) return true;
+  if (step === currentStep + 1) {
+    return validateStep(currentStep, state);
+  }
+  return false;
+};
+
+const isStepCompleted = (step: number, state: any): boolean => {
+  if (!validateStep(step, state)) return false;
+  switch (step) {
+    case 3:
+      return state.experiences.length > 0;
+    case 4:
+      return state.educations.length > 0;
+    case 6:
+      return state.projects.length > 0;
+    case 7:
+      return state.certifications.length > 0;
+    default:
+      return true;
+  }
+};
+
 interface StepNavigationProps {
   onFinish?: () => void;
 }
 
 export const StepNavigation: React.FC<StepNavigationProps> = ({ onFinish }) => {
-  const currentStep = useResumeStore((state) => state.currentStep);
-  const actions = useResumeStore((state) => state.actions);
+  const state = useResumeStore((state) => state);
+  const { currentStep, actions } = state;
+  const isCurrentStepValid = validateStep(currentStep, state);
 
   const handleContinue = () => {
     if (currentStep === 7) {
@@ -57,6 +119,7 @@ export const StepNavigation: React.FC<StepNavigationProps> = ({ onFinish }) => {
         type="button"
         onClick={handleContinue}
         className={styles.btnContinue}
+        disabled={!isCurrentStepValid}
       >
         {currentStep === 7 ? (
           <>
@@ -94,15 +157,9 @@ export const StepSidebarItem: React.FC<StepSidebarItemProps> = ({
   onClick,
 }) => {
   const getIconContainerClass = () => {
-    if (isActive) return `${styles.stepIconContainer} ${styles.stepIconActive}`;
     if (isComplete) return `${styles.stepIconContainer} ${styles.stepIconComplete}`;
+    if (isActive) return `${styles.stepIconContainer} ${styles.stepIconActive}`;
     return styles.stepIconContainer;
-  };
-
-  const getLabelClass = () => {
-    if (isActive) return `${styles.stepLabel} ${styles.stepLabelActive}`;
-    if (isComplete) return `${styles.stepLabel} ${styles.stepLabelComplete}`;
-    return styles.stepLabel;
   };
 
   return (
@@ -113,17 +170,19 @@ export const StepSidebarItem: React.FC<StepSidebarItemProps> = ({
       disabled={!isReachable}
       style={{ cursor: isReachable ? "pointer" : "not-allowed" }}
     >
-      <div className={getIconContainerClass()}>
-        <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+      <div className={styles.tooltipWrap}>
+        <div className={getIconContainerClass()}>
+          <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+        </div>
+        <span className={styles.tooltipText}>{label}</span>
       </div>
-      <span className={getLabelClass()}>{label}</span>
     </button>
   );
 };
 
 export const StepSidebar: React.FC = () => {
-  const currentStep = useResumeStore((state) => state.currentStep);
-  const actions = useResumeStore((state) => state.actions);
+  const state = useResumeStore((state) => state);
+  const { currentStep, actions } = state;
 
   const WIZARD_STEPS = [
     { step: 1, label: "Contact", icon: User },
@@ -143,8 +202,8 @@ export const StepSidebar: React.FC = () => {
           step={s.step}
           label={s.label}
           isActive={currentStep === s.step}
-          isComplete={s.step < currentStep}
-          isReachable={s.step <= currentStep + 1}
+          isComplete={isStepCompleted(s.step, state)}
+          isReachable={isStepReachable(s.step, currentStep, state)}
           icon={s.icon}
           onClick={() => actions.goToStep(s.step)}
         />

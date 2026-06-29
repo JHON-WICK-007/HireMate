@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HireMate — Executive Heritage Resume Template</title>
+
+    <!-- Google Fonts: Playfair Display (display) + Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        /* =====================================================
+       HIREMATE — EXECUTIVE HERITAGE TEMPLATE
+       Designer: HireMate AI
+       Architecture: Single-column, center-aligned, classic
+       Signature: Burgundy double-rule headers, symmetrical layout
+    ===================================================== */
+
+        /* --- TOKENS ---------------------------------------- */
+        :root {
+            --heritage:        #7A2828;
+            --heritage-soft:   rgba(122, 40, 40, 0.06);
+            --ink-heavy:       #1C252C;
+            --ink-mid:         #2D3A45;
+            --ink-body:        #4A5568;
+            --ink-muted:       #94A3B8;
+            --rule:            #D2C9BD;
+            --tag-bg:          #F5F0EA;
+            --tag-border:      #E2D9CE;
+            --surface:         #FFFFFF;
+            --bg:              #FAF9F7;
+
+            --font-display:    'Playfair Display', Georgia, serif;
+            --font-body:       'Inter', system-ui, sans-serif;
+
+            --size-name:       2.6rem;
+            --size-section:    1rem;
+            --size-role:       1.05rem;
+            --size-body:       0.86rem;
+            --size-small:      0.78rem;
+            --size-micro:      0.68rem;
+
+            --section-gap:     1.6rem;
+        }
+
+        /* --- RESET ----------------------------------------- */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- BASE ------------------------------------------ */
+        body {
+            font-family: var(--font-body);
+            font-size: var(--size-body);
+            line-height: 1.65;
+            color: var(--ink-body);
+            background: #EFECE6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =====================================================
+       RESUME WRAPPER
+    ===================================================== */
+        .resume {
+            max-width: 794px;
+            margin: 2.5rem auto 4rem;
+            background: var(--surface);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            padding: 46px 56px;
+            min-height: 1123px;
+        }
+
+        /* =====================================================
+       HEADER — center-aligned identity block
+    ===================================================== */
+        .header-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-bottom: 3px double var(--heritage);
+            padding-bottom: 20px;
+            margin-bottom: 22px;
+            gap: 10px;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--rule);
+            object-fit: cover;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .resume-name {
+            font-family: var(--font-display);
+            font-size: var(--size-name);
+            font-weight: 700;
+            color: var(--heritage);
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+        }
+
+        .resume-title {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--ink-heavy);
+            margin-top: 2px;
+        }
+
+        .resume-tagline {
+            font-size: var(--size-small);
+            font-style: italic;
+            color: var(--ink-muted);
+        }
+
+        .contact-bar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: var(--size-small);
+            color: var(--ink-body);
+            margin-top: 4px;
+        }
+
+        .contact-bar .separator {
+            color: var(--heritage);
+            font-weight: bold;
+        }
+
+        /* =====================================================
+       SECTION — center title with heritage line
+    ===================================================== */
+        .section-title {
+            font-family: var(--font-display);
+            font-size: var(--size-section);
+            font-weight: 700;
+            color: var(--heritage);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: var(--section-gap);
+            margin-bottom: 6px;
+        }
+
+        .center-divider {
+            width: 55px;
+            height: 1.5px;
+            background: var(--heritage);
+            margin: 0 auto 14px;
+        }
+
+        /* =====================================================
+       SUMMARY — centered paragraph
+    ===================================================== */
+        .summary-centered {
+            text-align: center;
+            font-size: var(--size-body);
+            line-height: 1.75;
+            color: var(--ink-body);
+            max-width: 600px;
+            margin: 0 auto var(--section-gap);
+        }
+
+        /* =====================================================
+       EXPERIENCE ENTRIES
+    ===================================================== */
+        .experience-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin-bottom: var(--section-gap);
+        }
+
+        .exp-item {
+            border-left: 2.5px solid var(--rule);
+            padding-left: 1rem;
+        }
+
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.15rem;
+        }
+
+        .exp-role {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: var(--size-role);
+            color: var(--ink-heavy);
+        }
+
+        .exp-date {
+            font-weight: 600;
+            font-size: var(--size-small);
+            color: var(--heritage);
+            white-space: nowrap;
+        }
+
+        .exp-sub {
+            font-size: var(--size-small);
+            font-weight: 500;
+            color: var(--ink-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .exp-bullets {
+            list-style-type: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .exp-bullets li {
+            font-size: var(--size-body);
+            position: relative;
+            padding-left: 0.75rem;
+            line-height: 1.55;
+        }
+
+        .exp-bullets li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--heritage);
+            font-size: 10px;
+            top: 0.15em;
+        }
+
+        /* =====================================================
+       PROJECTS
+    ===================================================== */
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: var(--section-gap);
+        }
+
+        .project-item {
+            border-left: 2.5px solid var(--rule);
+            padding-left: 1rem;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .project-name {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: var(--size-role);
+            color: var(--ink-heavy);
+        }
+
+        .project-context {
+            font-size: var(--size-small);
+            color: var(--heritage);
+            font-weight: 600;
+        }
+
+        .project-desc {
+            font-size: var(--size-body);
+            color: var(--ink-body);
+            line-height: 1.6;
+            margin-top: 0.2rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 0.4rem;
+        }
+
+        .project-tag {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--ink-mid);
+            background: var(--tag-bg);
+            border: 0.5px solid var(--tag-border);
+            border-radius: 2px;
+            padding: 1.5px 6px;
+        }
+
+        /* =====================================================
+       EDUCATION
+    ===================================================== */
+        .edu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: var(--section-gap);
+        }
+
+        .edu-item {
+            border-left: 2.5px solid var(--rule);
+            padding-left: 1rem;
+        }
+
+        .edu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .edu-degree {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: var(--size-role);
+            color: var(--ink-heavy);
+        }
+
+        .edu-date {
+            font-size: var(--size-small);
+            color: var(--heritage);
+            font-weight: 600;
+        }
+
+        .edu-sub {
+            font-size: var(--size-small);
+            color: var(--ink-muted);
+        }
+
+        .edu-desc {
+            font-size: var(--size-body);
+            color: var(--ink-body);
+            margin-top: 0.2rem;
+        }
+
+        /* =====================================================
+       SKILLS
+    ===================================================== */
+        .skills-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin-bottom: var(--section-gap);
+        }
+
+        .skill-category {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 0 14px;
+            align-items: start;
+        }
+
+        .skill-cat-label {
+            font-size: var(--size-small);
+            font-weight: 600;
+            color: var(--heritage);
+            letter-spacing: 0.02em;
+            padding-top: 2px;
+            text-align: right;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            border-left: 1.5px solid var(--rule);
+            padding-left: 12px;
+        }
+
+        .skill-tag {
+            font-size: 10.5px;
+            font-weight: 500;
+            color: var(--ink-mid);
+            background: var(--tag-bg);
+            border: 0.5px solid var(--tag-border);
+            border-radius: 2px;
+            padding: 2px 7px;
+            white-space: nowrap;
+        }
+
+        /* =====================================================
+       CERTS + AWARDS — side-by-side
+    ===================================================== */
+        .two-col-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 2.5rem;
+            margin-bottom: var(--section-gap);
+        }
+
+        .two-col-sections .resume-section {
+            margin-bottom: 0;
+        }
+
+        .cert-list,
+        .award-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .cert-item,
+        .award-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0 1rem;
+            align-items: baseline;
+        }
+
+        .cert-name,
+        .award-name {
+            font-size: var(--size-body);
+            font-weight: 500;
+            color: var(--ink-mid);
+        }
+
+        .cert-issuer,
+        .award-org {
+            font-size: var(--size-small);
+            color: var(--ink-muted);
+        }
+
+        .cert-date,
+        .award-year {
+            font-size: var(--size-small);
+            color: var(--ink-muted);
+            white-space: nowrap;
+            text-align: right;
+        }
+
+        /* =====================================================
+       LANGUAGES + INTERESTS — side-by-side
+    ===================================================== */
+        .lang-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.4rem;
+        }
+
+        .lang-item {
+            display: flex;
+            align-items: baseline;
+            gap: 0.35rem;
+        }
+
+        .lang-name {
+            font-size: var(--size-body);
+            font-weight: 500;
+            color: var(--ink-mid);
+        }
+
+        .lang-level {
+            font-size: var(--size-small);
+            color: var(--ink-muted);
+            font-style: italic;
+        }
+
+        .interests-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+
+        .interest-item {
+            font-size: 0.75rem;
+            color: var(--ink-body);
+            background: var(--tag-bg);
+            border: 1px solid var(--tag-border);
+            border-radius: 20px;
+            padding: 0.15rem 0.65rem;
+        }
+
+        /* =====================================================
+       REFERENCES
+    ===================================================== */
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .ref-card {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--rule);
+            border-left: 3px solid var(--heritage);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .ref-name {
+            font-size: var(--size-body);
+            font-weight: 600;
+            color: var(--ink-mid);
+        }
+
+        .ref-role {
+            font-size: var(--size-small);
+            color: var(--ink-muted);
+            margin-top: 0.1rem;
+        }
+
+        .ref-contact {
+            font-size: var(--size-small);
+            color: var(--ink-body);
+            margin-top: 0.3rem;
+        }
+
+        /* =====================================================
+       UTILITY
+    ===================================================== */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        /* =====================================================
+       PRINT STYLES
+    ===================================================== */
+        @media print {
+            body { background: #fff; font-size: 9.5pt; }
+
+            .resume {
+                max-width: none;
+                margin: 0;
+                padding: 15mm 18mm;
+                box-shadow: none;
+            }
+
+            .resume-section,
+            .exp-item,
+            .edu-item,
+            .project-item {
+                break-inside: avoid;
+            }
+
+            .header-center {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .skill-tag,
+            .project-tag,
+            .interest-item {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            @page { size: A4; margin: 0; }
+        }
+
+        /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+        @media (max-width: 660px) {
+            :root {
+                --size-name: 2rem;
+            }
+
+            .resume {
+                margin: 0;
+                padding: 1.4rem;
+                box-shadow: none;
+            }
+
+            .exp-header,
+            .project-header,
+            .edu-header {
+                flex-direction: column;
+                gap: 0.15rem;
+            }
+
+            .skill-category {
+                grid-template-columns: 1fr;
+            }
+
+            .two-col-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-bar {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <article class="resume" role="main" aria-label="Resume">
+
+        <!-- ===================================================
+         HEADER
+    =================================================== -->
+        <header class="header-center">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&h=200"
+                 class="profile-pic" alt="Alexandra Chen" />
+            <h1 class="resume-name">Alexandra Chen</h1>
+            <p class="resume-title">Principal Software Engineer &amp; Technical Lead</p>
+            <p class="resume-tagline">Building systems at scale — from 0 to 200 million users</p>
+            <div class="contact-bar">
+                <span>alexandra.chen@email.com</span>
+                <span class="separator">·</span>
+                <span>+1 (415) 892-3041</span>
+                <span class="separator">·</span>
+                <span>San Francisco, CA</span>
+                <span class="separator">·</span>
+                <span>linkedin.com/in/alexchen</span>
+                <span class="separator">·</span>
+                <span>github.com/alexchen-dev</span>
+                <span class="separator">·</span>
+                <span>alexchen.io</span>
+            </div>
+        </header>
+
+        <!-- PROFESSIONAL SUMMARY -->
+        <h2 class="section-title">Professional Summary</h2>
+        <div class="center-divider"></div>
+        <p class="summary-centered">
+            Principal Engineer with 11 years of experience designing distributed systems and leading
+            cross-functional teams at Google, Stripe, and Series-B startups. Specialize in high-throughput
+            backend architecture, platform reliability, and translating ambiguous product vision into precise
+            technical roadmaps. Promoted three times in four years; managed teams of up to 14 engineers.
+        </p>
+
+        <!-- EXPERIENCE -->
+        <h2 class="section-title">Experience</h2>
+        <div class="center-divider"></div>
+        <div class="experience-list">
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span class="exp-role">Stripe, Inc. — Principal Software Engineer</span>
+                    <span class="exp-date">Jan 2021 — Present</span>
+                </div>
+                <p class="exp-sub">San Francisco, CA · Full-time</p>
+                <ul class="exp-bullets">
+                    <li>Architected next-generation payment routing engine, reducing transaction latency by 42% and saving $18M annually.</li>
+                    <li>Led 14-engineer platform team through 9-month monolith → event-driven Go microservices migration.</li>
+                    <li>Designed fraud-detection ML pipeline processing 4.2 M events/sec with sub-50 ms P99.</li>
+                </ul>
+            </div>
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span class="exp-role">Google LLC — Senior Software Engineer</span>
+                    <span class="exp-date">Mar 2017 — Dec 2020</span>
+                </div>
+                <p class="exp-sub">Mountain View, CA · Full-time</p>
+                <ul class="exp-bullets">
+                    <li>Built core scheduling layer of Google Kubernetes Engine (GKE) auto-scaler, adopted by 40 000+ clusters.</li>
+                    <li>Reduced cold-start node provisioning time by 68% through novel bin-packing algorithm.</li>
+                    <li>Authored internal RFC blueprint for GCP's multi-region failover strategy.</li>
+                </ul>
+            </div>
+            <div class="exp-item">
+                <div class="exp-header">
+                    <span class="exp-role">Loom Analytics — Backend Engineer</span>
+                    <span class="exp-date">Jun 2014 — Feb 2017</span>
+                </div>
+                <p class="exp-sub">New York, NY · Series B Startup</p>
+                <ul class="exp-bullets">
+                    <li>Employee #8. Designed event-sourced analytics pipeline from scratch, scaling 0 → 12 M daily events.</li>
+                    <li>Built real-time dashboard consumed by 200+ enterprise clients (React + D3 + WebSockets).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- NOTABLE PROJECTS -->
+        <h2 class="section-title">Notable Projects</h2>
+        <div class="center-divider"></div>
+        <div class="project-list">
+            <div class="project-item">
+                <div class="project-header">
+                    <span class="project-name">OpenFlux — Open-Source Workflow Orchestrator</span>
+                    <span class="project-context">Personal / OSS</span>
+                </div>
+                <p class="project-desc">Lightweight task orchestration engine for Python with first-class async support. 6.2 k GitHub stars, adopted by two YC startups.</p>
+                <div class="project-tags">
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">asyncio</span>
+                    <span class="project-tag">Redis</span>
+                    <span class="project-tag">Docker</span>
+                </div>
+            </div>
+            <div class="project-item">
+                <div class="project-header">
+                    <span class="project-name">LatencyLens — Distributed Tracing Visualiser</span>
+                    <span class="project-context">Internal / Stripe</span>
+                </div>
+                <p class="project-desc">Correlates Jaeger spans with business KPIs, providing real-time cost-per-request visibility. Reduced P2 incident MTTR by 35%.</p>
+                <div class="project-tags">
+                    <span class="project-tag">Go</span>
+                    <span class="project-tag">React</span>
+                    <span class="project-tag">Jaeger</span>
+                    <span class="project-tag">ClickHouse</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- EDUCATION -->
+        <h2 class="section-title">Education</h2>
+        <div class="center-divider"></div>
+        <div class="edu-list">
+            <div class="edu-item">
+                <div class="edu-header">
+                    <span class="edu-degree">M.S. Computer Science — Distributed Systems</span>
+                    <span class="edu-date">2012 — 2014</span>
+                </div>
+                <p class="edu-sub">Stanford University · 3.92 GPA</p>
+                <p class="edu-desc">Thesis: Adaptive Consistency Models for Geo-Replicated Key-Value Stores — published at VLDB '14.</p>
+            </div>
+            <div class="edu-item">
+                <div class="edu-header">
+                    <span class="edu-degree">B.S. Computer Engineering</span>
+                    <span class="edu-date">2008 — 2012</span>
+                </div>
+                <p class="edu-sub">University of Michigan · Summa Cum Laude</p>
+            </div>
+        </div>
+
+        <!-- SKILLS -->
+        <h2 class="section-title">Skills</h2>
+        <div class="center-divider"></div>
+        <div class="skills-grid">
+            <div class="skill-category">
+                <span class="skill-cat-label">Languages</span>
+                <div class="skill-tags">
+                    <span class="skill-tag">Go</span><span class="skill-tag">Python</span><span class="skill-tag">Rust</span>
+                    <span class="skill-tag">C++</span><span class="skill-tag">TypeScript</span><span class="skill-tag">SQL</span>
+                    <span class="skill-tag">Bash</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <span class="skill-cat-label">Infrastructure</span>
+                <div class="skill-tags">
+                    <span class="skill-tag">Kubernetes</span><span class="skill-tag">Docker</span><span class="skill-tag">Terraform</span>
+                    <span class="skill-tag">AWS</span><span class="skill-tag">GCP</span><span class="skill-tag">Istio</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <span class="skill-cat-label">Data &amp; ML</span>
+                <div class="skill-tags">
+                    <span class="skill-tag">PostgreSQL</span><span class="skill-tag">ClickHouse</span><span class="skill-tag">Kafka</span>
+                    <span class="skill-tag">Spark</span><span class="skill-tag">PyTorch</span><span class="skill-tag">dbt</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <span class="skill-cat-label">Practices</span>
+                <div class="skill-tags">
+                    <span class="skill-tag">System Design</span><span class="skill-tag">SRE &amp; SLA</span>
+                    <span class="skill-tag">Tech Leadership</span><span class="skill-tag">Agile / Scrum</span>
+                    <span class="skill-tag">Code Review</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CERTIFICATIONS + AWARDS -->
+        <div class="two-col-sections">
+            <section class="resume-section" aria-labelledby="certs-heading">
+                <h2 class="section-title" id="certs-heading" style="margin-top: 0;">Certifications</h2>
+                <div class="center-divider"></div>
+                <div class="cert-list">
+                    <div class="cert-item">
+                        <div>
+                            <p class="cert-name">AWS Solutions Architect — Professional</p>
+                            <p class="cert-issuer">Amazon Web Services</p>
+                        </div>
+                        <p class="cert-date">2023</p>
+                    </div>
+                    <div class="cert-item">
+                        <div>
+                            <p class="cert-name">Certified Kubernetes Administrator (CKA)</p>
+                            <p class="cert-issuer">CNCF</p>
+                        </div>
+                        <p class="cert-date">2022</p>
+                    </div>
+                    <div class="cert-item">
+                        <div>
+                            <p class="cert-name">Google Cloud Professional Data Engineer</p>
+                            <p class="cert-issuer">Google Cloud</p>
+                        </div>
+                        <p class="cert-date">2021</p>
+                    </div>
+                </div>
+            </section>
+            <section class="resume-section" aria-labelledby="awards-heading">
+                <h2 class="section-title" id="awards-heading" style="margin-top: 0;">Awards</h2>
+                <div class="center-divider"></div>
+                <div class="award-list">
+                    <div class="award-item">
+                        <div>
+                            <p class="award-name">Forbes 30 Under 30 — Enterprise Technology</p>
+                            <p class="award-org">Forbes</p>
+                        </div>
+                        <p class="award-year">2022</p>
+                    </div>
+                    <div class="award-item">
+                        <div>
+                            <p class="award-name">Outstanding Engineer Award</p>
+                            <p class="award-org">Stripe, Inc.</p>
+                        </div>
+                        <p class="award-year">2021</p>
+                    </div>
+                    <div class="award-item">
+                        <div>
+                            <p class="award-name">Best Paper — VLDB '19</p>
+                            <p class="award-org">45th Int'l Conference on VLDB</p>
+                        </div>
+                        <p class="award-year">2019</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- LANGUAGES + INTERESTS -->
+        <div class="two-col-sections">
+            <section class="resume-section" aria-labelledby="languages-heading">
+                <h2 class="section-title" id="languages-heading" style="margin-top: 0;">Languages</h2>
+                <div class="center-divider"></div>
+                <div class="lang-list">
+                    <div class="lang-item"><span class="lang-name">English</span><span class="lang-level">Native</span></div>
+                    <div class="lang-item"><span class="lang-name">Mandarin</span><span class="lang-level">Native</span></div>
+                    <div class="lang-item"><span class="lang-name">French</span><span class="lang-level">Professional</span></div>
+                    <div class="lang-item"><span class="lang-name">German</span><span class="lang-level">Conversational</span></div>
+                </div>
+            </section>
+            <section class="resume-section" aria-labelledby="interests-heading">
+                <h2 class="section-title" id="interests-heading" style="margin-top: 0;">Interests</h2>
+                <div class="center-divider"></div>
+                <div class="interests-list">
+                    <span class="interest-item">Competitive Programming</span>
+                    <span class="interest-item">Open Source</span>
+                    <span class="interest-item">Technical Writing</span>
+                    <span class="interest-item">Rock Climbing</span>
+                    <span class="interest-item">Specialty Coffee</span>
+                    <span class="interest-item">Piano</span>
+                    <span class="interest-item">Astrophysics</span>
+                </div>
+            </section>
+        </div>
+
+        <!-- REFERENCES -->
+        <h2 class="section-title">References</h2>
+        <div class="center-divider"></div>
+        <div class="ref-grid">
+            <div class="ref-card">
+                <p class="ref-name">Dr. James R. Holloway</p>
+                <p class="ref-role">VP Engineering, Stripe Inc.</p>
+                <p class="ref-contact">james.holloway@stripe.com · +1 415 000 0001</p>
+            </div>
+            <div class="ref-card">
+                <p class="ref-name">Dr. Priya Nair</p>
+                <p class="ref-role">Principal Researcher, Google DeepMind</p>
+                <p class="ref-contact">priya.nair@google.com · +1 650 000 0002</p>
+            </div>
+        </div>
+
+    </article><!-- /.resume -->
+
+</body>
+
+</html>

@@ -16,6 +16,7 @@ export async function getBrowser(): Promise<Browser> {
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
         "--disable-gpu",
+        "--font-render-hinting=none",
       ],
     });
   }
@@ -41,24 +42,27 @@ export async function generatePDF(html: string): Promise<Buffer> {
   const page = await browser.newPage();
 
   try {
-    // Set viewport matching standard desktop rendering
+    // Emulate screen media so CSS matches the browser preview (not print media)
+    await page.emulateMediaType("screen");
+
+    // Set viewport matching the resume card dimensions (A4 at 96 DPI)
     await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 2 });
-    
-    // Inject HTML content
-    await page.setContent(html, {
-      waitUntil: "networkidle0" as any,
-    });
+
+    // Inject HTML content — use 'load' for setContent (networkidle0 not supported here)
+    await page.setContent(html, { waitUntil: "load" });
+
+    // Wait for all @font-face declarations to finish loading
+    await page.waitForFunction("document.fonts.ready.then(() => true)", { timeout: 10000 });
+
+    // Brief pause to let CSS custom properties and layout settle
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     // Generate standard margin-free A4 PDF
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: {
-        top: "0mm",
-        bottom: "0mm",
-        left: "0mm",
-        right: "0mm",
-      },
+      margin: { top: "0mm", bottom: "0mm", left: "0mm", right: "0mm" },
+      preferCSSPageSize: false,
     });
 
     return Buffer.from(pdfBuffer);

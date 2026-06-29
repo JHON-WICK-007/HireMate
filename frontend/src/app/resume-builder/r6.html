@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Premium Resume — HireMate AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        /* ============================================================
+     DESIGN TOKENS
+     Palette: slate-charcoal background, champagne gold accent,
+     warm white card — luxury editorial feel.
+     Display: Cormorant Garamond (editorial serif)
+     Body: DM Sans (clean, modern grotesque)
+  ============================================================ */
+
+        :root {
+            /* Core palette */
+            --color-ink: #1A1916;
+            --color-ink-2: #3D3B37;
+            --color-ink-3: #706D66;
+            --color-ink-4: #A09D97;
+            --color-rule: #D4CFC8;
+            --color-rule-light: #EAE6E0;
+            --color-paper: #FDFBF8;
+            --color-gold: #B89860;
+            --color-gold-light: #D4B87A;
+            --color-gold-bg: #F5EED8;
+            --color-sidebar: #211F1B;
+            --color-sidebar-2: #2F2C27;
+
+            /* Typography scale */
+            --font-display: 'Cormorant Garamond', Georgia, serif;
+            --font-body: 'DM Sans', system-ui, sans-serif;
+
+            /* Spacing */
+            --page-pad: 52px;
+            --sidebar-w: 210px;
+            --gap-section: 28px;
+            --gap-item: 18px;
+            --gap-xs: 6px;
+            --gap-sm: 10px;
+            --gap-md: 14px;
+        }
+
+        /* ============================================================
+     RESET + BASE
+  ============================================================ */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 10px;
+            /* rem base for print scaling */
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: #E8E4DC;
+            color: var(--color-ink);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================================
+     PAGE SHELL — wraps the whole resume card
+  ============================================================ */
+
+        .resume-page {
+            width: 794px;
+            /* A4 at 96dpi */
+            min-height: 1123px;
+            /* A4 at 96dpi */
+            background: var(--color-paper);
+            margin: 36px auto;
+            display: grid;
+            grid-template-columns: var(--sidebar-w) 1fr;
+            grid-template-rows: auto 1fr;
+            position: relative;
+            /* Subtle luxury shadow */
+            box-shadow:
+                0 2px 4px rgba(0, 0, 0, 0.06),
+                0 8px 24px rgba(0, 0, 0, 0.10),
+                0 24px 64px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ============================================================
+     HEADER — spans full width, dark ground with name
+  ============================================================ */
+
+        .resume-header {
+            grid-column: 1 / -1;
+            background: var(--color-sidebar);
+            padding: 36px var(--page-pad) 30px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle texture stripe */
+        .resume-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-gold) 0%, var(--color-gold-light) 50%, var(--color-gold) 100%);
+        }
+
+        /* ---- Avatar ---- */
+        .header-avatar {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            border: 2.5px solid var(--color-gold);
+            object-fit: cover;
+            object-position: center top;
+            flex-shrink: 0;
+            background: var(--color-sidebar-2);
+            display: block;
+        }
+
+        /* Avatar fallback initials ring */
+        .header-avatar-initials {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            border: 2.5px solid var(--color-gold);
+            background: var(--color-sidebar-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-family: var(--font-display);
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--color-gold);
+            letter-spacing: 0.04em;
+        }
+
+        /* ---- Name + title block ---- */
+        .header-identity {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .header-name {
+            font-family: var(--font-display);
+            font-size: 4.0rem;
+            font-weight: 300;
+            letter-spacing: 0.06em;
+            color: #FDFBF8;
+            line-height: 1.0;
+            text-transform: uppercase;
+        }
+
+        .header-name strong {
+            font-weight: 500;
+        }
+
+        .header-title {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--color-gold-light);
+            margin-top: 6px;
+        }
+
+        /* ---- Contact strip ---- */
+        .header-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-end;
+            min-width: 180px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 1.05rem;
+            color: #C8C4BC;
+            text-decoration: none;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+
+        .contact-item:hover {
+            color: var(--color-gold-light);
+        }
+
+        .contact-dot {
+            width: 3px;
+            height: 3px;
+            background: var(--color-gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ============================================================
+     SIDEBAR (left column under header)
+  ============================================================ */
+
+        .resume-sidebar {
+            background: var(--color-sidebar);
+            padding: 32px 24px 48px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-section);
+        }
+
+        /* ---- Sidebar section heading ---- */
+        .sidebar-section-title {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.20em;
+            text-transform: uppercase;
+            color: var(--color-gold);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 0.5px solid rgba(180, 150, 90, 0.30);
+        }
+
+        /* ---- Skills ---- */
+        .skill-group {
+            margin-bottom: 12px;
+        }
+
+        .skill-group-label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #A09D97;
+            letter-spacing: 0.04em;
+            margin-bottom: 5px;
+            font-family: var(--font-body);
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .skill-tag {
+            font-size: 0.90rem;
+            font-weight: 300;
+            color: #D4CFC8;
+            background: rgba(255, 255, 255, 0.05);
+            border: 0.5px solid rgba(255, 255, 255, 0.10);
+            padding: 2px 8px;
+            border-radius: 2px;
+            letter-spacing: 0.02em;
+            font-family: var(--font-body);
+            line-height: 1.6;
+        }
+
+        /* ---- Bar rating (languages / proficiency) ---- */
+        .bar-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            gap: 10px;
+        }
+
+        .bar-label {
+            font-size: 1.0rem;
+            font-weight: 300;
+            color: #C8C4BC;
+            font-family: var(--font-body);
+            min-width: 70px;
+            letter-spacing: 0.02em;
+        }
+
+        .bar-level {
+            font-size: 0.80rem;
+            font-weight: 300;
+            color: var(--color-ink-4);
+            font-family: var(--font-body);
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 1px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--color-gold);
+            border-radius: 1px;
+        }
+
+        /* ---- Education (sidebar) ---- */
+        .edu-item {
+            margin-bottom: 14px;
+        }
+
+        .edu-degree {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 400;
+            color: #EAE6E0;
+            line-height: 1.25;
+            margin-bottom: 2px;
+        }
+
+        .edu-field {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: var(--color-gold-light);
+            font-family: var(--font-body);
+            letter-spacing: 0.02em;
+        }
+
+        .edu-school {
+            font-size: 0.95rem;
+            font-weight: 400;
+            color: #A09D97;
+            font-family: var(--font-body);
+            margin-top: 2px;
+        }
+
+        .edu-year {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: #706D66;
+            font-family: var(--font-body);
+            margin-top: 2px;
+            letter-spacing: 0.06em;
+        }
+
+        /* ---- Sidebar list items (certs, awards, interests) ---- */
+        .sidebar-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .sidebar-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: #C8C4BC;
+            font-family: var(--font-body);
+            line-height: 1.45;
+        }
+
+        .sidebar-list li::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--color-gold);
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-list .list-sub {
+            font-size: 0.82rem;
+            color: #706D66;
+            display: block;
+            margin-top: 1px;
+            letter-spacing: 0.04em;
+        }
+
+        /* ============================================================
+     MAIN CONTENT (right column)
+  ============================================================ */
+
+        .resume-main {
+            padding: 32px 40px 48px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-section);
+        }
+
+        /* ---- Main section heading ---- */
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 1.80rem;
+            font-weight: 300;
+            letter-spacing: 0.10em;
+            color: var(--color-ink);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 0.5px;
+            background: var(--color-rule);
+        }
+
+        /* Accent bar left of section */
+        .section-block {
+            position: relative;
+        }
+
+        /* ============================================================
+     SUMMARY
+  ============================================================ */
+
+        .summary-text {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            font-weight: 300;
+            color: var(--color-ink-2);
+            line-height: 1.65;
+            font-style: italic;
+            letter-spacing: 0.015em;
+            padding-left: 16px;
+            border-left: 2px solid var(--color-gold);
+        }
+
+        /* ============================================================
+     EXPERIENCE
+  ============================================================ */
+
+        .exp-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-item);
+        }
+
+        .exp-item {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+            padding-bottom: var(--gap-item);
+            border-bottom: 0.5px solid var(--color-rule-light);
+            position: relative;
+        }
+
+        .exp-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .exp-role {
+            font-family: var(--font-display);
+            font-size: 1.55rem;
+            font-weight: 500;
+            color: var(--color-ink);
+            line-height: 1.2;
+        }
+
+        .exp-date {
+            font-family: var(--font-body);
+            font-size: 0.90rem;
+            font-weight: 300;
+            color: var(--color-gold);
+            letter-spacing: 0.08em;
+            white-space: nowrap;
+            background: var(--color-gold-bg);
+            padding: 2px 8px;
+            border-radius: 1px;
+        }
+
+        .exp-company {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-body);
+            font-size: 1.0rem;
+            font-weight: 500;
+            color: var(--color-ink-2);
+            letter-spacing: 0.03em;
+            margin-top: 1px;
+        }
+
+        .exp-company-location {
+            font-weight: 300;
+            color: var(--color-ink-4);
+            font-size: 0.90rem;
+            letter-spacing: 0.01em;
+        }
+
+        .exp-bullets {
+            margin-top: 6px;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 12px;
+        }
+
+        .exp-bullets li {
+            font-family: var(--font-body);
+            font-size: 1.0rem;
+            font-weight: 300;
+            color: var(--color-ink-2);
+            line-height: 1.55;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .exp-bullets li::before {
+            content: '–';
+            position: absolute;
+            left: 0;
+            color: var(--color-gold);
+            font-weight: 400;
+        }
+
+        /* ============================================================
+     PROJECTS
+  ============================================================ */
+
+        .projects-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .project-item {
+            background: #F7F3EC;
+            border-left: 2px solid var(--color-gold);
+            padding: 12px 14px;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .project-name {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: var(--color-ink);
+        }
+
+        .project-stack {
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 400;
+            color: var(--color-gold);
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+        }
+
+        .project-desc {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: var(--color-ink-2);
+            line-height: 1.55;
+        }
+
+        /* ============================================================
+     REFERENCES
+  ============================================================ */
+
+        .references-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .reference-card {
+            border: 0.5px solid var(--color-rule);
+            border-radius: 2px;
+            padding: 12px 14px;
+            background: #FDFBF8;
+        }
+
+        .reference-name {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--color-ink);
+            margin-bottom: 1px;
+        }
+
+        .reference-title {
+            font-family: var(--font-body);
+            font-size: 0.90rem;
+            font-weight: 400;
+            color: var(--color-ink-3);
+            margin-bottom: 1px;
+        }
+
+        .reference-company {
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            font-weight: 300;
+            color: var(--color-gold);
+            letter-spacing: 0.04em;
+            margin-bottom: 5px;
+        }
+
+        .reference-contact {
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            font-weight: 300;
+            color: var(--color-ink-4);
+        }
+
+        /* ============================================================
+     PRINT STYLES — A4, no chrome, page breaks respected
+  ============================================================ */
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+
+            html {
+                font-size: 9.5px;
+            }
+
+            body {
+                background: white;
+            }
+
+            .resume-page {
+                width: 210mm;
+                min-height: 297mm;
+                margin: 0;
+                box-shadow: none;
+                page-break-inside: auto;
+            }
+
+            .exp-item,
+            .project-item,
+            .edu-item {
+                page-break-inside: avoid;
+            }
+
+            .resume-header::after {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            /* Ensure dark backgrounds print */
+            .resume-sidebar,
+            .resume-header {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+
+        /* ============================================================
+     BROWSER PREVIEW CHROME (hidden on print)
+  ============================================================ */
+
+        @media screen {
+            .print-hint {
+                text-align: center;
+                font-family: var(--font-body);
+                font-size: 0.9rem;
+                color: #7A756E;
+                padding: 12px 0 28px;
+                letter-spacing: 0.06em;
+            }
+        }
+
+        @media print {
+            .print-hint {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <p class="print-hint" aria-hidden="true">↑ PREVIEW — FILE → PRINT for PDF export (A4, No Margins)</p>
+
+    <!-- ============================================================
+     RESUME DOCUMENT ROOT
+     Semantic: <article> + <header> for ATS logical reading order
+============================================================ -->
+    <article class="resume-page" role="main" aria-label="Resume">
+
+        <!-- ====================================================
+       HEADER — Name, title, avatar, contact
+  ==================================================== -->
+        <header class="resume-header">
+
+            <!-- Profile photo: swap src to a real image URL or upload.
+         If no photo, replace with .header-avatar-initials div below -->
+            <img class="header-avatar"
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+                alt="Profile photo of Jordan A. Mitchell"
+                onerror="this.style.display='none'; document.getElementById('avatar-initials').style.display='flex';" />
+            <!-- Fallback initials ring — shown if photo fails to load -->
+            <div class="header-avatar-initials" id="avatar-initials" style="display:none;" aria-hidden="true">JM</div>
+
+            <div class="header-identity">
+                <h1 class="header-name">
+                    Jordan <strong>Mitchell</strong>
+                </h1>
+                <p class="header-title">Senior Product Designer &amp; UX Strategist</p>
+            </div>
+
+            <address class="header-contact" aria-label="Contact information">
+                <a href="mailto:jordan.mitchell@email.com" class="contact-item">
+                    <span class="contact-dot" aria-hidden="true"></span>
+                    jordan.mitchell@email.com
+                </a>
+                <a href="tel:+14155550192" class="contact-item">
+                    <span class="contact-dot" aria-hidden="true"></span>
+                    +1 (415) 555-0192
+                </a>
+                <span class="contact-item">
+                    <span class="contact-dot" aria-hidden="true"></span>
+                    San Francisco, CA
+                </span>
+                <a href="https://linkedin.com/in/jordanmitchell" class="contact-item">
+                    <span class="contact-dot" aria-hidden="true"></span>
+                    linkedin.com/in/jordanmitchell
+                </a>
+                <a href="https://jordanmitchell.design" class="contact-item">
+                    <span class="contact-dot" aria-hidden="true"></span>
+                    jordanmitchell.design
+                </a>
+            </address>
+
+        </header>
+
+
+        <!-- ====================================================
+       SIDEBAR — Skills, Education, Languages, Certifications,
+                 Awards, Interests
+  ==================================================== -->
+        <aside class="resume-sidebar" aria-label="Skills and background">
+
+            <!-- SKILLS -->
+            <section aria-labelledby="skills-heading">
+                <h2 class="sidebar-section-title" id="skills-heading">Skills</h2>
+
+                <div class="skill-group">
+                    <p class="skill-group-label">Design</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Figma</span>
+                        <span class="skill-tag">Prototyping</span>
+                        <span class="skill-tag">Design Systems</span>
+                        <span class="skill-tag">User Research</span>
+                        <span class="skill-tag">Wireframing</span>
+                        <span class="skill-tag">Accessibility</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <p class="skill-group-label">Frontend</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">HTML / CSS</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">TypeScript</span>
+                        <span class="skill-tag">Storybook</span>
+                        <span class="skill-tag">Tailwind</span>
+                    </div>
+                </div>
+
+                <div class="skill-group">
+                    <p class="skill-group-label">Strategy</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">OKRs</span>
+                        <span class="skill-tag">Roadmapping</span>
+                        <span class="skill-tag">Stakeholder Mgmt</span>
+                        <span class="skill-tag">A/B Testing</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EDUCATION -->
+            <section aria-labelledby="education-heading">
+                <h2 class="sidebar-section-title" id="education-heading">Education</h2>
+
+                <div class="edu-item">
+                    <p class="edu-degree">Master of Design</p>
+                    <p class="edu-field">Human–Computer Interaction</p>
+                    <p class="edu-school">Carnegie Mellon University</p>
+                    <p class="edu-year">2016 – 2018</p>
+                </div>
+
+                <div class="edu-item">
+                    <p class="edu-degree">B.S. Computer Science</p>
+                    <p class="edu-field">Minor in Psychology</p>
+                    <p class="edu-school">University of Michigan</p>
+                    <p class="edu-year">2012 – 2016 · GPA 3.85</p>
+                </div>
+            </section>
+
+            <!-- LANGUAGES -->
+            <section aria-labelledby="languages-heading">
+                <h2 class="sidebar-section-title" id="languages-heading">Languages</h2>
+
+                <div class="bar-item">
+                    <span class="bar-label">English</span>
+                    <div class="bar-track" role="progressbar" aria-valuenow="100" aria-label="Native">
+                        <div class="bar-fill" style="width:100%"></div>
+                    </div>
+                    <span class="bar-level">Native</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">French</span>
+                    <div class="bar-track" role="progressbar" aria-valuenow="75" aria-label="Fluent">
+                        <div class="bar-fill" style="width:75%"></div>
+                    </div>
+                    <span class="bar-level">Fluent</span>
+                </div>
+                <div class="bar-item">
+                    <span class="bar-label">Spanish</span>
+                    <div class="bar-track" role="progressbar" aria-valuenow="50" aria-label="Intermediate">
+                        <div class="bar-fill" style="width:50%"></div>
+                    </div>
+                    <span class="bar-level">Inter.</span>
+                </div>
+            </section>
+
+            <!-- CERTIFICATIONS -->
+            <section aria-labelledby="certifications-heading">
+                <h2 class="sidebar-section-title" id="certifications-heading">Certifications</h2>
+                <ul class="sidebar-list">
+                    <li>
+                        Google UX Design Certificate
+                        <span class="list-sub">Google · 2023</span>
+                    </li>
+                    <li>
+                        AWS Certified Developer
+                        <span class="list-sub">Amazon Web Services · 2022</span>
+                    </li>
+                    <li>
+                        Certified Scrum Product Owner
+                        <span class="list-sub">Scrum Alliance · 2021</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- AWARDS -->
+            <section aria-labelledby="awards-heading">
+                <h2 class="sidebar-section-title" id="awards-heading">Awards</h2>
+                <ul class="sidebar-list">
+                    <li>
+                        Webby Award — Best UX
+                        <span class="list-sub">2023</span>
+                    </li>
+                    <li>
+                        Fast Company Innovation by Design
+                        <span class="list-sub">Finalist · 2022</span>
+                    </li>
+                    <li>
+                        SXSW Design Award
+                        <span class="list-sub">Honorable Mention · 2021</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- INTERESTS -->
+            <section aria-labelledby="interests-heading">
+                <h2 class="sidebar-section-title" id="interests-heading">Interests</h2>
+                <ul class="sidebar-list">
+                    <li>Generative art &amp; creative coding</li>
+                    <li>Jazz piano performance</li>
+                    <li>Alpine climbing &amp; trail running</li>
+                    <li>Open-source design tooling</li>
+                </ul>
+            </section>
+
+        </aside>
+
+
+        <!-- ====================================================
+       MAIN — Summary, Experience, Projects, References
+  ==================================================== -->
+        <main class="resume-main">
+
+            <!-- PROFESSIONAL SUMMARY -->
+            <section class="section-block" aria-labelledby="summary-heading">
+                <h2 class="section-title" id="summary-heading">Profile</h2>
+                <blockquote class="summary-text">
+                    Senior Product Designer with 8+ years crafting end-to-end digital experiences for
+                    FAANG-scale platforms and venture-backed startups. Led design for products used by
+                    over 40 million people, reduced churn by 34% through research-driven redesigns,
+                    and built design systems adopted across 12 engineering teams.
+                </blockquote>
+            </section>
+
+            <!-- EXPERIENCE -->
+            <section class="section-block" aria-labelledby="experience-heading">
+                <h2 class="section-title" id="experience-heading">Experience</h2>
+
+                <ol class="exp-list" reversed>
+
+                    <li class="exp-item">
+                        <div class="exp-header">
+                            <h3 class="exp-role">Principal Product Designer</h3>
+                            <time class="exp-date">Jan 2022 – Present</time>
+                        </div>
+                        <p class="exp-company">
+                            Stripe
+                            <span class="exp-company-location">· San Francisco, CA</span>
+                        </p>
+                        <ul class="exp-bullets">
+                            <li>Led redesign of the Stripe Dashboard, increasing task completion rate by 28% across 3M+
+                                daily active users.</li>
+                            <li>Established a scalable design system (Sail) adopted by 200+ engineers, cutting
+                                design-to-dev handoff time by 40%.</li>
+                            <li>Owned end-to-end UX for Stripe Tax launch, driving adoption to $2B in processed revenue
+                                in Year 1.</li>
+                            <li>Partnered with product and data science to define north-star metrics and quarterly OKRs
+                                for the merchant growth team.</li>
+                        </ul>
+                    </li>
+
+                    <li class="exp-item">
+                        <div class="exp-header">
+                            <h3 class="exp-role">Senior UX Designer</h3>
+                            <time class="exp-date">Mar 2019 – Dec 2021</time>
+                        </div>
+                        <p class="exp-company">
+                            Airbnb
+                            <span class="exp-company-location">· San Francisco, CA</span>
+                        </p>
+                        <ul class="exp-bullets">
+                            <li>Redesigned the host onboarding flow, reducing drop-off by 34% and adding 120K new
+                                listings in 6 months.</li>
+                            <li>Spearheaded accessibility initiatives that brought iOS and Android apps to WCAG AA
+                                compliance.</li>
+                            <li>Mentored a team of 5 mid-level designers through weekly design critiques and structured
+                                growth frameworks.</li>
+                        </ul>
+                    </li>
+
+                    <li class="exp-item">
+                        <div class="exp-header">
+                            <h3 class="exp-role">Product Designer</h3>
+                            <time class="exp-date">Jun 2018 – Feb 2019</time>
+                        </div>
+                        <p class="exp-company">
+                            Figma
+                            <span class="exp-company-location">· San Francisco, CA</span>
+                        </p>
+                        <ul class="exp-bullets">
+                            <li>Designed the FigJam whiteboard product from concept to beta, reaching 500K users within
+                                3 months of launch.</li>
+                            <li>Worked directly with co-founders to define design principles and brand voice for a team
+                                of 80 people.</li>
+                        </ul>
+                    </li>
+
+                </ol>
+            </section>
+
+            <!-- PROJECTS -->
+            <section class="section-block" aria-labelledby="projects-heading">
+                <h2 class="section-title" id="projects-heading">Projects</h2>
+
+                <div class="projects-grid">
+
+                    <article class="project-item">
+                        <div class="project-header">
+                            <h3 class="project-name">DesignOS — Open Design System</h3>
+                            <span class="project-stack">Figma · React · Storybook</span>
+                        </div>
+                        <p class="project-desc">
+                            A fully documented, open-source design system with 200+ components, dark mode,
+                            and accessibility built in. 3K+ GitHub stars, used by 80 companies worldwide.
+                        </p>
+                    </article>
+
+                    <article class="project-item">
+                        <div class="project-header">
+                            <h3 class="project-name">Paleta — AI Color Accessibility Tool</h3>
+                            <span class="project-stack">Next.js · Claude API</span>
+                        </div>
+                        <p class="project-desc">
+                            AI-powered palette generator that ensures WCAG AA/AAA contrast ratios automatically.
+                            Featured in Product Hunt #1 of the day; 18K monthly active users.
+                        </p>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- REFERENCES -->
+            <section class="section-block" aria-labelledby="references-heading">
+                <h2 class="section-title" id="references-heading">References</h2>
+
+                <div class="references-grid">
+
+                    <div class="reference-card">
+                        <p class="reference-name">Elena Vasquez</p>
+                        <p class="reference-title">VP of Design</p>
+                        <p class="reference-company">Stripe</p>
+                        <p class="reference-contact">elena.vasquez@stripe.com</p>
+                    </div>
+
+                    <div class="reference-card">
+                        <p class="reference-name">Marcus Loh</p>
+                        <p class="reference-title">Head of Product</p>
+                        <p class="reference-company">Airbnb</p>
+                        <p class="reference-contact">marcus.loh@airbnb.com</p>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+    </article>
+
+</body>
+
+</html>

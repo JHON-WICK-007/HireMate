@@ -62,6 +62,7 @@ export const TextInput: React.FC<TextInputProps> = ({
         <input
           className={`${styles.input} ${className}`}
           required={required}
+          autoComplete="off"
           {...props}
         />
         {showSuccess && props.value && !error && (
@@ -204,6 +205,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
         <div className="absolute left-4 pointer-events-none">{getIcon()}</div>
         <input
           className={`${styles.input} pl-10 ${className}`}
+          autoComplete="off"
           {...props}
         />
       </div>
@@ -251,6 +253,7 @@ export const ChipInput: React.FC<ChipInputProps> = ({
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
+        autoComplete="off"
       />
       <div className={styles.chipContainer}>
         {value.map((item, idx) => (
@@ -304,8 +307,7 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
   };
 
   return (
-    <div className={styles.formGroup}>
-      <label className={styles.label}>Profile Image</label>
+    <div className="flex flex-col items-center gap-2">
       <div
         className={styles.avatarWrap}
         onClick={() => fileInputRef.current?.click()}
@@ -339,6 +341,7 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
           onChange={handleFileChange}
         />
       </div>
+      <label className={styles.label}>Profile Image</label>
     </div>
   );
 };

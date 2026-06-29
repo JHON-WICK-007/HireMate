@@ -32,21 +32,34 @@
 .sidebarColumn {
   width: 84px;
   background: transparent;
-  border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  justify-content: center;
+  padding: 0;
+  overflow: visible;
   position: relative;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  z-index: 10;
 }
 
-.sidebarColumn::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+.sidebarColumn::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 460px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--border-subtle) 15%,
+    var(--border-subtle) 85%,
+    transparent 100%
+  );
 }
+
+
 
 /* ─── Column 2: Step Form Panel ─── */
 .formPanel {
@@ -76,11 +89,28 @@
 .previewColumn {
   width: 420px;
   background: transparent;
-  border-left: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: relative;
+}
+
+.previewColumn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--border-subtle) 5%,
+    var(--border-subtle) 95%,
+    transparent 100%
+  );
 }
 
 /* ─── Form Elements Styling (Matching Contact Form Card) ─── */
@@ -227,18 +257,39 @@
   background: rgba(0, 0, 0, 0.08);
 }
 
+
+
+[data-theme="light"] .tooltipText {
+  background: #ffffff;
+  color: #1a1a1a;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .tooltipText::before {
+  border-right-color: #ffffff;
+}
+
 .sidebarItem {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
-  margin-bottom: 1.15rem;
+  margin-bottom: 0.6rem;
   z-index: 2;
   cursor: pointer;
   background: transparent;
   border: none;
   outline: none;
+  position: relative;
+  padding: 0.3rem 0;
+  transition: opacity var(--transition-fast);
+}
+
+.sidebarItem:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .stepIconContainer {
@@ -248,37 +299,59 @@
   align-items: center;
   justify-content: center;
   color: var(--text-secondary);
-  transition: all var(--transition-base);
+  transition: color var(--transition-base);
+  position: relative;
 }
 
 .stepIconActive {
-  color: var(--domain-resume); /* Cyan accent */
-  filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.45));
+  color: #f97316;
+  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.45));
 }
 
 .stepIconComplete {
   color: var(--success);
 }
 
-.stepLabel {
-  font-size: 8px;
+/* ─── Tooltip ─── */
+.tooltipWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tooltipText {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1a1a1e;
+  color: #e5e5e5;
+  font-size: 11px;
   font-weight: 500;
-  margin-top: 3px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  transition: color var(--transition-base);
-  text-align: center;
+  padding: 4px 10px;
+  border-radius: 6px;
   white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 50;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-.stepLabelActive {
-  color: var(--domain-resume);
-  font-weight: 600;
+.tooltipText::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: #1a1a1e;
 }
 
-.stepLabelComplete {
-  color: var(--success);
+.sidebarItem:hover .tooltipText {
+  opacity: 1;
 }
 
 /* ─── Navigation Buttons ─── */
@@ -334,6 +407,13 @@
 
 .btnContinue:active {
   transform: scale(0.98);
+}
+
+.btnContinue:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
 }
 
 /* ─── Repeatable Entry Card (Experience, Education etc.) ─── */

@@ -121,88 +121,35 @@ const generateId = () => Math.random().toString(36).substring(2, 9);
 
 const initialPersonalInfo: PersonalInfo = {
   profilePicture: "",
-  firstName: "DANIEL",
-  surname: "GALLEGO",
-  city: "Any City",
-  country: "India",
-  pinCode: "110034",
-  phone: "+91 11 1234 5677",
-  email: "hello@reallygreatsite.com",
+  firstName: "",
+  surname: "",
+  city: "",
+  country: "",
+  pinCode: "",
+  phone: "",
+  email: "",
   linkedinUrl: "",
   githubUrl: "",
   portfolioUrl: "",
 };
 
-const initialSummary =
-  "UI/UX Designer with a focus on delivering impactful results, eager to tackle dynamic challenges and apply creativity to craft intuitive user experiences. Passionate about user-centric problem-solving and seamless visual execution.";
+const initialSummary = "";
 
-const initialExperiences: ExperienceEntry[] = [
-  {
-    id: "exp-1",
-    company: "Studio 1",
-    role: "Lead UI Designer",
-    location: "Any City, India",
-    employmentType: "Full-time",
-    startDate: { month: 1, year: 2024 },
-    endDate: { month: null, year: null },
-    isCurrent: true,
-    description: "• Led development of design systems and responsive layouts\n• Collaborated with engineering teams to ensure pixel-perfect design translation\n• Streamlined asset handover process, reducing development turnaround by 25%",
-  },
-];
+const initialExperiences: ExperienceEntry[] = [];
 
-const initialEducations: EducationEntry[] = [
-  {
-    id: "edu-1",
-    institution: "University of Tech",
-    degree: "Bachelor of Design",
-    fieldOfStudy: "Interaction Design",
-    grade: "8.5 CGPA",
-    location: "Any City",
-    startDate: { month: 7, year: 2020 },
-    endDate: { month: 5, year: 2024 },
-    isCurrent: false,
-    description: "",
-  },
-];
+const initialEducations: EducationEntry[] = [];
 
-const initialSkills: SkillEntry[] = [
-  { id: "sk-1", name: "Figma", category: "Design Tools", proficiency: "expert" },
-  { id: "sk-2", name: "UI Design", category: "Design Tools", proficiency: "expert" },
-  { id: "sk-3", name: "UX Research", category: "Design Tools", proficiency: "advanced" },
-  { id: "sk-4", name: "Framer", category: "Frontend", proficiency: "intermediate" },
-  { id: "sk-5", name: "Tailwind CSS", category: "Frontend", proficiency: "advanced" },
-];
+const initialSkills: SkillEntry[] = [];
 
-const initialProjects: ProjectEntry[] = [
-  {
-    id: "proj-1",
-    name: "Portfolio Website",
-    description: "Personal portfolio website showing case studies and interactions.",
-    technologies: ["React", "Next.js", "Framer Motion", "Tailwind CSS"],
-    githubUrl: "https://github.com",
-    liveDemoUrl: "https://example.com",
-    role: "Lead Designer & Developer",
-  },
-];
+const initialProjects: ProjectEntry[] = [];
 
-const initialCertifications: CertificationEntry[] = [
-  {
-    id: "cert-1",
-    name: "Advanced Interaction Design",
-    organization: "Interaction Design Foundation",
-    issueDate: { month: 11, year: 2024 },
-    expiryDate: { month: null, year: null },
-    noExpiry: true,
-    credentialId: "IDF-12345",
-    credentialUrl: "https://interaction-design.org",
-  },
-];
+const initialCertifications: CertificationEntry[] = [];
 
 export const useResumeStore = create<ResumeStore>((set) => ({
   currentStep: 1,
   selectedTemplate: "modern",
   selectedTemplateId: 1,
-  selectedColor: "#1f2937", // Default Dark Gray/Black
+  selectedColor: "#B87333",
   personalInfo: initialPersonalInfo,
   summary: initialSummary,
   experiences: initialExperiences,
@@ -377,6 +324,8 @@ export const useResumeStore = create<ResumeStore>((set) => ({
     setSelectedTemplateId: (id) => set({ selectedTemplateId: id }),
     setSelectedColor: (color) => set({ selectedColor: color }),
     loadFromProfile: (profile: any) => set((state) => {
+      if (!profile) return {};
+
       const nameParts = (profile.fullName || "").trim().split(/\s+/);
       const firstName = nameParts[0] || "";
       const surname = nameParts.slice(1).join(" ") || "";
@@ -443,22 +392,24 @@ export const useResumeStore = create<ResumeStore>((set) => ({
 
       return {
         personalInfo: {
-          profilePicture: profile.avatar || "",
-          firstName,
-          surname,
-          city: "",
-          country: "",
-          pinCode: "",
-          phone: profile.phone || "",
-          email: profile.email || "",
-          linkedinUrl: "",
-          githubUrl: "",
-          portfolioUrl: ""
+          profilePicture: profile.avatar || state.personalInfo.profilePicture || "",
+          firstName: firstName || state.personalInfo.firstName || "",
+          surname: surname || state.personalInfo.surname || "",
+          city: state.personalInfo.city || "",
+          country: state.personalInfo.country || "",
+          pinCode: state.personalInfo.pinCode || "",
+          phone: profile.phone || state.personalInfo.phone || "",
+          email: profile.email || state.personalInfo.email || "",
+          linkedinUrl: state.personalInfo.linkedinUrl || "",
+          githubUrl: state.personalInfo.githubUrl || "",
+          portfolioUrl: state.personalInfo.portfolioUrl || ""
         },
-        summary: profile.bio || "",
+        summary: profile.bio || state.summary || "",
         experiences: experiences.length > 0 ? experiences : state.experiences,
         educations: educations.length > 0 ? educations : state.educations,
-        skills: skills.length > 0 ? skills : state.skills
+        skills: skills.length > 0 ? skills : state.skills,
+        projects: state.projects,
+        certifications: state.certifications
       };
     }),
   },
