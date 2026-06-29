@@ -52,7 +52,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   const displayLinkedin = personalInfo.linkedinUrl || "linkedin.com/in/alexchen";
   const displayGithub = personalInfo.githubUrl || "github.com/alexchen-dev";
   const displayPortfolio = personalInfo.portfolioUrl || "alexchen.io";
-  
+
   const displayTitle = experiences[0]?.role || "Principal Software Engineer";
   const displayTagline = "Building systems at scale — from 0 to 200 million users";
 
@@ -2179,7 +2179,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
             )}
             <h1 className="name-heading">{displayFirst} {displayLast}</h1>
             <p className="title-sub">{displayTitle}</p>
-            
+
             <div className="contact-list">
               {displayEmail && (
                 <div className="contact-item">
@@ -2212,7 +2212,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
               </div>
             )}
           </div>
-          
+
           <div className="right-col">
             {displaySummary && (
               <section className="content-section">
@@ -2333,7 +2333,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
               </p>
             </div>
           </div>
-          
+
           <div className="contact-grid">
             {displayEmail && <div>EMAIL: {displayEmail}</div>}
             {displayPhone && <div>PHONE: {displayPhone}</div>}
@@ -2496,7 +2496,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
               )}
             </div>
           </div>
-          
+
           {displaySummary && (
             <>
               <h2 className="sec-title">Profile</h2>
@@ -2636,9 +2636,9 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
           <header className="resume-header">
             <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
               {personalInfo.profilePicture && (
-                <img 
-                  src={personalInfo.profilePicture} 
-                  alt={`${displayFirst} ${displayLast}`} 
+                <img
+                  src={personalInfo.profilePicture}
+                  alt={`${displayFirst} ${displayLast}`}
                   className="resume-profile-pic"
                 />
               )}
@@ -2850,9 +2850,9 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
         <header className="resume-header">
           <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
             {personalInfo.profilePicture && (
-              <img 
-                src={personalInfo.profilePicture} 
-                alt={`${displayFirst} ${displayLast}`} 
+              <img
+                src={personalInfo.profilePicture}
+                alt={`${displayFirst} ${displayLast}`}
                 className="resume-profile-pic"
               />
             )}
@@ -3177,10 +3177,13 @@ export const LivePreviewPanel: React.FC = () => {
           <div className="fixed inset-0 bg-white/20 backdrop-blur-lg z-[99999] flex flex-col animate-fadeIn select-none">
             {/* Top black header bar */}
             <div className="w-full h-9 bg-black border-b border-[#27272a] px-4 flex items-center justify-between">
-              <div className="text-xs font-sans font-medium text-gray-400">
+              {/* Left Side: Preview Mode label moved inwards to the right */}
+              <div className="text-xs font-sans font-medium text-gray-400 pl-[12px]">
                 Preview Mode
               </div>
-              <div className="flex items-center gap-3">
+
+              {/* Right Side: Change template & Close button moved inwards to the left */}
+              <div className="flex items-center gap-3 pr-[12px]">
                 <button
                   type="button"
                   className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold text-gray-300 hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
@@ -3195,7 +3198,7 @@ export const LivePreviewPanel: React.FC = () => {
                 <div className="w-px h-4 bg-[#27272a]" />
                 <button
                   type="button"
-                  className="text-gray-400 hover:text-white transition-colors cursor-pointer p-0.5 rounded hover:bg-white/5 active:scale-95"
+                  className="text-gray-400 hover:text-white transition-colors cursor-pointer p-0.5 rounded hover:bg-white/5 active:scale-95 flex items-center"
                   onClick={() => setIsZoomOpen(false)}
                   aria-label="Close Preview"
                 >
