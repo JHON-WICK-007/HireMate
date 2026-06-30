@@ -3772,3 +3772,7 @@ his
     transform: translate3d(-50%, 0, 0);
   }
 }
+
+.logoTickerItemAnthropic svg {
+  height: 3.2rem;
+}
