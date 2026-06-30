@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "./components/Toast";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -42,6 +43,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
+                history.scrollRestoration = "manual";
                 document.documentElement.setAttribute('data-theme', 'dark');
                 if (localStorage.getItem('token')) {
                   document.documentElement.classList.add('auth-logged-in');
@@ -60,6 +62,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <ScrollToTop />
         <ToastProvider>
           {children}
         </ToastProvider>

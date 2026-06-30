@@ -1,14 +1,23 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, FormEvent, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { motion } from "framer-motion";
 import styles from "./profile.module.css";
-import nav from "../home.module.css";
 import { useToast } from "../components/Toast";
 import SiteFooter from "../components/SiteFooter";
 import HomeBackdrop from "../components/HomeBackdrop";
 import Navbar from "../components/Navbar";
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } }
+};
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -111,28 +120,13 @@ const IconBuilding = () => (
 export default function ProfilePage() {
   const router = useRouter();
   const toast = useToast();
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState<string | null>(null);
 
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [fullName, setFullName] = useState("");
-  const [scrolled, setScrolled] = useState(false);
-  const [navHidden, setNavHidden] = useState(false);
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const lastScrollY = useRef(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 20);
-      setNavHidden(y > lastScrollY.current && y > 80);
-      lastScrollY.current = y;
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const [mounted, setMounted] = useState(false);
 
   const [phone, setPhone] = useState("");
   const [bio, setBio] = useState("");
@@ -150,8 +144,6 @@ export default function ProfilePage() {
   // Section edit states
   const [editing, setEditing] = useState({ personal: false, skills: false, experience: false, education: false, goals: false });
 
-  const [mounted, setMounted] = useState(false);
-
   // ── Load from cache BEFORE browser paints (no flicker) ──
   useLayoutEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -162,7 +154,6 @@ export default function ProfilePage() {
         setPhone(u.phone || ""); setBio(u.bio || ""); setSkills(u.skills || []);
         setExperienceList(u.experience || []); setEducationList(u.education || []);
         setCareerGoal(u.careerGoal || ""); setTargetRole(u.targetRole || ""); setTargetCompany(u.targetCompany || "");
-        setIsLoading(false);
       } catch (e) { }
     }
   }, []);
@@ -179,7 +170,6 @@ export default function ProfilePage() {
         setPhone(u.phone || ""); setBio(u.bio || ""); setSkills(u.skills || []);
         setExperienceList(u.experience || []); setEducationList(u.education || []);
         setCareerGoal(u.careerGoal || ""); setTargetRole(u.targetRole || ""); setTargetCompany(u.targetCompany || "");
-        setIsLoading(false);
       } catch (e) { }
     }
     fetch(`${API_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` }, credentials: "include" })
@@ -198,8 +188,7 @@ export default function ProfilePage() {
           router.push("/auth?mode=signin");
         }
       })
-      .catch(() => toast.error("Failed to load profile."))
-      .finally(() => setIsLoading(false));
+      .catch(() => toast.error("Failed to load profile."));
   }, []);
 
   const save = async (section: keyof typeof editing, payload: Record<string, unknown>) => {
@@ -277,9 +266,9 @@ export default function ProfilePage() {
       {/* ── Navbar (same as home) ── */}
       <Navbar />
 
-      <div className={styles.layout}>
+      <motion.div className={styles.layout} variants={staggerContainer} initial="hidden" animate="visible">
           {/* ── Left: Profile Card ── */}
-          <aside className={styles.profileCard}>
+          <motion.aside className={styles.profileCard} variants={cardVariant}>
             {/* Avatar */}
             <div className={styles.avatarWrap} onClick={() => !isUploadingAvatar && document.getElementById("avatarInput")?.click()}>
               {avatar
@@ -339,13 +328,13 @@ export default function ProfilePage() {
             >
               <IconLogOut />Sign Out
             </button>
-          </aside>
+          </motion.aside>
 
           {/* ── Right: Sections ── */}
-          <main className={styles.sections}>
+          <motion.main className={styles.sections} variants={staggerContainer} initial="hidden" animate="visible">
 
             {/* ── Personal Info ── */}
-            <section className={styles.section}>
+            <motion.section className={styles.section} variants={cardVariant}>
               <div className={styles.sectionHead}>
                 <div className={styles.sectionTitle}><IconUser /><h2>Personal Information</h2></div>
                 {!editing.personal
@@ -376,10 +365,10 @@ export default function ProfilePage() {
                   <div className={styles.field + " " + styles.span2}><label>Bio <span className={styles.charHint} style={bio.length >= 480 ? { color: bio.length >= 500 ? "#ef4444" : "#f59e0b" } : undefined}>{bio.length}/500</span></label><textarea className={styles.textarea} value={bio} onChange={e => setBio(e.target.value)} rows={5} maxLength={500} placeholder="Brief professional summary…" />{bio.length >= 480 && <span style={{ color: bio.length >= 500 ? "#ef4444" : "#f59e0b", fontSize: "0.8rem", marginTop: "0.35rem", display: "block" }}>{bio.length >= 500 ? "Character limit reached." : `Only ${500 - bio.length} characters left.`}</span>}</div>
                 </div>
               )}
-            </section>
+            </motion.section>
 
             {/* ── Skills ── */}
-            <section className={styles.section}>
+            <motion.section className={styles.section} variants={cardVariant}>
               <div className={styles.sectionHead}>
                 <div className={styles.sectionTitle}><IconZap /><h2>Skills & Expertise</h2></div>
                 {!editing.skills
@@ -415,10 +404,10 @@ export default function ProfilePage() {
                   </div>
                 </>
               )}
-            </section>
+            </motion.section>
 
             {/* ── Work Experience ── */}
-            <section className={styles.section}>
+            <motion.section className={styles.section} variants={cardVariant}>
               <div className={styles.sectionHead}>
                 <div className={styles.sectionTitle}><IconBriefcase /><h2>Work Experience</h2></div>
                 {!editing.experience
@@ -490,10 +479,10 @@ export default function ProfilePage() {
                   <button className={styles.addEntryBtn} onClick={() => setExperienceList(p => [...p, { company: "", role: "", duration: "", description: "" }])}><IconPlus />Add Position</button>
                 </div>
               )}
-            </section>
+            </motion.section>
 
             {/* ── Education ── */}
-            <section className={styles.section}>
+            <motion.section className={styles.section} variants={cardVariant}>
               <div className={styles.sectionHead}>
                 <div className={styles.sectionTitle}><IconGradCap /><h2>Education</h2></div>
                 {!editing.education
@@ -566,10 +555,10 @@ export default function ProfilePage() {
                   <button className={styles.addEntryBtn} onClick={() => setEducationList(p => [...p, { institution: "", degree: "", field: "", year: "" }])}><IconPlus />Add Education</button>
                 </div>
               )}
-            </section>
+            </motion.section>
 
             {/* ── Career Goals ── */}
-            <section className={styles.section}>
+            <motion.section className={styles.section} variants={cardVariant}>
               <div className={styles.sectionHead}>
                 <div className={styles.sectionTitle}><IconTarget /><h2>Career Goals</h2></div>
                 {!editing.goals
@@ -616,10 +605,10 @@ export default function ProfilePage() {
                   <div className={styles.field + " " + styles.span2}><label>Career Objectives</label><textarea className={styles.textarea} value={careerGoal} onChange={e => setCareerGoal(e.target.value)} rows={4} placeholder="Describe your career ambitions and goals…" /></div>
                 </div>
               )}
-            </section>
+            </motion.section>
 
-          </main>
-        </div>
+          </motion.main>
+        </motion.div>
 
       <SiteFooter />
     </div>

@@ -808,6 +808,9 @@ export default function Home() {
 
   // ── Load cached user BEFORE browser paints (no flicker) ──
   useLayoutEffect(() => {
+    // Safety reset: clear any stale overflow:hidden left from a previous session/modal
+    document.body.style.overflow = "";
+
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
