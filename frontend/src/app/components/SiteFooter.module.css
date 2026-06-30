@@ -4,6 +4,7 @@
   background: transparent;
   transform: translateZ(0);
   will-change: transform;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .footerCtaBand {

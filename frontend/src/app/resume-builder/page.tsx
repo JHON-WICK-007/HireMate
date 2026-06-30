@@ -256,9 +256,8 @@ export default function ResumeBuilderPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.22, ease: "easeInOut" }}
-              className="flex-1 flex flex-col justify-between"
             >
-              <div className="flex-1">{renderActiveStep()}</div>
+              {renderActiveStep()}
               <StepNavigation onFinish={handleFinish} />
             </motion.div>
           </AnimatePresence>

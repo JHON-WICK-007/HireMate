@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import { useResumeStore } from "../store";
 import styles from "../builder.module.css";
 import { LayoutTemplate, X, Check, ZoomIn, Plus, Minus, Maximize } from "lucide-react";
@@ -9,13 +10,14 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // Premium color swatches
 const COLOR_SWATCHES = [
+  { value: "#1B365D", label: "Midnight Navy" },
+  { value: "#1A1A1A", label: "Classic Black" },
+  { value: "#2D3748", label: "Charcoal" },
+  { value: "#4A607A", label: "Slate Blue" },
+  { value: "#143D2D", label: "Deep Emerald" },
+  { value: "#7A2828", label: "Heritage Red" },
   { value: "#B87333", label: "Copper (Signature)" },
   { value: "#C9A84C", label: "Gold (Blueprint)" },
-  { value: "#7A2828", label: "Heritage Red" },
-  { value: "#0ea5e9", label: "Sky Blue" },
-  { value: "#14b8a6", label: "Teal" },
-  { value: "#1f2937", label: "Dark Gray" },
-  { value: "#6366f1", label: "Slate Blue" },
 ];
 
 const TEMPLATES_LIST = [
@@ -41,90 +43,151 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   const projects = useResumeStore((state) => state.projects);
   const certifications = useResumeStore((state) => state.certifications);
 
-  // Fallback placeholder data matching the premium Alexandra Chen profile
-  const displayFirst = personalInfo.firstName || "Alexandra";
-  const displayLast = personalInfo.surname || "Chen";
-  const displayEmail = personalInfo.email || "alexandra.chen@email.com";
-  const displayPhone = personalInfo.phone || "+1 (415) 892-3041";
+  // Fallback placeholder data
+  const displayFirst = personalInfo.firstName || "Bradley";
+  const displayLast = personalInfo.surname || "Parker";
+  const displayEmail = personalInfo.email || "bradley.parker@email.com";
+  const displayPhone = personalInfo.phone || "+1 (310) 555-2486";
   const displayLocation = (personalInfo.city || personalInfo.country)
     ? `${personalInfo.city || ""}${personalInfo.city && personalInfo.country ? ", " : ""}${personalInfo.country || ""}`
-    : "San Francisco, CA";
-  const displayLinkedin = personalInfo.linkedinUrl || "linkedin.com/in/alexchen";
-  const displayGithub = personalInfo.githubUrl || "github.com/alexchen-dev";
-  const displayPortfolio = personalInfo.portfolioUrl || "alexchen.io";
+    : "Los Angeles, CA";
+  const displayLinkedin = personalInfo.linkedinUrl || "linkedin.com/in/bradleyparker";
+  const displayGithub = personalInfo.githubUrl || "github.com/bradleyparker";
+  const displayPortfolio = personalInfo.portfolioUrl || "bradleyparker.dev";
 
-  const displayTitle = experiences[0]?.role || "Principal Software Engineer";
-  const displayTagline = "Building systems at scale — from 0 to 200 million users";
+  const displayTitle = experiences[0]?.role || "Senior Full Stack Engineer";
+  const displayTagline = "Building scalable web applications with modern technologies.";
 
-  const displaySummary = summary || "Principal Engineer with 11 years of experience designing distributed systems and leading cross-functional teams at Google, Stripe, and Series-B startups. Specialize in high-throughput backend architecture, platform reliability, and translating ambiguous product vision into precise technical roadmaps.";
+  const displaySummary = summary || "Senior Full Stack Engineer with 9+ years of experience designing and building scalable web applications using React, Node.js, TypeScript, and cloud-native technologies. Passionate about performance optimization, clean architecture, and delivering exceptional user experiences.";
 
   const displayExperiences = experiences.length > 0 ? experiences : [
     {
       id: "mock-exp-1",
-      role: "Principal Software Engineer — Technical Lead",
-      company: "Stripe, Inc.",
-      location: "San Francisco, CA",
-      startDate: { month: 1, year: 2021 },
+      role: "Senior Full Stack Engineer",
+      company: "Netflix",
+      location: "Los Angeles, CA",
+      startDate: { month: 1, year: 2022 },
       endDate: { month: null, year: null },
       isCurrent: true,
-      description: "Architected Stripe's next-generation payment routing engine, reducing transaction latency by 42% and saving $18M annually.\nLed a 14-engineer team through a 9-month migration from monolith to event-driven microservices.\nDesigned the fraud detection ML pipeline processing 4.2M events/sec."
+      description: "Designed and built scalable web applications serving millions of users globally.\nLed frontend architecture migration improving performance by 40%.\nMentored junior engineers and established coding best practices across teams.\nBuilt real-time collaboration features using WebSockets and event-driven architecture.\nReduced API response times by 55% through caching strategies and query optimization."
     },
     {
       id: "mock-exp-2",
-      role: "Senior Software Engineer, Infrastructure",
-      company: "Google LLC",
-      location: "Mountain View, CA",
-      startDate: { month: 3, year: 2017 },
-      endDate: { month: 12, year: 2020 },
+      role: "Software Engineer",
+      company: "Microsoft",
+      location: "Redmond, WA",
+      startDate: { month: 6, year: 2018 },
+      endDate: { month: 12, year: 2021 },
       isCurrent: false,
-      description: "Built the core scheduling layer of Google Kubernetes Engine (GKE) auto-scaler.\nReduced cold-start provisioning time by 68% through a node-pooling algorithm."
+      description: "Developed cloud-native microservices handling 10M+ daily requests.\nImplemented CI/CD pipelines reducing deployment time by 60%.\nCollaborated with cross-functional teams to deliver enterprise features.\nDesigned and built internal tooling dashboard used by 500+ engineers.\nLed migration from monolithic architecture to microservices, improving system resilience."
+    },
+    {
+      id: "mock-exp-3",
+      role: "Frontend Developer",
+      company: "Airbnb",
+      location: "San Francisco, CA",
+      startDate: { month: 3, year: 2016 },
+      endDate: { month: 5, year: 2018 },
+      isCurrent: false,
+      description: "Built responsive web interfaces for the booking platform using React and Redux.\nImplemented A/B testing framework that increased conversion rates by 12%.\nOptimized bundle size reducing initial load time by 35%.\nCollaborated with design team to create a component library used across 15+ teams."
+    },
+    {
+      id: "mock-exp-4",
+      role: "Junior Web Developer",
+      company: "Startup Labs",
+      location: "Santa Monica, CA",
+      startDate: { month: 8, year: 2014 },
+      endDate: { month: 2, year: 2016 },
+      isCurrent: false,
+      description: "Developed and maintained client-facing web applications using JavaScript and PHP.\nBuilt RESTful APIs serving mobile and web clients.\nImplemented payment integration with Stripe and PayPal.\nParticipated in agile ceremonies and contributed to sprint planning."
     }
   ];
 
   const displayEducations = educations.length > 0 ? educations : [
     {
       id: "mock-edu-1",
-      degree: "M.S. Computer Science",
-      fieldOfStudy: "Distributed Systems",
-      institution: "Stanford University",
-      startDate: { month: 9, year: 2010 },
-      endDate: { month: 6, year: 2014 },
-      grade: "3.92 GPA",
+      degree: "B.S. Computer Science",
+      fieldOfStudy: "",
+      institution: "University of California, Los Angeles (UCLA)",
+      startDate: { month: 9, year: 2012 },
+      endDate: { month: 6, year: 2016 },
+      grade: "",
       isCurrent: false,
-      description: "Thesis: Adaptive Consistency Models for Geo-Replicated Key-Value Stores."
+      description: ""
     }
   ];
 
   const displaySkills = (skills.length > 0 ? skills : [
-    { id: "mock-sk-1", name: "Go", category: "Languages" },
-    { id: "mock-sk-2", name: "Python", category: "Languages" },
-    { id: "mock-sk-3", name: "Rust", category: "Languages" },
-    { id: "mock-sk-4", name: "Kubernetes", category: "Infrastructure" },
-    { id: "mock-sk-5", name: "Docker", category: "Infrastructure" },
-    { id: "mock-sk-6", name: "Kafka", category: "Data & ML" },
-    { id: "mock-sk-7", name: "System Design", category: "Practices" }
+    { id: "mock-sk-1", name: "React", category: "Frontend" },
+    { id: "mock-sk-2", name: "Next.js", category: "Frontend" },
+    { id: "mock-sk-3", name: "TypeScript", category: "Frontend" },
+    { id: "mock-sk-4", name: "Node.js", category: "Backend" },
+    { id: "mock-sk-5", name: "Express.js", category: "Backend" },
+    { id: "mock-sk-6", name: "PostgreSQL", category: "Backend" },
+    { id: "mock-sk-7", name: "MongoDB", category: "Backend" },
+    { id: "mock-sk-8", name: "Docker", category: "DevOps" },
+    { id: "mock-sk-9", name: "Kubernetes", category: "DevOps" },
+    { id: "mock-sk-10", name: "AWS", category: "DevOps" },
+    { id: "mock-sk-11", name: "GraphQL", category: "Backend" },
+    { id: "mock-sk-12", name: "Redis", category: "Backend" }
   ]) as any[];
 
   const displayProjects = projects.length > 0 ? projects : [
     {
       id: "mock-proj-1",
-      name: "OpenFlux — Open-Source Workflow Orchestrator",
-      role: "Personal / Open Source",
-      description: "A lightweight, dependency-free task orchestration engine for Python with first-class async support. Garnered 6.2k GitHub stars.",
-      technologies: ["Python", "asyncio", "Redis", "Docker"]
+      name: "StreamFlow",
+      role: "Personal Project",
+      description: "A real-time data streaming platform built with React, Node.js, and WebSocket for live collaboration. Supports 10K concurrent users with sub-100ms latency.",
+      technologies: ["React", "Node.js", "WebSocket", "Redis", "Docker"]
+    },
+    {
+      id: "mock-proj-2",
+      name: "AI Resume Analyzer",
+      role: "Personal Project",
+      description: "An AI-powered tool that analyzes resumes against job descriptions and provides actionable improvement suggestions using GPT-4.",
+      technologies: ["Next.js", "TypeScript", "OpenAI", "PostgreSQL", "Tailwind"]
+    },
+    {
+      id: "mock-proj-3",
+      name: "DevPortfolio",
+      role: "Personal Project",
+      description: "A modern developer portfolio template with dynamic project showcases, blog integration, and analytics dashboard.",
+      technologies: ["Next.js", "Tailwind CSS", "MDX", "Vercel"]
+    },
+    {
+      id: "mock-proj-4",
+      name: "CloudDeploy CLI",
+      role: "Open Source",
+      description: "A command-line tool for seamless deployment to AWS, GCP, and Azure with zero-config support for common frameworks.",
+      technologies: ["Go", "AWS SDK", "GCP SDK", "Cobra"]
     }
   ];
 
   const displayCertifications = certifications.length > 0 ? certifications : [
     {
       id: "mock-cert-1",
-      name: "AWS Solutions Architect — Professional",
+      name: "AWS Certified Developer – Associate",
       organization: "Amazon Web Services"
     },
     {
       id: "mock-cert-2",
-      name: "Certified Kubernetes Administrator (CKA)",
+      name: "Microsoft Certified: Azure Developer Associate",
+      organization: "Microsoft"
+    },
+    {
+      id: "mock-cert-3",
+      name: "Certified Kubernetes Application Developer (CKAD)",
       organization: "Cloud Native Computing Foundation"
+    },
+    {
+      id: "mock-cert-4",
+      name: "Google Cloud Professional Cloud Architect",
+      organization: "Google Cloud"
+    },
+    {
+      id: "mock-cert-5",
+      name: "Meta Frontend Developer Professional Certificate",
+      organization: "Meta"
     }
   ];
 
@@ -197,8 +260,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
     }
 
     .resume-container-t1 .resume-profile-pic {
-      width: 72px;
-      height: 72px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--color-accent);
@@ -245,10 +308,11 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
     .resume-container-t1 .contact-item {
       font-size: var(--size-small);
       color: var(--color-ink-light);
-      white-space: nowrap;
       display: flex;
       align-items: center;
       gap: 4px;
+      overflow-wrap: anywhere;
+      word-break: break-all;
     }
 
     .resume-container-t1 .contact-label {
@@ -537,8 +601,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
     }
 
     .resume-container-t2 .resume-profile-pic {
-      width: 72px;
-      height: 72px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--gold);
@@ -587,7 +651,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       display: flex;
       align-items: baseline;
       gap: 6px;
-      white-space: nowrap;
+      overflow-wrap: anywhere;
+      word-break: break-all;
     }
 
     .resume-container-t2 .contact-label {
@@ -922,8 +987,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
     }
 
     .resume-container-t3 .resume-profile-pic {
-      width: 90px;
-      height: 90px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       border: 3px solid var(--color-accent);
       object-fit: cover;
@@ -1067,8 +1132,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
     }
 
     .resume-container-t4 .resume-profile-pic {
-      width: 80px;
-      height: 80px;
+      width: 110px;
+      height: 110px;
       border: 2px solid var(--color-accent);
       object-fit: cover;
       flex-shrink: 0;
@@ -1092,6 +1157,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       border-bottom: 1px solid var(--color-grid);
       padding-bottom: 12px;
       color: var(--color-text);
+      overflow-wrap: anywhere;
+      word-break: break-all;
     }
 
     .resume-container-t4 .section-title {
@@ -1174,8 +1241,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
     }
 
     .resume-container-t5 .resume-profile-pic {
-      width: 90px;
-      height: 90px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       border: 2px solid var(--color-accent);
       object-fit: cover;
@@ -1200,7 +1267,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
     .resume-container-t5 .contact-bar {
       display: flex;
       justify-content: center;
-      gap: 14px;
+      flex-wrap: wrap;
+      gap: 6px 14px;
       font-size: 11.5px;
       margin-top: 6px;
       color: var(--color-text);
@@ -1486,7 +1554,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       grid-template-columns: var(--sidebar-w) 1fr;
       grid-template-rows: auto 1fr;
       text-align: left;
-      contain: layout style paint;
     }
 
     .resume-container-t6 .resume-header {
@@ -1501,8 +1568,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
     }
 
     .resume-container-t6 .resume-profile-pic {
-      width: 80px;
-      height: 80px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       border: 2px solid var(--color-gold);
       object-fit: cover;
@@ -1511,8 +1578,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
     }
 
     .resume-container-t6 .header-avatar-initials {
-      width: 80px;
-      height: 80px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       border: 2px solid var(--color-gold);
       background: var(--color-sidebar-2);
@@ -1521,7 +1588,7 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       justify-content: center;
       flex-shrink: 0;
       font-family: var(--font-display);
-      font-size: 28px;
+      font-size: 36px;
       font-weight: 400;
       color: var(--color-gold);
       letter-spacing: 0.04em;
@@ -1581,7 +1648,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       text-decoration: none;
       font-weight: 300;
       letter-spacing: 0.01em;
-      white-space: nowrap;
+      overflow-wrap: anywhere;
+      word-break: break-all;
     }
 
     .resume-container-t6 .contact-label {
@@ -2023,6 +2091,12 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
                   {displayLinkedin}
                 </span>
               )}
+              {displayGithub && (
+                <span className="contact-item">
+                  <span className="contact-dot" />
+                  {displayGithub}
+                </span>
+              )}
               {displayPortfolio && (
                 <span className="contact-item">
                   <span className="contact-dot" />
@@ -2199,6 +2273,24 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
                   {displayLocation}
                 </div>
               )}
+              {displayLinkedin && (
+                <div className="contact-item">
+                  <span className="contact-label">LinkedIn</span>
+                  {displayLinkedin}
+                </div>
+              )}
+              {displayGithub && (
+                <div className="contact-item">
+                  <span className="contact-label">GitHub</span>
+                  {displayGithub}
+                </div>
+              )}
+              {displayPortfolio && (
+                <div className="contact-item">
+                  <span className="contact-label">Portfolio</span>
+                  {displayPortfolio}
+                </div>
+              )}
             </div>
 
             {displaySkills.length > 0 && (
@@ -2338,6 +2430,9 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
             {displayEmail && <div>EMAIL: {displayEmail}</div>}
             {displayPhone && <div>PHONE: {displayPhone}</div>}
             {displayLocation && <div>LOC: {displayLocation}</div>}
+            {displayLinkedin && <div>LINKEDIN: {displayLinkedin}</div>}
+            {displayGithub && <div>GITHUB: {displayGithub}</div>}
+            {displayPortfolio && <div>PORTFOLIO: {displayPortfolio}</div>}
           </div>
 
           {displaySummary && (
@@ -2492,6 +2587,24 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
                 <>
                   <span>·</span>
                   <span>{displayLocation}</span>
+                </>
+              )}
+              {displayLinkedin && (
+                <>
+                  <span>·</span>
+                  <span>{displayLinkedin}</span>
+                </>
+              )}
+              {displayGithub && (
+                <>
+                  <span>·</span>
+                  <span>{displayGithub}</span>
+                </>
+              )}
+              {displayPortfolio && (
+                <>
+                  <span>·</span>
+                  <span>{displayPortfolio}</span>
                 </>
               )}
             </div>
@@ -2881,6 +2994,24 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
                 {displayLocation}
               </span>
             )}
+            {displayLinkedin && (
+              <span className="contact-item">
+                <span className="contact-label">LinkedIn</span>
+                {displayLinkedin}
+              </span>
+            )}
+            {displayGithub && (
+              <span className="contact-item">
+                <span className="contact-label">GitHub</span>
+                {displayGithub}
+              </span>
+            )}
+            {displayPortfolio && (
+              <span className="contact-item">
+                <span className="contact-label">Portfolio</span>
+                {displayPortfolio}
+              </span>
+            )}
           </address>
         </header>
 
@@ -3046,27 +3177,81 @@ export const LivePreviewPanel: React.FC = () => {
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isZoomOpen, setIsZoomOpen] = useState(false);
-  const [zoomScale, setZoomScale] = useState(0.85);
+  const [isZoomOpen, setIsZoomOpen] = useState(true);
+  const [showZoomControls, setShowZoomControls] = useState(false);
+  const [zoomScale, setZoomScale] = useState(0.60);
   const [tempTemplateId, setTempTemplateId] = useState(selectedTemplateId);
   const [tempColor, setTempColor] = useState(selectedColor);
+  const [hoverColor, setHoverColor] = useState<string | null>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  const fitToScreen = React.useCallback(() => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const headerH = 48;
+    const containerPadX = 16 * 2;
+    const containerPadY = 16 * 2;
+    const zoomControlsW = 64;
+    const docW = 794;
+    const docH = 1123;
+    const scaleX = (vw - containerPadX - zoomControlsW) / docW;
+    const scaleY = (vh - headerH - containerPadY) / docH;
+    const raw = Math.min(scaleX, scaleY, 1);
+    const snapped = Math.round(raw * 20) / 20;
+    setZoomScale(Math.max(0.05, Math.min(1, snapped)));
+  }, []);
+
+  React.useEffect(() => {
+    if (isModalOpen || isZoomOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [isModalOpen, isZoomOpen]);
+
+  React.useEffect(() => {
+    if (isZoomOpen) fitToScreen();
+  }, [isZoomOpen, fitToScreen]);
+
+  React.useEffect(() => {
+    if (!isZoomOpen) return;
+    const viewport = document.getElementById('zoom-viewport') as HTMLElement | null;
+    if (!viewport) return;
+    const checkScroll = () => {
+      setShowScrollTop(viewport.scrollHeight > viewport.clientHeight + 10);
+    };
+    checkScroll();
+    viewport.addEventListener('scroll', checkScroll, { passive: true });
+    window.addEventListener('resize', checkScroll);
+    const ro = new ResizeObserver(checkScroll);
+    ro.observe(viewport);
+    return () => {
+      viewport.removeEventListener('scroll', checkScroll);
+      window.removeEventListener('resize', checkScroll);
+      ro.disconnect();
+    };
+  }, [isZoomOpen, zoomScale]);
 
   return (
     <div className={styles.previewColumn}>
       {/* Content */}
       <div className={styles.previewContent}>
-        <div style={{ width: "350px", height: "495px", overflow: "hidden", position: "relative" }}>
-          <div style={{ transform: "scale(0.44)", transformOrigin: "top left", width: "794px", height: "1123px" }}>
-            <div id="resume-print-capture">
+        <div
+          className={styles.previewResumeWrapper}
+          onClick={() => setIsZoomOpen(true)}
+        >
+          <div style={{ zoom: 0.44, width: "794px", userSelect: "none" }}>
+            <div id="resume-print-capture" onDragStart={(e) => e.preventDefault()}>
               <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
             </div>
           </div>
 
-          {/* Zoom button on downright glass blur bg */}
+          {/* Zoom button — positioned at bottom-right of resume */}
           <button
             type="button"
-            className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-[#18181b]/60 hover:bg-[#18181b]/80 backdrop-blur-md text-white border border-white/10 shadow-lg flex items-center justify-center cursor-pointer transition-all active:scale-95 z-10"
-            onClick={() => setIsZoomOpen(true)}
+            className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-[#18181b]/60 hover:bg-[#18181b]/80 backdrop-blur-md text-white border border-white/10 shadow-lg flex items-center justify-center cursor-pointer transition-all z-10"
+            onClick={(e) => { e.stopPropagation(); setIsZoomOpen(true); }}
             aria-label="Zoom Preview"
           >
             <ZoomIn size={20} strokeWidth={2.5} />
@@ -3085,78 +3270,144 @@ export const LivePreviewPanel: React.FC = () => {
 
       {/* Select Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/70 z-[9999] flex items-center justify-center backdrop-blur-sm p-4">
-          <div className="bg-[#121214] border border-[#27272a] rounded-xl w-full max-w-lg overflow-hidden flex flex-col shadow-2xl text-white">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#27272a]">
-              <h3 className="font-display font-bold text-lg text-white">Change Layout & Accent</h3>
-              <button
-                type="button"
-                className="text-gray-400 hover:text-white transition-colors"
-                onClick={() => setIsModalOpen(false)}
-              >
-                <X size={20} />
-              </button>
-            </div>
+        <div className={`${styles.modalBackdrop} backdrop-blur-lg`}>
+          <div className={styles.modalCard}>
 
-            <div className="p-6 flex flex-col gap-6 overflow-y-auto max-h-[70vh]">
-              {/* Choose Template */}
-              <div className="flex flex-col gap-3">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Select Template Layout</span>
-                <div className="grid grid-cols-2 gap-3">
-                  {TEMPLATES_LIST.map((temp) => (
-                    <button
-                      key={temp.id}
-                      type="button"
-                      onClick={() => setTempTemplateId(temp.id)}
-                      className={`flex flex-col gap-1.5 p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer ${tempTemplateId === temp.id
-                        ? "border-cyan-500 bg-cyan-950/20"
-                        : "border-[#27272a] bg-[#18181b] hover:border-[#3f3f46]"
-                        }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-white">{temp.name}</span>
-                        {tempTemplateId === temp.id && <Check size={14} className="text-cyan-400" />}
-                      </div>
-                      <span className="text-[10px] text-gray-400 leading-normal">{temp.desc}</span>
-                    </button>
-                  ))}
+            {/* Main Body (Split Columns) */}
+            <div className={styles.modalBody}>
+
+              {/* Left Column: Live Resume Preview */}
+              <div className={styles.modalLeftColumn}>
+                {/* Scrollable wrapper next to template card */}
+                <div
+                  className={`h-full overflow-y-auto pr-2 custom-scrollbar ${styles.zoomViewportScrollbar}`}
+                  style={{ width: `${794 * 0.65 + 20}px` }}
+                >
+                  <div
+                    className="bg-white shadow-lg rounded-sm overflow-hidden flex-shrink-0"
+                    style={{
+                      width: "794px",
+                      minHeight: "1123px",
+                      color: "#000000",
+                      zoom: 0.65,
+                      margin: "auto",
+                      userSelect: "none"
+                    }}
+                    onDragStart={(e) => e.preventDefault()}
+                  >
+                    <ResumeCardRender templateId={tempTemplateId} color={hoverColor || tempColor} />
+                  </div>
                 </div>
               </div>
 
-              {/* Select Color */}
-              <div className="flex flex-col gap-3">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Select Theme Color</span>
-                <div className="grid grid-cols-3 gap-3">
-                  {COLOR_SWATCHES.map((swatch) => (
-                    <button
-                      key={swatch.value}
-                      type="button"
-                      onClick={() => setTempColor(swatch.value)}
-                      className={`flex items-center gap-2 p-2.5 rounded-lg border text-[11px] transition-all duration-200 cursor-pointer ${tempColor === swatch.value
-                        ? "border-cyan-500 bg-cyan-950/20"
-                        : "border-[#27272a] bg-[#18181b] hover:border-[#3f3f46]"
-                        }`}
-                    >
-                      <span className="w-4 h-4 rounded-full flex-shrink-0" style={{ backgroundColor: swatch.value }} />
-                      <span className="truncate">{swatch.label}</span>
-                    </button>
-                  ))}
+              {/* Right Column: Settings Panel */}
+              <div className={styles.modalRightColumn}>
+
+                {/* Header */}
+                <div className={styles.modalHeader}>
+                  <h3 className={styles.modalTitle}>Change Template</h3>
+                  <button
+                    type="button"
+                    className={styles.modalCloseBtn}
+                    onClick={() => setIsModalOpen(false)}
+                    aria-label="Close"
+                  >
+                    <X size={20} />
+                  </button>
                 </div>
+
+                {/* Fixed Colors Section */}
+                <div className={styles.colorsSectionFixed}>
+                  <div className={styles.colorsRow}>
+                    <span className={styles.colorsLabel}>Colors</span>
+                    <div className={styles.colorSwatchesGrid}>
+                      {COLOR_SWATCHES.map((swatch) => {
+                        const isSelected = tempColor === swatch.value;
+                        return (
+                          <div
+                            key={swatch.value}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => setTempColor(swatch.value)}
+                            onMouseEnter={() => setHoverColor(swatch.value)}
+                            onMouseLeave={() => setHoverColor(null)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                setTempColor(swatch.value);
+                              }
+                            }}
+                            className={`${styles.colorSwatchItem} ${isSelected ? styles.colorSwatchItemActive : ""
+                              }`}
+                            style={{ backgroundColor: swatch.value }}
+                            title={swatch.label}
+                          >
+                            {isSelected && (
+                              <Check size={10} className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Scrollable Content */}
+                <div className={styles.modalContent}>
+
+                  {/* Templates List */}
+                  <div className={styles.modalSection}>
+                    <div className={styles.templatesGrid}>
+                      {TEMPLATES_LIST.map((temp) => {
+                        const isSelected = tempTemplateId === temp.id;
+                        return (
+                          <div
+                            key={temp.id}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => setTempTemplateId(temp.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                setTempTemplateId(temp.id);
+                              }
+                            }}
+                            className={`${styles.templateCard} ${isSelected ? styles.templateCardActive : ""
+                              }`}
+                          >
+                            {/* Visual Template Thumbnail */}
+                            <div className={styles.templateCardPreview}>
+                              <div style={{ transform: "scale(0.24)", transformOrigin: "top center", width: "794px", height: "1123px" }}>
+                                <ResumeCardRender templateId={temp.id} color={tempColor} />
+                              </div>
+                              {isSelected && (
+                                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white text-black border border-black flex items-center justify-center shadow-md z-10">
+                                  <Check size={12} strokeWidth={3} />
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                </div>
+
               </div>
+
             </div>
 
-            <div className="px-6 py-4 border-t border-[#27272a] bg-[#161618] flex items-center justify-between">
+            {/* Modal Footer */}
+            <div className={styles.modalFooter}>
               <button
                 type="button"
-                className="px-4 py-2 text-xs font-semibold text-gray-400 hover:text-white transition-colors"
+                className={styles.modalCancelBtn}
                 onClick={() => setIsModalOpen(false)}
               >
                 Cancel
               </button>
-
               <button
                 type="button"
-                className="px-5 py-2.5 text-xs font-bold bg-cyan-600 hover:bg-cyan-500 active:scale-95 text-white rounded-lg transition-all"
+                className={styles.modalSaveBtn}
                 onClick={() => {
                   actions.setSelectedTemplateId(tempTemplateId);
                   actions.setSelectedColor(tempColor);
@@ -3164,126 +3415,189 @@ export const LivePreviewPanel: React.FC = () => {
                   toast.success("Success ✓", "Template and theme color updated!");
                 }}
               >
-                Save Changes
+                Save
               </button>
             </div>
+
           </div>
         </div>
       )}
 
-      {/* Full-screen high-res preview modal matching user reference design */}
+      {/* Full-screen high-res preview modal — portalled to body for true full-page coverage */}
+      {createPortal(
       <AnimatePresence>
         {isZoomOpen && (
           <div className="fixed inset-0 bg-white/20 backdrop-blur-lg z-[99999] flex flex-col animate-fadeIn select-none">
             {/* Top black header bar */}
-            <div className="w-full h-9 bg-black border-b border-[#27272a] px-4 flex items-center justify-between">
+            <div className="w-full h-12 bg-[#18181c]/90 backdrop-blur-md border-b border-[#27272a] px-4 flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
               {/* Left Side: Preview Mode label moved inwards to the right via inline style */}
-              <div className="text-xs font-sans font-medium text-gray-400" style={{ paddingLeft: "24px" }}>
+              <div className="text-sm font-sans font-semibold text-white" style={{ paddingLeft: "24px" }}>
                 Preview Mode
               </div>
 
               {/* Right Side: Change template & Close button moved inwards to the left via inline style */}
-              <div className="flex items-center gap-3" style={{ paddingRight: "24px" }}>
+              <div className="flex items-center gap-2" style={{ paddingRight: "24px" }}>
                 <button
                   type="button"
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold text-gray-300 hover:text-white hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
+                  className={`${styles.btnChangeTemplate} !mt-0 !rounded !px-2`}
                   onClick={() => {
-                    setIsZoomOpen(false);
                     setIsModalOpen(true);
                   }}
                 >
-                  <LayoutTemplate size={12} />
+                  <LayoutTemplate size={14} />
                   Change template
                 </button>
-                <div className="w-px h-4 bg-[#27272a]" />
+                <div className="w-px h-6 bg-[#27272a]" />
                 <button
                   type="button"
-                  className="text-gray-400 hover:text-white transition-colors cursor-pointer p-0.5 rounded hover:bg-white/5 active:scale-95 flex items-center"
+                  className="w-8 h-8 rounded border border-white/15 bg-[#27272a] text-white hover:bg-[#3f3f46] hover:border-white/30 flex items-center justify-center cursor-pointer transition-all duration-200"
                   onClick={() => setIsZoomOpen(false)}
                   aria-label="Close Preview"
                 >
-                  <X size={15} />
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
                 </button>
               </div>
             </div>
 
-            {/* Document Viewport Wrapper with Slate Background */}
-            <div className="flex-1 overflow-auto p-12 flex justify-center items-start bg-[#a3a6b5] relative">
-              {/* Document Container scaled dynamically */}
+            {/* Document Viewport Wrapper with Glass Background */}
+            <div 
+              className="flex-1 p-4 flex justify-center items-start bg-black/40 backdrop-blur-xl relative overflow-hidden cursor-pointer"
+              onClick={() => setIsZoomOpen(false)}
+            >
+              {/* Centered scrollable container matching template width */}
               <div
-                className="bg-white shadow-2xl rounded-sm overflow-hidden"
-                style={{
-                  width: "794px",
-                  minHeight: "1123px",
-                  color: "#000000",
-                  zoom: zoomScale,
-                  margin: "0 auto"
-                }}
+                id="zoom-viewport"
+                className={`h-full overflow-y-auto pr-2 custom-scrollbar ${styles.zoomViewportScrollbar} cursor-default`}
+                style={{ width: `${794 * zoomScale + 20}px` }}
+                onClick={(e) => e.stopPropagation()}
               >
-                <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
+                {/* Document Container scaled dynamically */}
+                <div
+                  className="bg-white shadow-2xl rounded-sm overflow-hidden"
+                  style={{
+                    width: "794px",
+                    minHeight: "1123px",
+                    color: "#000000",
+                    zoom: zoomScale,
+                    margin: "0 auto",
+                    userSelect: "none"
+                  }}
+                  onDragStart={(e) => e.preventDefault()}
+                >
+                  <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
+                </div>
               </div>
+            </div>
 
-              {/* Floating Zoom Controls Widget on the right */}
-              <div className="fixed right-8 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-30 select-none">
-                {/* Fit / Reset button */}
+            {/* Zoom Controls — positioned on right side */}
+            <div 
+              className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 z-[99999] select-none cursor-default"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Fit / Reset button with tooltip */}
+              <div className="relative group">
                 <button
                   type="button"
-                  onClick={() => setZoomScale(0.85)}
+                  onClick={fitToScreen}
                   className="w-10 h-10 bg-white border border-gray-200 shadow-xl rounded-lg text-gray-700 hover:text-black hover:bg-gray-50 hover:border-gray-300 active:scale-90 flex items-center justify-center cursor-pointer transition-all"
-                  title="Fit to Screen"
                 >
                   <Maximize size={16} />
                 </button>
+                <span style={{ position: 'absolute', right: '100%', marginRight: '12px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', opacity: 0, pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', transition: 'opacity 0.15s ease', zIndex: 100000 }} className="group-hover:!opacity-100">
+                  Fit to width
+                </span>
+              </div>
 
-                {/* Vertical Range Bar */}
-                <div className="w-10 bg-white border border-gray-200 shadow-xl rounded-lg flex flex-col items-center py-4 gap-3">
-                  {/* Plus */}
+              {/* Vertical Range Bar */}
+              <div className="w-10 bg-white border border-gray-200 shadow-xl rounded-lg flex flex-col items-center pt-3 pb-3 gap-2">
+                {/* Plus */}
+                <div className="relative group">
                   <button
                     type="button"
-                    onClick={() => setZoomScale((prev) => Math.min(1.8, prev + 0.1))}
-                    className="w-8 h-8 text-gray-700 hover:text-black hover:bg-gray-50 rounded-md active:scale-75 flex items-center justify-center cursor-pointer transition-all"
-                    title="Zoom In"
+                    onClick={() => setZoomScale((prev) => Math.min(1, +(prev + 0.05).toFixed(2)))}
+                    className="w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-100 active:bg-gray-200 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150"
                   >
                     <Plus size={16} />
                   </button>
+                  <span style={{ position: 'absolute', right: '100%', marginRight: '8px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', zIndex: 100000 }} className="group-hover:!opacity-100 opacity-0 transition-opacity duration-150">
+                    Zoom in
+                  </span>
+                </div>
 
-                  {/* Slider Input */}
-                  <div className="h-40 flex items-center justify-center">
-                    <input
-                      type="range"
-                      min="0.5"
-                      max="1.8"
-                      step="0.05"
-                      value={zoomScale}
-                      onChange={(e) => setZoomScale(parseFloat(e.target.value))}
-                      style={{
-                        writingMode: "vertical-lr",
-                        direction: "rtl",
-                        WebkitAppearance: "slider-vertical",
-                        width: "4px",
-                        height: "100%",
-                        cursor: "pointer",
-                        accentColor: "#000000",
-                        background: "#e2e8f0"
-                      }}
-                    />
-                  </div>
+                {/* Slider Input */}
+                <div className="h-40 flex items-center justify-center">
+                  <input
+                    type="range"
+                    min="0.05"
+                    max="1"
+                    step="0.05"
+                    value={zoomScale}
+                    onChange={(e) => setZoomScale(parseFloat(e.target.value))}
+                    style={{
+                      writingMode: "vertical-lr",
+                      direction: "rtl",
+                      WebkitAppearance: "slider-vertical",
+                      width: "4px",
+                      height: "100%",
+                      cursor: "pointer",
+                      accentColor: "#000000",
+                      background: "#e2e8f0"
+                    }}
+                  />
+                </div>
 
-                  {/* Minus */}
+                {/* Zoom Percentage */}
+                <span className="text-[11px] font-semibold text-gray-700 tabular-nums select-none leading-none">
+                  {Math.round(zoomScale * 100)}%
+                </span>
+
+                {/* Minus */}
+                <div className="relative group">
                   <button
                     type="button"
-                    onClick={() => setZoomScale((prev) => Math.max(0.5, prev - 0.1))}
-                    className="w-8 h-8 text-gray-700 hover:text-black hover:bg-gray-50 rounded-md active:scale-75 flex items-center justify-center cursor-pointer transition-all"
-                    title="Zoom Out"
+                    onClick={() => setZoomScale((prev) => Math.max(0.05, +(prev - 0.05).toFixed(2)))}
+                    className="w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-200 active:bg-gray-300 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150"
                   >
                     <Minus size={16} />
                   </button>
+                  <span style={{ position: 'absolute', right: '100%', marginRight: '8px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', zIndex: 100000 }} className="group-hover:!opacity-100 opacity-0 transition-opacity duration-150">
+                    Zoom out
+                  </span>
+                </div>
+              </div>
+
+              {/* Scroll to Top - positioned absolutely below bar, never shifts layout */}
+              <div
+                className={`transition-opacity duration-200 ${showScrollTop ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+              >
+                <div className="relative group">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const viewport = document.getElementById('zoom-viewport');
+                      viewport?.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="w-10 h-10 bg-white border border-gray-200 shadow-xl rounded-lg text-gray-700 hover:text-black hover:bg-gray-50 hover:border-gray-300 active:scale-90 flex items-center justify-center cursor-pointer transition-all"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="12" y1="19" x2="12" y2="5" />
+                      <polyline points="5 12 12 5 19 12" />
+                    </svg>
+                  </button>
+                  <span style={{ position: 'absolute', right: '100%', marginRight: '8px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', zIndex: 100000 }} className="group-hover:!opacity-100 opacity-0 transition-opacity duration-150">
+                    Scroll to top
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      )}
     </div>
   );
 };
