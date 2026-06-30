@@ -3177,7 +3177,7 @@ export const LivePreviewPanel: React.FC = () => {
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isZoomOpen, setIsZoomOpen] = useState(true);
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [showZoomControls, setShowZoomControls] = useState(false);
   const [zoomScale, setZoomScale] = useState(0.60);
   const [tempTemplateId, setTempTemplateId] = useState(selectedTemplateId);
@@ -3200,6 +3200,23 @@ export const LivePreviewPanel: React.FC = () => {
     const snapped = Math.round(raw * 20) / 20;
     setZoomScale(Math.max(0.05, Math.min(1, snapped)));
   }, []);
+
+  const isInitialMount = React.useRef(true);
+
+  React.useEffect(() => {
+    const saved = sessionStorage.getItem("isZoomOpen");
+    if (saved === "true") {
+      setIsZoomOpen(true);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    sessionStorage.setItem("isZoomOpen", isZoomOpen ? "true" : "false");
+  }, [isZoomOpen]);
 
   React.useEffect(() => {
     if (isModalOpen || isZoomOpen) {
@@ -3425,178 +3442,178 @@ export const LivePreviewPanel: React.FC = () => {
 
       {/* Full-screen high-res preview modal — portalled to body for true full-page coverage */}
       {createPortal(
-      <AnimatePresence>
-        {isZoomOpen && (
-          <div className="fixed inset-0 bg-white/20 backdrop-blur-lg z-[99999] flex flex-col animate-fadeIn select-none">
-            {/* Top black header bar */}
-            <div className="w-full h-12 bg-[#18181c]/90 backdrop-blur-md border-b border-[#27272a] px-4 flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
-              {/* Left Side: Preview Mode label moved inwards to the right via inline style */}
-              <div className="text-sm font-sans font-semibold text-white" style={{ paddingLeft: "24px" }}>
-                Preview Mode
-              </div>
-
-              {/* Right Side: Change template & Close button moved inwards to the left via inline style */}
-              <div className="flex items-center gap-2" style={{ paddingRight: "24px" }}>
-                <button
-                  type="button"
-                  className={`${styles.btnChangeTemplate} !mt-0 !rounded !px-2`}
-                  onClick={() => {
-                    setIsModalOpen(true);
-                  }}
-                >
-                  <LayoutTemplate size={14} />
-                  Change template
-                </button>
-                <div className="w-px h-6 bg-[#27272a]" />
-                <button
-                  type="button"
-                  className="w-8 h-8 rounded border border-white/15 bg-[#27272a] text-white hover:bg-[#3f3f46] hover:border-white/30 flex items-center justify-center cursor-pointer transition-all duration-200"
-                  onClick={() => setIsZoomOpen(false)}
-                  aria-label="Close Preview"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* Document Viewport Wrapper with Glass Background */}
-            <div 
-              className="flex-1 p-4 flex justify-center items-start bg-black/40 backdrop-blur-xl relative overflow-hidden cursor-pointer"
-              onClick={() => setIsZoomOpen(false)}
-            >
-              {/* Centered scrollable container matching template width */}
-              <div
-                id="zoom-viewport"
-                className={`h-full overflow-y-auto pr-2 custom-scrollbar ${styles.zoomViewportScrollbar} cursor-default`}
-                style={{ width: `${794 * zoomScale + 20}px` }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {/* Document Container scaled dynamically */}
-                <div
-                  className="bg-white shadow-2xl rounded-sm overflow-hidden"
-                  style={{
-                    width: "794px",
-                    minHeight: "1123px",
-                    color: "#000000",
-                    zoom: zoomScale,
-                    margin: "0 auto",
-                    userSelect: "none"
-                  }}
-                  onDragStart={(e) => e.preventDefault()}
-                >
-                  <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
+        <AnimatePresence>
+          {isZoomOpen && (
+            <div className="fixed inset-0 bg-white/20 backdrop-blur-lg z-[99999] flex flex-col animate-fadeIn select-none">
+              {/* Top black header bar */}
+              <div className="w-full h-12 bg-[#18181c]/90 backdrop-blur-md border-b border-[#27272a] px-4 flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
+                {/* Left Side: Preview Mode label moved inwards to the right via inline style */}
+                <div className="text-sm font-sans font-semibold text-white" style={{ paddingLeft: "24px" }}>
+                  Preview Mode
                 </div>
-              </div>
-            </div>
 
-            {/* Zoom Controls — positioned on right side */}
-            <div 
-              className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 z-[99999] select-none cursor-default"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Fit / Reset button with tooltip */}
-              <div className="relative group">
-                <button
-                  type="button"
-                  onClick={fitToScreen}
-                  className="w-10 h-10 bg-white border border-gray-200 shadow-xl rounded-lg text-gray-700 hover:text-black hover:bg-gray-50 hover:border-gray-300 active:scale-90 flex items-center justify-center cursor-pointer transition-all"
-                >
-                  <Maximize size={16} />
-                </button>
-                <span style={{ position: 'absolute', right: '100%', marginRight: '12px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', opacity: 0, pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', transition: 'opacity 0.15s ease', zIndex: 100000 }} className="group-hover:!opacity-100">
-                  Fit to width
-                </span>
-              </div>
-
-              {/* Vertical Range Bar */}
-              <div className="w-10 bg-white border border-gray-200 shadow-xl rounded-lg flex flex-col items-center pt-3 pb-3 gap-2">
-                {/* Plus */}
-                <div className="relative group">
+                {/* Right Side: Change template & Close button moved inwards to the left via inline style */}
+                <div className="flex items-center gap-2" style={{ paddingRight: "24px" }}>
                   <button
                     type="button"
-                    onClick={() => setZoomScale((prev) => Math.min(1, +(prev + 0.05).toFixed(2)))}
-                    className="w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-100 active:bg-gray-200 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150"
-                  >
-                    <Plus size={16} />
-                  </button>
-                  <span style={{ position: 'absolute', right: '100%', marginRight: '8px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', zIndex: 100000 }} className="group-hover:!opacity-100 opacity-0 transition-opacity duration-150">
-                    Zoom in
-                  </span>
-                </div>
-
-                {/* Slider Input */}
-                <div className="h-40 flex items-center justify-center">
-                  <input
-                    type="range"
-                    min="0.05"
-                    max="1"
-                    step="0.05"
-                    value={zoomScale}
-                    onChange={(e) => setZoomScale(parseFloat(e.target.value))}
-                    style={{
-                      writingMode: "vertical-lr",
-                      direction: "rtl",
-                      WebkitAppearance: "slider-vertical",
-                      width: "4px",
-                      height: "100%",
-                      cursor: "pointer",
-                      accentColor: "#000000",
-                      background: "#e2e8f0"
-                    }}
-                  />
-                </div>
-
-                {/* Zoom Percentage */}
-                <span className="text-[11px] font-semibold text-gray-700 tabular-nums select-none leading-none">
-                  {Math.round(zoomScale * 100)}%
-                </span>
-
-                {/* Minus */}
-                <div className="relative group">
-                  <button
-                    type="button"
-                    onClick={() => setZoomScale((prev) => Math.max(0.05, +(prev - 0.05).toFixed(2)))}
-                    className="w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-200 active:bg-gray-300 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150"
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span style={{ position: 'absolute', right: '100%', marginRight: '8px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', zIndex: 100000 }} className="group-hover:!opacity-100 opacity-0 transition-opacity duration-150">
-                    Zoom out
-                  </span>
-                </div>
-              </div>
-
-              {/* Scroll to Top - positioned absolutely below bar, never shifts layout */}
-              <div
-                className={`transition-opacity duration-200 ${showScrollTop ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-              >
-                <div className="relative group">
-                  <button
-                    type="button"
+                    className={`${styles.btnChangeTemplate} !mt-0 !rounded !px-2`}
                     onClick={() => {
-                      const viewport = document.getElementById('zoom-viewport');
-                      viewport?.scrollTo({ top: 0, behavior: 'smooth' });
+                      setIsModalOpen(true);
                     }}
-                    className="w-10 h-10 bg-white border border-gray-200 shadow-xl rounded-lg text-gray-700 hover:text-black hover:bg-gray-50 hover:border-gray-300 active:scale-90 flex items-center justify-center cursor-pointer transition-all"
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="12" y1="19" x2="12" y2="5" />
-                      <polyline points="5 12 12 5 19 12" />
+                    <LayoutTemplate size={14} />
+                    Change template
+                  </button>
+                  <div className="w-px h-6 bg-[#27272a]" />
+                  <button
+                    type="button"
+                    className="w-8 h-8 rounded border border-white/15 bg-[#27272a] text-white hover:bg-[#3f3f46] hover:border-white/30 flex items-center justify-center cursor-pointer transition-all duration-200"
+                    onClick={() => setIsZoomOpen(false)}
+                    aria-label="Close Preview"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
                   </button>
-                  <span style={{ position: 'absolute', right: '100%', marginRight: '8px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', zIndex: 100000 }} className="group-hover:!opacity-100 opacity-0 transition-opacity duration-150">
-                    Scroll to top
+                </div>
+              </div>
+
+              {/* Document Viewport Wrapper with Glass Background */}
+              <div
+                className="flex-1 p-4 flex justify-center items-start bg-black/40 backdrop-blur-xl relative overflow-hidden cursor-pointer"
+                onClick={() => setIsZoomOpen(false)}
+              >
+                {/* Centered scrollable container matching template width */}
+                <div
+                  id="zoom-viewport"
+                  className={`h-full overflow-y-auto pr-2 custom-scrollbar ${styles.zoomViewportScrollbar} cursor-default`}
+                  style={{ width: `${794 * zoomScale + 20}px` }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Document Container scaled dynamically */}
+                  <div
+                    className="bg-white shadow-2xl rounded-sm overflow-hidden"
+                    style={{
+                      width: "794px",
+                      minHeight: "1123px",
+                      color: "#000000",
+                      zoom: zoomScale,
+                      margin: "0 auto",
+                      userSelect: "none"
+                    }}
+                    onDragStart={(e) => e.preventDefault()}
+                  >
+                    <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Zoom Controls — positioned on right side */}
+              <div
+                className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 z-[99999] select-none cursor-default"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Fit / Reset button with tooltip */}
+                <div className="relative group">
+                  <button
+                    type="button"
+                    onClick={fitToScreen}
+                    className="w-10 h-10 bg-white border border-gray-200 shadow-xl rounded-lg text-gray-700 hover:text-black hover:bg-gray-50 hover:border-gray-300 active:scale-90 flex items-center justify-center cursor-pointer transition-all"
+                  >
+                    <Maximize size={16} />
+                  </button>
+                  <span style={{ position: 'absolute', right: '100%', marginRight: '12px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', opacity: 0, pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', transition: 'opacity 0.15s ease', zIndex: 100000 }} className="group-hover:!opacity-100">
+                    Fit to width
                   </span>
+                </div>
+
+                {/* Vertical Range Bar */}
+                <div className="w-10 bg-white border border-gray-200 shadow-xl rounded-lg flex flex-col items-center pt-3 pb-3 gap-2">
+                  {/* Plus */}
+                  <div className="relative group">
+                    <button
+                      type="button"
+                      onClick={() => setZoomScale((prev) => Math.min(1, +(prev + 0.05).toFixed(2)))}
+                      className="w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-100 active:bg-gray-200 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150"
+                    >
+                      <Plus size={16} />
+                    </button>
+                    <span style={{ position: 'absolute', right: '100%', marginRight: '8px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', zIndex: 100000 }} className="group-hover:!opacity-100 opacity-0 transition-opacity duration-150">
+                      Zoom in
+                    </span>
+                  </div>
+
+                  {/* Slider Input */}
+                  <div className="h-40 flex items-center justify-center">
+                    <input
+                      type="range"
+                      min="0.05"
+                      max="1"
+                      step="0.05"
+                      value={zoomScale}
+                      onChange={(e) => setZoomScale(parseFloat(e.target.value))}
+                      style={{
+                        writingMode: "vertical-lr",
+                        direction: "rtl",
+                        WebkitAppearance: "slider-vertical",
+                        width: "4px",
+                        height: "100%",
+                        cursor: "pointer",
+                        accentColor: "#000000",
+                        background: "#e2e8f0"
+                      }}
+                    />
+                  </div>
+
+                  {/* Zoom Percentage */}
+                  <span className="text-[11px] font-semibold text-gray-700 tabular-nums select-none leading-none">
+                    {Math.round(zoomScale * 100)}%
+                  </span>
+
+                  {/* Minus */}
+                  <div className="relative group">
+                    <button
+                      type="button"
+                      onClick={() => setZoomScale((prev) => Math.max(0.05, +(prev - 0.05).toFixed(2)))}
+                      className="w-8 h-8 text-gray-500 hover:text-black hover:bg-gray-200 active:bg-gray-300 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150"
+                    >
+                      <Minus size={16} />
+                    </button>
+                    <span style={{ position: 'absolute', right: '100%', marginRight: '8px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', zIndex: 100000 }} className="group-hover:!opacity-100 opacity-0 transition-opacity duration-150">
+                      Zoom out
+                    </span>
+                  </div>
+                </div>
+
+                {/* Scroll to Top - positioned absolutely below bar, never shifts layout */}
+                <div
+                  className={`transition-opacity duration-200 ${showScrollTop ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                >
+                  <div className="relative group">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const viewport = document.getElementById('zoom-viewport');
+                        viewport?.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="w-10 h-10 bg-white border border-gray-200 shadow-xl rounded-lg text-gray-700 hover:text-black hover:bg-gray-50 hover:border-gray-300 active:scale-90 flex items-center justify-center cursor-pointer transition-all"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="12" y1="19" x2="12" y2="5" />
+                        <polyline points="5 12 12 5 19 12" />
+                      </svg>
+                    </button>
+                    <span style={{ position: 'absolute', right: '100%', marginRight: '8px', top: '50%', transform: 'translateY(-50%)', padding: '4px 8px', background: '#1c1c1e', color: '#fff', fontSize: '11px', fontWeight: 500, borderRadius: '6px', whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', zIndex: 100000 }} className="group-hover:!opacity-100 opacity-0 transition-opacity duration-150">
+                      Scroll to top
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-      </AnimatePresence>,
-      document.body
+          )}
+        </AnimatePresence>,
+        document.body
       )}
     </div>
   );

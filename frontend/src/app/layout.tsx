@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
-      <head>
+      <head suppressHydrationWarning>
         <script
           id="theme-and-auth-loader"
           dangerouslySetInnerHTML={{

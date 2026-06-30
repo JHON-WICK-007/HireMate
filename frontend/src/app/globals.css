@@ -408,7 +408,7 @@ a {
 /* ─── Instant Auth Actions Visibility Control ─── */
 :root {
   --auth-logged-in-display: none;
-  --auth-logged-out-display: flex;
+  --auth-logged-out-display: none;
 }
 
 html.auth-logged-in {

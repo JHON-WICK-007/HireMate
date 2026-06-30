@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HomeBackdrop from "../components/HomeBackdrop";
 import Navbar from "../components/Navbar";
@@ -28,6 +28,19 @@ export default function ResumeBuilderPage() {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
 
+  // ── Load from cache BEFORE browser paints (no flicker) ──
+  useLayoutEffect(() => {
+    const cachedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    if (token && cachedUser) {
+      try {
+        const user = JSON.parse(cachedUser);
+        actions.loadFromProfile(user);
+        setIsCheckingAuth(false);
+      } catch (e) { }
+    }
+  }, [actions]);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -42,7 +55,8 @@ export default function ResumeBuilderPage() {
       try {
         const user = JSON.parse(cachedUser);
         actions.loadFromProfile(user);
-      } catch (e) {}
+        setIsCheckingAuth(false);
+      } catch (e) { }
     }
 
     // Fetch fresh profile data
@@ -224,19 +238,6 @@ export default function ResumeBuilderPage() {
     }
   };
 
-  if (isCheckingAuth) {
-    return (
-      <div className={styles.page}>
-        <HomeBackdrop />
-        <Navbar activePage="resume-builder" />
-        <div className="flex-1 flex flex-col items-center justify-center min-h-[60vh] text-white">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-cyan-500 mb-4" />
-          <p className="font-display text-xs text-gray-400">Loading your profile data...</p>
-        </div>
-        <SiteFooter />
-      </div>
-    );
-  }
 
   return (
     <div className={styles.page}>

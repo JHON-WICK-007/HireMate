@@ -3614,10 +3614,10 @@ his
   padding: 6px;
   z-index: 10;
   min-width: 185px;
-  background: transparent !important;
+  background: #000000 !important;
   border: 1px solid var(--border-default) !important;
   border-radius: var(--radius-md) !important;
-  box-shadow: none !important;
+  box-shadow: var(--shadow-lg) !important;
 }
 
 /* Invisible bridge so mouse transitions smoothly over the 8px top offset gap */

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import homeStyles from "../home.module.css";
 
@@ -37,19 +37,25 @@ export default function Navbar({ activePage }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
+  // ── Load cached user BEFORE browser paints (no flicker) ──
+  useLayoutEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        try { setUser(JSON.parse(savedUser)); } catch (e) { }
+      }
+    }
     setMounted(true);
+  }, []);
+
+  // ── Background API refresh + CSS property sync ──
+  useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
       document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
-      setIsLoggedIn(true);
-      const savedUser = localStorage.getItem("user");
-      if (savedUser) {
-        try {
-          setUser(JSON.parse(savedUser));
-        } catch (e) { }
-      }
       fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
         credentials: "include"
@@ -62,6 +68,8 @@ export default function Navbar({ activePage }: NavbarProps) {
           } else {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
+            setIsLoggedIn(false);
+            setUser(null);
             document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
             document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
           }
@@ -100,8 +108,8 @@ export default function Navbar({ activePage }: NavbarProps) {
             onMouseEnter={() => setResumeDropdown(true)}
             onMouseLeave={() => setResumeDropdown(false)}
           >
-            <Link 
-              href="/resume-optimizer" 
+            <Link
+              href="/resume-optimizer"
               className={`${homeStyles.navLink} ${homeStyles.dropdownTrigger} ${resumeDropdown || activePage === "resume" || activePage === "resume-builder" ? homeStyles.dropdownTriggerActive : ""}`}
             >
               <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
@@ -126,14 +134,14 @@ export default function Navbar({ activePage }: NavbarProps) {
             </Link>
             {resumeDropdown && (
               <div className={homeStyles.dropdownMenu}>
-                <Link 
-                  href="/resume-optimizer" 
+                <Link
+                  href="/resume-optimizer"
                   className={`${homeStyles.dropdownLink} ${activePage === "resume" ? homeStyles.dropdownLinkActive : ""}`}
                 >
                   Resume Optimizer
                 </Link>
-                <Link 
-                  href="/resume-builder" 
+                <Link
+                  href="/resume-builder"
                   className={`${homeStyles.dropdownLink} ${activePage === "resume-builder" ? homeStyles.dropdownLinkActive : ""}`}
                 >
                   Resume Builder
