@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { useResumeStore } from "../../store";
 import { TextareaField } from "../inputs";
-import { StepHeader } from "../navigation";
+import { StepHeader, cardVariant } from "../navigation";
 import { Sparkles, AlertCircle, Loader2 } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -69,7 +70,7 @@ export const SummaryStep: React.FC = () => {
         title="Write your professional summary"
         description="A 3–4 sentence overview of who you are and what you bring."
       />
-      <div className={styles.formCard}>
+      <motion.div variants={cardVariant} className={styles.formCard}>
         <TextareaField
           label="Professional Summary"
           value={summary}
@@ -107,7 +108,7 @@ export const SummaryStep: React.FC = () => {
             Make Concise
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

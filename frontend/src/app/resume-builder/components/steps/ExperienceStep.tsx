@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { useResumeStore, ExperienceEntry } from "../../store";
 import { TextInput, TextareaField, MonthYearPicker } from "../inputs";
-import { StepHeader } from "../navigation";
+import { StepHeader, cardVariant } from "../navigation";
 import { Trash2, Plus } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -21,7 +22,7 @@ export const ExperienceStep: React.FC = () => {
         title="Add your work experience"
         description="List your most recent roles first. Outline key achievements."
       />
-      <div className={styles.formCard}>
+      <motion.div variants={cardVariant} className={styles.formCard}>
         {experiences.map((exp, index) => (
           <div key={exp.id} className={styles.entryCard}>
             <div className={styles.entryCardHeader}>
@@ -124,7 +125,7 @@ export const ExperienceStep: React.FC = () => {
           <Plus size={16} />
           Add Work Experience
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 };

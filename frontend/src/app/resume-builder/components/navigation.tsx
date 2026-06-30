@@ -1,9 +1,15 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import styles from "../builder.module.css";
 import { useResumeStore } from "../store";
 import { Check, ChevronLeft, ChevronRight, Download, User, FileText, Briefcase, GraduationCap, Code, Folder, Award } from "lucide-react";
+
+export const cardVariant = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
+};
 
 interface StepHeaderProps {
   title: string;
@@ -12,14 +18,14 @@ interface StepHeaderProps {
 
 export const StepHeader: React.FC<StepHeaderProps> = ({ title, description }) => {
   return (
-    <div className="mb-6 text-left">
+    <motion.div variants={cardVariant} className="mb-6 text-left">
       <h2 className="font-display font-bold text-2xl lg:text-3xl text-white tracking-tight mb-2">
         {title}
       </h2>
       <p className="text-sm text-gray-400 font-sans">
         {description}
       </p>
-    </div>
+    </motion.div>
   );
 };
 

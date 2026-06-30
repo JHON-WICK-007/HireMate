@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { useResumeStore, ProjectEntry } from "../../store";
 import { TextInput, TextareaField, UrlInput, ChipInput } from "../inputs";
-import { StepHeader } from "../navigation";
+import { StepHeader, cardVariant } from "../navigation";
 import { Trash2, Plus } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -21,7 +22,7 @@ export const ProjectsStep: React.FC = () => {
         title="Showcase your projects"
         description="Add personal or professional projects that demonstrate your skills."
       />
-      <div className={styles.formCard}>
+      <motion.div variants={cardVariant} className={styles.formCard}>
         {projects.map((proj, index) => (
           <div key={proj.id} className={styles.entryCard}>
             <div className={styles.entryCardHeader}>
@@ -95,7 +96,7 @@ export const ProjectsStep: React.FC = () => {
           <Plus size={16} />
           Add Project
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 };

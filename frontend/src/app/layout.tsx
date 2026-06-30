@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { ToastProvider } from "./components/Toast";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -38,30 +37,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
-      <head suppressHydrationWarning />
-      <Script
-        id="theme-and-auth-loader"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            try {
-              history.scrollRestoration = "manual";
-              document.documentElement.setAttribute('data-theme', 'dark');
-              if (localStorage.getItem('token')) {
-                document.documentElement.classList.add('auth-logged-in');
-                document.documentElement.classList.remove('auth-logged-out');
-                document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
-                document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
-              } else {
-                document.documentElement.classList.add('auth-logged-out');
-                document.documentElement.classList.remove('auth-logged-in');
-                document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
-                document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
-              }
-            } catch (e) {}
-          `,
-        }}
-      />
+      <head suppressHydrationWarning>
+        <script
+          id="theme-and-auth-loader"
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                history.scrollRestoration = "manual";
+                document.documentElement.setAttribute('data-theme', 'dark');
+                if (localStorage.getItem('token')) {
+                  document.documentElement.classList.add('auth-logged-in');
+                  document.documentElement.classList.remove('auth-logged-out');
+                  document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
+                  document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
+                } else {
+                  document.documentElement.classList.add('auth-logged-out');
+                  document.documentElement.classList.remove('auth-logged-in');
+                  document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
+                  document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body>
         <ScrollToTop />
         <ToastProvider>

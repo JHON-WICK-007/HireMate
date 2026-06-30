@@ -19,6 +19,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "../components/Toast";
 import SiteFooter from "../components/SiteFooter";
 
+const cardVariant = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } }
+};
+
 export default function ResumeBuilderPage() {
   const router = useRouter();
   const toast = useToast();
@@ -253,12 +263,14 @@ export default function ResumeBuilderPage() {
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.22, ease: "easeInOut" }}
+              transition={{ duration: 0.22 }}
             >
-              {renderActiveStep()}
+              <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+                {renderActiveStep()}
+              </motion.div>
               <StepNavigation onFinish={handleFinish} />
             </motion.div>
           </AnimatePresence>

@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { useResumeStore, SkillEntry } from "../../store";
-import { StepHeader } from "../navigation";
+import { StepHeader, cardVariant } from "../navigation";
 import { Trash2, Plus, Sparkles } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -88,7 +89,7 @@ export const SkillsStep: React.FC = () => {
         title="Add your skills"
         description="List technical and soft skills relevant to your target role."
       />
-      <div className={styles.formCard}>
+      <motion.div variants={cardVariant} className={styles.formCard}>
         {/* Category Tabs */}
         <div className="flex flex-wrap gap-2 mb-6 border-b border-gray-800 pb-3">
           {CATEGORIES.map((cat) => (
@@ -205,7 +206,7 @@ export const SkillsStep: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };

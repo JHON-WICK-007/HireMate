@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { useResumeStore, EducationEntry } from "../../store";
 import { TextInput, TextareaField, MonthYearPicker } from "../inputs";
-import { StepHeader } from "../navigation";
+import { StepHeader, cardVariant } from "../navigation";
 import { Trash2, Plus } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -21,7 +22,7 @@ export const EducationStep: React.FC = () => {
         title="Add your education"
         description="Include degrees, institutions, and graduation dates."
       />
-      <div className={styles.formCard}>
+      <motion.div variants={cardVariant} className={styles.formCard}>
         {educations.map((edu, index) => (
           <div key={edu.id} className={styles.entryCard}>
             <div className={styles.entryCardHeader}>
@@ -116,7 +117,7 @@ export const EducationStep: React.FC = () => {
           <Plus size={16} />
           Add Education
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 };

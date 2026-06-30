@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { useResumeStore } from "../../store";
 import { TextInput, UrlInput, ProfilePictureUpload } from "../inputs";
-import { StepHeader } from "../navigation";
+import { StepHeader, cardVariant } from "../navigation";
 import styles from "../../builder.module.css";
 
 export const PersonalInfoStep: React.FC = () => {
@@ -20,7 +21,7 @@ export const PersonalInfoStep: React.FC = () => {
         title="Let's review the basics"
         description="Include your full name and contact details so employers can reach you."
       />
-      <div className={styles.formCard}>
+      <motion.div variants={cardVariant} className={styles.formCard}>
         <div className="flex flex-col md:flex-row gap-8">
           {/* Profile image on the left */}
           <div className="flex justify-start items-start">
@@ -115,7 +116,7 @@ export const PersonalInfoStep: React.FC = () => {
             placeholder="portfolio.com"
           />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

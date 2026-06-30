@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { useResumeStore, CertificationEntry } from "../../store";
 import { TextInput, MonthYearPicker, UrlInput } from "../inputs";
-import { StepHeader } from "../navigation";
+import { StepHeader, cardVariant } from "../navigation";
 import { Trash2, Plus } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -21,7 +22,7 @@ export const CertificationsStep: React.FC = () => {
         title="Add your certifications"
         description="List any certificates, licenses, or credentials you hold."
       />
-      <div className={styles.formCard}>
+      <motion.div variants={cardVariant} className={styles.formCard}>
         {certifications.map((cert, index) => (
           <div key={cert.id} className={styles.entryCard}>
             <div className={styles.entryCardHeader}>
@@ -112,7 +113,7 @@ export const CertificationsStep: React.FC = () => {
           <Plus size={16} />
           Add Certification
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 };
