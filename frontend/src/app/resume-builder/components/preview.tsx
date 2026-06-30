@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useResumeStore } from "../store";
 import styles from "../builder.module.css";
@@ -3184,6 +3184,9 @@ export const LivePreviewPanel: React.FC = () => {
   const [tempColor, setTempColor] = useState(selectedColor);
   const [hoverColor, setHoverColor] = useState<string | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const fitToScreen = React.useCallback(() => {
     const vw = window.innerWidth;
@@ -3441,7 +3444,7 @@ export const LivePreviewPanel: React.FC = () => {
       )}
 
       {/* Full-screen high-res preview modal — portalled to body for true full-page coverage */}
-      {createPortal(
+      {mounted && createPortal(
         <AnimatePresence>
           {isZoomOpen && (
             <div className="fixed inset-0 bg-white/20 backdrop-blur-lg z-[99999] flex flex-col animate-fadeIn select-none">
