@@ -271,6 +271,7 @@ export default function ResumeBuilderPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.22 }}
+              style={{ display: "flex", flexDirection: "column", flex: 1 }}
             >
               <motion.div variants={staggerContainer} initial="hidden" animate="visible">
                 {renderActiveStep()}

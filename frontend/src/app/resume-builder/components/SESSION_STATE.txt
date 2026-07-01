@@ -1,0 +1,128 @@
+=== HireMate Resume Builder — Current State Summary ===
+
+FILES MODIFIED (this session):
+1. D:\HireMate\frontend\src\app\resume-builder\page.tsx
+2. D:\HireMate\frontend\src\app\resume-builder\components\navigation.tsx
+3. D:\HireMate\frontend\src\app\resume-builder\components\steps\SummaryStep.tsx
+4. D:\HireMate\frontend\src\app\resume-builder\components\steps\PersonalInfoStep.tsx
+5. D:\HireMate\frontend\src\app\resume-builder\builder.module.css
+6. D:\HireMate\frontend\src\app\resume-builder\components\inputs.tsx
+
+=== FEATURES COMPLETED ===
+
+1. SPINNER ON CONTINUE BUTTON (navigation.tsx)
+   - Added IconSpinner import
+   - isTransitioning state with 500ms delay before step change + 150ms after
+   - Shows spinner on Continue button during step transitions
+
+2. SPINNER ON FINISH & EXPORT (page.tsx)
+   - isExporting state passed as isLoading prop to StepNavigation
+   - Shows spinner on Finish & Export button during PDF generation
+
+3. TOOLTIP ON SIDEBAR ICONS (builder.module.css)
+   - Added [data-tooltip]::after pseudo-element
+   - Matches preview mode tooltip style
+
+4. PROFILE IMAGE SIZE (builder.module.css)
+   - Increased .avatarWrap from 128px to 160px
+
+5. PROFILE IMAGE CENTERED (PersonalInfoStep.tsx)
+   - Changed items-start to items-center on profile image container
+
+6. PROFILE IMAGE LABEL (builder.module.css + inputs.tsx)
+   - Created .avatarLabel class for "Profile image" text
+   - Added className={styles.avatarLabel} to label element
+
+7. DELETE BUTTON ON CIRCLE (builder.module.css)
+   - Positioned at bottom: 6px; right: 6px
+
+8. FORM SPACING (PersonalInfoStep.tsx)
+   - Added style={{ marginTop: "1.5rem" }} to first formCard
+
+9. SECTION TITLE SPACING (builder.module.css)
+   - Increased .formSectionTitle margin-bottom to 1.25rem
+
+10. CONTACT & ONLINE PRESENCE SPACING
+    - Increased margin between section title and fields
+
+11. SUMMARY STEP TWO-PANEL LAYOUT (SummaryStep.tsx)
+    - 40 job templates with search bar
+    - BIO-style textarea
+    - AI generate button
+    - Template list with scrollbar
+
+12. FIXED DUPLICATE CSS CLASS NAMES (builder.module.css)
+    - Renamed .templateCard* to .summaryTemplateCard*
+    - Avoids collision with resume theme picker in preview.tsx
+    - Updated SummaryStep.tsx references
+
+13. SCROLLBAR PRESERVED
+    - .templateList uses overflow-y: auto with custom scrollbar
+
+14. RESPONSIVE BREAKPOINT
+    - .summaryLayout has height: auto on mobile (< 900px)
+
+15. NAV BUTTON POSITIONING (builder.module.css)
+    - .navContainer uses margin-top: auto
+    - Pushes nav to bottom of outer motion.div
+    - Same Y position on both PersonalInfo and Summary pages
+    - No pixel math needed
+
+=== CURRENT CSS STATE ===
+
+.navContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.summaryLayout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
+  height: 541px;
+}
+
+=== PAGE.TSX STRUCTURE ===
+
+<motion.div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+  <motion.div variants={staggerContainer}>
+    {renderActiveStep()}
+  </motion.div>
+  <StepNavigation onFinish={handleFinish} isLoading={isExporting} />
+</motion.div>
+
+=== SUMMARYSTEP.TSX STRUCTURE ===
+
+<div className="flex flex-col gap-6">
+  <StepHeader ... />
+  <motion.div variants={cardVariant} className={styles.formCard}>
+    <div className={styles.summaryLayout}>
+      {/* Left Panel: Templates */}
+      {/* Right Panel: Textarea + AI */}
+    </div>
+  </motion.div>
+</div>
+
+=== PERSONALINFO.TSX STRUCTURE ===
+
+<div className="flex flex-col gap-0">
+  <StepHeader ... />
+  <motion.div variants={cardVariant} className={styles.formCard} style={{ marginTop: "1.5rem" }}>
+    {/* Profile image + inputs grid */}
+  </motion.div>
+  <motion.div variants={cardVariant} className={styles.formCard}>
+    {/* Contact details grid */}
+  </motion.div>
+</div>
+
+=== KEY DESIGN DECISIONS ===
+- Backend /api/ai/summary route does NOT exist — handleAiGenerate uses template-based summary
+- box-sizing: border-box set globally in globals.css line 177
+- Dark theme default, light theme compatible
+- Accent: Cyan (#06b6d4) for resume optimizer
+- Outfit font for headings, Inter for body text
+- Framer Motion animations throughout
+- Lucide React icons (2px stroke, currentColor)

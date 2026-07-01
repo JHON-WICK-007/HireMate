@@ -86,19 +86,27 @@ router.post("/start", protect, async (req: Request, res: Response): Promise<void
     }
 
     // Call Gemini to generate the first question
-    const prompt = `You are an expert recruiter and technical interviewer. You are conducting a mock interview for the following position:
-Company: ${company}
-Role: ${role}
-Experience Level: ${level}
-Requested Question Types: ${qTypes.join(", ")}
+    const prompt = `You are a world-class senior recruiter and elite technical interviewer. You are conducting a mock interview session for this target role:
+- Company: ${company}
+- Role: ${role}
+- Experience Level: ${level}
+- Target Question Categories: ${qTypes.join(", ")}
 
-Please generate the first question of this mock interview. It MUST match one of the requested question types.
-Respond ONLY with a valid JSON object matching this exact schema:
+Your task is to generate the first question of this mock interview. 
+
+GUIDELINES FOR HIGH-QUALITY QUESTIONS:
+1. Category Match: The question must strictly belong to one of the target categories: ${qTypes.join(", ")}.
+2. Level Alignment: 
+   - Junior: Focus on practical coding fundamentals, core tools/frameworks, basic error handling, and collaboration basics.
+   - Mid-Level: Focus on feature design, API structuring, optimization, unit testing, and architectural patterns.
+   - Senior / Staff+: Focus on scale, high-throughput system architecture, complex trade-offs, security, cloud deployment strategies, mentoring, and leading technical initiatives.
+3. Realistic Context: Customize the question style to match the standard interviewing style of ${company}. If it is a tech giant or high-growth startup, ask questions with real technical depth (e.g., system design scenarios, concurrency, performance profiling) rather than trivial syntax questions.
+
+Respond ONLY with a valid JSON object matching this schema:
 {
   "questionText": "string",
   "type": "string" (must be one of: Technical, Behavioral, HR, System design)
-}
-`;
+}`;
 
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const response = await callWithRetry(() =>
@@ -204,26 +212,35 @@ Evaluation Feedback: ${q.feedback || "Pending"}`;
       })
       .join("\n\n");
 
-    const prompt = `You are an expert recruiter and technical interviewer conducting a mock interview for the following position:
-Company: ${interview.company}
-Role: ${interview.role}
-Experience Level: ${interview.level}
+    const prompt = `You are a world-class technical interviewer and hiring manager conducting a mock interview for the following position:
+- Company: ${interview.company}
+- Role: ${interview.role}
+- Experience Level: ${interview.level}
 
 Here is the conversation history including all questions, candidate answers, and evaluations so far:
+---
 ${formattedHistory}
+---
 
 We are currently evaluating the candidate's latest response to the current question (Question ${currentIdx + 1} of ${totalQuestions}):
-Question: ${currentQuestion.questionText}
-Candidate Answer: ${answer}
+- Question: ${currentQuestion.questionText}
+- Candidate Answer: ${answer}
 
 Your tasks:
-1. Evaluate the candidate's answer to this specific question. Assign an integer score between 0 and 100 based on accuracy, depth, and clarity, and write short constructive feedback (under 3 sentences). Also provide what a strong response looks like in 1-2 sentences (using the STAR method if appropriate), and an array of 2-4 key competencies tested by this question (e.g. "Active listening", "Conflict resolution", "Technical accuracy", "Problem solving", etc.).
+1. Evaluate the candidate's answer to this specific question:
+   - Assign an integer score (0 to 100). Be rigorous, fair, and realistic (do not hand out 90+ scores for basic or generic answers).
+   - Write constructive, professional feedback (under 3 sentences) detailing strengths and specific areas of improvement based on their experience level.
+   - Provide a clear example of what a top-tier ("strong") answer looks like (using the STAR method for behavioral, or specific design patterns/engineering choices for technical questions) in 1-2 sentences.
+   - Define an array of 2-4 key professional competencies tested by this question.
 2. Determine if the interview has reached the last question (${currentIdx + 1} == ${totalQuestions}).
-3. If NOT finished (isEnded = false), generate the next question. It MUST match one of the requested question types: ${interview.questionTypes.join(", ")}. Vary the question type from the current question if possible.
-4. If FINISHED (isEnded = true), calculate the final overall score (0 to 100) and the final sub-metrics (each 0 to 100):
-   - technicalAccuracy
-   - communication
-   - problemSolving
+3. If NOT finished (isEnded = false):
+   - Generate the next question. It MUST match one of the requested categories: ${interview.questionTypes.join(", ")}.
+   - Keep the flow natural and progressive. Adapt the next question's depth directly to the candidate's experience level (${interview.level}).
+4. If FINISHED (isEnded = true):
+   - Calculate the final overall score (0 to 100) and the final sub-metrics (each 0 to 100):
+     - technicalAccuracy: how technically sound and accurate their technical statements were.
+     - communication: structured articulation, clarity, and conciseness.
+     - problemSolving: structured approach, handling of edge cases, and reasoning.
 
 Respond ONLY with a valid JSON object matching this exact schema:
 
@@ -259,8 +276,7 @@ If isEnded is true:
       "problemSolving": number
     }
   }
-}
-`;
+}`;
 
     if (!process.env.GEMINI_API_KEY) {
       res.status(500).json({ success: false, message: "AI configuration key is missing on the server." });

@@ -66,10 +66,19 @@ router.post("/analyze", protect, upload.single("resume"), async (req: Request, r
     }
 
     // Call Gemini to analyze the resume
-    const prompt = `You are an expert ATS (Applicant Tracking System) and Senior Technical Recruiter.
-Please analyze the following resume text. Extract the required fields and provide a professional analysis.
-Respond ONLY with a valid JSON object matching this exact schema:
+    const prompt = `You are an elite ATS (Applicant Tracking System) parser and senior technical recruiter.
+Your task is to parse, analyze, and grade the following resume. 
 
+CRITICAL GUIDELINES:
+1. Extract personalInfo, skills, education, experience, and projects precisely.
+2. Conduct a highly rigorous ATS analysis:
+   - atsScore: An objective score (0 to 100). Be realistic. A typical un-optimized resume should score between 40-70. Only truly optimized resumes with clear impact metrics, strong verbs, and no formatting issues should score 85+.
+   - strengths: 3-5 specific, bulleted technical or structural strengths.
+   - weaknesses: 3-5 critical, actionable weaknesses (e.g., lack of quantifiable metrics, passive voice, missing key stack tools, weak action verbs).
+   - missingSkills: A list of industry-standard tools or skills that are highly relevant to the candidate's target roles but missing from their text.
+   - improvementSuggestions: 3-5 concrete, step-by-step suggestions to boost their ATS score (e.g., "Change passive phrase X to active verb Y", "Add quantifiable results for project Z").
+
+Respond ONLY with a valid JSON object matching this exact schema:
 {
   "personalInfo": {
     "fullName": "string",
@@ -88,7 +97,7 @@ Respond ONLY with a valid JSON object matching this exact schema:
     { "name": "string", "description": "string", "technologies": ["string"] }
   ],
   "analysis": {
-    "atsScore": number (0 to 100),
+    "atsScore": number,
     "strengths": ["string"],
     "weaknesses": ["string"],
     "missingSkills": ["string"],
@@ -96,9 +105,10 @@ Respond ONLY with a valid JSON object matching this exact schema:
   }
 }
 
-Resume Text:
+Resume Text to analyze:
+---
 ${extractedText.substring(0, 15000)}
-`;
+---`;
 
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
