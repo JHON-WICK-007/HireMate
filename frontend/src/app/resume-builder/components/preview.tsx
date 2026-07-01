@@ -268,6 +268,23 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
+    .resume-container-t1 .header-avatar-initials {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 2px solid var(--color-accent);
+      background: var(--color-tag-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--color-accent);
+      letter-spacing: 0.04em;
+    }
+
     .resume-container-t1 .header-identity {
       display: flex;
       flex-direction: column;
@@ -607,6 +624,23 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       object-fit: cover;
       border: 2px solid var(--gold);
       flex-shrink: 0;
+    }
+
+    .resume-container-t2 .header-avatar-initials {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--gold);
+      letter-spacing: 0.04em;
     }
 
     .resume-container-t2 .header-identity {
@@ -995,6 +1029,24 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       margin-bottom: 18px;
     }
 
+    .resume-container-t3 .header-avatar-initials {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid var(--color-accent);
+      background: var(--color-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-bottom: 18px;
+      font-family: var(--font-display);
+      font-size: 40px;
+      font-weight: 400;
+      color: var(--color-accent);
+      letter-spacing: 0.04em;
+    }
+
     .resume-container-t3 .name-heading {
       font-family: var(--font-display);
       font-size: 30px;
@@ -1139,6 +1191,22 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       flex-shrink: 0;
     }
 
+    .resume-container-t4 .header-avatar-initials {
+      width: 110px;
+      height: 110px;
+      border: 2px solid var(--color-accent);
+      background: #F9FAFB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--color-accent);
+      letter-spacing: 0.04em;
+    }
+
     .resume-container-t4 .name {
       font-family: var(--font-mono);
       font-size: 32px;
@@ -1247,6 +1315,23 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       border: 2px solid var(--color-accent);
       object-fit: cover;
       flex-shrink: 0;
+    }
+
+    .resume-container-t5 .header-avatar-initials {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid var(--color-accent);
+      background: #FDFBF7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-size: 40px;
+      font-weight: 400;
+      color: var(--color-accent);
+      letter-spacing: 0.04em;
     }
 
     .resume-container-t5 .name {
@@ -2248,8 +2333,12 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
         <style dangerouslySetInnerHTML={{ __html: editorialStyles }} />
         <article className="resume">
           <div className="left-col">
-            {personalInfo.profilePicture && (
+            {personalInfo.profilePicture ? (
               <img src={personalInfo.profilePicture} className="resume-profile-pic" alt="Profile" />
+            ) : (
+              <div className="header-avatar-initials" aria-hidden="true">
+                {displayFirst.charAt(0)}{displayLast.charAt(0)}
+              </div>
             )}
             <h1 className="name-heading">{displayFirst} {displayLast}</h1>
             <p className="title-sub">{displayTitle}</p>
@@ -2415,8 +2504,12 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
         <style dangerouslySetInnerHTML={{ __html: technicalGridStyles }} />
         <article className="resume">
           <div className="grid-header">
-            {personalInfo.profilePicture && (
+            {personalInfo.profilePicture ? (
               <img src={personalInfo.profilePicture} className="resume-profile-pic" alt="Profile" />
+            ) : (
+              <div className="header-avatar-initials" aria-hidden="true">
+                {displayFirst.charAt(0)}{displayLast.charAt(0)}
+              </div>
             )}
             <div>
               <h1 className="name">{displayFirst} {displayLast}</h1>
@@ -2570,8 +2663,12 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
         <style dangerouslySetInnerHTML={{ __html: executiveHeritageStyles }} />
         <article className="resume">
           <div className="header-center">
-            {personalInfo.profilePicture && (
+            {personalInfo.profilePicture ? (
               <img src={personalInfo.profilePicture} className="resume-profile-pic" alt="Profile" />
+            ) : (
+              <div className="header-avatar-initials" aria-hidden="true">
+                {displayFirst.charAt(0)}{displayLast.charAt(0)}
+              </div>
             )}
             <h1 className="name">{displayFirst} {displayLast}</h1>
             <p className="tagline">{displayTitle}</p>
@@ -2748,12 +2845,16 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
           {/* HEADER */}
           <header className="resume-header">
             <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-              {personalInfo.profilePicture && (
+              {personalInfo.profilePicture ? (
                 <img
                   src={personalInfo.profilePicture}
                   alt={`${displayFirst} ${displayLast}`}
                   className="resume-profile-pic"
                 />
+              ) : (
+                <div className="header-avatar-initials" aria-hidden="true">
+                  {displayFirst.charAt(0)}{displayLast.charAt(0)}
+                </div>
               )}
               <div className="header-identity">
                 <h1 className="resume-name">{displayFirst} {displayLast}</h1>
@@ -2962,12 +3063,16 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
         {/* HEADER */}
         <header className="resume-header">
           <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-            {personalInfo.profilePicture && (
+            {personalInfo.profilePicture ? (
               <img
                 src={personalInfo.profilePicture}
                 alt={`${displayFirst} ${displayLast}`}
                 className="resume-profile-pic"
               />
+            ) : (
+              <div className="header-avatar-initials" aria-hidden="true">
+                {displayFirst.charAt(0)}{displayLast.charAt(0)}
+              </div>
             )}
             <div className="header-identity">
               <h1 className="resume-name">{displayFirst} {displayLast}</h1>

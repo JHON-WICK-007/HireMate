@@ -123,6 +123,7 @@
   cursor: pointer;
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.03), var(--shadow-sm);
   transition: all var(--transition-base);
+  isolation: isolate;
 }
 
 .avatarWrap:hover {
@@ -135,8 +136,8 @@
   inset: 0;
   border-radius: inherit;
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(1.5px);
-  -webkit-backdrop-filter: blur(1.5px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   opacity: 0;
   transition: opacity var(--transition-fast);
   pointer-events: none;
@@ -159,7 +160,6 @@
   width: 120px;
   height: 120px;
   border-radius: var(--radius-full);
-  background: var(--surface-100);
   border: 2px solid var(--border-default);
   display: flex;
   align-items: center;

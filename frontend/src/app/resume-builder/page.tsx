@@ -81,7 +81,11 @@ export default function ResumeBuilderPage() {
           actions.loadFromProfile(data.user);
           localStorage.setItem("user", JSON.stringify(data.user));
           if (data.user.fullName || data.user.email || data.user.phone || data.user.bio) {
-            toast.success("Profile Autofilled", "Resume fields loaded from your profile.");
+            const alreadyShown = sessionStorage.getItem("resume_autofill_toast_shown");
+            if (!alreadyShown) {
+              toast.success("Profile Autofilled", "Resume fields loaded from your profile.");
+              sessionStorage.setItem("resume_autofill_toast_shown", "true");
+            }
           }
         } else {
           localStorage.removeItem("token");
@@ -271,7 +275,7 @@ export default function ResumeBuilderPage() {
               <motion.div variants={staggerContainer} initial="hidden" animate="visible">
                 {renderActiveStep()}
               </motion.div>
-              <StepNavigation onFinish={handleFinish} />
+              <StepNavigation onFinish={handleFinish} isLoading={isExporting} />
             </motion.div>
           </AnimatePresence>
         </div>

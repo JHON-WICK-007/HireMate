@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { Mail } from "lucide-react";
 import { useResumeStore } from "../../store";
 import { TextInput, UrlInput, ProfilePictureUpload } from "../inputs";
 import { StepHeader, cardVariant } from "../navigation";
@@ -16,15 +17,15 @@ export const PersonalInfoStep: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-0">
       <StepHeader
         title="Let's review the basics"
         description="Include your full name and contact details so employers can reach you."
       />
-      <motion.div variants={cardVariant} className={styles.formCard}>
+      <motion.div variants={cardVariant} className={styles.formCard} style={{ marginTop: "1.5rem" }}>
         <div className="flex flex-col md:flex-row gap-8">
           {/* Profile image on the left */}
-          <div className="flex justify-start items-start">
+          <div className="flex justify-start items-center">
             <ProfilePictureUpload
               value={personalInfo.profilePicture}
               onChange={(base64) => handleChange("profilePicture", base64)}
@@ -83,11 +84,16 @@ export const PersonalInfoStep: React.FC = () => {
             />
           </div>
         </div>
+      </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      {/* Contact & Online Presence Section */}
+      <motion.div variants={cardVariant} className={styles.formCard}>
+        <p className={styles.formSectionTitle}>Contact & Online Presence</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextInput
             label="Email Address"
             type="email"
+            icon={<Mail size={16} className="text-gray-400" />}
             value={personalInfo.email}
             onChange={(e) => handleChange("email", e.target.value)}
             placeholder="e.g. hello@reallygreatsite.com"

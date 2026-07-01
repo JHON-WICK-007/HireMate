@@ -43,12 +43,14 @@ interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
   showSuccess?: boolean;
+  icon?: React.ReactNode;
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
   label,
   error,
   showSuccess = false,
+  icon,
   className = "",
   required,
   ...props
@@ -59,8 +61,9 @@ export const TextInput: React.FC<TextInputProps> = ({
         {label} {required && "*"}
       </label>
       <div className="relative flex items-center">
+        {icon && <div className={styles.iconWrapper}>{icon}</div>}
         <input
-          className={`${styles.input} ${className}`}
+          className={`${styles.input} ${icon ? styles.inputWithIcon : ""} ${className}`}
           required={required}
           autoComplete="off"
           {...props}
@@ -202,9 +205,9 @@ export const UrlInput: React.FC<UrlInputProps> = ({
     <div className={styles.formGroup}>
       <label className={styles.label}>{label}</label>
       <div className="relative flex items-center">
-        <div className="absolute left-4 pointer-events-none">{getIcon()}</div>
+        <div className={styles.iconWrapper}>{getIcon()}</div>
         <input
-          className={`${styles.input} pl-10 ${className}`}
+          className={`${styles.input} ${styles.inputWithIcon} ${className}`}
           autoComplete="off"
           {...props}
         />
@@ -317,20 +320,20 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
         ) : (
           <div className={styles.avatarFallback}>{initials}</div>
         )}
-        
-        {value ? (
+
+        <span className={styles.avatarEditBtn} title="Change photo">
+          <Camera size={18} />
+        </span>
+
+        {value && (
           <button
             type="button"
-            className={styles.avatarEditBtn}
+            className={styles.avatarDeleteBtn}
             onClick={removeImage}
             title="Remove photo"
           >
-            <Trash2 size={18} />
+            <Trash2 size={14} />
           </button>
-        ) : (
-          <div className={styles.avatarEditBtn} title="Upload photo">
-            <Camera size={18} />
-          </div>
         )}
 
         <input
@@ -341,7 +344,7 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
           onChange={handleFileChange}
         />
       </div>
-      <label className={styles.label}>Profile Image</label>
+      <label className={styles.avatarLabel}>Profile Image</label>
     </div>
   );
 };
