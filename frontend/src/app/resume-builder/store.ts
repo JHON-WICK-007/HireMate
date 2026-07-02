@@ -417,7 +417,6 @@ export const useResumeStore = create<ResumeStore>()(
     const { actions, ...rest } = state;
     return rest;
   },
-  skipHydration: true,
 }
 )
 );

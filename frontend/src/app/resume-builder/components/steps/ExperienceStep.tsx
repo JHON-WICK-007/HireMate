@@ -3,16 +3,16 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useResumeStore, ExperienceEntry } from "../../store";
-import { TextInput, TextareaField, MonthYearPicker } from "../inputs";
+import { TextInput, MonthYearPicker, CustomDropdown } from "../inputs";
 import { StepHeader, cardVariant } from "../navigation";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Check } from "lucide-react";
 import styles from "../../builder.module.css";
 
 export const ExperienceStep: React.FC = () => {
   const experiences = useResumeStore((state) => state.experiences);
   const actions = useResumeStore((state) => state.actions);
 
-  const handleUpdate = (id: string, field: keyof ExperienceEntry, value: any) => {
+  const handleUpdate = (id: string, field: keyof ExperienceEntry, value: unknown) => {
     actions.updateExperience(id, field, value);
   };
 
@@ -34,11 +34,12 @@ export const ExperienceStep: React.FC = () => {
                 className={styles.btnDelete}
                 onClick={() => actions.removeExperience(exp.id)}
               >
-                <Trash2 size={16} />
+                <Trash2 size={14} />
+                Remove
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={styles.entryGrid}>
               <TextInput
                 label="Company"
                 value={exp.company}
@@ -59,40 +60,49 @@ export const ExperienceStep: React.FC = () => {
                 onChange={(e) => handleUpdate(exp.id, "location", e.target.value)}
                 placeholder="e.g. San Francisco, CA"
               />
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Employment Type</label>
-                <select
-                  className={styles.select}
-                  value={exp.employmentType}
-                  onChange={(e) => handleUpdate(exp.id, "employmentType", e.target.value)}
-                >
-                  <option value="Full-time">Full-time</option>
-                  <option value="Part-time">Part-time</option>
-                  <option value="Contract">Contract</option>
-                  <option value="Internship">Internship</option>
-                  <option value="Freelance">Freelance</option>
-                </select>
-              </div>
+              <CustomDropdown
+                label="Employment Type"
+                value={exp.employmentType}
+                onChange={(val) => handleUpdate(exp.id, "employmentType", val)}
+                options={[
+                  { value: "Full-time", label: "Full-time" },
+                  { value: "Part-time", label: "Part-time" },
+                  { value: "Contract", label: "Contract" },
+                  { value: "Internship", label: "Internship" },
+                  { value: "Freelance", label: "Freelance" },
+                ]}
+              />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={styles.entryGrid}>
               <MonthYearPicker
                 label="Start Date"
                 value={exp.startDate}
-                onChange={(val) => handleUpdate(exp.id, "startDate", val)}
+                onChange={(val) => {
+                  handleUpdate(exp.id, "startDate", val);
+                  if (!val.month || !val.year) {
+                    handleUpdate(exp.id, "endDate", { month: null, year: null });
+                  } else if (exp.endDate.month && exp.endDate.year) {
+                    const startVal = val.year! * 12 + val.month!;
+                    const endVal = exp.endDate.year! * 12 + exp.endDate.month!;
+                    if (startVal > endVal) {
+                      handleUpdate(exp.id, "endDate", { month: null, year: null });
+                    }
+                  }
+                }}
               />
               <MonthYearPicker
                 label="End Date"
                 value={exp.endDate}
                 onChange={(val) => handleUpdate(exp.id, "endDate", val)}
-                disabled={exp.isCurrent}
+                disabled={exp.isCurrent || !exp.startDate.month || !exp.startDate.year}
+                minDate={exp.startDate.month && exp.startDate.year ? exp.startDate : undefined}
               />
             </div>
 
-            <div className="flex items-center gap-2">
+            <label className={styles.customCheckbox}>
               <input
                 type="checkbox"
-                id={`current-${exp.id}`}
                 checked={exp.isCurrent}
                 onChange={(e) => {
                   handleUpdate(exp.id, "isCurrent", e.target.checked);
@@ -100,20 +110,31 @@ export const ExperienceStep: React.FC = () => {
                     handleUpdate(exp.id, "endDate", { month: null, year: null });
                   }
                 }}
-                className="w-4 h-4 rounded border-gray-700 bg-black text-cyan-500 focus:ring-0"
               />
-              <label htmlFor={`current-${exp.id}`} className="text-xs text-gray-400">
-                I currently work here
-              </label>
-            </div>
+              <span className={styles.checkmark}>
+                <Check size={12} strokeWidth={3} />
+              </span>
+              <span className={styles.checkboxLabel}>I currently work here</span>
+            </label>
 
-            <TextareaField
-              label="Role Description"
-              value={exp.description}
-              onChange={(e) => handleUpdate(exp.id, "description", e.target.value)}
-              placeholder="Detail your responsibilities and impact (e.g. • Built dashboard interfaces using Next.js...)"
-              rows={4}
-            />
+            <div className={styles.entryGridSpan2}>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Role Description <span className={styles.charHint} style={exp.description.length >= 480 ? { color: exp.description.length >= 500 ? "#ef4444" : "#f59e0b" } : undefined}>{exp.description.length}/500</span></label>
+                <textarea
+                  className={styles.textarea}
+                  value={exp.description}
+                  onChange={(e) => handleUpdate(exp.id, "description", e.target.value)}
+                  rows={5}
+                  maxLength={500}
+                  placeholder="Detail your responsibilities and impact (e.g. • Built dashboard interfaces using Next.js...)"
+                />
+                {exp.description.length >= 480 && (
+                  <span style={{ color: exp.description.length >= 500 ? "#ef4444" : "#f59e0b", fontSize: "0.8rem", marginTop: "0.35rem", display: "block" }}>
+                    {exp.description.length >= 500 ? "Character limit reached." : `Only ${500 - exp.description.length} characters left.`}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         ))}
 
@@ -122,8 +143,8 @@ export const ExperienceStep: React.FC = () => {
           className={styles.btnAdd}
           onClick={actions.addExperience}
         >
-          <Plus size={16} />
-          Add Work Experience
+          <Plus size={15} />
+          Add Position
         </button>
       </motion.div>
     </div>

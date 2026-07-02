@@ -338,7 +338,7 @@ export const SummaryStep: React.FC = () => {
 
           {/* Right Panel: Editor */}
           <div className={styles.summaryRightPanel}>
-            <div style={{ display: "flex", flexDirection: "column", marginTop: "5px", flex: 1, overflow: "hidden" }}>
+            <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
               <div className="flex justify-between items-center" style={{ marginBottom: "1rem" }}>
                 <label style={{
                   fontSize: "1rem",
@@ -388,7 +388,7 @@ export const SummaryStep: React.FC = () => {
                 className={styles.aiGenerateBtn}
                 onClick={handleAiGenerate}
                 disabled={aiGenerating || summary.trim().length === 0}
-                style={{ alignSelf: "flex-end", marginTop: "-1rem" }}
+                style={{ alignSelf: "flex-end", marginTop: "0.5rem" }}
               >
                 {aiGenerating ? (
                   <>

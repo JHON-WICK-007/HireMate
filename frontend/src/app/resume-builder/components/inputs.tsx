@@ -2,7 +2,7 @@
 
 import React, { useRef } from "react";
 import styles from "../builder.module.css";
-import { Check, Link as LinkIcon, Mail, Phone, Globe, Trash2, Camera } from "lucide-react";
+import { Check, Link as LinkIcon, Mail, Phone, Globe, Trash2, Camera, ChevronDown } from "lucide-react";
 import { useResumeStore } from "../store";
 
 const Linkedin = ({ size = 16, className = "" }) => (
@@ -88,15 +88,52 @@ export const TextareaField: React.FC<TextareaFieldProps> = ({
   label,
   error,
   className = "",
+  maxLength,
+  value,
   ...props
 }) => {
+  const charCount = typeof value === "string" ? value.length : 0;
+  const showCounter = maxLength != null;
+  const isNearLimit = showCounter && charCount >= (maxLength as number) - 20;
+  const isAtLimit = showCounter && charCount >= (maxLength as number);
+
   return (
     <div className={styles.formGroup}>
-      <label className={styles.label}>{label}</label>
+      <label className={styles.label}>
+        {label}
+        {showCounter && (
+          <span
+            style={{
+              fontWeight: 400,
+              fontSize: "0.75rem",
+              color: isAtLimit ? "#ef4444" : isNearLimit ? "#f59e0b" : "var(--text-muted)",
+              marginLeft: "auto",
+            }}
+          >
+            {charCount}/{maxLength}
+          </span>
+        )}
+      </label>
       <textarea
         className={`${styles.textarea} ${className}`}
+        maxLength={maxLength}
+        value={value}
         {...props}
       />
+      {showCounter && isNearLimit && (
+        <span
+          style={{
+            color: isAtLimit ? "#ef4444" : "#f59e0b",
+            fontSize: "0.8rem",
+            marginTop: "0.2rem",
+            display: "block",
+          }}
+        >
+          {isAtLimit
+            ? "Character limit reached."
+            : `Only ${(maxLength as number) - charCount} characters left.`}
+        </span>
+      )}
       {error && <span className="text-xs text-red-500 mt-1">{error}</span>}
     </div>
   );
@@ -107,6 +144,8 @@ interface MonthYearPickerProps {
   value: { month: number | null; year: number | null };
   onChange: (value: { month: number | null; year: number | null }) => void;
   disabled?: boolean;
+  minDate?: { month: number; year: number };
+  maxDate?: { month: number; year: number };
 }
 
 export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
@@ -114,8 +153,16 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
   value,
   onChange,
   disabled = false,
+  minDate,
+  maxDate,
 }) => {
-  const months = [
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
+  const effectiveMax = maxDate || { month: currentMonth, year: currentYear };
+
+  const allMonths = [
     { value: 1, label: "Jan" },
     { value: 2, label: "Feb" },
     { value: 3, label: "Mar" },
@@ -130,49 +177,56 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
     { value: 12, label: "Dec" },
   ];
 
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 60 }, (_, i) => currentYear - i);
+  const startYear = minDate ? minDate.year : currentYear - 59;
+  const endYear = effectiveMax.year;
+  const years = Array.from({ length: endYear - startYear + 1 }, (_, i) => ({
+    value: startYear + i,
+    label: String(startYear + i),
+  }));
 
-  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value ? parseInt(e.target.value, 10) : null;
-    onChange({ ...value, month: val });
-  };
+  const selectedYear = value.year;
 
-  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value ? parseInt(e.target.value, 10) : null;
-    onChange({ ...value, year: val });
-  };
+  const months = allMonths.filter((m) => {
+    if (selectedYear === null || selectedYear === undefined) return true;
+    if (minDate && selectedYear === minDate.year && m.value < minDate.month) return false;
+    if (selectedYear === effectiveMax.year && m.value > effectiveMax.month) return false;
+    return true;
+  });
 
   return (
     <div className={styles.formGroup}>
       <label className={styles.label}>{label}</label>
       <div className="grid grid-cols-2 gap-3">
-        <select
-          className={styles.select}
-          value={value.month || ""}
-          onChange={handleMonthChange}
+        <CustomDropdown
+          label=""
+          options={months}
+          value={value.month ?? ""}
+          onChange={(val) => onChange({ ...value, month: typeof val === "number" ? val : null })}
+          placeholder="Month"
           disabled={disabled}
-        >
-          <option value="">Month</option>
-          {months.map((m) => (
-            <option key={m.value} value={m.value}>
-              {m.label}
-            </option>
-          ))}
-        </select>
-        <select
-          className={styles.select}
-          value={value.year || ""}
-          onChange={handleYearChange}
+        />
+        <CustomDropdown
+          label=""
+          options={years}
+          value={value.year ?? ""}
+          onChange={(val) => {
+            const newYear = typeof val === "number" ? val : null;
+            const newMonth = value.month;
+            if (newYear && newMonth) {
+              if (minDate && newYear === minDate.year && newMonth < minDate.month) {
+                onChange({ year: newYear, month: minDate.month });
+                return;
+              }
+              if (newYear === effectiveMax.year && newMonth > effectiveMax.month) {
+                onChange({ year: newYear, month: effectiveMax.month });
+                return;
+              }
+            }
+            onChange({ ...value, year: newYear });
+          }}
+          placeholder="Year"
           disabled={disabled}
-        >
-          <option value="">Year</option>
-          {years.map((y) => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </select>
+        />
       </div>
     </div>
   );
@@ -345,6 +399,88 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
         />
       </div>
       <label className={styles.avatarLabel}>Profile Image</label>
+    </div>
+  );
+};
+
+interface CustomDropdownOption {
+  value: string | number;
+  label: string;
+}
+
+interface CustomDropdownProps {
+  label: string;
+  options: CustomDropdownOption[];
+  value: string | number;
+  onChange: (value: string | number) => void;
+  placeholder?: string;
+  disabled?: boolean;
+}
+
+export const CustomDropdown: React.FC<CustomDropdownProps> = ({
+  label,
+  options,
+  value,
+  onChange,
+  placeholder,
+  disabled = false,
+}) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const selectedOption = options.find((o) => o.value === value);
+  const isEmpty = value === "" || value === null || value === undefined;
+
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  return (
+    <div className={styles.formGroup}>
+      {label && <label className={styles.label}>{label}</label>}
+      <div className={styles.customDropdown} ref={containerRef}>
+        <button
+          type="button"
+          className={`${styles.customDropdownTrigger} ${isOpen ? styles.customDropdownTriggerOpen : ""}`}
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+          disabled={disabled}
+        >
+          <span className={isEmpty ? styles.customDropdownPlaceholder : ""}>
+            {selectedOption?.label || placeholder || String(value)}
+          </span>
+          <span className={`${styles.customDropdownChevron} ${isOpen ? styles.customDropdownChevronOpen : ""}`}>
+            <ChevronDown size={16} />
+          </span>
+        </button>
+        {isOpen && (
+          <div className={styles.customDropdownMenu}>
+            {options.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                className={`${styles.customDropdownOption} ${option.value === value ? styles.customDropdownOptionActive : ""}`}
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+              >
+                <span>{option.label}</span>
+                <span className={styles.customDropdownCheckSlot}>
+                  {option.value === value && <Check size={14} strokeWidth={2.5} />}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

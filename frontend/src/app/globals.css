@@ -196,7 +196,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  transition: background var(--transition-base), color var(--transition-base);
 }
 
 ::selection {
@@ -281,7 +280,6 @@ a {
   box-shadow: none !important;
   color: var(--text-primary) !important;
   cursor: pointer !important;
-  transition: all var(--transition-base) !important;
   flex-shrink: 0;
   padding: 0 !important;
   margin: 0;

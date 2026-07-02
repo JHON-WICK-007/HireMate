@@ -37,7 +37,6 @@ export default function ResumeBuilderPage() {
   const actions = useResumeStore((state) => state.actions);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
 
   const isStoreEmpty = () => {
     const state = useResumeStore.getState();
@@ -64,7 +63,6 @@ export default function ResumeBuilderPage() {
       }
     } catch {}
     useResumeStore.persist.rehydrate();
-    setHydrated(true);
   }, []);
 
   useEffect(() => {
@@ -299,8 +297,8 @@ export default function ResumeBuilderPage() {
           </motion.div>
         </div>
 
-        {/* Live Preview Panel (Right) — gated until hydration seeds the store */}
-        {hydrated && <LivePreviewPanel />}
+        {/* Live Preview Panel (Right) */}
+        <LivePreviewPanel />
       </main>
       <SiteFooter />
     </div>
