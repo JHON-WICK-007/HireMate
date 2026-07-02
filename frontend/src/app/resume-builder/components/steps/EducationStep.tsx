@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useResumeStore, EducationEntry } from "../../store";
-import { TextInput, TextareaField, MonthYearPicker } from "../inputs";
+import { TextInput, MonthYearPicker } from "../inputs";
 import { StepHeader, cardVariant } from "../navigation";
 import { Trash2, Plus, Check } from "lucide-react";
 import styles from "../../builder.module.css";
@@ -34,11 +34,11 @@ export const EducationStep: React.FC = () => {
                 className={styles.btnDelete}
                 onClick={() => actions.removeEducation(edu.id)}
               >
-                <Trash2 size={16} />
+                <Trash2 size={14} />
+                Remove
               </button>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={styles.entryGrid}>
               <TextInput
                 label="Institution"
                 value={edu.institution}
@@ -67,7 +67,7 @@ export const EducationStep: React.FC = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={styles.entryGrid}>
               <MonthYearPicker
                 label="Start Date"
                 value={edu.startDate}
@@ -98,13 +98,24 @@ export const EducationStep: React.FC = () => {
               <span className={styles.checkboxLabel}>I am currently studying here</span>
             </label>
 
-            <TextareaField
-              label="Description (Optional)"
-              value={edu.description}
-              onChange={(e) => handleUpdate(edu.id, "description", e.target.value)}
-              placeholder="e.g. Special honors, thesis project details..."
-              rows={3}
-            />
+            <div className={styles.entryGridSpan2}>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Education Description <span className={styles.charHint} style={edu.description.length >= 480 ? { color: edu.description.length >= 500 ? "#ef4444" : "#f59e0b" } : undefined}>{edu.description.length}/500</span></label>
+                <textarea
+                  className={styles.textarea}
+                  value={edu.description}
+                  onChange={(e) => handleUpdate(edu.id, "description", e.target.value)}
+                  rows={5}
+                  maxLength={500}
+                  placeholder="Detail your achievements and activities (e.g. • Dean's List, Thesis on AI...)"
+                />
+                {edu.description.length >= 480 && (
+                  <span style={{ color: edu.description.length >= 500 ? "#ef4444" : "#f59e0b", fontSize: "0.8rem", marginTop: "0.35rem", display: "block" }}>
+                    {edu.description.length >= 500 ? "Character limit reached." : `Only ${500 - edu.description.length} characters left.`}
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
         ))}
 
