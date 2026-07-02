@@ -18,8 +18,8 @@ his
   z-index: 100;
   padding: 0 2rem;
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    backdrop-filter 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+              background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              backdrop-filter 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navScrolled {
@@ -2758,15 +2758,8 @@ his
 }
 
 @keyframes float-glow {
-
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-  }
-
-  50% {
-    transform: translateY(-20px) scale(1.05);
-  }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
 }
 
 .ctaBox {
@@ -2953,15 +2946,8 @@ his
 }
 
 @keyframes stat-float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-6px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .ctaStatCard:hover {
@@ -3785,7 +3771,6 @@ his
   0% {
     transform: translate3d(0, 0, 0);
   }
-
   100% {
     transform: translate3d(-50%, 0, 0);
   }
