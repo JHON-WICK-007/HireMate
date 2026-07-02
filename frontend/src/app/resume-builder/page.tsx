@@ -37,6 +37,7 @@ export default function ResumeBuilderPage() {
   const actions = useResumeStore((state) => state.actions);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   const isStoreEmpty = () => {
     const state = useResumeStore.getState();
@@ -50,20 +51,21 @@ export default function ResumeBuilderPage() {
     return !hasPersonalInfo && !hasExperience && !hasEducation && !hasSkills && !hasProjects && !hasCertifications;
   };
 
-  // ── Load from cache BEFORE browser paints (no flicker) ──
+  // ── Seed store from localStorage BEFORE browser paints (same pattern as Navbar) ──
   useLayoutEffect(() => {
-    const cachedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
-    if (token && cachedUser) {
-      try {
-        const user = JSON.parse(cachedUser);
-        if (isStoreEmpty()) {
-          actions.loadFromProfile(user);
+    try {
+      const raw = localStorage.getItem("hiremate-resume-step");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const persistedState = parsed?.state ?? parsed;
+        if (persistedState) {
+          useResumeStore.setState(persistedState);
         }
-        setIsCheckingAuth(false);
-      } catch (e) { }
-    }
-  }, [actions]);
+      }
+    } catch {}
+    useResumeStore.persist.rehydrate();
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -297,8 +299,8 @@ export default function ResumeBuilderPage() {
           </motion.div>
         </div>
 
-        {/* Live Preview Panel (Right) */}
-        <LivePreviewPanel />
+        {/* Live Preview Panel (Right) — gated until hydration seeds the store */}
+        {hydrated && <LivePreviewPanel />}
       </main>
       <SiteFooter />
     </div>

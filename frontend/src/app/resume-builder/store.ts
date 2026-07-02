@@ -120,7 +120,7 @@ export interface ResumeStore extends ResumeState {
 
 const generateId = () => Math.random().toString(36).substring(2, 9);
 
-const initialPersonalInfo: PersonalInfo = {
+const defaultPersonalInfo: PersonalInfo = {
   profilePicture: "",
   firstName: "",
   surname: "",
@@ -134,17 +134,11 @@ const initialPersonalInfo: PersonalInfo = {
   portfolioUrl: "",
 };
 
-const initialSummary = "";
-
-const initialExperiences: ExperienceEntry[] = [];
-
-const initialEducations: EducationEntry[] = [];
-
-const initialSkills: SkillEntry[] = [];
-
-const initialProjects: ProjectEntry[] = [];
-
-const initialCertifications: CertificationEntry[] = [];
+const defaultExperiences: ExperienceEntry[] = [];
+const defaultEducations: EducationEntry[] = [];
+const defaultSkills: SkillEntry[] = [];
+const defaultProjects: ProjectEntry[] = [];
+const defaultCertifications: CertificationEntry[] = [];
 
 export const useResumeStore = create<ResumeStore>()(
   persist(
@@ -153,13 +147,13 @@ export const useResumeStore = create<ResumeStore>()(
   selectedTemplate: "modern",
   selectedTemplateId: 1,
   selectedColor: "#B87333",
-  personalInfo: initialPersonalInfo,
-  summary: initialSummary,
-  experiences: initialExperiences,
-  educations: initialEducations,
-  skills: initialSkills,
-  projects: initialProjects,
-  certifications: initialCertifications,
+  personalInfo: defaultPersonalInfo,
+  summary: "",
+  experiences: defaultExperiences,
+  educations: defaultEducations,
+  skills: defaultSkills,
+  projects: defaultProjects,
+  certifications: defaultCertifications,
   showProficiency: false,
 
   actions: {
@@ -419,7 +413,11 @@ export const useResumeStore = create<ResumeStore>()(
 }),
 {
   name: "hiremate-resume-step",
-  partialize: (state) => ({ currentStep: state.currentStep }),
+  partialize: (state) => {
+    const { actions, ...rest } = state;
+    return rest;
+  },
+  skipHydration: true,
 }
 )
 );
