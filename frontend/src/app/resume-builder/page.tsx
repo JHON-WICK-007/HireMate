@@ -15,7 +15,7 @@ import SkillsStep from "./components/steps/SkillsStep";
 import ProjectsStep from "./components/steps/ProjectsStep";
 import CertificationsStep from "./components/steps/CertificationsStep";
 import styles from "./builder.module.css";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useToast } from "../components/Toast";
 import SiteFooter from "../components/SiteFooter";
 
@@ -38,6 +38,18 @@ export default function ResumeBuilderPage() {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
 
+  const isStoreEmpty = () => {
+    const state = useResumeStore.getState();
+    const p = state.personalInfo;
+    const hasPersonalInfo = !!(p.firstName?.trim() || p.surname?.trim() || p.email?.trim() || p.phone?.trim());
+    const hasExperience = state.experiences.length > 0;
+    const hasEducation = state.educations.length > 0;
+    const hasSkills = state.skills.length > 0;
+    const hasProjects = state.projects.length > 0;
+    const hasCertifications = state.certifications.length > 0;
+    return !hasPersonalInfo && !hasExperience && !hasEducation && !hasSkills && !hasProjects && !hasCertifications;
+  };
+
   // ── Load from cache BEFORE browser paints (no flicker) ──
   useLayoutEffect(() => {
     const cachedUser = localStorage.getItem("user");
@@ -45,7 +57,9 @@ export default function ResumeBuilderPage() {
     if (token && cachedUser) {
       try {
         const user = JSON.parse(cachedUser);
-        actions.loadFromProfile(user);
+        if (isStoreEmpty()) {
+          actions.loadFromProfile(user);
+        }
         setIsCheckingAuth(false);
       } catch (e) { }
     }
@@ -64,7 +78,9 @@ export default function ResumeBuilderPage() {
     if (cachedUser) {
       try {
         const user = JSON.parse(cachedUser);
-        actions.loadFromProfile(user);
+        if (isStoreEmpty()) {
+          actions.loadFromProfile(user);
+        }
         setIsCheckingAuth(false);
       } catch (e) { }
     }
@@ -78,13 +94,15 @@ export default function ResumeBuilderPage() {
       .then((r) => r.json())
       .then((data) => {
         if (data.success && data.user) {
-          actions.loadFromProfile(data.user);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          if (data.user.fullName || data.user.email || data.user.phone || data.user.bio) {
-            const alreadyShown = sessionStorage.getItem("resume_autofill_toast_shown");
-            if (!alreadyShown) {
-              toast.success("Profile Autofilled", "Resume fields loaded from your profile.");
-              sessionStorage.setItem("resume_autofill_toast_shown", "true");
+          if (isStoreEmpty()) {
+            actions.loadFromProfile(data.user);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            if (data.user.fullName || data.user.email || data.user.phone || data.user.bio) {
+              const alreadyShown = sessionStorage.getItem("resume_autofill_toast_shown");
+              if (!alreadyShown) {
+                toast.success("Profile Autofilled", "Resume fields loaded from your profile.");
+                sessionStorage.setItem("resume_autofill_toast_shown", "true");
+              }
             }
           }
         } else {
@@ -264,21 +282,19 @@ export default function ResumeBuilderPage() {
 
         {/* Form Panel (Center) */}
         <div className={styles.formPanel}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.22 }}
-              style={{ display: "flex", flexDirection: "column", flex: 1 }}
-            >
-              <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-                {renderActiveStep()}
-              </motion.div>
-              <StepNavigation onFinish={handleFinish} isLoading={isExporting} />
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.22 }}
+            style={{ display: "flex", flexDirection: "column", flex: 1 }}
+          >
+            <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+              {renderActiveStep()}
             </motion.div>
-          </AnimatePresence>
+            <StepNavigation onFinish={handleFinish} isLoading={isExporting} />
+          </motion.div>
         </div>
 
         {/* Live Preview Panel (Right) */}

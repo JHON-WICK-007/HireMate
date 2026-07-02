@@ -3364,11 +3364,15 @@ export const LivePreviewPanel: React.FC = () => {
       <div className={styles.previewContent}>
         <div
           className={styles.previewResumeWrapper}
-          onClick={() => setIsZoomOpen(true)}
+          onClick={() => mounted && setIsZoomOpen(true)}
         >
           <div style={{ zoom: 0.44, width: "794px", userSelect: "none" }}>
             <div id="resume-print-capture" onDragStart={(e) => e.preventDefault()}>
-              <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
+              {mounted ? (
+                <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
+              ) : (
+                <ResumeCardRender templateId={1} color="#B87333" />
+              )}
             </div>
           </div>
 

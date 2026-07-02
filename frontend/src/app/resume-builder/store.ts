@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface PersonalInfo {
   profilePicture: string;
@@ -145,7 +146,9 @@ const initialProjects: ProjectEntry[] = [];
 
 const initialCertifications: CertificationEntry[] = [];
 
-export const useResumeStore = create<ResumeStore>((set) => ({
+export const useResumeStore = create<ResumeStore>()(
+  persist(
+    (set) => ({
   currentStep: 1,
   selectedTemplate: "modern",
   selectedTemplateId: 1,
@@ -413,4 +416,10 @@ export const useResumeStore = create<ResumeStore>((set) => ({
       };
     }),
   },
-}));
+}),
+{
+  name: "hiremate-resume-step",
+  partialize: (state) => ({ currentStep: state.currentStep }),
+}
+)
+);
