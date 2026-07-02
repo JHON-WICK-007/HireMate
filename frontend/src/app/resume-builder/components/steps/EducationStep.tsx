@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useResumeStore, EducationEntry } from "../../store";
 import { TextInput, TextareaField, MonthYearPicker } from "../inputs";
 import { StepHeader, cardVariant } from "../navigation";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Check } from "lucide-react";
 import styles from "../../builder.module.css";
 
 export const EducationStep: React.FC = () => {
@@ -81,10 +81,9 @@ export const EducationStep: React.FC = () => {
               />
             </div>
 
-            <div className="flex items-center gap-2">
+            <label className={styles.customCheckbox}>
               <input
                 type="checkbox"
-                id={`edu-current-${edu.id}`}
                 checked={edu.isCurrent}
                 onChange={(e) => {
                   handleUpdate(edu.id, "isCurrent", e.target.checked);
@@ -92,12 +91,12 @@ export const EducationStep: React.FC = () => {
                     handleUpdate(edu.id, "endDate", { month: null, year: null });
                   }
                 }}
-                className="w-4 h-4 rounded border-gray-700 bg-black text-cyan-500 focus:ring-0"
               />
-              <label htmlFor={`edu-current-${edu.id}`} className="text-xs text-gray-400">
-                I am currently studying here
-              </label>
-            </div>
+              <span className={styles.checkmark}>
+                <Check size={12} strokeWidth={3} />
+              </span>
+              <span className={styles.checkboxLabel}>I am currently studying here</span>
+            </label>
 
             <TextareaField
               label="Description (Optional)"
