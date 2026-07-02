@@ -39,6 +39,7 @@ test-resume.pdf
 AGENTS.md
 CLAUDE.md
 GEMINI.md
+GOD.md
 skills-lock.json
 b.md
 backend/src/scripts/testEnd.ts

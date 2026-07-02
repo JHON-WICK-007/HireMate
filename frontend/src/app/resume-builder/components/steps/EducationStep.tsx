@@ -71,13 +71,25 @@ export const EducationStep: React.FC = () => {
               <MonthYearPicker
                 label="Start Date"
                 value={edu.startDate}
-                onChange={(val) => handleUpdate(edu.id, "startDate", val)}
+                onChange={(val) => {
+                  handleUpdate(edu.id, "startDate", val);
+                  if (!val.month || !val.year) {
+                    handleUpdate(edu.id, "endDate", { month: null, year: null });
+                  } else if (edu.endDate.month && edu.endDate.year) {
+                    const startVal = val.year! * 12 + val.month!;
+                    const endVal = edu.endDate.year! * 12 + edu.endDate.month!;
+                    if (startVal > endVal) {
+                      handleUpdate(edu.id, "endDate", { month: null, year: null });
+                    }
+                  }
+                }}
               />
               <MonthYearPicker
                 label="End Date (or Expected)"
                 value={edu.endDate}
                 onChange={(val) => handleUpdate(edu.id, "endDate", val)}
-                disabled={edu.isCurrent}
+                disabled={edu.isCurrent || !edu.startDate.month || !edu.startDate.year}
+                minDate={edu.startDate.month && edu.startDate.year ? edu.startDate : undefined}
               />
             </div>
 

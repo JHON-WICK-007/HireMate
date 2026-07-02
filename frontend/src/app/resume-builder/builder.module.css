@@ -420,16 +420,13 @@
   gap: 8px;
   white-space: nowrap;
   backdrop-filter: blur(10px);
+  line-height: 1;
 }
 
 .btnBack:hover {
   border-color: rgba(255, 255, 255, 0.45);
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.05);
-}
-
-.btnBack:active {
-  transform: scale(0.96);
 }
 
 .btnContinue {
@@ -450,6 +447,7 @@
   gap: 8px;
   white-space: nowrap;
   justify-content: center;
+  line-height: 1;
 }
 
 .btnContinue:hover:not(:disabled) {

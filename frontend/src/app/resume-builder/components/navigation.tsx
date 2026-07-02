@@ -124,18 +124,16 @@ export const StepNavigation: React.FC<StepNavigationProps> = ({ onFinish, isLoad
 
   return (
     <div className={styles.navContainer}>
-      {currentStep > 1 ? (
-        <button
-          type="button"
-          onClick={actions.prevStep}
-          className={styles.btnBack}
-        >
-          <ChevronLeft size={16} />
-          Back
-        </button>
-      ) : (
-        <div />
-      )}
+      <button
+        type="button"
+        onClick={actions.prevStep}
+        className={styles.btnBack}
+        disabled={currentStep <= 1}
+        style={{ visibility: currentStep > 1 ? 'visible' : 'hidden' }}
+      >
+        <ChevronLeft size={16} />
+        Back
+      </button>
       <button
         type="button"
         onClick={handleContinue}
