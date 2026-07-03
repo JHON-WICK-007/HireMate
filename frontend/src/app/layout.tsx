@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import {
+  Inter,
+  Outfit,
+  Playfair_Display,
+  DM_Sans,
+  DM_Serif_Display,
+  JetBrains_Mono,
+  Cormorant_Garamond,
+} from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "./components/Toast";
 import { ScrollToTop } from "./components/ScrollToTop";
@@ -13,6 +21,37 @@ const inter = Inter({
 const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-dm-serif",
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  variable: "--font-cormorant",
   display: "swap",
 });
 
@@ -36,7 +75,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${outfit.variable} ${playfair.variable} ${dmSans.variable} ${dmSerif.variable} ${jetbrains.variable} ${cormorant.variable}`} suppressHydrationWarning>
       <head suppressHydrationWarning>
         <script
           id="theme-and-auth-loader"

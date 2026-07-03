@@ -210,8 +210,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
 
   // Template 1 Style System (Premium HireMate Copper Single Column)
   const premiumStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
-
     .resume-container-t1 {
       --color-bg: #FFFFFF;
       --color-surface: #FFFFFF;
@@ -223,10 +221,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       --color-rule: #E2D9CE;
       --color-tag-bg: #F0EBE3;
 
-      --font-display: 'Playfair Display', Georgia, serif;
-      --font-body: 'Inter', sans-serif;
-
-      --size-name: 36px;
+      --font-display: var(--font-playfair), Georgia, serif;
+      --font-body: var(--font-inter), sans-serif;
       --size-title: 13.5px;
       --size-section: 13px;
       --size-role: 15px;
@@ -556,8 +552,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
 
   // Template 2 Style System (Blueprint Schematic Navy + Gold Sidebar Layout)
   const blueprintStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap');
-
     .resume-container-t2 {
       --navy:          #0F1923;
       --navy-mid:      #1C2D3E;
@@ -579,9 +573,9 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       --sidebar-ink-2: #A8BDCD;
       --sidebar-ink-3: #6A8499;
 
-      --font-display:  'DM Serif Display', Georgia, serif;
-      --font-body:     'DM Sans', system-ui, sans-serif;
-      --font-mono:     'JetBrains Mono', monospace;
+      --font-display:  var(--font-dm-serif), Georgia, serif;
+      --font-body:     var(--font-dm-sans), system-ui, sans-serif;
+      --font-mono:     var(--font-jetbrains), monospace;
 
       --size-name:     36px;
       --size-section:  10px;
@@ -984,8 +978,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
 
   // Template 3 Style System (Creative Editorial)
   const editorialStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
-
     .resume-container-t3 {
       --color-primary: #2B2D42;
       --color-secondary: #8D99AE;
@@ -994,8 +986,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       --color-surface: #FFFFFF;
       --color-text: #2B2D42;
       --color-text-muted: #6C757D;
-      --font-display: 'Playfair Display', Georgia, serif;
-      --font-body: 'Inter', sans-serif;
+      --font-display: var(--font-playfair), Georgia, serif;
+      --font-body: var(--font-inter), sans-serif;
 
       font-family: var(--font-body);
       color: var(--color-text);
@@ -1148,14 +1140,12 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
 
   // Template 4 Style System (Modern Technical Grid)
   const technicalGridStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap');
-
     .resume-container-t4 {
       --color-grid: #E5E7EB;
       --color-text: #1F2937;
       --color-accent: ${color};
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-sans: 'DM Sans', sans-serif;
+      --font-mono: var(--font-jetbrains), monospace;
+      --font-sans: var(--font-dm-sans), sans-serif;
 
       font-family: var(--font-sans);
       color: var(--color-text);
@@ -1273,13 +1263,11 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
 
   // Template 5 Style System (Executive Heritage)
   const executiveHeritageStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
-
     .resume-container-t5 {
       --color-accent: ${color};
       --color-text: #2C3539;
-      --font-display: 'Playfair Display', Georgia, serif;
-      --font-body: 'Inter', sans-serif;
+      --font-display: var(--font-playfair), Georgia, serif;
+      --font-body: var(--font-inter), sans-serif;
 
       font-family: var(--font-body);
       color: var(--color-text);
@@ -1618,8 +1606,8 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
       --color-sidebar: #211F1B;
       --color-sidebar-2: #2F2C27;
 
-      --font-display: 'Cormorant Garamond', Georgia, serif;
-      --font-body: 'DM Sans', system-ui, sans-serif;
+      --font-display: var(--font-cormorant), Georgia, serif;
+      --font-body: var(--font-dm-sans), system-ui, sans-serif;
 
       --sidebar-w: 210px;
 
@@ -2123,12 +2111,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   if (templateId === 6) {
     return (
       <div className="resume-container resume-container-t6" style={{ '--accent': color } as React.CSSProperties}>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
-          rel="stylesheet"
-        />
         <style dangerouslySetInnerHTML={{ __html: luxuryGoldStyles }} />
         <article className="resume">
           <header className="resume-header">
@@ -2324,12 +2306,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   if (templateId === 3) {
     return (
       <div className="resume-container resume-container-t3">
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
-          rel="stylesheet"
-        />
         <style dangerouslySetInnerHTML={{ __html: editorialStyles }} />
         <article className="resume">
           <div className="left-col">
@@ -2495,12 +2471,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   if (templateId === 4) {
     return (
       <div className="resume-container resume-container-t4">
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap"
-          rel="stylesheet"
-        />
         <style dangerouslySetInnerHTML={{ __html: technicalGridStyles }} />
         <article className="resume">
           <div className="grid-header">
@@ -2654,12 +2624,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   if (templateId === 5) {
     return (
       <div className="resume-container resume-container-t5">
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
-          rel="stylesheet"
-        />
         <style dangerouslySetInnerHTML={{ __html: executiveHeritageStyles }} />
         <article className="resume">
           <div className="header-center">
@@ -2834,12 +2798,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   if (templateId === 2) {
     return (
       <div className="resume-container resume-container-t2">
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
-          rel="stylesheet"
-        />
         <style dangerouslySetInnerHTML={{ __html: blueprintStyles }} />
         <article className="resume">
           {/* HEADER */}
@@ -3052,12 +3010,6 @@ export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, 
   // Fallback / default: Template 1
   return (
     <div className="resume-container resume-container-t1">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
-        rel="stylesheet"
-      />
       <style dangerouslySetInnerHTML={{ __html: premiumStyles }} />
       <article className="resume">
         {/* HEADER */}
