@@ -415,6 +415,7 @@ interface CustomDropdownProps {
   onChange: (value: string | number) => void;
   placeholder?: string;
   disabled?: boolean;
+  menuMaxHeight?: number;
 }
 
 export const CustomDropdown: React.FC<CustomDropdownProps> = ({
@@ -424,6 +425,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
   onChange,
   placeholder,
   disabled = false,
+  menuMaxHeight,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -461,7 +463,7 @@ export const CustomDropdown: React.FC<CustomDropdownProps> = ({
           </span>
         </button>
         {isOpen && (
-          <div className={styles.customDropdownMenu}>
+          <div className={styles.customDropdownMenu} style={menuMaxHeight ? { maxHeight: `${menuMaxHeight}px` } : undefined}>
             {options.map((option) => (
               <button
                 key={option.value}

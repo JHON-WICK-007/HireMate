@@ -537,10 +537,32 @@
 }
 
 .btnAdd:hover {
-  background: var(--glass-bg);
+  background: var(--surface-200);
   border-color: var(--border-strong);
-  border-style: solid;
   color: var(--text-primary);
+}
+
+.btnAddSolid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--text-primary);
+  background: var(--text-primary);
+  color: var(--surface-0);
+  font-size: 0.84rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.btnAddSolid:hover {
+  background: var(--btn-solid-hover);
+  border-color: var(--btn-solid-hover);
+  color: var(--btn-solid-fg);
 }
 
 .entryGrid {
@@ -671,7 +693,7 @@
   padding: 6px;
   z-index: 50;
   min-width: 100%;
-  max-height: 240px;
+  max-height: 280px;
   overflow-y: auto;
   background: rgba(15, 15, 20, 0.95);
   backdrop-filter: blur(20px);
@@ -979,19 +1001,27 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 1.1rem;
+  margin-bottom: 1.1rem;
 }
 
 .formChip {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 0.45rem;
+  font-weight: 500;
+  padding: 0.38rem 0.55rem 0.38rem 0.9rem;
   background: var(--surface-100);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
-  font-size: 13px;
+  font-size: 0.85rem;
   color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.formChip:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-200);
 }
 
 .btnRemoveChip {
@@ -1002,6 +1032,13 @@
   font-size: 12px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  padding: 0;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
 }
 
 .btnRemoveChip:hover {

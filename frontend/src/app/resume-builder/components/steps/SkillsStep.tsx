@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useResumeStore, SkillEntry } from "../../store";
 import { StepHeader, cardVariant } from "../navigation";
-import { Trash2, Plus, Sparkles } from "lucide-react";
+import { CustomDropdown } from "../inputs";
+import { Plus, Sparkles, Code, X } from "lucide-react";
 import styles from "../../builder.module.css";
 
 const CATEGORIES = [
@@ -33,6 +34,18 @@ const PRE_SUGGESTED_SKILLS = [
   { name: "Problem Solving", category: "Soft Skills" },
 ];
 
+const PROFICIENCY_OPTIONS = [
+  { value: "beginner", label: "Beginner" },
+  { value: "intermediate", label: "Intermediate" },
+  { value: "advanced", label: "Advanced" },
+  { value: "expert", label: "Expert" },
+];
+
+const CATEGORY_OPTIONS = CATEGORIES.filter((c) => c !== "All").map((c) => ({
+  value: c,
+  label: c,
+}));
+
 export const SkillsStep: React.FC = () => {
   const skills = useResumeStore((state) => state.skills);
   const showProficiency = useResumeStore((state) => state.showProficiency);
@@ -40,15 +53,14 @@ export const SkillsStep: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState("All");
   const [newSkillName, setNewSkillName] = useState("");
-  const [newSkillCategory, setNewSkillCategory] = useState("Frontend");
-  const [newSkillProficiency, setNewSkillProficiency] = useState<SkillEntry["proficiency"]>("advanced");
+  const [newSkillCategory, setNewSkillCategory] = useState<string | number>("");
+  const [newSkillProficiency, setNewSkillProficiency] = useState<string | number>("");
 
   const handleAddSkill = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const name = newSkillName.trim();
-    if (!name) return;
+    if (!name || !newSkillCategory || !newSkillProficiency) return;
 
-    // Prevent duplicates
     if (skills.some((sk) => sk.name.toLowerCase() === name.toLowerCase())) {
       setNewSkillName("");
       return;
@@ -56,8 +68,8 @@ export const SkillsStep: React.FC = () => {
 
     actions.addSkill({
       name,
-      category: newSkillCategory,
-      proficiency: newSkillProficiency,
+      category: String(newSkillCategory),
+      proficiency: String(newSkillProficiency) as SkillEntry["proficiency"],
     });
     setNewSkillName("");
   };
@@ -68,20 +80,23 @@ export const SkillsStep: React.FC = () => {
     actions.addSkill({
       name: suggested.name,
       category: suggested.category,
-      proficiency: "advanced",
+      proficiency: String(newSkillProficiency) as SkillEntry["proficiency"],
     });
   };
 
-  const filteredSkills =
-    activeTab === "All"
+  const filteredSkills = useMemo(() => {
+    return activeTab === "All"
       ? skills
       : skills.filter((sk) => sk.category === activeTab);
+  }, [activeTab, skills]);
 
-  const availableSuggestions = PRE_SUGGESTED_SKILLS.filter(
-    (sug) =>
-      !skills.some((sk) => sk.name.toLowerCase() === sug.name.toLowerCase()) &&
-      (activeTab === "All" || sug.category === activeTab)
-  );
+  const availableSuggestions = useMemo(() => {
+    return PRE_SUGGESTED_SKILLS.filter(
+      (sug) =>
+        !skills.some((sk) => sk.name.toLowerCase() === sug.name.toLowerCase()) &&
+        (activeTab === "All" || sug.category === activeTab)
+    );
+  }, [activeTab, skills]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -89,124 +104,199 @@ export const SkillsStep: React.FC = () => {
         title="Add your skills"
         description="List technical and soft skills relevant to your target role."
       />
-      <motion.div variants={cardVariant} className={styles.formCard}>
-        {/* Category Tabs */}
-        <div className="flex flex-wrap gap-2 mb-6 border-b border-gray-800 pb-3">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all ${
-                activeTab === cat
-                  ? "bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-semibold"
-                  : "bg-transparent border border-transparent text-gray-400 hover:text-white"
-              }`}
-              onClick={() => setActiveTab(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
 
-        {/* Add Skill Form */}
-        <form onSubmit={handleAddSkill} className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="md:col-span-2">
-            <input
-              type="text"
-              placeholder="e.g. React, Python, wireframing..."
-              className={styles.input}
-              value={newSkillName}
-              onChange={(e) => setNewSkillName(e.target.value)}
-            />
-          </div>
-          <div>
-            <select
-              className={styles.select}
-              value={newSkillCategory}
-              onChange={(e) => setNewSkillCategory(e.target.value)}
-            >
-              {CATEGORIES.filter((c) => c !== "All").map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <button
-              type="submit"
-              className="w-full h-12 flex items-center justify-center gap-2 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-all active:scale-[0.98] cursor-pointer"
-            >
-              <Plus size={16} /> Add Skill
-            </button>
-          </div>
-        </form>
-
-        {/* Proficiency Level Toggle */}
-        <div className="flex items-center gap-2 mb-6">
-          <input
-            type="checkbox"
-            id="toggle-proficiency"
-            checked={showProficiency}
-            onChange={(e) => actions.toggleShowProficiency(e.target.checked)}
-            className="w-4 h-4 rounded border-gray-700 bg-black text-cyan-500 focus:ring-0"
-          />
-          <label htmlFor="toggle-proficiency" className="text-xs text-gray-400">
-            Show proficiency levels in builder
-          </label>
-        </div>
-
-        {/* Skill Chips List */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {filteredSkills.length > 0 ? (
-            filteredSkills.map((sk) => (
-              <span
-                key={sk.id}
-                className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-full text-xs text-white"
-              >
-                <span>{sk.name}</span>
-                {showProficiency && (
-                  <span className="text-[10px] text-cyan-400 capitalize px-1 py-0.5 rounded bg-cyan-950/40">
-                    {sk.proficiency}
-                  </span>
-                )}
-                <button
-                  type="button"
-                  onClick={() => actions.removeSkill(sk.id)}
-                  className="text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
-                >
-                  ×
-                </button>
-              </span>
-            ))
-          ) : (
-            <p className="text-xs text-gray-500 font-sans italic py-2">
-              No skills added under this category.
-            </p>
-          )}
-        </div>
-
-        {/* AI suggested Skills */}
-        {availableSuggestions.length > 0 && (
-          <div className="border-t border-gray-800 pt-4 text-left">
-            <span className="text-xs font-semibold text-gray-400 flex items-center gap-1.5 mb-3 font-sans">
-              <Sparkles size={12} className="text-cyan-400" /> Suggested for this Category:
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {availableSuggestions.slice(0, 8).map((sug) => (
-                <button
-                  key={sug.name}
-                  type="button"
-                  onClick={() => handleAddSuggested(sug)}
-                  className="px-2.5 py-1 rounded-full border border-dashed border-gray-800 hover:border-cyan-500 hover:text-cyan-400 text-gray-500 text-[11px] transition-all bg-transparent cursor-pointer font-sans"
-                >
-                  + {sug.name}
-                </button>
-              ))}
+      <form onSubmit={handleAddSkill}>
+        <motion.div
+          variants={cardVariant}
+          className={styles.formCard}
+          style={{
+            paddingTop: "24px",
+            paddingBottom: "24px",
+            overflow: "hidden",
+          }}
+        >
+          {/* Form Row */}
+          <div className="flex flex-wrap gap-4 items-end">
+            <div className={`${styles.formGroup} flex-1 min-w-[200px]`}>
+              <label className={styles.label}>Skill Name</label>
+              <input
+                type="text"
+                placeholder="e.g. React, Python, wireframing..."
+                className={styles.input}
+                value={newSkillName}
+                onChange={(e) => setNewSkillName(e.target.value)}
+              />
+            </div>
+            <div className="w-full md:w-44">
+              <CustomDropdown
+                label="Category"
+                options={CATEGORY_OPTIONS}
+                value={newSkillCategory}
+                onChange={(val) => setNewSkillCategory(val)}
+                placeholder="Category"
+              />
+            </div>
+            <div className="w-full md:w-44">
+              <CustomDropdown
+                label="Proficiency"
+                options={PROFICIENCY_OPTIONS}
+                value={newSkillProficiency}
+                onChange={(val) => setNewSkillProficiency(val)}
+                placeholder="Proficiency"
+              />
+            </div>
+            <div>
+              <button type="submit" className={styles.btnAddSolid}>
+                <Plus size={16} />
+                Add Skill
+              </button>
             </div>
           </div>
-        )}
-      </motion.div>
+
+          {/* Proficiency Level Toggle */}
+          <label className={styles.customCheckbox} style={{ marginTop: "1.1rem", marginBottom: "1.1rem" }}>
+            <input
+              type="checkbox"
+              id="toggle-proficiency"
+              checked={showProficiency}
+              onChange={(e) => actions.toggleShowProficiency(e.target.checked)}
+            />
+            <span className={styles.checkmark}>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path
+                  d="M10 3L4.5 8.5L2 6"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            <span className={styles.checkboxLabel}>Show proficiency levels in builder</span>
+          </label>
+
+          {/* Category Tabs */}
+          <div className="flex flex-wrap gap-6 mb-2">
+            {CATEGORIES.map((cat) => {
+              const isActive = activeTab === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  className="px-6 py-3 text-lg cursor-pointer transition-all"
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    borderBottom: "none",
+                    color: isActive ? "var(--text-primary)" : "#525252",
+                    borderRadius: 0,
+                    fontWeight: 500,
+                    paddingBottom: "11px",
+                  }}
+                  onClick={() => setActiveTab(cat)}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ height: "1px", background: "var(--border-subtle)", marginBottom: "16px" }} />
+
+          {/* Skill Chips List */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+            {filteredSkills.length > 0 && (
+              <div className={styles.chipContainer}>
+                {filteredSkills.map((sk) => (
+                  <span key={sk.id} className={styles.formChip}>
+                    {sk.name}
+                    {showProficiency && (
+                      <span
+                        style={{
+                          fontSize: "10px",
+                          color: "#06b6d4",
+                          textTransform: "capitalize",
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                          background: "rgba(6, 182, 212, 0.1)",
+                        }}
+                      >
+                        {sk.proficiency}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      className={styles.btnRemoveChip}
+                      onClick={() => actions.removeSkill(sk.id)}
+                      aria-label={`Remove ${sk.name}`}
+                    >
+                      <X size={12} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Empty state */}
+            {filteredSkills.length === 0 && (
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--text-muted)",
+                  minHeight: "220px",
+                }}
+              >
+                <Code size={38} strokeWidth={1.5} style={{ marginBottom: "10px", opacity: 0.5 }} />
+                <p style={{ fontSize: "14px", fontFamily: "var(--font-sans)", fontStyle: "italic" }}>
+                  No skills added under this category.
+                </p>
+              </div>
+            )}
+
+            {/* AI Suggested Skills */}
+            {availableSuggestions.length > 0 && (
+              <div
+                className="text-left mt-4"
+                style={{ borderTop: "1px solid var(--border-subtle)", paddingTop: "16px", flexShrink: 0 }}
+              >
+                <div
+                  className="flex flex-wrap items-center gap-2"
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: "var(--text-secondary)",
+                    fontFamily: "var(--font-sans)",
+                  }}
+                >
+                  <span className="flex items-center gap-1.5 shrink-0">
+                    <Sparkles size={16} style={{ color: "var(--text-primary)" }} /> Suggested for this Category:
+                  </span>
+                  {availableSuggestions.map((sug) => (
+                    <button
+                      key={`${sug.category}-${sug.name}`}
+                      type="button"
+                      onClick={() => handleAddSuggested(sug)}
+                      className={styles.btnAdd}
+                      style={{
+                        width: "auto",
+                        padding: "8px 16px",
+                        fontSize: "13px",
+                        borderStyle: "dashed",
+                      }}
+                    >
+                      + {sug.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </form>
     </div>
   );
 };

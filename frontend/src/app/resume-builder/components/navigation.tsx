@@ -207,11 +207,6 @@ export const StepSidebarItem: React.FC<StepSidebarItemProps> = ({
 };
 
 export const StepSidebar: React.FC = () => {
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const state = useResumeStore((state) => state);
   const { currentStep, actions } = state;
 
@@ -232,9 +227,9 @@ export const StepSidebar: React.FC = () => {
           key={s.step}
           step={s.step}
           label={s.label}
-          isActive={mounted ? currentStep === s.step : s.step === 1}
-          isComplete={mounted ? isStepCompleted(s.step, state) : false}
-          isReachable={mounted ? isStepReachable(s.step, currentStep, state) : s.step === 1}
+          isActive={currentStep === s.step}
+          isComplete={isStepCompleted(s.step, state)}
+          isReachable={isStepReachable(s.step, currentStep, state)}
           icon={s.icon}
           onClick={() => actions.goToStep(s.step)}
         />
