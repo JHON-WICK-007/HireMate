@@ -13,6 +13,7 @@ export default function AuthPage() {
   const searchParams = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const toast = useToast();
 
   // Form fields
@@ -90,7 +91,8 @@ export default function AuthPage() {
             if (data.success && data.user) {
               localStorage.setItem("user", JSON.stringify(data.user));
               toast.success("Successfully signed in!");
-              window.location.href = redirect || "/resume-builder";
+              setIsRedirecting(true);
+              window.location.replace(redirect || "/resume-builder");
             } else {
               toast.error("Failed to retrieve user profile.");
             }
@@ -219,14 +221,16 @@ export default function AuthPage() {
         // Store token for API calls
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
+        setIsRedirecting(true);
         window.scrollTo({ top: 0, behavior: "instant" });
-        window.location.href = redirectPath;
+        window.location.replace(redirectPath);
       } else {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("showWelcomeModal", "true");
+        setIsRedirecting(true);
         window.scrollTo({ top: 0, behavior: "instant" });
-        window.location.href = redirectPath;
+        window.location.replace(redirectPath);
       }
     } catch (err) {
       toast.error("Unable to connect to server. Please try again.");
@@ -235,7 +239,7 @@ export default function AuthPage() {
     }
   };
 
-  const isCallbackInProgress = searchParams.get("token") !== null;
+  const isCallbackInProgress = (searchParams.get("token") !== null) || isRedirecting;
 
   if (isCallbackInProgress) {
     return (
