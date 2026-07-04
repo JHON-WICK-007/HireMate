@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./auth.module.css";
 import { useToast } from "../components/Toast";
 import HomeBackdrop from "../components/HomeBackdrop";
@@ -10,6 +10,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function AuthPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
@@ -66,12 +67,10 @@ export default function AuthPage() {
   const [redirectPath, setRedirectPath] = useState("/");
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const mode = params.get("mode");
-    const redirect = params.get("redirect");
-    const token = params.get("token");
-    const userStr = params.get("user");
-    const error = params.get("error");
+    const mode = searchParams.get("mode");
+    const redirect = searchParams.get("redirect");
+    const token = searchParams.get("token");
+    const error = searchParams.get("error");
 
     if (token) {
       try {
@@ -120,7 +119,7 @@ export default function AuthPage() {
     if (redirect) {
       setRedirectPath(redirect);
     }
-  }, [router, toast]);
+  }, [searchParams, toast]);
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
