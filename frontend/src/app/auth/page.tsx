@@ -104,6 +104,10 @@ export default function AuthPage() {
         toast.error("An error occurred during authentication.");
       }
     } else if (error === "oauth_failed") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
+      document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
       toast.error("Sign in with social provider failed.");
       window.history.replaceState({}, document.title, window.location.pathname);
     }
