@@ -121,13 +121,21 @@ export default function AuthPage() {
     }
   }, [searchParams, toast]);
 
-  const toggleMode = () => {
-    setIsLogin(!isLogin);
+  const toggleMode = (forcedMode?: "signin" | "signup") => {
+    const nextLoginState = forcedMode !== undefined ? forcedMode === "signin" : !isLogin;
+    setIsLogin(nextLoginState);
     toast.dismissAll();
     setPassword("");
     setConfirmPassword("");
     setShowPasswordErrors(false);
     setFormErrors({});
+
+    // Synchronize browser URL query parameters
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      params.set("mode", nextLoginState ? "signin" : "signup");
+      window.history.replaceState({}, document.title, `${window.location.pathname}?${params.toString()}`);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -381,14 +389,14 @@ export default function AuthPage() {
             <div className={styles.tabSwitcher}>
               <button
                 className={`${styles.tab} ${isLogin ? styles.tabActive : ""}`}
-                onClick={() => toggleMode()}
+                onClick={() => toggleMode("signin")}
                 type="button"
               >
                 Sign In
               </button>
               <button
                 className={`${styles.tab} ${!isLogin ? styles.tabActive : ""}`}
-                onClick={() => toggleMode()}
+                onClick={() => toggleMode("signup")}
                 type="button"
               >
                 Sign Up
@@ -754,7 +762,7 @@ export default function AuthPage() {
             {/* Bottom text */}
             <p className={styles.bottomText}>
               {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button type="button" onClick={toggleMode} className={styles.switchLink}>
+              <button type="button" onClick={() => toggleMode(isLogin ? "signup" : "signin")} className={styles.switchLink}>
                 {isLogin ? "Sign up for free" : "Sign in"}
               </button>
             </p>
