@@ -132,7 +132,11 @@ export default function ProfilePage() {
 
   useEffect(() => {
     setAvatarFailed(false);
-    setAvatarLoaded(false);
+    if (avatar && avatar.startsWith("data:image")) {
+      setAvatarLoaded(true);
+    } else {
+      setAvatarLoaded(false);
+    }
   }, [avatar]);
 
   const [phone, setPhone] = useState("");
@@ -229,7 +233,10 @@ export default function ProfilePage() {
     reader.onload = async () => {
       const base64 = reader.result as string;
       const token = localStorage.getItem("token");
-      if (!token) return;
+      if (!token) {
+        setIsUploadingAvatar(false);
+        return;
+      }
       try {
         const res = await fetch(`${API_URL}/api/users/profile`, {
           method: "PUT",
@@ -242,12 +249,45 @@ export default function ProfilePage() {
           setAvatar(base64);
           toast.success("Profile photo updated.");
           localStorage.setItem("user", JSON.stringify(data.user));
+          window.dispatchEvent(new Event("userProfileUpdated"));
         }
         else toast.error(data.message || "Upload failed.");
       } catch { toast.error("Upload error."); }
-      finally { setIsUploadingAvatar(false); }
+      finally {
+        setIsUploadingAvatar(false);
+        e.target.value = "";
+      }
     };
-    reader.onerror = () => { toast.error("Failed to read file."); setIsUploadingAvatar(false); };
+    reader.onerror = () => {
+      toast.error("Failed to read file.");
+      setIsUploadingAvatar(false);
+      e.target.value = "";
+    };
+  };
+
+  const handleAvatarDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_URL}/api/users/profile`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        credentials: "include",
+        body: JSON.stringify({ avatar: "" }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAvatar("");
+        toast.success("Profile photo removed.");
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("userProfileUpdated"));
+      } else {
+        toast.error(data.message || "Failed to remove photo.");
+      }
+    } catch {
+      toast.error("Network error.");
+    }
   };
 
   const addSkill = (e: FormEvent) => {
@@ -300,7 +340,7 @@ export default function ProfilePage() {
               <span className={styles.avatarEditBtn} title="Change photo">
                 {isUploadingAvatar ? <div className={styles.avatarLoading} /> : <IconCamera />}
               </span>
-              {avatar && <button className={styles.avatarDeleteBtn} title="Remove photo" onClick={(e) => { e.stopPropagation(); setAvatar(""); fetch(`${API_URL}/api/auth/profile`, { method: "PUT", headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` }, body: JSON.stringify({ avatar: "" }), credentials: "include" }); }}><IconTrash /></button>}
+              {avatar && <button className={styles.avatarDeleteBtn} title="Remove photo" onClick={handleAvatarDelete}><IconTrash /></button>}
               <input id="avatarInput" type="file" accept="image/*" onChange={handleAvatarChange} style={{ display: "none" }} disabled={isUploadingAvatar} />
             </div>
 

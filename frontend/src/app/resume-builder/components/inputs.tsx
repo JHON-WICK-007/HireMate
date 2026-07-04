@@ -360,7 +360,11 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
 
   useEffect(() => {
     setAvatarFailed(false);
-    setAvatarLoaded(false);
+    if (value && value.startsWith("data:image")) {
+      setAvatarLoaded(true);
+    } else {
+      setAvatarLoaded(false);
+    }
   }, [value]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

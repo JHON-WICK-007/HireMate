@@ -26,8 +26,30 @@ export default function Navbar({ activePage }: NavbarProps) {
 
   useEffect(() => {
     setAvatarFailed(false);
-    setAvatarLoaded(false);
+    if (user?.avatar && user.avatar.startsWith("data:image")) {
+      setAvatarLoaded(true);
+    } else {
+      setAvatarLoaded(false);
+    }
   }, [user?.avatar]);
+
+  useEffect(() => {
+    const syncProfile = () => {
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        try {
+          const parsed = JSON.parse(savedUser);
+          setUser(parsed);
+          setIsLoggedIn(true);
+        } catch (e) {}
+      } else {
+        setUser(null);
+        setIsLoggedIn(false);
+      }
+    };
+    window.addEventListener("userProfileUpdated", syncProfile);
+    return () => window.removeEventListener("userProfileUpdated", syncProfile);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
