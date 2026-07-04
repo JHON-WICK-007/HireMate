@@ -10,7 +10,7 @@ export async function getBrowser(): Promise<Browser> {
   if (!browserInstance || !browserInstance.connected) {
     console.log("Launching new shared Puppeteer browser instance...");
     browserInstance = await puppeteer.launch({
-      headless: true,
+      headless: "shell",
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -28,10 +28,23 @@ export async function getBrowser(): Promise<Browser> {
  */
 export async function closeBrowser(): Promise<void> {
   if (browserInstance) {
+    console.log("Closing shared Puppeteer browser instance...");
     await browserInstance.close();
     browserInstance = null;
   }
 }
+
+// Clean up Puppeteer instance on server shutdown to prevent orphaned chrome processes
+process.on("SIGINT", async () => {
+  await closeBrowser();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await closeBrowser();
+  process.exit(0);
+});
+
 
 /**
  * Compiles an HTML string into an A4 PDF Buffer using the shared browser.
