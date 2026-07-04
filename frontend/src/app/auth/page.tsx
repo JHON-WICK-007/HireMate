@@ -219,11 +219,8 @@ export default function AuthPage() {
         // Store token for API calls
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        // Redirect to homepage after 1.5s
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: "instant" });
-          window.location.href = redirectPath;
-        }, 1500);
+        window.scrollTo({ top: 0, behavior: "instant" });
+        window.location.href = redirectPath;
       } else {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
@@ -237,6 +234,23 @@ export default function AuthPage() {
       setIsLoading(false);
     }
   };
+
+  const isCallbackInProgress = searchParams.get("token") !== null;
+
+  if (isCallbackInProgress) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingGlow} />
+        <div className={styles.loadingCard}>
+          <div className={styles.spinner}>
+            <div className={styles.spinnerInner} />
+          </div>
+          <h2 className={styles.loadingTitle}>Securing Session</h2>
+          <p className={styles.loadingSubtitle}>Synchronizing your profile details...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
