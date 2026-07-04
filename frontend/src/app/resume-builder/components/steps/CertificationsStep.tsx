@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useResumeStore, CertificationEntry } from "../../store";
 import { TextInput, MonthYearPicker, UrlInput } from "../inputs";
 import { StepHeader, cardVariant } from "../navigation";
-import { Trash2, Plus, Eraser } from "lucide-react";
+import { Trash2, Plus, Check, Eraser } from "lucide-react";
 import styles from "../../builder.module.css";
 
 export const CertificationsStep: React.FC = () => {
@@ -58,7 +58,7 @@ export const CertificationsStep: React.FC = () => {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={styles.entryGrid}>
               <TextInput
                 label="Certification Name"
                 value={cert.name}
@@ -75,26 +75,37 @@ export const CertificationsStep: React.FC = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={styles.entryGrid}>
               <MonthYearPicker
                 label="Issue Date"
                 value={cert.issueDate}
                 menuMaxHeight={168}
-                onChange={(val) => handleUpdate(cert.id, "issueDate", val)}
+                onChange={(val) => {
+                  handleUpdate(cert.id, "issueDate", val);
+                  if (!val.month || !val.year) {
+                    handleUpdate(cert.id, "expiryDate", { month: null, year: null });
+                  } else if (cert.expiryDate.month && cert.expiryDate.year) {
+                    const startVal = val.year! * 12 + val.month!;
+                    const endVal = cert.expiryDate.year! * 12 + cert.expiryDate.month!;
+                    if (startVal > endVal) {
+                      handleUpdate(cert.id, "expiryDate", { month: null, year: null });
+                    }
+                  }
+                }}
               />
               <MonthYearPicker
                 label="Expiration Date"
                 value={cert.expiryDate}
                 menuMaxHeight={168}
                 onChange={(val) => handleUpdate(cert.id, "expiryDate", val)}
-                disabled={cert.noExpiry}
+                disabled={cert.noExpiry || !cert.issueDate.month || !cert.issueDate.year}
+                minDate={cert.issueDate.month && cert.issueDate.year ? cert.issueDate : undefined}
               />
             </div>
 
-            <div className="flex items-center gap-2">
+            <label className={styles.customCheckbox}>
               <input
                 type="checkbox"
-                id={`cert-expiry-${cert.id}`}
                 checked={cert.noExpiry}
                 onChange={(e) => {
                   handleUpdate(cert.id, "noExpiry", e.target.checked);
@@ -102,14 +113,14 @@ export const CertificationsStep: React.FC = () => {
                     handleUpdate(cert.id, "expiryDate", { month: null, year: null });
                   }
                 }}
-                className="w-4 h-4 rounded border-gray-700 bg-black text-cyan-500 focus:ring-0"
               />
-              <label htmlFor={`cert-expiry-${cert.id}`} className="text-xs text-gray-400">
-                This credential does not expire
-              </label>
-            </div>
+              <span className={styles.checkmark}>
+                <Check size={12} strokeWidth={3} />
+              </span>
+              <span className={styles.checkboxLabel}>This credential does not expire</span>
+            </label>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={styles.entryGrid}>
               <TextInput
                 label="Credential ID"
                 value={cert.credentialId}
