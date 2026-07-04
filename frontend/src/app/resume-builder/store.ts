@@ -72,6 +72,7 @@ export interface CertificationEntry {
 
 export interface ResumeState {
   currentStep: number;
+  maxStepReached: number;
   selectedTemplate: string;
   selectedTemplateId: number;
   selectedColor: string;
@@ -146,6 +147,7 @@ export const useResumeStore = create<ResumeStore>()(
   persist(
     (set) => ({
   currentStep: 1,
+  maxStepReached: 1,
   selectedTemplate: "modern",
   selectedTemplateId: 1,
   selectedColor: "#B87333",
@@ -160,11 +162,21 @@ export const useResumeStore = create<ResumeStore>()(
   selectedSummaryTemplateId: null,
 
   actions: {
-    goToStep: (step) => set({ currentStep: Math.min(Math.max(step, 1), 7) }),
+    goToStep: (step) => set((state) => {
+      const clamped = Math.min(Math.max(step, 1), 7);
+      return {
+        currentStep: clamped,
+        maxStepReached: Math.max(state.maxStepReached, clamped),
+      };
+    }),
     nextStep: () =>
-      set((state) => ({
-        currentStep: Math.min(state.currentStep + 1, 7),
-      })),
+      set((state) => {
+        const next = Math.min(state.currentStep + 1, 7);
+        return {
+          currentStep: next,
+          maxStepReached: Math.max(state.maxStepReached, next),
+        };
+      }),
     prevStep: () =>
       set((state) => ({
         currentStep: Math.max(state.currentStep - 1, 1),

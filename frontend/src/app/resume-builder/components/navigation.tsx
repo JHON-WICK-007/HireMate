@@ -73,10 +73,10 @@ const validateStep = (step: number, state: any): boolean => {
   }
 };
 
-const isStepReachable = (step: number, currentStep: number, state: any): boolean => {
-  if (step <= currentStep) return true;
-  if (step === currentStep + 1) {
-    return validateStep(currentStep, state);
+const isStepReachable = (step: number, maxStepReached: number, state: any): boolean => {
+  if (step <= maxStepReached) return true;
+  if (step === maxStepReached + 1) {
+    return validateStep(maxStepReached, state);
   }
   return false;
 };
@@ -106,6 +106,7 @@ export const StepNavigation: React.FC<StepNavigationProps> = ({ onFinish, isLoad
   const state = useResumeStore((state) => state);
   const { currentStep, actions } = state;
   const isCurrentStepValid = validateStep(currentStep, state);
+  const areAllStepsComplete = [1, 2, 3, 4, 5, 6, 7].every((s) => isStepCompleted(s, state));
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleContinue = async () => {
@@ -139,7 +140,7 @@ export const StepNavigation: React.FC<StepNavigationProps> = ({ onFinish, isLoad
         type="button"
         onClick={handleContinue}
         className={styles.btnContinue}
-        disabled={!isCurrentStepValid || showSpinner}
+        disabled={currentStep === 7 ? !areAllStepsComplete : !isCurrentStepValid || showSpinner}
       >
         {showSpinner ? (
           <>
@@ -149,10 +150,14 @@ export const StepNavigation: React.FC<StepNavigationProps> = ({ onFinish, isLoad
         ) : !isCurrentStepValid ? (
           "Please fill all required fields"
         ) : currentStep === 7 ? (
-          <>
-            Finish & Export
-            <Download size={16} />
-          </>
+          areAllStepsComplete ? (
+            <>
+              Finish & Export
+              <Download size={16} />
+            </>
+          ) : (
+            "Finish all steps first"
+          )
         ) : (
           <>
             Continue
@@ -184,8 +189,10 @@ export const StepSidebarItem: React.FC<StepSidebarItemProps> = ({
   onClick,
 }) => {
   const getIconContainerClass = () => {
-    if (isComplete) return `${styles.stepIconContainer} ${styles.stepIconComplete}`;
+    if (isActive && isComplete) return `${styles.stepIconContainer} ${styles.stepIconActiveComplete}`;
     if (isActive) return `${styles.stepIconContainer} ${styles.stepIconActive}`;
+    if (isComplete) return `${styles.stepIconContainer} ${styles.stepIconComplete}`;
+    if (isReachable) return `${styles.stepIconContainer} ${styles.stepIconIncomplete}`;
     return styles.stepIconContainer;
   };
 
@@ -230,7 +237,7 @@ export const StepSidebar: React.FC = () => {
           label={s.label}
           isActive={currentStep === s.step}
           isComplete={isStepCompleted(s.step, state)}
-          isReachable={isStepReachable(s.step, currentStep, state)}
+          isReachable={isStepReachable(s.step, state.maxStepReached, state)}
           icon={s.icon}
           onClick={() => actions.goToStep(s.step)}
         />
