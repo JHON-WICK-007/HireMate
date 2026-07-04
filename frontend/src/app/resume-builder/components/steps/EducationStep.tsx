@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useResumeStore, EducationEntry } from "../../store";
 import { TextInput, MonthYearPicker } from "../inputs";
 import { StepHeader, cardVariant } from "../navigation";
-import { Trash2, Plus, Check } from "lucide-react";
+import { Trash2, Plus, Check, Eraser } from "lucide-react";
 import styles from "../../builder.module.css";
 
 export const EducationStep: React.FC = () => {
@@ -29,14 +29,34 @@ export const EducationStep: React.FC = () => {
               <span className={styles.entryCardTitle}>
                 Education #{index + 1}: {edu.institution || "New Institution"}
               </span>
-              <button
-                type="button"
-                className={styles.btnDelete}
-                onClick={() => actions.removeEducation(edu.id)}
-              >
-                <Trash2 size={14} />
-                Remove
-              </button>
+              {index === 0 ? (
+                <button
+                  type="button"
+                  className={styles.btnClear}
+                  onClick={() => {
+                    handleUpdate(edu.id, "institution", "");
+                    handleUpdate(edu.id, "degree", "");
+                    handleUpdate(edu.id, "fieldOfStudy", "");
+                    handleUpdate(edu.id, "grade", "");
+                    handleUpdate(edu.id, "startDate", { month: null, year: null });
+                    handleUpdate(edu.id, "endDate", { month: null, year: null });
+                    handleUpdate(edu.id, "isCurrent", false);
+                    handleUpdate(edu.id, "description", "");
+                  }}
+                >
+                  <Eraser size={14} />
+                  Clear Form
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.btnDelete}
+                  onClick={() => actions.removeEducation(edu.id)}
+                >
+                  <Trash2 size={14} />
+                  Remove
+                </button>
+              )}
             </div>
             <div className={styles.entryGrid}>
               <TextInput
@@ -71,6 +91,7 @@ export const EducationStep: React.FC = () => {
               <MonthYearPicker
                 label="Start Date"
                 value={edu.startDate}
+                menuMaxHeight={168}
                 onChange={(val) => {
                   handleUpdate(edu.id, "startDate", val);
                   if (!val.month || !val.year) {
@@ -87,6 +108,7 @@ export const EducationStep: React.FC = () => {
               <MonthYearPicker
                 label="End Date (or Expected)"
                 value={edu.endDate}
+                menuMaxHeight={168}
                 onChange={(val) => handleUpdate(edu.id, "endDate", val)}
                 disabled={edu.isCurrent || !edu.startDate.month || !edu.startDate.year}
                 minDate={edu.startDate.month && edu.startDate.year ? edu.startDate : undefined}

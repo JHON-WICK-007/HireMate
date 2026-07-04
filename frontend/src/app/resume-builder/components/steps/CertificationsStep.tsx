@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useResumeStore, CertificationEntry } from "../../store";
 import { TextInput, MonthYearPicker, UrlInput } from "../inputs";
 import { StepHeader, cardVariant } from "../navigation";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Eraser } from "lucide-react";
 import styles from "../../builder.module.css";
 
 export const CertificationsStep: React.FC = () => {
@@ -29,13 +29,33 @@ export const CertificationsStep: React.FC = () => {
               <span className={styles.entryCardTitle}>
                 Certification #{index + 1}: {cert.name || "New Certification"}
               </span>
-              <button
-                type="button"
-                className={styles.btnDelete}
-                onClick={() => actions.removeCertification(cert.id)}
-              >
-                <Trash2 size={16} />
-              </button>
+              {index === 0 ? (
+                <button
+                  type="button"
+                  className={styles.btnClear}
+                  onClick={() => {
+                    handleUpdate(cert.id, "name", "");
+                    handleUpdate(cert.id, "organization", "");
+                    handleUpdate(cert.id, "issueDate", { month: null, year: null });
+                    handleUpdate(cert.id, "expiryDate", { month: null, year: null });
+                    handleUpdate(cert.id, "noExpiry", false);
+                    handleUpdate(cert.id, "credentialId", "");
+                    handleUpdate(cert.id, "credentialUrl", "");
+                  }}
+                >
+                  <Eraser size={14} />
+                  Clear Form
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.btnDelete}
+                  onClick={() => actions.removeCertification(cert.id)}
+                >
+                  <Trash2 size={14} />
+                  Remove
+                </button>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -59,11 +79,13 @@ export const CertificationsStep: React.FC = () => {
               <MonthYearPicker
                 label="Issue Date"
                 value={cert.issueDate}
+                menuMaxHeight={168}
                 onChange={(val) => handleUpdate(cert.id, "issueDate", val)}
               />
               <MonthYearPicker
                 label="Expiration Date"
                 value={cert.expiryDate}
+                menuMaxHeight={168}
                 onChange={(val) => handleUpdate(cert.id, "expiryDate", val)}
                 disabled={cert.noExpiry}
               />

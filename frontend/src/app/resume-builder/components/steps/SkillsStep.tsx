@@ -154,7 +154,7 @@ export const SkillsStep: React.FC = () => {
           </div>
 
           {/* Proficiency Level Toggle */}
-          <label className={styles.customCheckbox} style={{ marginTop: "1.1rem", marginBottom: "1.1rem" }}>
+          <label className={styles.customCheckbox} style={{ marginTop: "1.1rem", marginBottom: "0.4rem" }}>
             <input
               type="checkbox"
               id="toggle-proficiency"
@@ -175,8 +175,11 @@ export const SkillsStep: React.FC = () => {
             <span className={styles.checkboxLabel}>Show proficiency levels in builder</span>
           </label>
 
+          {/* Line ABOVE tabs */}
+          <div style={{ height: "1px", background: "var(--border-subtle)", marginTop: "8px" }} />
+
           {/* Category Tabs */}
-          <div className="flex flex-wrap gap-6 mb-2">
+          <div className="flex flex-wrap gap-6 mb-2" style={{ paddingTop: "11px" }}>
             {CATEGORIES.map((cat) => {
               const isActive = activeTab === cat;
               return (

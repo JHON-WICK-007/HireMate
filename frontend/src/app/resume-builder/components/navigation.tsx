@@ -115,6 +115,7 @@ export const StepNavigation: React.FC<StepNavigationProps> = ({ onFinish, isLoad
       setIsTransitioning(true);
       await new Promise((resolve) => setTimeout(resolve, 500));
       actions.nextStep();
+      window.scrollTo({ top: 0, behavior: "smooth" });
       await new Promise((resolve) => setTimeout(resolve, 150));
       setIsTransitioning(false);
     }

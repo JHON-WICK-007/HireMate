@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useResumeStore, ExperienceEntry } from "../../store";
 import { TextInput, MonthYearPicker, CustomDropdown } from "../inputs";
 import { StepHeader, cardVariant } from "../navigation";
-import { Trash2, Plus, Check } from "lucide-react";
+import { Trash2, Plus, Check, Eraser } from "lucide-react";
 import styles from "../../builder.module.css";
 
 export const ExperienceStep: React.FC = () => {
@@ -29,14 +29,34 @@ export const ExperienceStep: React.FC = () => {
               <span className={styles.entryCardTitle}>
                 Experience #{index + 1}: {exp.company || "New Company"}
               </span>
-              <button
-                type="button"
-                className={styles.btnDelete}
-                onClick={() => actions.removeExperience(exp.id)}
-              >
-                <Trash2 size={14} />
-                Remove
-              </button>
+              {index === 0 ? (
+                <button
+                  type="button"
+                  className={styles.btnClear}
+                  onClick={() => {
+                    handleUpdate(exp.id, "company", "");
+                    handleUpdate(exp.id, "role", "");
+                    handleUpdate(exp.id, "location", "");
+                    handleUpdate(exp.id, "employmentType", "");
+                    handleUpdate(exp.id, "startDate", { month: null, year: null });
+                    handleUpdate(exp.id, "endDate", { month: null, year: null });
+                    handleUpdate(exp.id, "isCurrent", false);
+                    handleUpdate(exp.id, "description", "");
+                  }}
+                >
+                  <Eraser size={14} />
+                  Clear Form
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.btnDelete}
+                  onClick={() => actions.removeExperience(exp.id)}
+                >
+                  <Trash2 size={14} />
+                  Remove
+                </button>
+              )}
             </div>
 
             <div className={styles.entryGrid}>
@@ -64,7 +84,9 @@ export const ExperienceStep: React.FC = () => {
                 label="Employment Type"
                 value={exp.employmentType}
                 onChange={(val) => handleUpdate(exp.id, "employmentType", val)}
+                menuMaxHeight={168}
                 options={[
+                  { value: "", label: "None" },
                   { value: "Full-time", label: "Full-time" },
                   { value: "Part-time", label: "Part-time" },
                   { value: "Contract", label: "Contract" },
@@ -78,6 +100,7 @@ export const ExperienceStep: React.FC = () => {
               <MonthYearPicker
                 label="Start Date"
                 value={exp.startDate}
+                menuMaxHeight={168}
                 onChange={(val) => {
                   handleUpdate(exp.id, "startDate", val);
                   if (!val.month || !val.year) {
@@ -94,6 +117,7 @@ export const ExperienceStep: React.FC = () => {
               <MonthYearPicker
                 label="End Date"
                 value={exp.endDate}
+                menuMaxHeight={168}
                 onChange={(val) => handleUpdate(exp.id, "endDate", val)}
                 disabled={exp.isCurrent || !exp.startDate.month || !exp.startDate.year}
                 minDate={exp.startDate.month && exp.startDate.year ? exp.startDate : undefined}

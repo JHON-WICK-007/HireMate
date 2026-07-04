@@ -146,6 +146,7 @@ interface MonthYearPickerProps {
   disabled?: boolean;
   minDate?: { month: number; year: number };
   maxDate?: { month: number; year: number };
+  menuMaxHeight?: number;
 }
 
 export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
@@ -155,6 +156,7 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
   disabled = false,
   minDate,
   maxDate,
+  menuMaxHeight,
 }) => {
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -204,6 +206,7 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
           onChange={(val) => onChange({ ...value, month: typeof val === "number" ? val : null })}
           placeholder="Month"
           disabled={disabled}
+          menuMaxHeight={menuMaxHeight}
         />
         <CustomDropdown
           label=""
@@ -226,6 +229,7 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
           }}
           placeholder="Year"
           disabled={disabled}
+          menuMaxHeight={menuMaxHeight}
         />
       </div>
     </div>
@@ -301,7 +305,7 @@ export const ChipInput: React.FC<ChipInputProps> = ({
   };
 
   return (
-    <div className={styles.formGroup}>
+    <div className={styles.formGroup} style={{ gap: value.length > 0 ? undefined : "0.4rem" }}>
       <label className={styles.label}>{label}</label>
       <input
         type="text"
@@ -312,20 +316,22 @@ export const ChipInput: React.FC<ChipInputProps> = ({
         onKeyDown={handleKeyDown}
         autoComplete="off"
       />
-      <div className={styles.chipContainer}>
-        {value.map((item, idx) => (
-          <span key={idx} className={styles.formChip}>
-            {item}
-            <button
-              type="button"
-              className={styles.btnRemoveChip}
-              onClick={() => removeChip(idx)}
-            >
-              ×
-            </button>
-          </span>
-        ))}
-      </div>
+      {value.length > 0 && (
+        <div className={styles.chipContainer} style={{ marginTop: 0, marginBottom: 0 }}>
+          {value.map((item, idx) => (
+            <span key={idx} className={styles.formChip}>
+              {item}
+              <button
+                type="button"
+                className={styles.btnRemoveChip}
+                onClick={() => removeChip(idx)}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

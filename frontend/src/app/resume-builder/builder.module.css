@@ -472,7 +472,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 0.9rem;
   box-shadow: var(--glass-shadow);
   transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
@@ -518,6 +518,27 @@
   color: #dc2626;
 }
 
+.btnClear {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.77rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.28rem 0.65rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btnClear:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
 .btnAdd {
   display: flex;
   align-items: center;
@@ -537,8 +558,9 @@
 }
 
 .btnAdd:hover {
-  background: var(--surface-200);
+  background: var(--glass-bg);
   border-color: var(--border-strong);
+  border-style: solid;
   color: var(--text-primary);
 }
 
@@ -1839,7 +1861,7 @@
   align-items: center;
   gap: 6px;
   padding: 0.55rem 1.25rem;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   border: 1px solid transparent;
   background: var(--btn-solid-bg);
   color: var(--btn-solid-fg);

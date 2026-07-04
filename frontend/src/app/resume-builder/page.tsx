@@ -116,6 +116,11 @@ export default function ResumeBuilderPage() {
         // Fallback silently to cache if network fails
       })
       .finally(() => {
+        const state = useResumeStore.getState();
+        if (state.experiences.length === 0) actions.addExperience();
+        if (state.educations.length === 0) actions.addEducation();
+        if (state.projects.length === 0) actions.addProject();
+        if (state.certifications.length === 0) actions.addCertification();
         setIsCheckingAuth(false);
       });
   }, [router, actions]);

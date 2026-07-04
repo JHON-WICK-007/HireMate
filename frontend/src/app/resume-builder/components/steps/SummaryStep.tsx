@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useResumeStore } from "../../store";
 import { StepHeader, cardVariant } from "../navigation";
@@ -9,6 +9,7 @@ import {
   Plus,
   Check,
   WandSparkles,
+  Eraser,
 } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -227,11 +228,18 @@ export const SummaryStep: React.FC = () => {
   const experiences = useResumeStore((state) => state.experiences);
   const skills = useResumeStore((state) => state.skills);
   const actions = useResumeStore((state) => state.actions);
+  const selectedTemplateId = useResumeStore((state) => state.selectedSummaryTemplateId);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [aiGenerating, setAiGenerating] = useState(false);
   const [dirty, setDirty] = useState(false);
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (summary && !selectedTemplateId) {
+      const match = SUMMARY_TEMPLATES.find((t) => t.text === summary);
+      if (match) actions.setSelectedSummaryTemplateId(match.id);
+    }
+  }, []);
 
   const filteredTemplates = useMemo(() => {
     if (!searchQuery.trim()) return SUMMARY_TEMPLATES;
@@ -244,7 +252,7 @@ export const SummaryStep: React.FC = () => {
   }, [searchQuery]);
 
   const handleUseTemplate = (id: string, text: string) => {
-    setSelectedTemplateId(id);
+    actions.setSelectedSummaryTemplateId(id);
     actions.updateSummary(text);
   };
 
@@ -339,7 +347,7 @@ export const SummaryStep: React.FC = () => {
           {/* Right Panel: Editor */}
           <div className={styles.summaryRightPanel}>
             <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
-              <div className="flex justify-between items-center" style={{ marginBottom: "1rem" }}>
+              <div className="flex justify-between items-center" style={{ marginBottom: "1rem", marginTop: "5px" }}>
                 <label style={{
                   fontSize: "1rem",
                   fontWeight: 700,
@@ -383,28 +391,40 @@ export const SummaryStep: React.FC = () => {
                   </span>
                 )}
               </div>
-              <button
-                type="button"
-                className={styles.aiGenerateBtn}
-                onClick={handleAiGenerate}
-                disabled={aiGenerating || summary.trim().length === 0}
-                style={{ alignSelf: "flex-end", marginTop: "0.5rem" }}
-              >
-                {aiGenerating ? (
-                  <>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
-                      <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
-                      <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
-                    </svg>
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <WandSparkles size={13} />
-                    {summary.trim().length === 0 ? "Enter summary first" : "Enhance with AI"}
-                  </>
-                )}
-              </button>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "0.5rem" }}>
+                <button
+                  type="button"
+                  className={styles.btnClear}
+                  onClick={() => { actions.updateSummary(""); actions.setSelectedSummaryTemplateId(null); }}
+                  disabled={summary.trim().length === 0}
+                  style={{ flex: 1, justifyContent: "center" }}
+                >
+                  <Eraser size={14} />
+                  Clear
+                </button>
+                <button
+                  type="button"
+                  className={styles.aiGenerateBtn}
+                  onClick={handleAiGenerate}
+                  disabled={aiGenerating || summary.trim().length === 0}
+                  style={{ flex: 1 }}
+                >
+                  {aiGenerating ? (
+                    <>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
+                        <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+                        <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+                      </svg>
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <WandSparkles size={13} />
+                      {summary.trim().length === 0 ? "Enter summary first" : "Enhance with AI"}
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>

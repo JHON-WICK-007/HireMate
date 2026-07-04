@@ -83,6 +83,7 @@ export interface ResumeState {
   projects: ProjectEntry[];
   certifications: CertificationEntry[];
   showProficiency: boolean;
+  selectedSummaryTemplateId: string | null;
 }
 
 export interface ResumeStore extends ResumeState {
@@ -114,6 +115,7 @@ export interface ResumeStore extends ResumeState {
     setSelectedTemplate: (template: string) => void;
     setSelectedTemplateId: (id: number) => void;
     setSelectedColor: (color: string) => void;
+    setSelectedSummaryTemplateId: (id: string | null) => void;
     loadFromProfile: (profile: any) => void;
   };
 }
@@ -155,6 +157,7 @@ export const useResumeStore = create<ResumeStore>()(
   projects: defaultProjects,
   certifications: defaultCertifications,
   showProficiency: false,
+  selectedSummaryTemplateId: null,
 
   actions: {
     goToStep: (step) => set({ currentStep: Math.min(Math.max(step, 1), 7) }),
@@ -183,7 +186,7 @@ export const useResumeStore = create<ResumeStore>()(
             company: "",
             role: "",
             location: "",
-            employmentType: "Full-time",
+            employmentType: "",
             startDate: { month: null, year: null },
             endDate: { month: null, year: null },
             isCurrent: false,
@@ -198,9 +201,16 @@ export const useResumeStore = create<ResumeStore>()(
         ),
       })),
     removeExperience: (id) =>
-      set((state) => ({
-        experiences: state.experiences.filter((exp) => exp.id !== id),
-      })),
+      set((state) => {
+        if (state.experiences.length <= 1) {
+          return {
+            experiences: state.experiences.map((exp) =>
+              exp.id === id ? { ...exp, company: "", role: "", location: "", employmentType: "Full-time", startDate: { month: null, year: null }, endDate: { month: null, year: null }, isCurrent: false, description: "" } : exp
+            ),
+          };
+        }
+        return { experiences: state.experiences.filter((exp) => exp.id !== id) };
+      }),
     reorderExperiences: (startIndex, endIndex) =>
       set((state) => {
         const result = Array.from(state.experiences);
@@ -233,9 +243,16 @@ export const useResumeStore = create<ResumeStore>()(
         ),
       })),
     removeEducation: (id) =>
-      set((state) => ({
-        educations: state.educations.filter((edu) => edu.id !== id),
-      })),
+      set((state) => {
+        if (state.educations.length <= 1) {
+          return {
+            educations: state.educations.map((edu) =>
+              edu.id === id ? { ...edu, institution: "", degree: "", fieldOfStudy: "", grade: "", location: "", startDate: { month: null, year: null }, endDate: { month: null, year: null }, isCurrent: false, description: "" } : edu
+            ),
+          };
+        }
+        return { educations: state.educations.filter((edu) => edu.id !== id) };
+      }),
     reorderEducations: (startIndex, endIndex) =>
       set((state) => {
         const result = Array.from(state.educations);
@@ -274,9 +291,16 @@ export const useResumeStore = create<ResumeStore>()(
         ),
       })),
     removeProject: (id) =>
-      set((state) => ({
-        projects: state.projects.filter((proj) => proj.id !== id),
-      })),
+      set((state) => {
+        if (state.projects.length <= 1) {
+          return {
+            projects: state.projects.map((proj) =>
+              proj.id === id ? { ...proj, name: "", description: "", technologies: [], githubUrl: "", liveDemoUrl: "", role: "" } : proj
+            ),
+          };
+        }
+        return { projects: state.projects.filter((proj) => proj.id !== id) };
+      }),
     reorderProjects: (startIndex, endIndex) =>
       set((state) => {
         const result = Array.from(state.projects);
@@ -307,9 +331,16 @@ export const useResumeStore = create<ResumeStore>()(
         ),
       })),
     removeCertification: (id) =>
-      set((state) => ({
-        certifications: state.certifications.filter((cert) => cert.id !== id),
-      })),
+      set((state) => {
+        if (state.certifications.length <= 1) {
+          return {
+            certifications: state.certifications.map((cert) =>
+              cert.id === id ? { ...cert, name: "", organization: "", issueDate: { month: null, year: null }, expiryDate: { month: null, year: null }, noExpiry: false, credentialId: "", credentialUrl: "" } : cert
+            ),
+          };
+        }
+        return { certifications: state.certifications.filter((cert) => cert.id !== id) };
+      }),
     reorderCertifications: (startIndex, endIndex) =>
       set((state) => {
         const result = Array.from(state.certifications);
@@ -320,6 +351,7 @@ export const useResumeStore = create<ResumeStore>()(
     setSelectedTemplate: (template) => set({ selectedTemplate: template }),
     setSelectedTemplateId: (id) => set({ selectedTemplateId: id }),
     setSelectedColor: (color) => set({ selectedColor: color }),
+    setSelectedSummaryTemplateId: (id) => set({ selectedSummaryTemplateId: id }),
     loadFromProfile: (profile: any) => set((state) => {
       if (!profile) return {};
 
