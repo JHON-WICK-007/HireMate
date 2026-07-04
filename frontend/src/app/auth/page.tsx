@@ -73,20 +73,35 @@ export default function AuthPage() {
     const userStr = params.get("user");
     const error = params.get("error");
 
-    if (token && userStr) {
+    if (token) {
       try {
-        const userObj = JSON.parse(decodeURIComponent(userStr));
         localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(userObj));
-        toast.success("Successfully signed in!");
         
-        // Clean URL params so they don't linger in location bar
+        // Clean URL params immediately so they don't linger in location bar
         window.history.replaceState({}, document.title, window.location.pathname);
         
-        router.push(redirect || "/resume-builder");
+        // Fetch fresh user profile from backend
+        fetch(`${API_URL}/api/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success && data.user) {
+              localStorage.setItem("user", JSON.stringify(data.user));
+              toast.success("Successfully signed in!");
+              router.push(redirect || "/resume-builder");
+            } else {
+              toast.error("Failed to retrieve user profile.");
+            }
+          })
+          .catch(() => {
+            toast.error("Failed to retrieve user profile.");
+          });
         return;
       } catch (e) {
-        toast.error("Failed to parse user details.");
+        toast.error("An error occurred during authentication.");
       }
     } else if (error === "oauth_failed") {
       toast.error("Sign in with social provider failed.");

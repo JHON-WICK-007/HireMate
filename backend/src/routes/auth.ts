@@ -207,19 +207,7 @@ router.get(
       };
       res.cookie("token", token, cookieOptions);
 
-      const userData = encodeURIComponent(
-        JSON.stringify({
-          id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          avatar: user.avatar,
-          skills: user.skills || [],
-          careerGoal: user.careerGoal || "",
-          targetRole: user.targetRole || "",
-          createdAt: user.createdAt,
-        })
-      );
-      res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?token=${token}&user=${userData}`);
+      res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?token=${token}`);
     } else {
       res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?error=oauth_failed`);
     }
@@ -248,19 +236,7 @@ router.get(
       };
       res.cookie("token", token, cookieOptions);
 
-      const userData = encodeURIComponent(
-        JSON.stringify({
-          id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          avatar: user.avatar,
-          skills: user.skills || [],
-          careerGoal: user.careerGoal || "",
-          targetRole: user.targetRole || "",
-          createdAt: user.createdAt,
-        })
-      );
-      res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?token=${token}&user=${userData}`);
+      res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?token=${token}`);
     } else {
       res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?error=oauth_failed`);
     }
