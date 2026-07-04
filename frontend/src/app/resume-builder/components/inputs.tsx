@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styles from "../builder.module.css";
 import { Check, Link as LinkIcon, Mail, Phone, Globe, Trash2, Camera, ChevronDown } from "lucide-react";
 import { useResumeStore } from "../store";
@@ -351,9 +351,17 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
   onChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarFailed, setAvatarFailed] = useState(false);
+  const [avatarLoaded, setAvatarLoaded] = useState(false);
+
   const firstName = useResumeStore((state) => state.personalInfo.firstName);
   const surname = useResumeStore((state) => state.personalInfo.surname);
   const initials = `${firstName ? firstName[0] : ""}${surname ? surname[0] : ""}`.toUpperCase() || "U";
+
+  useEffect(() => {
+    setAvatarFailed(false);
+    setAvatarLoaded(false);
+  }, [value]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -380,10 +388,24 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
         className={styles.avatarWrap}
         onClick={() => fileInputRef.current?.click()}
       >
-        {value ? (
-          <img src={value} alt="Profile" className={styles.avatarImg} />
-        ) : (
-          <div className={styles.avatarFallback}>{initials}</div>
+        {/* Initials Fallback - Base layer */}
+        <div className={styles.avatarFallback}>{initials}</div>
+
+        {/* Avatar Image - Overlay layer */}
+        {value && !avatarFailed && (
+          <img
+            src={value}
+            alt="Profile"
+            className={styles.avatarImg}
+            onLoad={() => setAvatarLoaded(true)}
+            onError={() => setAvatarFailed(true)}
+            style={{
+              position: "absolute",
+              inset: 0,
+              opacity: avatarLoaded ? 1 : 0,
+              transition: "opacity 0.2s ease-in-out"
+            }}
+          />
         )}
 
         <span className={styles.avatarEditBtn} title="Change photo">
