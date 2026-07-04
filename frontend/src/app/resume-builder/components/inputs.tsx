@@ -144,8 +144,8 @@ interface MonthYearPickerProps {
   value: { month: number | null; year: number | null };
   onChange: (value: { month: number | null; year: number | null }) => void;
   disabled?: boolean;
-  minDate?: { month: number; year: number };
-  maxDate?: { month: number; year: number };
+  minDate?: { month: number | null; year: number | null };
+  maxDate?: { month: number | null; year: number | null };
   menuMaxHeight?: number;
 }
 
@@ -162,7 +162,9 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth() + 1;
 
-  const effectiveMax = maxDate || { month: currentMonth, year: currentYear };
+  const maxMonth = maxDate && maxDate.month !== null ? maxDate.month : currentMonth;
+  const maxYear = maxDate && maxDate.year !== null ? maxDate.year : currentYear;
+  const effectiveMax = { month: maxMonth, year: maxYear };
 
   const allMonths = [
     { value: 1, label: "Jan" },
@@ -179,9 +181,12 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
     { value: 12, label: "Dec" },
   ];
 
-  const startYear = minDate ? minDate.year : currentYear - 59;
+  const startYear = minDate && minDate.year !== null ? minDate.year : currentYear - 59;
   const endYear = effectiveMax.year;
-  const years = Array.from({ length: endYear - startYear + 1 }, (_, i) => ({
+  
+  // Ensure we don't pass a negative value to Array.from length parameter
+  const lengthVal = Math.max(0, endYear - startYear + 1);
+  const years = Array.from({ length: lengthVal }, (_, i) => ({
     value: startYear + i,
     label: String(startYear + i),
   }));
@@ -190,7 +195,7 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
 
   const months = allMonths.filter((m) => {
     if (selectedYear === null || selectedYear === undefined) return true;
-    if (minDate && selectedYear === minDate.year && m.value < minDate.month) return false;
+    if (minDate && minDate.year !== null && minDate.month !== null && selectedYear === minDate.year && m.value < minDate.month) return false;
     if (selectedYear === effectiveMax.year && m.value > effectiveMax.month) return false;
     return true;
   });
@@ -216,7 +221,7 @@ export const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
             const newYear = typeof val === "number" ? val : null;
             const newMonth = value.month;
             if (newYear && newMonth) {
-              if (minDate && newYear === minDate.year && newMonth < minDate.month) {
+              if (minDate && minDate.year !== null && minDate.month !== null && newYear === minDate.year && newMonth < minDate.month) {
                 onChange({ year: newYear, month: minDate.month });
                 return;
               }

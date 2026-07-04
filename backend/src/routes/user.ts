@@ -1,6 +1,12 @@
 import { Router, Request, Response } from "express";
 import { protect } from "../middleware/auth";
-import User from "../models/User";
+import User, { IUser } from "../models/User";
+
+declare global {
+  namespace Express {
+    interface User extends IUser {}
+  }
+}
 
 const router = Router();
 

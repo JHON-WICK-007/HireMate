@@ -1,8 +1,14 @@
 import express, { Request, Response } from "express";
 import { protect } from "../middleware/auth";
 import Interview, { IInterview, IQuestionLog } from "../models/Interview";
-import User from "../models/User";
+import User, { IUser } from "../models/User";
 import { GoogleGenAI } from "@google/genai";
+
+declare global {
+  namespace Express {
+    interface User extends IUser {}
+  }
+}
 
 const router = express.Router();
 

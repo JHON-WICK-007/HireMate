@@ -1,7 +1,15 @@
 import { Router, Request, Response } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";
-import User from "../models/User";
+import passport from "passport";
+import User, { IUser } from "../models/User";
 import { protect } from "../middleware/auth";
+import "../config/passport";
+
+declare global {
+  namespace Express {
+    interface User extends IUser {}
+  }
+}
 
 const router = Router();
 
@@ -176,5 +184,87 @@ router.post("/logout", (_req: Request, res: Response): void => {
     message: "Logged out successfully.",
   });
 });
+
+// ─── GET /api/auth/google ───────────────────────────────────
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"], prompt: "select_account", session: false }));
+
+// ─── GET /api/auth/google/callback ──────────────────────────
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: `${process.env.CLIENT_URL || "http://localhost:3000"}/auth?error=oauth_failed`,
+  }),
+  (req: Request, res: Response): void => {
+    if (req.user) {
+      const user = req.user as any;
+      const token = generateToken(user._id.toString());
+      const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax" as const,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      };
+      res.cookie("token", token, cookieOptions);
+
+      const userData = encodeURIComponent(
+        JSON.stringify({
+          id: user._id,
+          fullName: user.fullName,
+          email: user.email,
+          avatar: user.avatar,
+          skills: user.skills || [],
+          careerGoal: user.careerGoal || "",
+          targetRole: user.targetRole || "",
+          createdAt: user.createdAt,
+        })
+      );
+      res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?token=${token}&user=${userData}`);
+    } else {
+      res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?error=oauth_failed`);
+    }
+  }
+);
+
+// ─── GET /api/auth/github ───────────────────────────────────
+router.get("/github", passport.authenticate("github", { scope: ["user:email"], session: false }));
+
+// ─── GET /api/auth/github/callback ──────────────────────────
+router.get(
+  "/github/callback",
+  passport.authenticate("github", {
+    session: false,
+    failureRedirect: `${process.env.CLIENT_URL || "http://localhost:3000"}/auth?error=oauth_failed`,
+  }),
+  (req: Request, res: Response): void => {
+    if (req.user) {
+      const user = req.user as any;
+      const token = generateToken(user._id.toString());
+      const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax" as const,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      };
+      res.cookie("token", token, cookieOptions);
+
+      const userData = encodeURIComponent(
+        JSON.stringify({
+          id: user._id,
+          fullName: user.fullName,
+          email: user.email,
+          avatar: user.avatar,
+          skills: user.skills || [],
+          careerGoal: user.careerGoal || "",
+          targetRole: user.targetRole || "",
+          createdAt: user.createdAt,
+        })
+      );
+      res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?token=${token}&user=${userData}`);
+    } else {
+      res.redirect(`${process.env.CLIENT_URL || "http://localhost:3000"}/auth?error=oauth_failed`);
+    }
+  }
+);
 
 export default router;

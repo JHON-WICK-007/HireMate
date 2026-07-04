@@ -14,6 +14,7 @@ import resumeRoutes from "./routes/resume";
 import interviewRoutes from "./routes/interview";
 import mlRoutes from "./routes/ml";
 import aiRoutes from "./routes/ai";
+import passport from "passport";
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
+app.use(passport.initialize());
 
 // ─── API Routes ─────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
