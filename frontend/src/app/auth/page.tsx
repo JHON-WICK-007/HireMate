@@ -92,7 +92,18 @@ export default function AuthPage() {
               localStorage.setItem("user", JSON.stringify(data.user));
               toast.success("Successfully signed in!");
               setIsRedirecting(true);
-              window.location.replace(redirect || "/resume-builder");
+
+              // Check if user is new (created in the last 15 seconds)
+              const isNew = data.user.createdAt
+                ? (Date.now() - new Date(data.user.createdAt).getTime()) < 15000
+                : false;
+
+              if (isNew) {
+                localStorage.setItem("showWelcomeModal", "true");
+                window.location.replace("/");
+              } else {
+                window.location.replace(redirect || "/");
+              }
             } else {
               toast.error("Failed to retrieve user profile.");
             }
