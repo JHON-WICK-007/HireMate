@@ -91,7 +91,7 @@ export default function AuthPage() {
             if (data.success && data.user) {
               localStorage.setItem("user", JSON.stringify(data.user));
               toast.success("Successfully signed in!");
-              router.push(redirect || "/resume-builder");
+              window.location.href = redirect || "/resume-builder";
             } else {
               toast.error("Failed to retrieve user profile.");
             }
@@ -211,14 +211,14 @@ export default function AuthPage() {
         // Redirect to homepage after 1.5s
         setTimeout(() => {
           window.scrollTo({ top: 0, behavior: "instant" });
-          router.push(redirectPath);
+          window.location.href = redirectPath;
         }, 1500);
       } else {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("showWelcomeModal", "true");
         window.scrollTo({ top: 0, behavior: "instant" });
-        router.push(redirectPath);
+        window.location.href = redirectPath;
       }
     } catch (err) {
       toast.error("Unable to connect to server. Please try again.");
