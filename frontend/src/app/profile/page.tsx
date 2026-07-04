@@ -125,12 +125,14 @@ export default function ProfilePage() {
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
   const [avatarFailed, setAvatarFailed] = useState(false);
+  const [avatarLoaded, setAvatarLoaded] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [fullName, setFullName] = useState("");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setAvatarFailed(false);
+    setAvatarLoaded(false);
   }, [avatar]);
 
   const [phone, setPhone] = useState("");
@@ -276,10 +278,25 @@ export default function ProfilePage() {
           <motion.aside className={styles.profileCard} variants={cardVariant}>
             {/* Avatar */}
             <div className={styles.avatarWrap} onClick={() => !isUploadingAvatar && document.getElementById("avatarInput")?.click()}>
-              {avatar && !avatarFailed
-                ? <img src={avatar} alt="Profile" className={styles.avatarImg} onError={() => setAvatarFailed(true)} />
-                : <div className={styles.avatarFallback}>{initials}</div>
-              }
+              {/* Initials Fallback - Base layer */}
+              <div className={styles.avatarFallback}>{initials}</div>
+
+              {/* Avatar Image - Overlay layer */}
+              {avatar && !avatarFailed && (
+                <img
+                  src={avatar}
+                  alt="Profile"
+                  className={styles.avatarImg}
+                  onLoad={() => setAvatarLoaded(true)}
+                  onError={() => setAvatarFailed(true)}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    opacity: avatarLoaded ? 1 : 0,
+                    transition: "opacity 0.2s ease-in-out"
+                  }}
+                />
+              )}
               <span className={styles.avatarEditBtn} title="Change photo">
                 {isUploadingAvatar ? <div className={styles.avatarLoading} /> : <IconCamera />}
               </span>

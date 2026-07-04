@@ -17,6 +17,7 @@ export default function Navbar({ activePage }: NavbarProps) {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [resumeDropdown, setResumeDropdown] = useState(false);
   const [avatarFailed, setAvatarFailed] = useState(false);
+  const [avatarLoaded, setAvatarLoaded] = useState(false);
   const lastScrollY = useRef(0);
 
   const initials = user?.fullName
@@ -25,6 +26,7 @@ export default function Navbar({ activePage }: NavbarProps) {
 
   useEffect(() => {
     setAvatarFailed(false);
+    setAvatarLoaded(false);
   }, [user?.avatar]);
 
   useEffect(() => {
@@ -171,24 +173,12 @@ export default function Navbar({ activePage }: NavbarProps) {
                 justifyContent: "flex-start"
               }}
             >
-              {user?.avatar && !avatarFailed ? (
-                <img
-                  src={user.avatar}
-                  alt="Profile"
-                  onError={() => setAvatarFailed(true)}
-                  style={{
-                    width: "42px",
-                    height: "42px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    border: "1.5px solid var(--border-default)"
-                  }}
-                />
-              ) : (
+              <div style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0 }}>
+                {/* Initials Fallback - Base layer */}
                 <div
                   style={{
-                    width: "42px",
-                    height: "42px",
+                    position: "absolute",
+                    inset: 0,
                     borderRadius: "50%",
                     background: "var(--surface-300)",
                     display: "flex",
@@ -196,12 +186,35 @@ export default function Navbar({ activePage }: NavbarProps) {
                     justifyContent: "center",
                     fontSize: "0.95rem",
                     fontWeight: "bold",
-                    color: "var(--text-primary)"
+                    color: "var(--text-primary)",
+                    zIndex: 1
                   }}
                 >
                   {initials}
                 </div>
-              )}
+
+                {/* Avatar Image - Overlay layer */}
+                {user?.avatar && !avatarFailed && (
+                  <img
+                    src={user.avatar}
+                    alt="Profile"
+                    onLoad={() => setAvatarLoaded(true)}
+                    onError={() => setAvatarFailed(true)}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "1.5px solid var(--border-default)",
+                      zIndex: 2,
+                      opacity: avatarLoaded ? 1 : 0,
+                      transition: "opacity 0.2s ease-in-out"
+                    }}
+                  />
+                )}
+              </div>
               <span
                 style={{
                   display: "inline-block",
@@ -245,24 +258,12 @@ export default function Navbar({ activePage }: NavbarProps) {
           {mounted && (
             isLoggedIn ? (
               <Link href="/profile" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                {user?.avatar && !avatarFailed ? (
-                  <img
-                    src={user.avatar}
-                    alt="Profile"
-                    onError={() => setAvatarFailed(true)}
-                    style={{
-                      width: "42px",
-                      height: "42px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "1.5px solid var(--border-default)"
-                    }}
-                  />
-                ) : (
+                <div style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0 }}>
+                  {/* Initials Fallback - Base layer */}
                   <div
                     style={{
-                      width: "42px",
-                      height: "42px",
+                      position: "absolute",
+                      inset: 0,
                       borderRadius: "50%",
                       background: "var(--surface-300)",
                       display: "flex",
@@ -270,12 +271,35 @@ export default function Navbar({ activePage }: NavbarProps) {
                       justifyContent: "center",
                       fontSize: "0.95rem",
                       fontWeight: "bold",
-                      color: "var(--text-primary)"
+                      color: "var(--text-primary)",
+                      zIndex: 1
                     }}
                   >
                     {initials}
                   </div>
-                )}
+
+                  {/* Avatar Image - Overlay layer */}
+                  {user?.avatar && !avatarFailed && (
+                    <img
+                      src={user.avatar}
+                      alt="Profile"
+                      onLoad={() => setAvatarLoaded(true)}
+                      onError={() => setAvatarFailed(true)}
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                        border: "1.5px solid var(--border-default)",
+                        zIndex: 2,
+                        opacity: avatarLoaded ? 1 : 0,
+                        transition: "opacity 0.2s ease-in-out"
+                      }}
+                    />
+                  )}
+                </div>
                 <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
               </Link>
             ) : (
