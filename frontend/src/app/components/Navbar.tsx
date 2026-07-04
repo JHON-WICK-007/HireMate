@@ -16,11 +16,16 @@ export default function Navbar({ activePage }: NavbarProps) {
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [resumeDropdown, setResumeDropdown] = useState(false);
+  const [avatarFailed, setAvatarFailed] = useState(false);
   const lastScrollY = useRef(0);
 
   const initials = user?.fullName
     ? user.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
     : "U";
+
+  useEffect(() => {
+    setAvatarFailed(false);
+  }, [user?.avatar]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -166,10 +171,11 @@ export default function Navbar({ activePage }: NavbarProps) {
                 justifyContent: "flex-start"
               }}
             >
-              {user?.avatar ? (
+              {user?.avatar && !avatarFailed ? (
                 <img
                   src={user.avatar}
                   alt="Profile"
+                  onError={() => setAvatarFailed(true)}
                   style={{
                     width: "42px",
                     height: "42px",
@@ -239,10 +245,11 @@ export default function Navbar({ activePage }: NavbarProps) {
           {mounted && (
             isLoggedIn ? (
               <Link href="/profile" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                {user?.avatar ? (
+                {user?.avatar && !avatarFailed ? (
                   <img
                     src={user.avatar}
                     alt="Profile"
+                    onError={() => setAvatarFailed(true)}
                     style={{
                       width: "42px",
                       height: "42px",

@@ -124,9 +124,14 @@ export default function ProfilePage() {
 
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [avatarFailed, setAvatarFailed] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [fullName, setFullName] = useState("");
   const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setAvatarFailed(false);
+  }, [avatar]);
 
   const [phone, setPhone] = useState("");
   const [bio, setBio] = useState("");
@@ -271,8 +276,8 @@ export default function ProfilePage() {
           <motion.aside className={styles.profileCard} variants={cardVariant}>
             {/* Avatar */}
             <div className={styles.avatarWrap} onClick={() => !isUploadingAvatar && document.getElementById("avatarInput")?.click()}>
-              {avatar
-                ? <img src={avatar} alt="Profile" className={styles.avatarImg} />
+              {avatar && !avatarFailed
+                ? <img src={avatar} alt="Profile" className={styles.avatarImg} onError={() => setAvatarFailed(true)} />
                 : <div className={styles.avatarFallback}>{initials}</div>
               }
               <span className={styles.avatarEditBtn} title="Change photo">
