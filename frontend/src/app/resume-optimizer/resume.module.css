@@ -667,6 +667,7 @@
     r: 4.5;
     opacity: 0.8;
   }
+
   100% {
     r: 6;
     opacity: 1;
@@ -1273,11 +1274,13 @@
   margin: 0;
 }
 
-.t1WorkItem, .t1EduItem {
+.t1WorkItem,
+.t1EduItem {
   margin-bottom: 20px;
 }
 
-.t1WorkItem:last-child, .t1EduItem:last-child {
+.t1WorkItem:last-child,
+.t1EduItem:last-child {
   margin-bottom: 0;
 }
 
@@ -1867,7 +1870,9 @@
 }
 
 @keyframes ringPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     filter: drop-shadow(0 0 12px var(--score-glow, rgba(16, 185, 129, 0.35)));
   }
 

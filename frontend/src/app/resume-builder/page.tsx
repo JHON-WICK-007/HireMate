@@ -35,7 +35,6 @@ export default function ResumeBuilderPage() {
   const currentStep = useResumeStore((state) => state.currentStep);
   const selectedColor = useResumeStore((state) => state.selectedColor);
   const actions = useResumeStore((state) => state.actions);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
 
   const isStoreEmpty = () => {
@@ -81,7 +80,6 @@ export default function ResumeBuilderPage() {
         if (isStoreEmpty()) {
           actions.loadFromProfile(user);
         }
-        setIsCheckingAuth(false);
       } catch (e) { }
     }
 
@@ -121,57 +119,10 @@ export default function ResumeBuilderPage() {
         if (state.educations.length === 0) actions.addEducation();
         if (state.projects.length === 0) actions.addProject();
         if (state.certifications.length === 0) actions.addCertification();
-        setIsCheckingAuth(false);
       });
   }, [router, actions]);
 
-  if (isCheckingAuth) {
-    return (
-      <div style={{
-        position: "fixed",
-        inset: 0,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#000000",
-        zIndex: 9999,
-        fontFamily: "var(--font-inter), sans-serif"
-      }}>
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          textAlign: "center"
-        }}>
-          <div style={{
-            width: "48px",
-            height: "48px",
-            borderRadius: "50%",
-            border: "3px solid rgba(6, 182, 212, 0.1)",
-            borderTopColor: "#06b6d4",
-            animation: "spin-cyan 1s linear infinite",
-            marginBottom: "1.5rem"
-          }} />
-          <style dangerouslySetInnerHTML={{__html: `
-            @keyframes spin-cyan {
-              to { transform: rotate(360deg); }
-            }
-          `}} />
-          <h2 style={{
-            fontFamily: "var(--font-outfit), sans-serif",
-            fontSize: "20px",
-            fontWeight: 600,
-            color: "#ffffff",
-            marginBottom: "0.5rem"
-          }}>Checking Session</h2>
-          <p style={{
-            fontSize: "14px",
-            color: "#9ca3af"
-          }}>Verifying your credentials...</p>
-        </div>
-      </div>
-    );
-  }
+
 
   const renderActiveStep = () => {
     switch (currentStep) {

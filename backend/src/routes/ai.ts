@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
-import { protect } from "../middleware/auth";
 import { GoogleGenAI } from "@google/genai";
+import { protect } from "../middleware/auth";
+
 
 const router = express.Router();
 
@@ -27,7 +28,18 @@ router.post("/summary", protect, async (req: Request, res: Response): Promise<vo
   try {
     const { action, currentText, context } = req.body;
 
-    if (!currentText || currentText.trim().length === 0) {
+    if (typeof currentText !== "string") {
+      res.status(400).json({ success: false, message: "Summary text must be a string." });
+      return;
+    }
+
+    if (context !== undefined && (typeof context !== "object" || context === null)) {
+      res.status(400).json({ success: false, message: "Context must be an object." });
+      return;
+    }
+
+    const trimmedText = currentText.trim();
+    if (trimmedText.length === 0) {
       res.status(400).json({ success: false, message: "No summary text provided." });
       return;
     }
@@ -37,14 +49,16 @@ router.post("/summary", protect, async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    const role = context?.role || "professional";
-    const skills = context?.skills?.length > 0 ? context.skills.slice(0, 5).join(", ") : "";
-    const experienceCount = context?.experienceCount || 0;
+    const role = typeof context?.role === "string" ? context.role.trim() : "professional";
+    const skills = context && Array.isArray(context.skills) && context.skills.length > 0
+      ? context.skills.slice(0, 5).filter((s: any) => typeof s === "string" || typeof s === "number").map((s: any) => String(s).trim()).join(", ")
+      : "";
+    const experienceCount = typeof context?.experienceCount === "number" ? context.experienceCount : 0;
 
     const prompt = `You are an elite, modern resume writer and ATS optimization specialist.
 The user has written the following input for their professional summary:
 ---
-${currentText.trim()}
+${trimmedText}
 ---
 ${role ? `Context - Most recent role: ${role}.` : ""}
 ${skills ? `Context - Key skills: ${skills}.` : ""}
@@ -74,14 +88,15 @@ Respond ONLY with either the enhanced summary text or the instruction specified 
     const result = (response.text || "").trim();
 
     if (!result) {
-      res.status(200).json({ success: true, result: currentText.trim() });
+      res.status(200).json({ success: true, result: trimmedText });
       return;
     }
 
     res.status(200).json({ success: true, result });
   } catch (err: any) {
     console.error("Summary enhancement failed:", err.message);
-    res.status(200).json({ success: true, result: req.body.currentText?.trim() || "" });
+    const fallbackText = typeof req.body.currentText === "string" ? req.body.currentText.trim() : "";
+    res.status(200).json({ success: true, result: fallbackText });
   }
 });
 

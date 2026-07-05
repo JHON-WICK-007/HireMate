@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, Suspense, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import styles from "../interview.module.css";
 import nav from "../../home.module.css";
 import { useToast } from "../../components/Toast";
@@ -12,6 +13,16 @@ import HomeBackdrop from "../../components/HomeBackdrop";
 import Navbar from "../../components/Navbar";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } }
+};
 
 // ─── Inline SVG Icons ─────────────────────────────────────────
 const IconCheck = () => (
@@ -234,7 +245,6 @@ function ResultsContent() {
     problemSolving: 0,
   });
   const [qaBreakdown, setQaBreakdown] = useState<QuestionBreakdown[]>([]);
-  const [isLoadingResults, setIsLoadingResults] = useState(true);
   const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
   const [filterType, setFilterType] = useState("all");
   const [filterScore, setFilterScore] = useState("all");
@@ -243,6 +253,7 @@ function ResultsContent() {
   const filterBtnRef = useRef<HTMLButtonElement>(null);
   const filterDropdownRef = useRef<HTMLDivElement>(null);
   const [filterPos, setFilterPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
+  const [resultsLoaded, setResultsLoaded] = useState(false);
 
   const toggleQuestion = (idx: number) => {
     setExpandedQuestion((prev) => (prev === idx ? null : idx));
@@ -351,12 +362,16 @@ function ResultsContent() {
       return;
     }
     const savedUserStr = localStorage.getItem("user");
+    let cachedFullName = "";
+    let cachedAvatar = "";
     if (savedUserStr) {
       try {
         const savedUser = JSON.parse(savedUserStr);
-        setAvatar(savedUser.avatar || "");
-        setFullName(savedUser.fullName || "");
-        const parts = (savedUser.fullName || "").trim().split(/\s+/);
+        cachedAvatar = savedUser.avatar || "";
+        cachedFullName = savedUser.fullName || "";
+        setAvatar(cachedAvatar);
+        setFullName(cachedFullName);
+        const parts = (cachedFullName || "").trim().split(/\s+/);
         const firstInitial = parts[0] ? parts[0][0] : "";
         const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
         const initials = (firstInitial + lastInitial).toUpperCase() || "U";
@@ -372,9 +387,11 @@ function ResultsContent() {
       .then((r) => r.json())
       .then((data) => {
         if (data.success && data.user) {
-          setAvatar(data.user.avatar || "");
-          setFullName(data.user.fullName || "");
-          const parts = (data.user.fullName || "").trim().split(/\s+/);
+          const finalAvatar = data.user.avatar || cachedAvatar;
+          const finalFullName = data.user.fullName || cachedFullName;
+          setAvatar(finalAvatar);
+          setFullName(finalFullName);
+          const parts = (finalFullName || "").trim().split(/\s+/);
           const firstInitial = parts[0] ? parts[0][0] : "";
           const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
           const initials = (firstInitial + lastInitial).toUpperCase() || "U";
@@ -409,17 +426,17 @@ function ResultsContent() {
           setOverallScore(session.overallScore || 0);
           setMetrics(session.metrics || { technicalAccuracy: 0, communication: 0, problemSolving: 0 });
           setQaBreakdown(session.questions || []);
+          setResultsLoaded(true);
         } else {
           toast.error(data.message || "Failed to load interview report.");
           router.push("/interview/setup");
+          setResultsLoaded(true);
         }
       })
       .catch(() => {
         toast.error("Network error loading interview report.");
         router.push("/interview/setup");
-      })
-      .finally(() => {
-        setIsLoadingResults(false);
+        setResultsLoaded(true);
       });
   }, [id]);
 
@@ -430,24 +447,25 @@ function ResultsContent() {
 
 
 
-  return (
+return (
     <div className={styles.page}>
       <HomeBackdrop />
 
       {/* ── Navbar ── */}
       <Navbar activePage="interview" />
 
-      {isLoadingResults ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "12px", color: "var(--text-secondary)" }}>
-          <IconSpinner />
-          <p>Loading interview evaluation report...</p>
-        </div>
-      ) : (
-        <main className={styles.layout}>
-          <div className={styles.consoleCard}>
-
-
-            <div className={styles.resultsBody}>
+      <main className={styles.layout}>
+        <div className={styles.consoleCard}>
+          {!resultsLoaded ? (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "16px", color: "var(--text-secondary)" }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
+                <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+              </svg>
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              <p style={{ fontSize: "1.1rem", color: "#a3a3a3" }}>Loading interview report...</p>
+            </div>
+          ) : (
+          <div className={styles.resultsBody}>
               <div className={styles.resultsHeader}>
                 <div className={styles.scoreCircleInfo}>
                   <div className={styles.scoreCircleWrap}>
@@ -748,9 +766,9 @@ function ResultsContent() {
                 </button>
               </div>
             </div>
-          </div>
-        </main>
-      )}
+          )}
+        </div>
+      </main>
 
       <SiteFooter />
     </div>
@@ -760,9 +778,12 @@ function ResultsContent() {
 export default function ResultsPage() {
   return (
     <Suspense fallback={
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", gap: "12px", color: "var(--text-secondary)" }}>
-        <IconSpinner />
-        <p>Loading results workspace...</p>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", gap: "16px", color: "var(--text-secondary)", background: "var(--surface-0)" }}>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
+          <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+        </svg>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        <p style={{ fontSize: "0.9rem" }}>Loading results workspace...</p>
       </div>
     }>
       <ResultsContent />

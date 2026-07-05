@@ -114,8 +114,48 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!allFieldsFilled) {
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim().toLowerCase();
+    const trimmedSubject = formData.subject.trim();
+    const trimmedMessage = formData.message.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedMessage) {
       toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    // Full name check
+    const nameRegex = /^[a-zA-Z]+([ \'-][a-zA-Z]+)*$/;
+    if (trimmedName.length < 2 || trimmedName.length > 50) {
+      toast.error("Full name must be between 2 and 50 characters.");
+      return;
+    }
+    if (!nameRegex.test(trimmedName)) {
+      toast.error("Full name must contain only letters, spaces, hyphens or apostrophes.");
+      return;
+    }
+
+    // Email check
+    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    // Subject check
+    if (trimmedSubject.length > 100) {
+      toast.error("Subject cannot exceed 100 characters.");
+      return;
+    }
+
+    // Message check
+    if (trimmedMessage.length < 10) {
+      toast.error("Message must be at least 10 characters long.");
+      return;
+    }
+    if (trimmedMessage.length > 2000) {
+      toast.error("Message cannot exceed 2000 characters.");
       return;
     }
 
@@ -195,7 +235,7 @@ export default function ContactPage() {
 
             {/* Right Column: Contact Form */}
             <motion.div className={styles.formCard} variants={fadeInUp}>
-              <form onSubmit={handleSubmit} className={styles.form}>
+              <form onSubmit={handleSubmit} className={styles.form} noValidate>
                 <h2 className={styles.formTitle}>Send us a message</h2>
 
                 <div className={styles.formGroup}>

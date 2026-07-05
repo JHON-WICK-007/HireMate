@@ -51,6 +51,15 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+// ─── Global Error Handler ───────────────────────────────────
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("Unhandled Error:", err);
+  res.status(500).json({
+    success: false,
+    message: "An unexpected error occurred on the server.",
+  });
+});
+
 // ─── Start Server ───────────────────────────────────────────
 const startServer = async () => {
   // Connect to MongoDB

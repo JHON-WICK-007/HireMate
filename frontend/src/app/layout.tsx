@@ -89,11 +89,33 @@ export default function RootLayout({
                   document.documentElement.classList.remove('auth-logged-out');
                   document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
                   document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
+                  
+                  const user = JSON.parse(localStorage.getItem('user') || '{}');
+                  if (user && user.avatar && user.avatar.trim() !== "") {
+                    document.documentElement.style.setProperty('--user-avatar-url', 'url("' + user.avatar + '")');
+                    document.documentElement.classList.add('has-avatar');
+                  } else {
+                    document.documentElement.style.setProperty('--user-avatar-url', 'none');
+                    document.documentElement.classList.remove('has-avatar');
+                  }
+                  
+                  let initials = "";
+                  if (user && user.fullName) {
+                    const parts = user.fullName.split(" ");
+                    for (let i = 0; i < parts.length && i < 2; i++) {
+                      if (parts[i]) initials += parts[i][0];
+                    }
+                    initials = initials.toUpperCase();
+                  }
+                  document.documentElement.style.setProperty('--user-initials', '"' + initials + '"');
                 } else {
                   document.documentElement.classList.add('auth-logged-out');
                   document.documentElement.classList.remove('auth-logged-in');
                   document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
                   document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
+                  document.documentElement.style.setProperty('--user-avatar-url', 'none');
+                  document.documentElement.style.setProperty('--user-initials', '""');
+                  document.documentElement.classList.remove('has-avatar');
                 }
               } catch (e) {}
             `,

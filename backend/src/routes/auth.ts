@@ -53,8 +53,19 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
   try {
     const { fullName, email, password } = req.body;
 
-    // Validate required fields
-    if (!fullName || !email || !password) {
+    // Validate required fields and types
+    if (typeof fullName !== "string" || typeof email !== "string" || typeof password !== "string") {
+      res.status(400).json({
+        success: false,
+        message: "Invalid input types.",
+      });
+      return;
+    }
+
+    const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedName || !trimmedEmail || !password) {
       res.status(400).json({
         success: false,
         message: "Please provide full name, email, and password.",
@@ -62,8 +73,45 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Name length and format check
+    if (trimmedName.length < 2 || trimmedName.length > 50) {
+      res.status(400).json({
+        success: false,
+        message: "Name must be between 2 and 50 characters.",
+      });
+      return;
+    }
+
+    if (!/^[a-zA-Z]+([ \'-][a-zA-Z]+)*$/.test(trimmedName)) {
+      res.status(400).json({
+        success: false,
+        message: "Full name must contain only letters, spaces, hyphens or apostrophes and start with a letter.",
+      });
+      return;
+    }
+
+    // Email format check
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      res.status(400).json({
+        success: false,
+        message: "Please enter a valid email address.",
+      });
+      return;
+    }
+
+    // Password strength check (Minimum 12 chars, 1 upper, 1 lower, 1 digit, 1 special)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+    if (!passwordRegex.test(password)) {
+      res.status(400).json({
+        success: false,
+        message: "Password must be at least 12 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+      });
+      return;
+    }
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: trimmedEmail });
     if (existingUser) {
       res.status(400).json({
         success: false,
@@ -74,8 +122,8 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
 
     // Create user
     const user = await User.create({
-      fullName,
-      email,
+      fullName: trimmedName,
+      email: trimmedEmail,
       password,
     });
 
@@ -106,8 +154,18 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
-    // Validate
-    if (!email || !password) {
+    // Validate type and existence
+    if (typeof email !== "string" || typeof password !== "string") {
+      res.status(400).json({
+        success: false,
+        message: "Invalid input types.",
+      });
+      return;
+    }
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedEmail || !password) {
       res.status(400).json({
         success: false,
         message: "Please provide email and password.",
@@ -116,7 +174,7 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
     }
 
     // Find user with password field
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email: trimmedEmail }).select("+password");
 
     if (!user) {
       res.status(401).json({

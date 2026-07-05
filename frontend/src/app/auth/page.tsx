@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./auth.module.css";
 import { useToast } from "../components/Toast";
@@ -8,7 +8,7 @@ import HomeBackdrop from "../components/HomeBackdrop";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-export default function AuthPage() {
+function AuthPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
@@ -168,6 +168,12 @@ export default function AuthPage() {
     }
     if (!email) {
       newErrors.email = "Email is required.";
+    } else {
+      const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email.trim().toLowerCase())) {
+        toast.error("Please enter a valid email address.");
+        return;
+      }
     }
     if (!password) {
       newErrors.password = "Password is required.";
@@ -257,8 +263,15 @@ export default function AuthPage() {
       <div className={styles.loadingContainer}>
         <div className={styles.loadingGlow} />
         <div className={styles.loadingCard}>
-          <div className={styles.spinner}>
-            <div className={styles.spinnerInner} />
+          <div className={styles.loadingLogo}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 6v6h6" />
+              <rect width="20" height="20" x="2" y="2" rx="6" />
+              <path d="M9 18v-6H3" />
+            </svg>
+          </div>
+          <div className={styles.progressBar}>
+            <div className={styles.progressBarFill} />
           </div>
           <h2 className={styles.loadingTitle}>Securing Session</h2>
           <p className={styles.loadingSubtitle}>Synchronizing your profile details...</p>
@@ -439,7 +452,7 @@ export default function AuthPage() {
 
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className={styles.form}>
+            <form onSubmit={handleSubmit} className={styles.form} noValidate>
               {/* Full Name - only for register */}
               {!isLogin && (
                 <div className={styles.inputGroup + " " + styles.animateIn}>
@@ -800,5 +813,24 @@ export default function AuthPage() {
       </div>
     </div>
     </>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingGlow} />
+        <div className={styles.loadingCard}>
+          <div className={styles.loadingLogo}>
+            <span className={styles.logoText}>HireMate</span>
+            <span className={styles.logoDot}>.ai</span>
+          </div>
+          <div className={styles.spinner} />
+        </div>
+      </div>
+    }>
+      <AuthPageContent />
+    </Suspense>
   );
 }

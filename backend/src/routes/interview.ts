@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import mongoose from "mongoose";
 import { protect } from "../middleware/auth";
 import Interview, { IInterview, IQuestionLog } from "../models/Interview";
 import User, { IUser } from "../models/User";
@@ -40,7 +41,13 @@ async function callWithRetry<T>(fn: () => Promise<T>, maxRetries = 3, baseDelayM
 // @access  Protected
 router.get("/check-session-name", protect, async (req: Request, res: Response): Promise<void> => {
   try {
-    const name = (req.query.name as string || "").trim();
+    const rawName = req.query.name;
+    if (rawName !== undefined && typeof rawName !== "string") {
+      res.status(400).json({ success: false, message: "Session name parameter must be a string." });
+      return;
+    }
+
+    const name = (rawName || "").trim();
     if (!name) {
       res.status(200).json({ success: true, exists: false });
       return;
@@ -61,14 +68,43 @@ router.post("/start", protect, async (req: Request, res: Response): Promise<void
   try {
     const { company, role, level, questionTypes, totalQuestions, sessionName } = req.body;
 
-    if (!company || !role || !level) {
+    // Validate type existence and structures
+    if (
+      typeof company !== "string" ||
+      typeof role !== "string" ||
+      typeof level !== "string" ||
+      (sessionName !== undefined && typeof sessionName !== "string")
+    ) {
+      res.status(400).json({ success: false, message: "Company, role, level, and session name must be strings." });
+      return;
+    }
+
+    const trimmedCompany = company.trim();
+    const trimmedRole = role.trim();
+    if (!trimmedCompany || !trimmedRole || !level.trim()) {
       res.status(400).json({ success: false, message: "Please provide company, role, and experience level." });
+      return;
+    }
+
+    const companyRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/;
+    const roleRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/;
+    if (!companyRegex.test(trimmedCompany)) {
+      res.status(400).json({ success: false, message: "Company name must contain at least one letter and be between 2 and 50 characters." });
+      return;
+    }
+    if (!roleRegex.test(trimmedRole)) {
+      res.status(400).json({ success: false, message: "Target role must contain at least one letter and be between 2 and 50 characters." });
       return;
     }
 
     // Enforce unique session name per user
     const trimmedName = (sessionName || "").trim();
     if (trimmedName) {
+      const nameRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-\/]{2,100}$/;
+      if (!nameRegex.test(trimmedName)) {
+        res.status(400).json({ success: false, message: "Session name must contain at least one letter." });
+        return;
+      }
       const norm = trimmedName.toLowerCase();
       const duplicate = await Interview.findOne({
         user: req.user?._id,
@@ -83,7 +119,19 @@ router.post("/start", protect, async (req: Request, res: Response): Promise<void
       }
     }
 
-    const qTypes = questionTypes && questionTypes.length > 0 ? questionTypes : ["Technical", "Behavioral"];
+    if (questionTypes !== undefined && !Array.isArray(questionTypes)) {
+      res.status(400).json({ success: false, message: "Question types must be an array." });
+      return;
+    }
+
+    if (totalQuestions !== undefined && typeof totalQuestions !== "number") {
+      res.status(400).json({ success: false, message: "Total questions must be a number." });
+      return;
+    }
+
+    const qTypes = questionTypes && questionTypes.length > 0
+      ? questionTypes.filter((q: any) => typeof q === "string")
+      : ["Technical", "Behavioral"];
     const qCount = totalQuestions || 5;
 
     if (!process.env.GEMINI_API_KEY) {
@@ -175,7 +223,17 @@ router.post("/:id/submit", protect, async (req: Request, res: Response): Promise
     const { id } = req.params;
     const { answer } = req.body;
 
-    if (!answer || answer.trim().length === 0) {
+    if (typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ success: false, message: "Invalid session ID format." });
+      return;
+    }
+
+    if (typeof answer !== "string") {
+      res.status(400).json({ success: false, message: "Answer must be a string." });
+      return;
+    }
+
+    if (!answer.trim()) {
       res.status(400).json({ success: false, message: "Please provide an answer." });
       return;
     }
@@ -360,6 +418,10 @@ If isEnded is true:
 router.post("/:id/end", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    if (typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ success: false, message: "Invalid session ID format." });
+      return;
+    }
     const interview = await Interview.findById(id);
 
     if (!interview) {
@@ -499,6 +561,10 @@ Respond ONLY with a valid JSON object:
 router.get("/:id", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    if (typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ success: false, message: "Invalid session ID format." });
+      return;
+    }
     const interview = await Interview.findById(id);
 
     if (!interview) {

@@ -80,7 +80,7 @@ export const SkillsStep: React.FC = () => {
     actions.addSkill({
       name: suggested.name,
       category: suggested.category,
-      proficiency: String(newSkillProficiency) as SkillEntry["proficiency"],
+      proficiency: (newSkillProficiency || "intermediate") as SkillEntry["proficiency"],
     });
   };
 
@@ -213,7 +213,7 @@ export const SkillsStep: React.FC = () => {
                 {filteredSkills.map((sk) => (
                   <span key={sk.id} className={styles.formChip}>
                     {sk.name}
-                    {showProficiency && (
+                    {showProficiency && sk.proficiency && (
                       <span
                         style={{
                           fontSize: "10px",
@@ -288,7 +288,6 @@ export const SkillsStep: React.FC = () => {
                         width: "auto",
                         padding: "8px 16px",
                         fontSize: "13px",
-                        borderStyle: "dashed",
                       }}
                     >
                       + {sug.name}

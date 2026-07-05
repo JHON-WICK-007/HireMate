@@ -734,15 +734,15 @@
   font-weight: 500;
   padding: 0.38rem 0.9rem;
   border-radius: var(--radius-full);
-  background: var(--glass-bg);
+  background: var(--badge-bg);
   color: var(--text-secondary);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border-subtle);
   letter-spacing: 0.01em;
   transition: all var(--transition-fast);
 }
 
 .tag:hover {
-  background: var(--surface-200);
+  background: var(--surface-100);
   border-color: var(--border-strong);
   color: var(--text-primary);
 }
@@ -755,15 +755,16 @@
   font-weight: 500;
   padding: 0.38rem 0.55rem 0.38rem 0.9rem;
   border-radius: var(--radius-full);
-  background: var(--surface-100);
-  color: var(--text-primary);
+  background: var(--badge-bg);
+  color: var(--text-secondary);
   border: 1px solid var(--border-subtle);
   transition: all var(--transition-fast);
 }
 
 .tagEditable:hover {
   border-color: var(--border-strong);
-  background: var(--surface-200);
+  background: var(--surface-100);
+  color: var(--text-primary);
 }
 
 .removeTag {

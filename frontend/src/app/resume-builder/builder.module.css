@@ -1042,17 +1042,18 @@
   gap: 0.45rem;
   font-weight: 500;
   padding: 0.38rem 0.55rem 0.38rem 0.9rem;
-  background: var(--surface-100);
+  background: var(--badge-bg);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   font-size: 0.85rem;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   transition: all var(--transition-fast);
 }
 
 .formChip:hover {
   border-color: var(--border-strong);
-  background: var(--surface-200);
+  background: var(--surface-100);
+  color: var(--text-primary);
 }
 
 .btnRemoveChip {

@@ -480,3 +480,19 @@ textarea:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 9999px rgba(255, 255, 255, 0.7) inset, 0 0 0 3px rgba(0, 0, 0, 0.05) !important;
   transition: background-color 99999s ease-in-out 0s, -webkit-box-shadow 0s !important;
 }
+
+/* ─── Instant Avatar Loader & Flash Prevention ─── */
+.avatar-container-instant {
+  background-image: var(--user-avatar-url);
+  background-size: cover;
+  background-position: center;
+}
+
+html.has-avatar .avatar-fallback-prevent-flash {
+  background: transparent !important;
+  color: transparent !important;
+}
+
+.avatar-fallback-prevent-flash::before {
+  content: var(--user-initials, "");
+}

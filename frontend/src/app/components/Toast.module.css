@@ -24,18 +24,36 @@
 
 /* Toast */
 .toast {
+  --toast-bg: var(--surface-100);
+  --toast-border: var(--border-default);
+  --toast-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --toast-glow-opacity: 0.08;
+
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   padding: 14px 16px;
-  border-radius: var(--radius-lg);
-  background: var(--surface-100);
-  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--toast-bg);
+  border: 1px solid var(--toast-border);
   pointer-events: auto;
   position: relative;
   overflow: hidden;
   animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--toast-shadow);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.toast:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+:global([data-theme="light"]) .toast {
+  --toast-bg: var(--surface-0);
+  --toast-border: var(--border-default);
+  --toast-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --toast-glow-opacity: 0.04;
 }
 
 .toastExiting {
@@ -64,23 +82,14 @@
   }
 }
 
-/* Left accent */
-.toast::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-}
-
 /* Icon */
 .icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   position: relative;
   z-index: 1;
+  margin-top: 2px;
 }
 
 /* Content */
@@ -92,7 +101,7 @@
 .title {
   font-size: 13px;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.4;
   margin: 0;
   font-family: var(--font-sans);
   color: var(--text-primary);
@@ -155,54 +164,79 @@
 .closeBtn {
   background: transparent;
   border: none;
-  padding: 6px;
+  padding: 4px;
   cursor: pointer;
   color: var(--text-muted);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all var(--transition-fast);
   flex-shrink: 0;
+  margin-top: -1px;
 }
 
 .closeBtn:hover {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   background: var(--surface-200);
 }
 
 /* ─── Success ──────────────────────────────────────────── */
-.success::before {
-  background: var(--success);
+.success {
+  background: radial-gradient(circle at 12px 18px, rgba(34, 197, 94, var(--toast-glow-opacity)) 0%, transparent 60%), var(--toast-bg);
+  border-color: rgba(34, 197, 94, 0.15);
 }
-
+.success:hover {
+  border-color: rgba(34, 197, 94, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(34, 197, 94, 0.04), var(--toast-shadow);
+}
 .success .icon {
   color: var(--success);
 }
 
 /* ─── Error ────────────────────────────────────────────── */
-.error::before {
-  background: var(--error);
+.error {
+  background: radial-gradient(circle at 12px 18px, rgba(239, 68, 68, var(--toast-glow-opacity)) 0%, transparent 60%), var(--toast-bg);
+  border-color: rgba(239, 68, 68, 0.15);
 }
-
+.error:hover {
+  border-color: rgba(239, 68, 68, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(239, 68, 68, 0.04), var(--toast-shadow);
+}
 .error .icon {
   color: var(--error);
 }
 
 /* ─── Info ─────────────────────────────────────────────── */
-.info::before {
-  background: var(--text-primary);
+.info {
+  background: radial-gradient(circle at 12px 18px, rgba(255, 255, 255, var(--toast-glow-opacity)) 0%, transparent 60%), var(--toast-bg);
+  border-color: rgba(255, 255, 255, 0.08);
 }
-
+.info:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.02), var(--toast-shadow);
+}
 .info .icon {
   color: var(--text-primary);
 }
 
-/* ─── Warning ──────────────────────────────────────────── */
-.warning::before {
-  background: #eab308;
+:global([data-theme="light"]) .info {
+  background: radial-gradient(circle at 12px 18px, rgba(0, 0, 0, var(--toast-glow-opacity)) 0%, transparent 60%), var(--toast-bg);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+:global([data-theme="light"]) .info:hover {
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
+/* ─── Warning ──────────────────────────────────────────── */
+.warning {
+  background: radial-gradient(circle at 12px 18px, rgba(234, 179, 8, var(--toast-glow-opacity)) 0%, transparent 60%), var(--toast-bg);
+  border-color: rgba(234, 179, 8, 0.15);
+}
+.warning:hover {
+  border-color: rgba(234, 179, 8, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(234, 179, 8, 0.04), var(--toast-shadow);
+}
 .warning .icon {
   color: #eab308;
 }

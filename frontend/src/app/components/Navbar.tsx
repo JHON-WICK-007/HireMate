@@ -5,7 +5,7 @@ import Link from "next/link";
 import homeStyles from "../home.module.css";
 
 interface NavbarProps {
-  activePage?: "resume" | "resume-builder" | "pricing" | "contact" | "interview";
+  activePage?: "resume" | "resume-builder" | "pricing" | "contact" | "interview" | "roadmap";
 }
 
 export default function Navbar({ activePage }: NavbarProps) {
@@ -18,20 +18,29 @@ export default function Navbar({ activePage }: NavbarProps) {
   const [resumeDropdown, setResumeDropdown] = useState(false);
   const [avatarFailed, setAvatarFailed] = useState(false);
   const [avatarLoaded, setAvatarLoaded] = useState(false);
+  const [userLoading, setUserLoading] = useState(true);
   const lastScrollY = useRef(0);
 
-  const initials = user?.fullName
+  const initials = mounted && user?.fullName
     ? user.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
-    : "U";
+    : (mounted && !userLoading ? "U" : "");
 
   useEffect(() => {
     setAvatarFailed(false);
-    if (user?.avatar && user.avatar.startsWith("data:image")) {
-      setAvatarLoaded(true);
-    } else {
-      setAvatarLoaded(false);
-    }
+    setAvatarLoaded(false); // Reset on avatar change
   }, [user?.avatar]);
+
+  useEffect(() => {
+    if (user?.fullName) {
+      const parts = user.fullName.split(" ");
+      let initialsStr = "";
+      for (let i = 0; i < parts.length && i < 2; i++) {
+        if (parts[i]) initialsStr += parts[i][0];
+      }
+      initialsStr = initialsStr.toUpperCase();
+      document.documentElement.style.setProperty('--user-initials', `"${initialsStr}"`);
+    }
+  }, [user?.fullName]);
 
   useEffect(() => {
     const syncProfile = () => {
@@ -66,25 +75,34 @@ export default function Navbar({ activePage }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ── Load cached user BEFORE browser paints (no flicker) ──
+  // ── Load cached user & toggle auth view BEFORE browser paints (no flicker) ──
   useLayoutEffect(() => {
     const token = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
     if (token) {
       setIsLoggedIn(true);
-      const savedUser = localStorage.getItem("user");
+      // Immediately load cached user data to prevent loading flicker
       if (savedUser) {
-        try { setUser(JSON.parse(savedUser)); } catch (e) { }
+        try {
+          setUser(JSON.parse(savedUser));
+        } catch (e) {}
+      } else {
+        // No cached user but has token - need to load from API
+        setUserLoading(true);
       }
+      document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
+      document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
+    } else {
+      document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
+      document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
     }
     setMounted(true);
   }, []);
 
-  // ── Background API refresh + CSS property sync ──
+  // ── Background API refresh ──
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      document.documentElement.style.setProperty('--auth-logged-in-display', 'flex');
-      document.documentElement.style.setProperty('--auth-logged-out-display', 'none');
       fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
         credentials: "include"
@@ -92,8 +110,18 @@ export default function Navbar({ activePage }: NavbarProps) {
         .then(r => r.json())
         .then(data => {
           if (data.success) {
-            setUser(data.user);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            const cachedUser = localStorage.getItem("user");
+            const cachedFullName = cachedUser ? JSON.parse(cachedUser).fullName : "";
+            const cachedAvatar = cachedUser ? JSON.parse(cachedUser).avatar : "";
+
+            const finalUser = {
+              ...data.user,
+              fullName: data.user.fullName || cachedFullName,
+              avatar: (data.user.avatar && data.user.avatar.trim() !== "") ? data.user.avatar : cachedAvatar,
+            };
+
+            setUser(finalUser);
+            localStorage.setItem("user", JSON.stringify(finalUser));
           } else {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
@@ -103,10 +131,15 @@ export default function Navbar({ activePage }: NavbarProps) {
             document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
           }
         })
-        .catch(() => { });
+        .catch(() => { })
+        .finally(() => {
+          // Only set loading false if we didn't already have cached data
+          if (!localStorage.getItem("user")) {
+            setUserLoading(false);
+          }
+        });
     } else {
-      document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
-      document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
+      setUserLoading(false);
     }
   }, []);
 
@@ -179,6 +212,7 @@ export default function Navbar({ activePage }: NavbarProps) {
             )}
           </div>
           <Link href="/interview/setup" className={homeStyles.navLink} style={activePage === "interview" ? activeLinkStyle : undefined}>Mock Interview</Link>
+          <Link href="/roadmap" className={homeStyles.navLink} style={activePage === "roadmap" ? activeLinkStyle : undefined}>Career Roadmap</Link>
           <Link href="/pricing" className={homeStyles.navLink} style={activePage === "pricing" ? activeLinkStyle : undefined}>Pricing</Link>
           <Link href="/contact" className={homeStyles.navLink} style={activePage === "contact" ? activeLinkStyle : undefined}>Contact Us</Link>
         </div>
@@ -195,25 +229,25 @@ export default function Navbar({ activePage }: NavbarProps) {
                 justifyContent: "flex-start"
               }}
             >
-              <div style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0 }}>
-                {/* Initials Fallback - Base layer */}
+              <div className="avatar-container-instant" style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0, borderRadius: "50%", background: "var(--surface-300)", overflow: "hidden" }}>
+                {/* Initials - only when no valid avatar */}
                 <div
+                  className="avatar-fallback-prevent-flash"
                   style={{
                     position: "absolute",
                     inset: 0,
                     borderRadius: "50%",
-                    background: "var(--surface-300)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "0.95rem",
                     fontWeight: "bold",
                     color: "var(--text-primary)",
-                    zIndex: 1
+                    zIndex: 1,
+                    opacity: (!user?.avatar || avatarFailed || !avatarLoaded) ? 1 : 0,
+                    transition: "opacity 0.2s ease"
                   }}
-                >
-                  {initials}
-                </div>
+                />
 
                 {/* Avatar Image - Overlay layer */}
                 {user?.avatar && !avatarFailed && (
@@ -230,9 +264,7 @@ export default function Navbar({ activePage }: NavbarProps) {
                       borderRadius: "50%",
                       objectFit: "cover",
                       border: "1.5px solid var(--border-default)",
-                      zIndex: 2,
-                      opacity: avatarLoaded ? 1 : 0,
-                      transition: "opacity 0.2s ease-in-out"
+                      zIndex: 2
                     }}
                   />
                 )}
@@ -247,7 +279,7 @@ export default function Navbar({ activePage }: NavbarProps) {
                   textAlign: "left"
                 }}
               >
-                {user?.fullName ? user.fullName.split(" ")[0] : "Profile"}
+                {mounted && user?.fullName ? user.fullName.split(" ")[0] : (mounted && !userLoading ? "Profile" : "")}
               </span>
             </Link>
           </div>
@@ -274,31 +306,32 @@ export default function Navbar({ activePage }: NavbarProps) {
           <Link href="/resume-optimizer" className={homeStyles.mobileLink} style={activePage === "resume" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
           <Link href="/resume-builder" className={homeStyles.mobileLink} style={activePage === "resume-builder" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Resume Builder</Link>
           <Link href="/interview/setup" className={homeStyles.mobileLink} style={activePage === "interview" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
+          <Link href="/roadmap" className={homeStyles.mobileLink} style={activePage === "roadmap" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Career Roadmap</Link>
           <Link href="/pricing" className={homeStyles.mobileLink} style={activePage === "pricing" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Pricing</Link>
           <Link href="/contact" className={homeStyles.mobileLink} style={activePage === "contact" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Contact Us</Link>
           <div className={homeStyles.mobileDivider} />
           {mounted && (
             isLoggedIn ? (
               <Link href="/profile" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0 }}>
-                  {/* Initials Fallback - Base layer */}
+                <div className="avatar-container-instant" style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0, borderRadius: "50%", background: "var(--surface-300)", overflow: "hidden" }}>
+                  {/* Initials - only when no valid avatar */}
                   <div
+                    className="avatar-fallback-prevent-flash"
                     style={{
                       position: "absolute",
                       inset: 0,
                       borderRadius: "50%",
-                      background: "var(--surface-300)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       fontSize: "0.95rem",
                       fontWeight: "bold",
                       color: "var(--text-primary)",
-                      zIndex: 1
+                      zIndex: 1,
+                      opacity: (!user?.avatar || avatarFailed || !avatarLoaded) ? 1 : 0,
+                      transition: "opacity 0.2s ease"
                     }}
-                  >
-                    {initials}
-                  </div>
+                  />
 
                   {/* Avatar Image - Overlay layer */}
                   {user?.avatar && !avatarFailed && (
@@ -315,14 +348,12 @@ export default function Navbar({ activePage }: NavbarProps) {
                         borderRadius: "50%",
                         objectFit: "cover",
                         border: "1.5px solid var(--border-default)",
-                        zIndex: 2,
-                        opacity: avatarLoaded ? 1 : 0,
-                        transition: "opacity 0.2s ease-in-out"
+                        zIndex: 2
                       }}
                     />
                   )}
                 </div>
-                <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
+                <span>{mounted && user?.fullName ? user.fullName.split(" ")[0] : (mounted && !userLoading ? "Profile" : "")}</span>
               </Link>
             ) : (
               <>

@@ -253,7 +253,7 @@ export default function PricingPage() {
 
                 if (plan.featured) {
                   return (
-                    <div key={plan.name} className={styles.cardWrapper}>
+                    <div key={plan.name} className={styles.cardWrapper} style={{ animationDelay: `${idx * 0.12}s` }}>
                       <span className={styles.recommendedBadge}>Recommended</span>
                       <BorderGlow
                         edgeSensitivity={30}
@@ -277,7 +277,7 @@ export default function PricingPage() {
 
                 if (plan.name === "Enterprise") {
                   return (
-                    <div key={plan.name} className={styles.cardWrapper}>
+                    <div key={plan.name} className={styles.cardWrapper} style={{ animationDelay: `${idx * 0.12}s` }}>
                       <span className={styles.enterpriseBadge}>Enterprise</span>
                       <BorderGlow
                         edgeSensitivity={30}
@@ -302,11 +302,13 @@ export default function PricingPage() {
                 return (
                   <div
                     key={plan.name}
-                    className={styles.card}
+                    className={styles.cardWrapper}
                     style={{ animationDelay: `${idx * 0.12}s` }}
                   >
-                    <div className={styles.cardGlow} />
-                    {cardContent}
+                    <div className={styles.card}>
+                      <div className={styles.cardGlow} />
+                      {cardContent}
+                    </div>
                   </div>
                 );
               })}

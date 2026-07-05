@@ -87,7 +87,11 @@ function mlGet(endpoint: string): Promise<any> {
 router.post("/resume-score", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { resume_text } = req.body;
-    if (!resume_text || resume_text.trim().length < 50) {
+    if (typeof resume_text !== "string") {
+      res.status(400).json({ success: false, message: "Resume text must be a string." });
+      return;
+    }
+    if (resume_text.trim().length < 50) {
       res.status(400).json({ success: false, message: "Resume text must be at least 50 characters." });
       return;
     }
@@ -106,7 +110,11 @@ router.post("/resume-score", protect, async (req: Request, res: Response): Promi
 router.post("/extract-skills", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { resume_text } = req.body;
-    if (!resume_text || resume_text.trim().length < 50) {
+    if (typeof resume_text !== "string") {
+      res.status(400).json({ success: false, message: "Resume text must be a string." });
+      return;
+    }
+    if (resume_text.trim().length < 50) {
       res.status(400).json({ success: false, message: "Resume text must be at least 50 characters." });
       return;
     }
@@ -125,11 +133,15 @@ router.post("/extract-skills", protect, async (req: Request, res: Response): Pro
 router.post("/skill-gap", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { resume_text, target_role } = req.body;
-    if (!resume_text || resume_text.trim().length < 50) {
+    if (typeof resume_text !== "string" || typeof target_role !== "string") {
+      res.status(400).json({ success: false, message: "Resume text and target role must be strings." });
+      return;
+    }
+    if (resume_text.trim().length < 50) {
       res.status(400).json({ success: false, message: "Resume text must be at least 50 characters." });
       return;
     }
-    if (!target_role || target_role.trim().length < 2) {
+    if (target_role.trim().length < 2) {
       res.status(400).json({ success: false, message: "Please provide a target role." });
       return;
     }
@@ -148,11 +160,15 @@ router.post("/skill-gap", protect, async (req: Request, res: Response): Promise<
 router.post("/job-match", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { resume_text, job_description } = req.body;
-    if (!resume_text || resume_text.trim().length < 50) {
+    if (typeof resume_text !== "string" || typeof job_description !== "string") {
+      res.status(400).json({ success: false, message: "Resume text and job description must be strings." });
+      return;
+    }
+    if (resume_text.trim().length < 50) {
       res.status(400).json({ success: false, message: "Resume text must be at least 50 characters." });
       return;
     }
-    if (!job_description || job_description.trim().length < 50) {
+    if (job_description.trim().length < 50) {
       res.status(400).json({ success: false, message: "Job description must be at least 50 characters." });
       return;
     }
@@ -175,7 +191,12 @@ router.post("/interview-analytics", protect, async (req: Request, res: Response)
       res.status(400).json({ success: false, message: "Please provide interview data." });
       return;
     }
-    const result = await mlProxy("/api/ml/interview-analytics", { interviews });
+    const sanitizedInterviews = interviews.filter(i => i && typeof i === "object");
+    if (sanitizedInterviews.length === 0) {
+      res.status(400).json({ success: false, message: "Invalid interview data format." });
+      return;
+    }
+    const result = await mlProxy("/api/ml/interview-analytics", { interviews: sanitizedInterviews });
     res.status(200).json(result);
   } catch (error: any) {
     console.error("ML interview-analytics error:", error.message);

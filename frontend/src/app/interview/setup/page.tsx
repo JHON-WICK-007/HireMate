@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import styles from "../interview.module.css";
 import nav from "../../home.module.css";
 import { useToast } from "../../components/Toast";
@@ -11,6 +12,16 @@ import HomeBackdrop from "../../components/HomeBackdrop";
 import Navbar from "../../components/Navbar";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } }
+};
 
 // ─── Inline SVG Icons ─────────────────────────────────────────
 const IconCode = () => (
@@ -501,12 +512,16 @@ export default function SetupPage() {
       return;
     }
     const savedUserStr = localStorage.getItem("user");
+    let cachedFullName = "";
+    let cachedAvatar = "";
     if (savedUserStr) {
       try {
         const savedUser = JSON.parse(savedUserStr);
-        setAvatar(savedUser.avatar || "");
-        setFullName(savedUser.fullName || "");
-        const parts = (savedUser.fullName || "").trim().split(/\s+/);
+        cachedAvatar = savedUser.avatar || "";
+        cachedFullName = savedUser.fullName || "";
+        setAvatar(cachedAvatar);
+        setFullName(cachedFullName);
+        const parts = (cachedFullName || "").trim().split(/\s+/);
         const firstInitial = parts[0] ? parts[0][0] : "";
         const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
         const initials = (firstInitial + lastInitial).toUpperCase() || "U";
@@ -520,9 +535,11 @@ export default function SetupPage() {
       .then((r) => r.json())
       .then((data) => {
         if (data.success && data.user) {
-          setAvatar(data.user.avatar || "");
-          setFullName(data.user.fullName || "");
-          const parts = (data.user.fullName || "").trim().split(/\s+/);
+          const finalAvatar = data.user.avatar || cachedAvatar;
+          const finalFullName = data.user.fullName || cachedFullName;
+          setAvatar(finalAvatar);
+          setFullName(finalFullName);
+          const parts = (finalFullName || "").trim().split(/\s+/);
           const firstInitial = parts[0] ? parts[0][0] : "";
           const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
           const initials = (firstInitial + lastInitial).toUpperCase() || "U";
@@ -565,6 +582,35 @@ export default function SetupPage() {
   const startInterview = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
+
+    const finalCompany = selectedCompany === "Custom" ? customCompany.trim() : selectedCompany;
+    if (!finalCompany) {
+      toast.error("Please select or enter a company name.");
+      return;
+    }
+    const companyRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/;
+    if (!companyRegex.test(finalCompany)) {
+      toast.error("Company name must contain at least one letter and be between 2 and 50 characters.");
+      return;
+    }
+
+    if (!selectedRole) {
+      toast.error("Please select a target role.");
+      return;
+    }
+    const roleRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/;
+    if (!roleRegex.test(selectedRole)) {
+      toast.error("Target role must contain at least one letter and be between 2 and 50 characters.");
+      return;
+    }
+
+    if (sessionName.trim()) {
+      const nameRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-\/]{2,100}$/;
+      if (!nameRegex.test(sessionName.trim())) {
+        toast.error("Session name must contain at least one letter.");
+        return;
+      }
+    }
 
     // Final validation: check session name if not already validated
     if (sessionName.trim() && sessionNameStatus !== "available") {
@@ -629,11 +675,10 @@ export default function SetupPage() {
       <Navbar activePage="interview" />
 
       {/* ── Main Layout Content ── */}
-      <main className={styles.layout}>
-        <div className={styles.consoleCard}>
-
+      <motion.main className={styles.layout} variants={staggerContainer} initial="hidden" animate="visible">
 
           <div className={styles.setupBody}>
+            <motion.div variants={cardVariant}>
             <div className={styles.setupTitle}>Start a mock interview</div>
             <div className={styles.setupSub}>Configure your session and the AI interviewer will ask role-specific questions and evaluate your answers.</div>
 
@@ -656,10 +701,12 @@ export default function SetupPage() {
                 />
               </div>
             </div>
+            </motion.div>
 
             <div className={styles.setupGrid}>
               <div className={styles.setupForm}>
-                <div className={styles.field}>
+
+                <motion.div className={styles.field} variants={cardVariant}>
                   <span className={styles.fieldLabel}>Company</span>
                   <div className={styles.logoWall}>
                     {companies.map((c) => {
@@ -704,9 +751,9 @@ export default function SetupPage() {
                       />
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
-                <div className={styles.field}>
+                <motion.div className={styles.field} variants={cardVariant}>
                   <span className={styles.fieldLabel}>Role</span>
                   <div className={styles.chipGroup}>
                     {roles.map((r) => (
@@ -726,9 +773,9 @@ export default function SetupPage() {
                       </span>
                     ))}
                   </div>
-                </div>
+                </motion.div>
 
-                <div className={styles.field}>
+                <motion.div className={styles.field} variants={cardVariant}>
                   <span className={styles.fieldLabel}>Experience level</span>
                   <div className={styles.chipGroup}>
                     {experienceLevels.map((l) => (
@@ -748,9 +795,9 @@ export default function SetupPage() {
                       </span>
                     ))}
                   </div>
-                </div>
+                </motion.div>
 
-                <div className={styles.field}>
+                <motion.div className={styles.field} variants={cardVariant}>
                   <span className={styles.fieldLabel}>Duration</span>
                   <div className={styles.chipGroup}>
                     {durations.map((d) => (
@@ -770,9 +817,9 @@ export default function SetupPage() {
                       </span>
                     ))}
                   </div>
-                </div>
+                </motion.div>
 
-                <div className={styles.field}>
+                <motion.div className={styles.field} variants={cardVariant}>
                   <span className={styles.fieldLabel}>Question types</span>
                   <div className={styles.typeGrid}>
                     <div className={`${styles.typeCard} ${selectedQuestionTypes.includes("Technical") ? styles.typeCardSelectedQuestion : ""}`} onClick={() => toggleQuestionType("Technical")}>
@@ -824,11 +871,12 @@ export default function SetupPage() {
                       <div className={styles.tcSub}>Data structures, efficiency, problem solving</div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
+
               </div>
 
               {/* Session Summary Sticky Sidebar */}
-              <aside className={styles.summarySidebar}>
+              <motion.aside className={styles.summarySidebar} variants={cardVariant}>
                 <div className={styles.sidebarTitle}>Session Summary</div>
 
                 <div className={styles.sidebarSection}>
@@ -1023,11 +1071,10 @@ export default function SetupPage() {
                     </>
                   )}
                 </button>
-              </aside>
+              </motion.aside>
             </div>
           </div>
-        </div>
-      </main>
+      </motion.main>
 
       <SiteFooter />
 

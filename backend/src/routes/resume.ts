@@ -7,7 +7,10 @@ import { protect } from "../middleware/auth";
 import { generatePDF } from "../utils/pdf";
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // Max 5MB file size limit
+});
 
 // Retry helper — retries on 503/UNAVAILABLE with exponential backoff
 async function callWithRetry<T>(fn: () => Promise<T>, maxRetries = 3, baseDelayMs = 2000): Promise<T> {
@@ -146,7 +149,12 @@ ${extractedText.substring(0, 15000)}
 router.post("/download", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { html } = req.body;
-    if (!html) {
+    if (typeof html !== "string") {
+      res.status(400).json({ success: false, message: "HTML content must be a string." });
+      return;
+    }
+
+    if (!html.trim()) {
       res.status(400).json({ success: false, message: "No HTML content provided." });
       return;
     }

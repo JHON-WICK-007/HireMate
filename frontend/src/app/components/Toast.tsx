@@ -181,7 +181,13 @@ function ToastCard({
 /* ─── Provider ───────────────────────────────────────────── */
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const toastsRef = useRef<Toast[]>([]);
   const timersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+
+  // Keep toastsRef in sync with state for stable access in callbacks
+  useEffect(() => {
+    toastsRef.current = toasts;
+  }, [toasts]);
 
   const dismiss = useCallback((id: string) => {
     // Start exit animation
@@ -220,6 +226,21 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       onConfirm?: () => void,
       confirmLabel?: string
     ) => {
+      // Find active duplicate toast (same message and type)
+      const duplicate = toastsRef.current.find(
+        (t) => t.message === message && t.type === type && !t.exiting
+      );
+
+      if (duplicate) {
+        // Remove duplicate immediately (no transition delay) to refresh the toast
+        setToasts((prev) => prev.filter((t) => t.id !== duplicate.id));
+        const timer = timersRef.current.get(duplicate.id);
+        if (timer) {
+          clearTimeout(timer);
+          timersRef.current.delete(duplicate.id);
+        }
+      }
+
       const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
       const newToast: Toast = { id, message, description, type, duration, onRetry, onConfirm, confirmLabel };
 

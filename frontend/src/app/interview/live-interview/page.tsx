@@ -14,6 +14,16 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
+const cardVariant = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } }
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } }
+};
+
 // ─── Inline SVG Icons ─────────────────────────────────────────
 const IconClock = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -363,7 +373,7 @@ function LiveInterviewContent() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(5);
   const [questionTypes, setQuestionTypes] = useState<string[]>([]);
-  const [isLoadingSession, setIsLoadingSession] = useState(true);
+  const [sessionLoaded, setSessionLoaded] = useState(false);
 
   // DOM Refs
   const chatMessagesRef = useRef<HTMLDivElement>(null);
@@ -400,13 +410,17 @@ function LiveInterviewContent() {
       router.push("/auth?mode=signin");
       return;
     }
-    const savedUserStr = localStorage.getItem("user");
+const savedUserStr = localStorage.getItem("user");
+    let cachedFullName = "";
+    let cachedAvatar = "";
     if (savedUserStr) {
       try {
         const savedUser = JSON.parse(savedUserStr);
-        setAvatar(savedUser.avatar || "");
-        setFullName(savedUser.fullName || "");
-        const parts = (savedUser.fullName || "").trim().split(/\s+/);
+        cachedAvatar = savedUser.avatar || "";
+        cachedFullName = savedUser.fullName || "";
+        setAvatar(cachedAvatar);
+        setFullName(cachedFullName);
+        const parts = (cachedFullName || "").trim().split(/\s+/);
         const firstInitial = parts[0] ? parts[0][0] : "";
         const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
         const initials = (firstInitial + lastInitial).toUpperCase() || "U";
@@ -414,7 +428,7 @@ function LiveInterviewContent() {
       } catch (e) {}
     }
 
-    // Fetch user details for navbar
+    // Fetch the active interview session
     fetch(`${API_URL}/api/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
       credentials: "include",
@@ -422,9 +436,11 @@ function LiveInterviewContent() {
       .then((r) => r.json())
       .then((data) => {
         if (data.success && data.user) {
-          setAvatar(data.user.avatar || "");
-          setFullName(data.user.fullName || "");
-          const parts = (data.user.fullName || "").trim().split(/\s+/);
+          const finalAvatar = data.user.avatar || cachedAvatar;
+          const finalFullName = data.user.fullName || cachedFullName;
+          setAvatar(finalAvatar);
+          setFullName(finalFullName);
+          const parts = (finalFullName || "").trim().split(/\s+/);
           const firstInitial = parts[0] ? parts[0][0] : "";
           const lastInitial = parts.length > 1 ? parts[parts.length - 1][0] : "";
           const initials = (firstInitial + lastInitial).toUpperCase() || "U";
@@ -492,6 +508,7 @@ function LiveInterviewContent() {
           });
 
           setMessages(reconstructedMsgs);
+          setSessionLoaded(true);
         } else {
           toast.error(data.message || "Failed to load session details.");
           router.push("/interview/setup");
@@ -500,15 +517,12 @@ function LiveInterviewContent() {
       .catch(() => {
         toast.error("Network error loading interview session.");
         router.push("/interview/setup");
-      })
-      .finally(() => {
-        setIsLoadingSession(false);
       });
   }, [id]);
 
   // Timer Effect
   useEffect(() => {
-    if (!isLoadingSession && !isAiTyping) {
+    if (!isAiTyping) {
       timerIntervalRef.current = setInterval(() => {
         setElapsedTime((prev) => prev + 1);
       }, 1000);
@@ -520,7 +534,7 @@ function LiveInterviewContent() {
     return () => {
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     };
-  }, [isLoadingSession, isAiTyping]);
+  }, [isAiTyping]);
 
   // Scroll to bottom of chat
   useEffect(() => {
@@ -796,16 +810,18 @@ function LiveInterviewContent() {
         )}
       </nav>
 
-      {isLoadingSession ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "12px", color: "var(--text-secondary)" }}>
-          <IconSpinner />
-          <p>Loading active mock interview...</p>
-        </div>
-      ) : (
-        <main className={styles.layout}>
+      <main className={styles.layout}>
         <div className={styles.consoleCard}>
 
-
+          {!sessionLoaded ? (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh", gap: "16px", color: "var(--text-secondary)" }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
+                <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+              </svg>
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              <p style={{ fontSize: "1.1rem", color: "#a3a3a3" }}>Loading interview session...</p>
+            </div>
+          ) : (
           <div className={styles.chatLayout}>
             {/* Unified Console Header */}
             <div className={styles.chatHeader}>
@@ -1005,9 +1021,9 @@ function LiveInterviewContent() {
               </div>
             </div>
           </div>
+          )}
         </div>
       </main>
-      )}
 
       <SiteFooter />
 
@@ -1134,9 +1150,12 @@ function LiveInterviewContent() {
 export default function LiveInterviewPage() {
   return (
     <Suspense fallback={
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", gap: "12px", color: "var(--text-secondary)" }}>
-        <IconSpinner />
-        <p>Loading workspace...</p>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", gap: "16px", color: "var(--text-secondary)", background: "var(--surface-0)" }}>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
+          <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+        </svg>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        <p style={{ fontSize: "0.9rem" }}>Loading workspace...</p>
       </div>
     }>
       <LiveInterviewContent />

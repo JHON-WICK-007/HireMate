@@ -45,6 +45,7 @@ const userSchema = new Schema<IUser>(
       trim: true,
       minlength: [2, "Name must be at least 2 characters"],
       maxlength: [50, "Name cannot exceed 50 characters"],
+      match: [/^[a-zA-Z]+([ \'-][a-zA-Z]+)*$/, "Full name must contain only letters, spaces, hyphens or apostrophes and start with a letter"],
     },
     email: {
       type: String,
@@ -62,7 +63,7 @@ const userSchema = new Schema<IUser>(
         },
         "Password is required",
       ],
-      minlength: [6, "Password must be at least 6 characters"],
+      minlength: [12, "Password must be at least 12 characters"],
       select: false, // Don't return password by default
     },
     googleId: {
@@ -87,31 +88,136 @@ const userSchema = new Schema<IUser>(
     phone: {
       type: String,
       trim: true,
+      validate: {
+        validator: function(v: string) {
+          // Allow empty string, but if provided, it must be 7-20 characters matching phone symbols
+          return !v || /^[\d\s()+-]{7,20}$/.test(v);
+        },
+        message: "Please enter a valid phone number (7 to 20 digits, spaces, dashes or symbols)."
+      }
     },
     bio: {
       type: String,
       maxlength: [500, "Bio cannot exceed 500 characters"],
     },
-    skills: [{ type: String, trim: true }],
+    skills: [{
+      type: String,
+      trim: true,
+      validate: {
+        validator: function(v: string) {
+          return !v || /^(?=.*[a-zA-Z])[a-zA-Z0-9\s.#+()\-]{1,30}$/.test(v);
+        },
+        message: "Skill name must contain at least one letter and up to 30 valid characters."
+      }
+    }],
     experience: [
       {
-        company: { type: String, trim: true },
-        role: { type: String, trim: true },
-        duration: { type: String, trim: true },
-        description: { type: String, trim: true },
+        company: {
+          type: String,
+          trim: true,
+          validate: {
+            validator: function(v: string) {
+              return !v || /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/.test(v);
+            },
+            message: "Company name must contain at least one letter and be between 2 and 50 characters."
+          }
+        },
+        role: {
+          type: String,
+          trim: true,
+          validate: {
+            validator: function(v: string) {
+              return !v || /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/.test(v);
+            },
+            message: "Role must contain at least one letter and be between 2 and 50 characters."
+          }
+        },
+        duration: {
+          type: String,
+          trim: true,
+          validate: {
+            validator: function(v: string) {
+              return !v || /^(?=.*(\d|present|current))[a-zA-Z0-9\s.,\-\–/()]{2,30}$/i.test(v);
+            },
+            message: "Duration must refer to a time period (containing a year/number or 'present'/'current')."
+          }
+        },
+        description: {
+          type: String,
+          trim: true,
+          maxlength: [1000, "Description cannot exceed 1000 characters"]
+        },
       },
     ],
     education: [
       {
-        institution: { type: String, trim: true },
-        degree: { type: String, trim: true },
-        field: { type: String, trim: true },
-        year: { type: String, trim: true },
+        institution: {
+          type: String,
+          trim: true,
+          validate: {
+            validator: function(v: string) {
+              return !v || /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-]{2,100}$/.test(v);
+            },
+            message: "Institution must contain at least one letter and be between 2 and 100 characters."
+          }
+        },
+        degree: {
+          type: String,
+          trim: true,
+          validate: {
+            validator: function(v: string) {
+              return !v || /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-]{2,100}$/.test(v);
+            },
+            message: "Degree must contain at least one letter and be between 2 and 100 characters."
+          }
+        },
+        field: {
+          type: String,
+          trim: true,
+          validate: {
+            validator: function(v: string) {
+              return !v || /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-]{2,100}$/.test(v);
+            },
+            message: "Field of study must contain at least one letter and be between 2 and 100 characters."
+          }
+        },
+        year: {
+          type: String,
+          trim: true,
+          validate: {
+            validator: function(v: string) {
+              return !v || /^(?=.*(\d|present|expected))[a-zA-Z0-9\s\-\–]{4,15}$/i.test(v);
+            },
+            message: "Year must refer to a time period (containing a year/number or 'present'/'expected')."
+          }
+        },
       },
     ],
-    careerGoal: { type: String, trim: true },
-    targetRole: { type: String, trim: true },
-    targetCompany: { type: String, trim: true },
+    careerGoal: {
+      type: String,
+      trim: true,
+      maxlength: [500, "Career goal cannot exceed 500 characters"]
+    },
+    targetRole: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: function(v: string) {
+          return !v || /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/.test(v);
+        },
+        message: "Target role must contain at least one letter and be between 2 and 50 characters."
+      }
+    },
+    targetCompany: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: function(v: string) {
+          return !v || /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/.test(v);
+        },
+        message: "Target company must contain at least one letter and be between 2 and 50 characters."
+      }
+    },
     resumeUrl: { type: String },
     resumeParsedData: { type: Schema.Types.Mixed },
     interviewHistory: [{ type: Schema.Types.ObjectId, ref: "Interview" }],

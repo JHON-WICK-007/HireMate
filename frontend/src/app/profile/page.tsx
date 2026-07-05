@@ -132,11 +132,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     setAvatarFailed(false);
-    if (avatar && avatar.startsWith("data:image")) {
-      setAvatarLoaded(true);
-    } else {
-      setAvatarLoaded(false);
-    }
+    setAvatarLoaded(true);
   }, [avatar]);
 
   const [phone, setPhone] = useState("");
@@ -188,11 +184,24 @@ export default function ProfilePage() {
       .then(data => {
         if (data.success && data.user) {
           const u = data.user;
-          setEmail(u.email || ""); setAvatar(u.avatar || ""); setFullName(u.fullName || "");
-          setPhone(u.phone || ""); setBio(u.bio || ""); setSkills(u.skills || []);
-          setExperienceList(u.experience || []); setEducationList(u.education || []);
-          setCareerGoal(u.careerGoal || ""); setTargetRole(u.targetRole || ""); setTargetCompany(u.targetCompany || "");
-          localStorage.setItem("user", JSON.stringify(u));
+          const savedUser = localStorage.getItem("user");
+          const cachedFullName = savedUser ? JSON.parse(savedUser).fullName : "";
+          const cachedAvatar = savedUser ? JSON.parse(savedUser).avatar : "";
+          
+          const finalAvatar = (u.avatar && u.avatar.trim() !== "") ? u.avatar : cachedAvatar;
+          const finalFullName = u.fullName || cachedFullName;
+          
+          const finalUser = {
+            ...u,
+            fullName: finalFullName,
+            avatar: finalAvatar
+          };
+          
+          setEmail(finalUser.email || ""); setAvatar(finalUser.avatar || ""); setFullName(finalUser.fullName || "");
+          setPhone(finalUser.phone || ""); setBio(finalUser.bio || ""); setSkills(finalUser.skills || []);
+          setExperienceList(finalUser.experience || []); setEducationList(finalUser.education || []);
+          setCareerGoal(finalUser.careerGoal || ""); setTargetRole(finalUser.targetRole || ""); setTargetCompany(finalUser.targetCompany || "");
+          localStorage.setItem("user", JSON.stringify(finalUser));
         } else {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
@@ -201,6 +210,18 @@ export default function ProfilePage() {
       })
       .catch(() => toast.error("Failed to load profile."));
   }, []);
+
+  useEffect(() => {
+    if (fullName) {
+      const parts = fullName.split(" ");
+      let initialsStr = "";
+      for (let i = 0; i < parts.length && i < 2; i++) {
+        if (parts[i]) initialsStr += parts[i][0];
+      }
+      initialsStr = initialsStr.toUpperCase();
+      document.documentElement.style.setProperty('--user-initials', `"${initialsStr}"`);
+    }
+  }, [fullName]);
 
   const save = async (section: keyof typeof editing, payload: Record<string, unknown>) => {
     const token = localStorage.getItem("token");
@@ -293,7 +314,13 @@ export default function ProfilePage() {
   const addSkill = (e: FormEvent) => {
     e.preventDefault();
     const s = newSkill.trim();
-    if (s && !skills.includes(s)) { setSkills(p => [...p, s]); setNewSkill(""); }
+    if (!s) return;
+    const skillRegex = /^[a-zA-Z0-9\s.#+()\-]{1,30}$/;
+    if (!skillRegex.test(s)) {
+      toast.error("Skill name can only contain letters, numbers, spaces, and simple symbols (.#+-()) up to 30 characters.");
+      return;
+    }
+    if (!skills.includes(s)) { setSkills(p => [...p, s]); setNewSkill(""); }
   };
 
   const signOut = async () => {
@@ -304,7 +331,7 @@ export default function ProfilePage() {
 
 
 
-  const initials = fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || "U";
+  const initials = mounted && fullName ? fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() : "";
 
 
   return (
@@ -317,9 +344,9 @@ export default function ProfilePage() {
           {/* ── Left: Profile Card ── */}
           <motion.aside className={styles.profileCard} variants={cardVariant}>
             {/* Avatar */}
-            <div className={styles.avatarWrap} onClick={() => !isUploadingAvatar && document.getElementById("avatarInput")?.click()}>
+            <div className={`${styles.avatarWrap} avatar-container-instant`} onClick={() => !isUploadingAvatar && document.getElementById("avatarInput")?.click()}>
               {/* Initials Fallback - Base layer */}
-              <div className={styles.avatarFallback}>{initials}</div>
+              <div className={`${styles.avatarFallback} avatar-fallback-prevent-flash`} />
 
               {/* Avatar Image - Overlay layer */}
               {avatar && !avatarFailed && (
@@ -331,9 +358,7 @@ export default function ProfilePage() {
                   onError={() => setAvatarFailed(true)}
                   style={{
                     position: "absolute",
-                    inset: 0,
-                    opacity: avatarLoaded ? 1 : 0,
-                    transition: "opacity 0.2s ease-in-out"
+                    inset: 0
                   }}
                 />
               )}
@@ -405,7 +430,17 @@ export default function ProfilePage() {
                     <button className={styles.cancelBtn} onClick={() => setEditing(p => ({ ...p, personal: false }))}><IconX />Cancel</button>
                     <button className={styles.saveBtn} disabled={isSaving === "personal"} onClick={() => {
                       if (!fullName.trim()) { toast.error("Full name is required."); return; }
+                      const nameRegex = /^[a-zA-Z]+([ \'-][a-zA-Z]+)*$/;
+                      if (!nameRegex.test(fullName.trim())) {
+                        toast.error("Full name must contain only letters, spaces, hyphens or apostrophes.");
+                        return;
+                      }
                       if (!phone.trim()) { toast.error("Phone number is required."); return; }
+                      const phoneRegex = /^[\d\s()+\-]{7,20}$/;
+                      if (!phoneRegex.test(phone.trim())) {
+                        toast.error("Please enter a valid phone number (7 to 20 digits/symbols).");
+                        return;
+                      }
                       save("personal", { fullName, phone, bio });
                     }}>
                       <IconCheck />{isSaving === "personal" ? "Saving…" : "Save"}
@@ -436,6 +471,20 @@ export default function ProfilePage() {
                 {!editing.skills
                   ? <button className={styles.editBtn} onClick={() => { setSnapshot(s => ({ ...s, skills })); setEditing(p => ({ ...p, skills: true })); }}><IconEdit2 />Edit</button>
                   : <div className={styles.actionRow}>
+                    {skills.length > 0 && (
+                      <button
+                        className={styles.removeEntry}
+                        style={{ position: "static", marginRight: "auto" }}
+                        onClick={() => {
+                          setSkills([]);
+                          setEditing(p => ({ ...p, skills: false }));
+                          save("skills", { skills: [] });
+                        }}
+                        disabled={isSaving === "skills"}
+                      >
+                        <IconTrash />Clear Skills
+                      </button>
+                    )}
                     <button className={styles.cancelBtn} onClick={() => { setSkills(snapshot.skills); setEditing(p => ({ ...p, skills: false })); }}><IconX />Cancel</button>
                     <button className={styles.saveBtn} disabled={isSaving === "skills"} onClick={() => {
                       if (skills.length === 0) { toast.error("Add at least one skill before saving."); return; }
@@ -497,6 +546,29 @@ export default function ProfilePage() {
                     <button className={styles.saveBtn} disabled={isSaving === "experience"} onClick={() => {
                       const filled = experienceList.filter(e => e.role || e.company || e.duration || e.description);
                       if (filled.length === 0) { toast.error("Add at least one experience entry before saving."); return; }
+                      const companyRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/;
+                      const roleRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/;
+                      const durationRegex = /^(?=.*(\d|present|current))[a-zA-Z0-9\s.,\-\–/()]{2,30}$/i;
+                      for (const exp of filled) {
+                        if (!exp.company.trim()) { toast.error("Company is required."); return; }
+                        if (!companyRegex.test(exp.company.trim())) {
+                          toast.error("Company name must contain at least one letter and be between 2 and 50 characters.");
+                          return;
+                        }
+                        if (!exp.role.trim()) { toast.error("Role / Title is required."); return; }
+                        if (!roleRegex.test(exp.role.trim())) {
+                          toast.error("Role must contain at least one letter and be between 2 and 50 characters.");
+                          return;
+                        }
+                        if (exp.duration.trim() && !durationRegex.test(exp.duration.trim())) {
+                          toast.error("Duration must refer to a time period (containing a year/number or 'present'/'current').");
+                          return;
+                        }
+                        if (exp.description.trim() && exp.description.trim().length > 500) {
+                          toast.error("Description cannot exceed 500 characters.");
+                          return;
+                        }
+                      }
                       save("experience", { experience: filled });
                     }}>
                       <IconCheck />{isSaving === "experience" ? "Saving…" : "Save"}
@@ -572,9 +644,27 @@ export default function ProfilePage() {
                     <button className={styles.saveBtn} disabled={isSaving === "education"} onClick={() => {
                       const filled = educationList.filter(e => e.institution || e.degree || e.field || e.year);
                       if (filled.length === 0) { toast.error("Add at least one education entry before saving."); return; }
+                      const textRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-]{2,100}$/;
+                      const yearRegex = /^(?=.*(\d|present|expected))[a-zA-Z0-9\s\-\–]{4,15}$/i;
                       for (const edu of filled) {
                         if (!edu.institution.trim()) { toast.error("Institution is required."); return; }
+                        if (!textRegex.test(edu.institution.trim())) {
+                          toast.error("Institution must contain at least one letter and be between 2 and 100 characters.");
+                          return;
+                        }
                         if (!edu.degree.trim()) { toast.error("Degree is required."); return; }
+                        if (!textRegex.test(edu.degree.trim())) {
+                          toast.error("Degree must contain at least one letter and be between 2 and 100 characters.");
+                          return;
+                        }
+                        if (edu.field.trim() && !textRegex.test(edu.field.trim())) {
+                          toast.error("Field of study must contain at least one letter and be between 2 and 100 characters.");
+                          return;
+                        }
+                        if (edu.year.trim() && !yearRegex.test(edu.year.trim())) {
+                          toast.error("Year must refer to a time period (containing a year/number or 'present'/'expected').");
+                          return;
+                        }
                       }
                       save("education", { education: filled });
                     }}>
@@ -645,6 +735,16 @@ export default function ProfilePage() {
                     <button className={styles.cancelBtn} onClick={() => { setCareerGoal(snapshot.careerGoal); setTargetRole(snapshot.targetRole); setTargetCompany(snapshot.targetCompany); setEditing(p => ({ ...p, goals: false })); }}><IconX />Cancel</button>
                     <button className={styles.saveBtn} disabled={isSaving === "goals"} onClick={() => {
                       if (!targetRole.trim()) { toast.error("Target role is required."); return; }
+                      const roleRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/;
+                      if (!roleRegex.test(targetRole.trim())) {
+                        toast.error("Target role must contain at least one letter and be between 2 and 50 characters.");
+                        return;
+                      }
+                      const companyRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/;
+                      if (targetCompany.trim() && !companyRegex.test(targetCompany.trim())) {
+                        toast.error("Target company must contain at least one letter and be between 2 and 50 characters.");
+                        return;
+                      }
                       save("goals", { careerGoal, targetRole, targetCompany });
                     }}>
                       <IconCheck />{isSaving === "goals" ? "Saving…" : "Save"}
