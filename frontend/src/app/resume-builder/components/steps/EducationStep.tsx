@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useResumeStore, EducationEntry } from "../../store";
 import { TextInput, MonthYearPicker } from "../inputs";
-import { StepHeader, cardVariant } from "../navigation";
+import { StepHeader, cardVariant, isValidInstitution, isValidDegree } from "../navigation";
 import { Trash2, Plus, Check, Eraser } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -23,56 +23,62 @@ export const EducationStep: React.FC = () => {
         description="Include degrees, institutions, and graduation dates."
       />
       <motion.div variants={cardVariant} className={styles.formCard}>
-        {educations.map((edu, index) => (
-          <div key={edu.id} className={styles.entryCard}>
-            <div className={styles.entryCardHeader}>
-              <span className={styles.entryCardTitle}>
-                Education #{index + 1}: {edu.institution || "New Institution"}
-              </span>
-              {index === 0 ? (
-                <button
-                  type="button"
-                  className={styles.btnClear}
-                  onClick={() => {
-                    handleUpdate(edu.id, "institution", "");
-                    handleUpdate(edu.id, "degree", "");
-                    handleUpdate(edu.id, "fieldOfStudy", "");
-                    handleUpdate(edu.id, "grade", "");
-                    handleUpdate(edu.id, "startDate", { month: null, year: null });
-                    handleUpdate(edu.id, "endDate", { month: null, year: null });
-                    handleUpdate(edu.id, "isCurrent", false);
-                    handleUpdate(edu.id, "description", "");
-                  }}
-                >
-                  <Eraser size={14} />
-                  Clear Form
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className={styles.btnDelete}
-                  onClick={() => actions.removeEducation(edu.id)}
-                >
-                  <Trash2 size={14} />
-                  Remove
-                </button>
-              )}
-            </div>
-            <div className={styles.entryGrid}>
-              <TextInput
-                label="Institution"
-                value={edu.institution}
-                onChange={(e) => handleUpdate(edu.id, "institution", e.target.value)}
-                placeholder="e.g. Stanford University"
-                required
-              />
-              <TextInput
-                label="Degree"
-                value={edu.degree}
-                onChange={(e) => handleUpdate(edu.id, "degree", e.target.value)}
-                placeholder="e.g. Bachelor of Science"
-                required
-              />
+        {educations.map((edu, index) => {
+          const institutionError = edu.institution && !isValidInstitution(edu.institution) ? "Institution name must be 2-120 characters." : "";
+          const degreeError = edu.degree && !isValidDegree(edu.degree) ? "Degree must be 2-100 characters." : "";
+
+          return (
+            <div key={edu.id} className={styles.entryCard}>
+              <div className={styles.entryCardHeader}>
+                <span className={styles.entryCardTitle}>
+                  Education #{index + 1}: {edu.institution || "New Institution"}
+                </span>
+                {index === 0 ? (
+                  <button
+                    type="button"
+                    className={styles.btnClear}
+                    onClick={() => {
+                      handleUpdate(edu.id, "institution", "");
+                      handleUpdate(edu.id, "degree", "");
+                      handleUpdate(edu.id, "fieldOfStudy", "");
+                      handleUpdate(edu.id, "grade", "");
+                      handleUpdate(edu.id, "startDate", { month: null, year: null });
+                      handleUpdate(edu.id, "endDate", { month: null, year: null });
+                      handleUpdate(edu.id, "isCurrent", false);
+                      handleUpdate(edu.id, "description", "");
+                    }}
+                  >
+                    <Eraser size={14} />
+                    Clear Form
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.btnDelete}
+                    onClick={() => actions.removeEducation(edu.id)}
+                  >
+                    <Trash2 size={14} />
+                    Remove
+                  </button>
+                )}
+              </div>
+              <div className={styles.entryGrid}>
+                <TextInput
+                  label="Institution"
+                  value={edu.institution}
+                  onChange={(e) => handleUpdate(edu.id, "institution", e.target.value)}
+                  placeholder="e.g. Stanford University"
+                  required
+                  error={institutionError}
+                />
+                <TextInput
+                  label="Degree"
+                  value={edu.degree}
+                  onChange={(e) => handleUpdate(edu.id, "degree", e.target.value)}
+                  placeholder="e.g. Bachelor of Science"
+                  required
+                  error={degreeError}
+                />
               <TextInput
                 label="Field of Study"
                 value={edu.fieldOfStudy}
@@ -151,7 +157,8 @@ export const EducationStep: React.FC = () => {
               </div>
             </div>
           </div>
-        ))}
+        );
+      })}
 
         <button
           type="button"

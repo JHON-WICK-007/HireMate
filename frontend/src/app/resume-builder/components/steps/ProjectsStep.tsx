@@ -3,8 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useResumeStore, ProjectEntry } from "../../store";
-import { TextInput, UrlInput, ChipInput } from "../inputs";
-import { StepHeader, cardVariant } from "../navigation";
+import { TextInput, UrlInput, ChipInput, TextareaField } from "../inputs";
+import { StepHeader, cardVariant, isValidProjectName, isValidProjectDesc, isValidGithubUrl } from "../navigation";
 import { Trash2, Plus, Eraser } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -23,100 +23,100 @@ export const ProjectsStep: React.FC = () => {
         description="Add personal or professional projects that demonstrate your skills."
       />
       <motion.div variants={cardVariant} className={styles.formCard}>
-        {projects.map((proj, index) => (
-          <div key={proj.id} className={styles.entryCard}>
-            <div className={styles.entryCardHeader}>
-              <span className={styles.entryCardTitle}>
-                Project #{index + 1}: {proj.name || "New Project"}
-              </span>
-              {index === 0 ? (
-                <button
-                  type="button"
-                  className={styles.btnClear}
-                  onClick={() => {
-                    handleUpdate(proj.id, "name", "");
-                    handleUpdate(proj.id, "role", "");
-                    handleUpdate(proj.id, "description", "");
-                    handleUpdate(proj.id, "technologies", []);
-                    handleUpdate(proj.id, "githubUrl", "");
-                    handleUpdate(proj.id, "liveDemoUrl", "");
-                  }}
-                >
-                  <Eraser size={14} />
-                  Clear Form
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className={styles.btnDelete}
-                  onClick={() => actions.removeProject(proj.id)}
-                >
-                  <Trash2 size={14} />
-                  Remove
-                </button>
-              )}
-            </div>
+        {projects.map((proj, index) => {
+          const projectNameError = proj.name && !isValidProjectName(proj.name) ? "Project name must be 2-120 characters." : "";
+          const projectDescError = proj.description && !isValidProjectDesc(proj.description) ? "Project description must be 20-500 characters." : "";
+          const githubError = proj.githubUrl && !isValidGithubUrl(proj.githubUrl) ? "Please enter a valid GitHub URL (e.g. github.com/username)." : "";
 
-            <div className={styles.entryGrid}>
-              <TextInput
-                label="Project Name"
-                value={proj.name}
-                onChange={(e) => handleUpdate(proj.id, "name", e.target.value)}
-                placeholder="e.g. E-Commerce Platform"
-                required
-              />
-              <TextInput
-                label="Role in Project"
-                value={proj.role}
-                onChange={(e) => handleUpdate(proj.id, "role", e.target.value)}
-                placeholder="e.g. Lead Designer & Developer"
-              />
-            </div>
-
-            <div className={styles.entryGridSpan2}>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Project Description <span className={styles.charHint} style={proj.description.length >= 480 ? { color: proj.description.length >= 500 ? "#ef4444" : "#f59e0b" } : undefined}>{proj.description.length}/500</span></label>
-                <textarea
-                  className={styles.textarea}
-                  value={proj.description}
-                  onChange={(e) => handleUpdate(proj.id, "description", e.target.value)}
-                  rows={5}
-                  maxLength={500}
-                  placeholder="e.g. Designed and implemented a responsive web app utilizing Next.js..."
-                />
-                {proj.description.length >= 480 && (
-                  <span style={{ color: proj.description.length >= 500 ? "#ef4444" : "#f59e0b", fontSize: "0.8rem", marginTop: "0.35rem", display: "block" }}>
-                    {proj.description.length >= 500 ? "Character limit reached." : `Only ${500 - proj.description.length} characters left.`}
-                  </span>
+          return (
+            <div key={proj.id} className={styles.entryCard}>
+              <div className={styles.entryCardHeader}>
+                <span className={styles.entryCardTitle}>
+                  Project #{index + 1}: {proj.name || "New Project"}
+                </span>
+                {index === 0 ? (
+                  <button
+                    type="button"
+                    className={styles.btnClear}
+                    onClick={() => {
+                      handleUpdate(proj.id, "name", "");
+                      handleUpdate(proj.id, "role", "");
+                      handleUpdate(proj.id, "description", "");
+                      handleUpdate(proj.id, "technologies", []);
+                      handleUpdate(proj.id, "githubUrl", "");
+                      handleUpdate(proj.id, "liveDemoUrl", "");
+                    }}
+                  >
+                    <Eraser size={14} />
+                    Clear Form
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.btnDelete}
+                    onClick={() => actions.removeProject(proj.id)}
+                  >
+                    <Trash2 size={14} />
+                    Remove
+                  </button>
                 )}
               </div>
-            </div>
 
-            <ChipInput
-              label="Technologies Used"
-              placeholder="Type tech and press Enter or comma (e.g. Next.js, Redux...)"
-              value={proj.technologies}
-              onChange={(value) => handleUpdate(proj.id, "technologies", value)}
-            />
+              <div className={styles.entryGrid}>
+                <TextInput
+                  label="Project Name"
+                  value={proj.name}
+                  onChange={(e) => handleUpdate(proj.id, "name", e.target.value)}
+                  placeholder="e.g. E-Commerce Platform"
+                  required
+                  error={projectNameError}
+                />
+                <TextInput
+                  label="Role in Project"
+                  value={proj.role}
+                  onChange={(e) => handleUpdate(proj.id, "role", e.target.value)}
+                  placeholder="e.g. Lead Designer & Developer"
+                />
+              </div>
 
-            <div className={styles.entryGrid}>
-              <UrlInput
-                label="GitHub Link"
-                typeOfUrl="github"
-                value={proj.githubUrl}
-                onChange={(e) => handleUpdate(proj.id, "githubUrl", e.target.value)}
-                placeholder="github.com/username/project"
+              <div className={styles.entryGridSpan2}>
+                <TextareaField
+                  label="Project Description"
+                  value={proj.description}
+                  onChange={(e) => handleUpdate(proj.id, "description", e.target.value)}
+                  maxLength={500}
+                  placeholder="e.g. Designed and implemented a responsive web app utilizing Next.js..."
+                  error={projectDescError}
+                />
+              </div>
+
+              <ChipInput
+                label="Technologies Used"
+                placeholder="Type tech and press Enter or comma (e.g. Next.js, Redux...)"
+                value={proj.technologies}
+                onChange={(value) => handleUpdate(proj.id, "technologies", value)}
               />
-              <UrlInput
-                label="Live Demo Link"
-                typeOfUrl="portfolio"
-                value={proj.liveDemoUrl}
-                onChange={(e) => handleUpdate(proj.id, "liveDemoUrl", e.target.value)}
-                placeholder="project-demo.com"
-              />
+
+              <div className={styles.entryGrid}>
+                <UrlInput
+                  label="GitHub Link"
+                  typeOfUrl="github"
+                  value={proj.githubUrl}
+                  onChange={(e) => handleUpdate(proj.id, "githubUrl", e.target.value)}
+                  placeholder="github.com/username/project"
+                  error={githubError}
+                />
+                <UrlInput
+                  label="Live Demo Link"
+                  typeOfUrl="portfolio"
+                  value={proj.liveDemoUrl}
+                  onChange={(e) => handleUpdate(proj.id, "liveDemoUrl", e.target.value)}
+                  placeholder="project-demo.com"
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         <button
           type="button"

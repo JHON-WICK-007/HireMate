@@ -118,12 +118,19 @@ export const TextareaField: React.FC<TextareaFieldProps> = ({
           </span>
         )}
       </label>
-      <textarea
-        className={`${styles.textarea} ${className}`}
-        maxLength={maxLength}
-        value={value}
-        {...props}
-      />
+      <div className="relative flex items-start w-full">
+        <textarea
+          className={`${styles.textarea} ${error ? styles.inputError : ""} ${className}`}
+          maxLength={maxLength}
+          value={value}
+          {...props}
+        />
+        {error && (
+          <div className="absolute right-4 top-3 text-red-500 flex items-center pointer-events-none">
+            <X size={16} strokeWidth={2.5} />
+          </div>
+        )}
+      </div>
       {showCounter && isNearLimit && (
         <span
           style={{
@@ -138,7 +145,6 @@ export const TextareaField: React.FC<TextareaFieldProps> = ({
             : `Only ${(maxLength as number) - charCount} characters left.`}
         </span>
       )}
-      {error && <span className="text-xs text-red-500 mt-1">{error}</span>}
     </div>
   );
 };

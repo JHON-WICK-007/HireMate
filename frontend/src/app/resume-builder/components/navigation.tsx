@@ -36,6 +36,11 @@ export const StepHeader: React.FC<StepHeaderProps> = ({ title, description }) =>
   );
 };
 
+export const isValidName = (name: string): boolean => {
+  if (!name) return false;
+  return /^[a-zA-Z\s\-']{2,50}$/.test(name.trim());
+};
+
 export const isValidEmail = (email: string): boolean => {
   if (!email) return false;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
@@ -63,13 +68,74 @@ export const isValidUrl = (url: string): boolean => {
   return /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9-_.~!$&'()*+,;=:@%]*)*\/?$/.test(url.trim());
 };
 
+export const isValidGithubUrl = (url: string): boolean => {
+  if (!url) return true;
+  return /^(https?:\/\/)?(www\.)?github\.com\/[a-zA-Z0-9\-_.]{1,}\/?$/.test(url.trim());
+};
+
+export const isValidCompany = (comp: string): boolean => {
+  if (!comp) return false;
+  // 2-100 chars, letters/numbers/spaces, allow ., &, -, ', ,, (, ). Must contain at least one letter or number.
+  return /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9\s.&-',()]{2,100}$/.test(comp.trim());
+};
+
+export const isValidRole = (role: string): boolean => {
+  if (!role) return false;
+  // 2-100 chars, letters/numbers/spaces, allow -, /, &, (, ). Must contain at least one letter or number.
+  return /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9\s-/&()]{2,100}$/.test(role.trim());
+};
+
+export const isValidInstitution = (inst: string): boolean => {
+  if (!inst) return false;
+  // 2-120 chars, letters/numbers/spaces, allow ., &, -, ', (, ). Must contain at least one letter or number.
+  return /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9\s.&-',()]{2,120}$/.test(inst.trim());
+};
+
+export const isValidDegree = (deg: string): boolean => {
+  if (!deg) return false;
+  // 2-100 chars, letters/numbers/spaces, allow ., &, -, ', (, ). Must contain at least one letter or number.
+  return /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9\s.&-',()]{2,100}$/.test(deg.trim());
+};
+
+export const isValidSkillName = (skill: string): boolean => {
+  if (!skill) return false;
+  // 1-50 chars, letters, numbers, +, #, ., -, spaces.
+  return /^[a-zA-Z0-9\s+#.\-]{1,50}$/.test(skill.trim());
+};
+
+export const isValidProjectName = (proj: string): boolean => {
+  if (!proj) return false;
+  // 2-120 chars, letters, numbers, spaces, -, _, ., &. Must contain at least one letter or number.
+  return /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9\s\-_ .&]{2,120}$/.test(proj.trim());
+};
+
+export const isValidProjectDesc = (desc: string): boolean => {
+  if (!desc) return false;
+  const len = desc.trim().length;
+  return len >= 20 && len <= 500;
+};
+
+export const isValidCertName = (cert: string): boolean => {
+  if (!cert) return false;
+  const len = cert.trim().length;
+  return len >= 2 && len <= 120;
+};
+
+export const isValidCertOrg = (org: string): boolean => {
+  if (!org) return false;
+  // 2-120 chars, letters, numbers, spaces, ., &, -. Must contain at least one letter or number.
+  return /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9\s.&-]{2,120}$/.test(org.trim());
+};
+
 const validateStep = (step: number, state: any): boolean => {
   switch (step) {
     case 1: {
       const p = state.personalInfo;
       return !!(
         p.firstName?.trim() &&
+        isValidName(p.firstName) &&
         p.surname?.trim() &&
+        isValidName(p.surname) &&
         p.city?.trim() &&
         isValidLocation(p.city) &&
         p.country?.trim() &&
@@ -81,27 +147,29 @@ const validateStep = (step: number, state: any): boolean => {
         p.email?.trim() &&
         isValidEmail(p.email) &&
         isValidUrl(p.linkedinUrl) &&
-        isValidUrl(p.githubUrl) &&
+        isValidGithubUrl(p.githubUrl) &&
         isValidUrl(p.portfolioUrl)
       );
     }
     case 2:
       return !!state.summary?.trim();
     case 3:
-      return state.experiences.every(
-        (exp: any) => exp.company?.trim() && exp.role?.trim()
+      return state.experiences.length > 0 && state.experiences.every(
+        (exp: any) => exp.company?.trim() && isValidCompany(exp.company) && exp.role?.trim() && isValidRole(exp.role)
       );
     case 4:
-      return state.educations.every(
-        (edu: any) => edu.institution?.trim() && edu.degree?.trim()
+      return state.educations.length > 0 && state.educations.every(
+        (edu: any) => edu.institution?.trim() && isValidInstitution(edu.institution) && edu.degree?.trim() && isValidDegree(edu.degree)
       );
     case 5:
       return state.skills.length > 0;
     case 6:
-      return state.projects.every((proj: any) => proj.name?.trim());
+      return state.projects.length > 0 && state.projects.every(
+        (proj: any) => proj.name?.trim() && isValidProjectName(proj.name) && proj.description?.trim() && isValidProjectDesc(proj.description)
+      );
     case 7:
-      return state.certifications.every(
-        (cert: any) => cert.name?.trim() && cert.organization?.trim()
+      return state.certifications.length > 0 && state.certifications.every(
+        (cert: any) => cert.name?.trim() && isValidCertName(cert.name) && cert.organization?.trim() && isValidCertOrg(cert.organization)
       );
     default:
       return true;

@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useResumeStore, CertificationEntry } from "../../store";
 import { TextInput, MonthYearPicker, UrlInput } from "../inputs";
-import { StepHeader, cardVariant } from "../navigation";
+import { StepHeader, cardVariant, isValidCertName, isValidCertOrg } from "../navigation";
 import { Trash2, Plus, Check, Eraser } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -23,56 +23,62 @@ export const CertificationsStep: React.FC = () => {
         description="List any certificates, licenses, or credentials you hold."
       />
       <motion.div variants={cardVariant} className={styles.formCard}>
-        {certifications.map((cert, index) => (
-          <div key={cert.id} className={styles.entryCard}>
-            <div className={styles.entryCardHeader}>
-              <span className={styles.entryCardTitle}>
-                Certification #{index + 1}: {cert.name || "New Certification"}
-              </span>
-              {index === 0 ? (
-                <button
-                  type="button"
-                  className={styles.btnClear}
-                  onClick={() => {
-                    handleUpdate(cert.id, "name", "");
-                    handleUpdate(cert.id, "organization", "");
-                    handleUpdate(cert.id, "issueDate", { month: null, year: null });
-                    handleUpdate(cert.id, "expiryDate", { month: null, year: null });
-                    handleUpdate(cert.id, "noExpiry", false);
-                    handleUpdate(cert.id, "credentialId", "");
-                    handleUpdate(cert.id, "credentialUrl", "");
-                  }}
-                >
-                  <Eraser size={14} />
-                  Clear Form
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className={styles.btnDelete}
-                  onClick={() => actions.removeCertification(cert.id)}
-                >
-                  <Trash2 size={14} />
-                  Remove
-                </button>
-              )}
-            </div>
+        {certifications.map((cert, index) => {
+          const certNameError = cert.name && !isValidCertName(cert.name) ? "Certification name must be 2-120 characters." : "";
+          const certOrgError = cert.organization && !isValidCertOrg(cert.organization) ? "Organization name must be 2-120 characters." : "";
 
-            <div className={styles.entryGrid}>
-              <TextInput
-                label="Certification Name"
-                value={cert.name}
-                onChange={(e) => handleUpdate(cert.id, "name", e.target.value)}
-                placeholder="e.g. AWS Certified Solutions Architect"
-                required
-              />
-              <TextInput
-                label="Issuing Organization"
-                value={cert.organization}
-                onChange={(e) => handleUpdate(cert.id, "organization", e.target.value)}
-                placeholder="e.g. Amazon Web Services"
-                required
-              />
+          return (
+            <div key={cert.id} className={styles.entryCard}>
+              <div className={styles.entryCardHeader}>
+                <span className={styles.entryCardTitle}>
+                  Certification #{index + 1}: {cert.name || "New Certification"}
+                </span>
+                {index === 0 ? (
+                  <button
+                    type="button"
+                    className={styles.btnClear}
+                    onClick={() => {
+                      handleUpdate(cert.id, "name", "");
+                      handleUpdate(cert.id, "organization", "");
+                      handleUpdate(cert.id, "issueDate", { month: null, year: null });
+                      handleUpdate(cert.id, "expiryDate", { month: null, year: null });
+                      handleUpdate(cert.id, "noExpiry", false);
+                      handleUpdate(cert.id, "credentialId", "");
+                      handleUpdate(cert.id, "credentialUrl", "");
+                    }}
+                  >
+                    <Eraser size={14} />
+                    Clear Form
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.btnDelete}
+                    onClick={() => actions.removeCertification(cert.id)}
+                  >
+                    <Trash2 size={14} />
+                    Remove
+                  </button>
+                )}
+              </div>
+
+              <div className={styles.entryGrid}>
+                <TextInput
+                  label="Certification Name"
+                  value={cert.name}
+                  onChange={(e) => handleUpdate(cert.id, "name", e.target.value)}
+                  placeholder="e.g. AWS Certified Solutions Architect"
+                  required
+                  error={certNameError}
+                />
+                <TextInput
+                  label="Issuing Organization"
+                  value={cert.organization}
+                  onChange={(e) => handleUpdate(cert.id, "organization", e.target.value)}
+                  placeholder="e.g. Amazon Web Services"
+                  required
+                  error={certOrgError}
+                />
             </div>
 
             <div className={styles.entryGrid}>
@@ -136,7 +142,8 @@ export const CertificationsStep: React.FC = () => {
               />
             </div>
           </div>
-        ))}
+        );
+      })}
 
         <button
           type="button"

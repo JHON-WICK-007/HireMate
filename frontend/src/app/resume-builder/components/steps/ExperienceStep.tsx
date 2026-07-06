@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useResumeStore, ExperienceEntry } from "../../store";
 import { TextInput, MonthYearPicker, CustomDropdown } from "../inputs";
-import { StepHeader, cardVariant } from "../navigation";
+import { StepHeader, cardVariant, isValidCompany, isValidRole } from "../navigation";
 import { Trash2, Plus, Check, Eraser } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -23,57 +23,63 @@ export const ExperienceStep: React.FC = () => {
         description="List your most recent roles first. Outline key achievements."
       />
       <motion.div variants={cardVariant} className={styles.formCard}>
-        {experiences.map((exp, index) => (
-          <div key={exp.id} className={styles.entryCard}>
-            <div className={styles.entryCardHeader}>
-              <span className={styles.entryCardTitle}>
-                Experience #{index + 1}: {exp.company || "New Company"}
-              </span>
-              {index === 0 ? (
-                <button
-                  type="button"
-                  className={styles.btnClear}
-                  onClick={() => {
-                    handleUpdate(exp.id, "company", "");
-                    handleUpdate(exp.id, "role", "");
-                    handleUpdate(exp.id, "location", "");
-                    handleUpdate(exp.id, "employmentType", "");
-                    handleUpdate(exp.id, "startDate", { month: null, year: null });
-                    handleUpdate(exp.id, "endDate", { month: null, year: null });
-                    handleUpdate(exp.id, "isCurrent", false);
-                    handleUpdate(exp.id, "description", "");
-                  }}
-                >
-                  <Eraser size={14} />
-                  Clear Form
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className={styles.btnDelete}
-                  onClick={() => actions.removeExperience(exp.id)}
-                >
-                  <Trash2 size={14} />
-                  Remove
-                </button>
-              )}
-            </div>
+        {experiences.map((exp, index) => {
+          const companyError = exp.company && !isValidCompany(exp.company) ? "Company name must be 2-100 characters." : "";
+          const roleError = exp.role && !isValidRole(exp.role) ? "Role must be 2-100 characters." : "";
 
-            <div className={styles.entryGrid}>
-              <TextInput
-                label="Company"
-                value={exp.company}
-                onChange={(e) => handleUpdate(exp.id, "company", e.target.value)}
-                placeholder="e.g. Acme Corp"
-                required
-              />
-              <TextInput
-                label="Role"
-                value={exp.role}
-                onChange={(e) => handleUpdate(exp.id, "role", e.target.value)}
-                placeholder="e.g. Senior Frontend Developer"
-                required
-              />
+          return (
+            <div key={exp.id} className={styles.entryCard}>
+              <div className={styles.entryCardHeader}>
+                <span className={styles.entryCardTitle}>
+                  Experience #{index + 1}: {exp.company || "New Company"}
+                </span>
+                {index === 0 ? (
+                  <button
+                    type="button"
+                    className={styles.btnClear}
+                    onClick={() => {
+                      handleUpdate(exp.id, "company", "");
+                      handleUpdate(exp.id, "role", "");
+                      handleUpdate(exp.id, "location", "");
+                      handleUpdate(exp.id, "employmentType", "");
+                      handleUpdate(exp.id, "startDate", { month: null, year: null });
+                      handleUpdate(exp.id, "endDate", { month: null, year: null });
+                      handleUpdate(exp.id, "isCurrent", false);
+                      handleUpdate(exp.id, "description", "");
+                    }}
+                  >
+                    <Eraser size={14} />
+                    Clear Form
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.btnDelete}
+                    onClick={() => actions.removeExperience(exp.id)}
+                  >
+                    <Trash2 size={14} />
+                    Remove
+                  </button>
+                )}
+              </div>
+
+              <div className={styles.entryGrid}>
+                <TextInput
+                  label="Company"
+                  value={exp.company}
+                  onChange={(e) => handleUpdate(exp.id, "company", e.target.value)}
+                  placeholder="e.g. Acme Corp"
+                  required
+                  error={companyError}
+                />
+                <TextInput
+                  label="Role"
+                  value={exp.role}
+                  onChange={(e) => handleUpdate(exp.id, "role", e.target.value)}
+                  placeholder="e.g. Senior Frontend Developer"
+                  required
+                  error={roleError}
+                />
               <TextInput
                 label="Location"
                 value={exp.location}
@@ -160,7 +166,8 @@ export const ExperienceStep: React.FC = () => {
               </div>
             </div>
           </div>
-        ))}
+        );
+      })}
 
         <button
           type="button"

@@ -3,8 +3,8 @@
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useResumeStore, SkillEntry } from "../../store";
-import { StepHeader, cardVariant } from "../navigation";
-import { CustomDropdown } from "../inputs";
+import { StepHeader, cardVariant, isValidSkillName } from "../navigation";
+import { CustomDropdown, TextInput } from "../inputs";
 import { Plus, Sparkles, Code, X } from "lucide-react";
 import styles from "../../builder.module.css";
 
@@ -86,10 +86,13 @@ export const SkillsStep: React.FC = () => {
   const [newSkillCategory, setNewSkillCategory] = useState<string | number>("");
   const [newSkillProficiency, setNewSkillProficiency] = useState<string | number>("");
 
+  // Compute Skill Name Error
+  const skillNameError = newSkillName && !isValidSkillName(newSkillName) ? "Skill name must contain only letters, numbers, spaces, +, #, ., -" : "";
+
   const handleAddSkill = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const name = newSkillName.trim();
-    if (!name || !newSkillCategory || !newSkillProficiency) return;
+    if (!name || !newSkillCategory || !newSkillProficiency || skillNameError) return;
 
     if (skills.some((sk) => sk.name.toLowerCase() === name.toLowerCase())) {
       setNewSkillName("");
@@ -147,14 +150,13 @@ export const SkillsStep: React.FC = () => {
         >
           {/* Form Row */}
           <div className="flex flex-wrap gap-4 items-end">
-            <div className={`${styles.formGroup} flex-1 min-w-[200px]`}>
-              <label className={styles.label}>Skill Name</label>
-              <input
-                type="text"
+            <div className="flex-1 min-w-[200px]">
+              <TextInput
+                label="Skill Name"
                 placeholder="e.g. React, Python, wireframing..."
-                className={styles.input}
                 value={newSkillName}
                 onChange={(e) => setNewSkillName(e.target.value)}
+                error={skillNameError}
               />
             </div>
             <div className="w-full md:w-44">
@@ -176,7 +178,7 @@ export const SkillsStep: React.FC = () => {
               />
             </div>
             <div>
-              <button type="submit" className={styles.btnAddSolid}>
+              <button type="submit" className={styles.btnAddSolid} disabled={!!skillNameError}>
                 <Plus size={16} />
                 Add Skill
               </button>
