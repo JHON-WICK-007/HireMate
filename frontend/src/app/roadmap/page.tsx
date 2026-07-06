@@ -24,7 +24,8 @@ import {
   Trash2,
   Briefcase,
   GraduationCap,
-  Info
+  Info,
+  Eraser
 } from "lucide-react";
 import styles from "./roadmap.module.css";
 import Navbar from "../components/Navbar";
@@ -191,6 +192,7 @@ export default function CareerRoadmapPage() {
   const [generationStep, setGenerationStep] = useState(0);
   const [expandedPhaseId, setExpandedPhaseId] = useState<string | null>(null);
   const [expandedSkillId, setExpandedSkillId] = useState<string | null>(null);
+  const hasUserInteracted = useRef(false);
 
   // Load user profile details on mount for auto-detected context
   useEffect(() => {
@@ -240,7 +242,7 @@ export default function CareerRoadmapPage() {
 
   // Update active phase automatically if none selected
   useEffect(() => {
-    if (hasRoadmap && phases.length > 0 && !expandedPhaseId) {
+    if (hasRoadmap && phases.length > 0 && !expandedPhaseId && !hasUserInteracted.current) {
       const activePhase = phases.find(p => p.status === "active") || phases[0];
       setExpandedPhaseId(activePhase.id);
     }
@@ -272,6 +274,7 @@ export default function CareerRoadmapPage() {
     const timer1 = setTimeout(() => setGenerationStep(1), 1800);
     const timer2 = setTimeout(() => setGenerationStep(2), 3600);
     const timer3 = setTimeout(() => setGenerationStep(3), 5400);
+    const timer4 = setTimeout(() => setGenerationStep(4), 7200);
 
     const timerDone = setTimeout(() => {
       const context: UserContext = {
@@ -287,12 +290,13 @@ export default function CareerRoadmapPage() {
       generateRoadmap(context);
       setIsGenerating(false);
       toast.success("AI Roadmap successfully generated!");
-    }, 7200);
+    }, 8000);
 
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
+      clearTimeout(timer4);
       clearTimeout(timerDone);
     };
   };
@@ -311,45 +315,30 @@ export default function CareerRoadmapPage() {
       <Navbar activePage="roadmap" />
 
       {/* Header section (switches state if roadmap is present) */}
-      {!hasRoadmap ? (
-        <header className={styles.hero}>
-          <h1 className={styles.heroTitle}>Career Roadmap</h1>
-          <p className={styles.heroSubtitle}>
-            Unlocks an adaptive, personalized learning path synthesized directly from your resume analyzer score and mock interview diagnostics.
-          </p>
-        </header>
-      ) : (
+      {hasRoadmap && (
         <header className={styles.heroCompact}>
-          <div className="flex items-center gap-4">
+          <div className={styles.heroHeaderLeft}>
             <h1 className={styles.heroCompactTitle}>
               <Compass className="text-orange-500" size={28} /> Career Journey
             </h1>
-            <div className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 px-3 py-1 rounded-full text-xs font-medium text-neutral-400">
+            <div className={styles.roleBadge}>
               <Target size={12} className="text-orange-500" />
-              {userContext?.targetRole} at {userContext?.targetCompany}
+              {userContext?.targetCompany} - {userContext?.targetRole} - {userContext?.experienceLevel}
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => {
-                if (window.confirm("Are you sure you want to rebuild your roadmap? Progress stats will reset.")) {
-                  clearRoadmap();
-                }
-              }}
-              className="flex items-center gap-1.5 text-xs font-semibold border border-neutral-800 bg-neutral-950 hover:bg-neutral-900 text-neutral-400 hover:text-white px-3 py-1.5 rounded-md transition-all active:scale-[0.98]"
-            >
-              <RotateCcw size={12} /> Regenerate
-            </button>
           </div>
         </header>
       )}
 
-        {/* Dynamic Content Views */}
-        <main className="max-w-[1200px] mx-auto px-6 w-full">
+      {/* Dynamic Content Views */}
+      <main className={styles.mainContainer}>
           {isGenerating ? (
             /* LOADING STATE CARD */
             <div className={styles.loadingCard}>
-              <div className={styles.loadingSpinner}></div>
+              <div className={styles.loadingSpinnerContainer}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={styles.spinnerRotation}>
+                  <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+                </svg>
+              </div>
               <h3 className="font-semibold text-lg text-white mb-2">Analyzing Profiles</h3>
               <p className="text-sm text-neutral-400 mb-6">Our AI is computing your learning curriculum...</p>
               <div className={styles.loadingStatusList}>
@@ -364,13 +353,15 @@ export default function CareerRoadmapPage() {
                         : ""
                     }`}
                   >
-                    {idx < generationStep ? (
-                      <Check size={16} />
-                    ) : idx === generationStep ? (
-                      <div className="w-2 h-2 rounded-full bg-orange-500 animate-ping"></div>
-                    ) : (
-                      <div className="w-2 h-2 rounded-full bg-neutral-800"></div>
-                    )}
+                    <div className={styles.statusIconSlot}>
+                      {idx < generationStep ? (
+                        <Check size={16} />
+                      ) : idx === generationStep ? (
+                        <div className="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></div>
+                      ) : (
+                        <div className="w-2.5 h-2.5 rounded-full bg-neutral-800"></div>
+                      )}
+                    </div>
                     <span>{line}</span>
                   </div>
                 ))}
@@ -378,147 +369,203 @@ export default function CareerRoadmapPage() {
               <div className={styles.loadingBarContainer}>
                 <div
                   className={styles.loadingBarFill}
-                  style={{ width: `${((generationStep + 1) / generationStatusLines.length) * 100}%` }}
+                  style={{ width: `${(generationStep / generationStatusLines.length) * 100}%` }}
                 ></div>
               </div>
             </div>
           ) : !hasRoadmap ? (
             /* EMPTY STATE / GENERATOR INTAKE FORM */
-            <div className="flex flex-col items-center justify-center w-full" style={{ minHeight: 'calc(100vh - 300px)' }}>
-              <div className={styles.generatorWrapper}>
-                {/* Glass Form Card — mirrors builder's formCard */}
-                <div className={styles.generatorCard}>
-              <div className={styles.generatorHeader}>
-                <h2 className={styles.generatorTitle}>Build Your Road Map</h2>
-                <p className={styles.generatorSubtitle}>
-                  Specify your dream goal and select your preferences. The AI will weave a path targeting your exact skill gaps.
+            <div className={styles.generatorWrapper}>
+              {/* Left Column: Heading + Info & Features */}
+              <div className={styles.infoColumn}>
+                <h1 className={styles.heroTitle}>Career Roadmap</h1>
+                <p className={styles.infoSubtitle}>
+                  Unlocks an adaptive, personalized learning path synthesized directly from your resume analyzer score and mock interview diagnostics.
                 </p>
-              </div>
-              <div className={styles.formGrid}>
-                <RoadmapDropdown
-                  label="Target Company"
-                  value={targetCompany}
-                  onChange={setTargetCompany}
-                  menuMaxHeight={220}
-                  options={COMPANIES.map((c) => ({ value: c, label: c }))}
-                />
-
-                <RoadmapDropdown
-                  label="Target Role"
-                  value={targetRole}
-                  onChange={setTargetRole}
-                  menuMaxHeight={220}
-                  options={ROLES.map((r) => ({ value: r, label: r }))}
-                />
-              </div>
-
-              <div className={styles.field}>
-                <label className={styles.label}>Experience Level</label>
-                <div className={styles.radioGroup}>
-                  {EXPERIENCE_LEVELS.map((el) => (
-                    <div
-                      key={el}
-                      onClick={() => setExperienceLevel(el)}
-                      className={`${styles.radioPill} ${
-                        experienceLevel === el ? styles.radioPillActive : ""
-                      }`}
-                    >
-                      {el}
+                <div className={styles.infoList}>
+                  <div className={styles.infoItem}>
+                    <div className={styles.infoIcon}>
+                      <Zap size={24} />
                     </div>
-                  ))}
+                    <div className={styles.infoText}>
+                      <span className={styles.infoLabel}>Tailored Curriculum</span>
+                      <span className={styles.infoValue}>Synthesized directly from your resume keywords and ATS matching score.</span>
+                    </div>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <div className={styles.infoIcon}>
+                      <Target size={24} />
+                    </div>
+                    <div className={styles.infoText}>
+                      <span className={styles.infoLabel}>Mock Interview Alignment</span>
+                      <span className={styles.infoValue}>Targets weak competencies diagnosed during your live chat and voice practice.</span>
+                    </div>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <div className={styles.infoIcon}>
+                      <BookOpen size={24} />
+                    </div>
+                    <div className={styles.infoText}>
+                      <span className={styles.infoLabel}>Resource Curation</span>
+                      <span className={styles.infoValue}>Hand-picked articles, videos, and documentation from top sources.</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className={styles.formGrid}>
-                <RoadmapDropdown
-                  label="Current Skill Tier"
-                  value={currentSkillLevel}
-                  onChange={setCurrentSkillLevel}
-                  options={[
-                    { value: "Beginner", label: "Beginner (just starting out)" },
-                    { value: "Intermediate", label: "Intermediate (some experience)" },
-                    { value: "Advanced", label: "Advanced (seeking polish)" },
-                  ]}
-                />
+              {/* Right Column: Borderless Form Card */}
+              <div className={styles.generatorCardBorderless}>
+                <div className={styles.generatorHeader}>
+                  <h2 className={styles.generatorTitle}>Build Your Road Map</h2>
+                </div>
+                <div className={styles.formGrid}>
+                  <RoadmapDropdown
+                    label="Target Company"
+                    value={targetCompany}
+                    onChange={setTargetCompany}
+                    menuMaxHeight={168}
+                    options={COMPANIES.map((c) => ({ value: c, label: c }))}
+                  />
 
-                <div className={styles.field}>
-                  <div className={styles.sliderHeader}>
-                    <label className={styles.label}>Weekly Study Plan</label>
-                    <span className={styles.sliderValue}>{weeklyStudyHours} hrs / week</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="5"
-                    max="30"
-                    step="5"
-                    value={weeklyStudyHours}
-                    onChange={(e) => setWeeklyStudyHours(Number(e.target.value))}
-                    className={styles.slider}
+                  <RoadmapDropdown
+                    label="Target Role"
+                    value={targetRole}
+                    onChange={setTargetRole}
+                    menuMaxHeight={168}
+                    options={ROLES.map((r) => ({ value: r, label: r }))}
                   />
                 </div>
-              </div>
 
-              <div className={styles.field}>
-                <label className={styles.label}>Learning Style</label>
-                <div className={styles.chipGroup}>
-                  {LEARNING_STYLES.map((style) => (
-                    <div
-                      key={style}
-                      onClick={() => toggleLearningStyle(style)}
-                      className={`${styles.chip} ${
-                        selectedLearningStyles.includes(style) ? styles.chipActive : ""
-                      }`}
-                    >
-                      {style}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Auto-detected profiles indicator */}
-              {(detectedSkills.length > 0 || detectedWeaknesses.length > 0) && (
-                <div className={styles.autoContext}>
-                  <span className={styles.autoTitle}>Auto-Detected Profile Context</span>
-                  <div className={styles.contextChips}>
-                    {detectedSkills.length > 0 && (
-                      <span className={styles.contextChip}>
-                        Resume Analyzer Scan: {detectedSkills.length} skills found (Match: {detectedResumeScore}%)
-                      </span>
-                    )}
-                    {detectedWeaknesses.map((w, idx) => (
-                      <span key={idx} className={styles.contextChip}>
-                        Interview Gap: {w}
-                      </span>
+                <div className={styles.field}>
+                  <label className={styles.label}>Experience Level</label>
+                  <div className={styles.radioGroup}>
+                    {EXPERIENCE_LEVELS.map((el) => (
+                      <div
+                        key={el}
+                        onClick={() => setExperienceLevel(el)}
+                        className={`${styles.radioPill} ${
+                          experienceLevel === el ? styles.radioPillActive : ""
+                        }`}
+                      >
+                        {el}
+                      </div>
                     ))}
                   </div>
                 </div>
-              )}
 
-              <button
-                onClick={handleGenerate}
-                className={styles.generateBtn}
-                disabled={selectedLearningStyles.length === 0}
-              >
-                <Zap size={16} /> Generate AI Roadmap
-              </button>
+                <div className={styles.formGrid}>
+                  <RoadmapDropdown
+                    label="Current Skill Tier"
+                    value={currentSkillLevel}
+                    onChange={setCurrentSkillLevel}
+                    options={[
+                      { value: "Beginner", label: "Beginner (just starting out)" },
+                      { value: "Intermediate", label: "Intermediate (some experience)" },
+                      { value: "Advanced", label: "Advanced (seeking polish)" },
+                    ]}
+                  />
+
+                  <div className={styles.field}>
+                    <div className={styles.sliderHeader}>
+                      <label className={styles.label}>Weekly Study Plan</label>
+                      <span className={styles.sliderValue}>{weeklyStudyHours} hrs / week</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="2"
+                      max="30"
+                      step="2"
+                      value={weeklyStudyHours}
+                      onChange={(e) => setWeeklyStudyHours(Number(e.target.value))}
+                      className={styles.slider}
+                      style={{
+                        background: `linear-gradient(to right, var(--text-primary) 0%, var(--text-primary) ${
+                          ((weeklyStudyHours - 2) / (30 - 2)) * 100
+                        }%, rgba(255, 255, 255, 0.1) ${
+                          ((weeklyStudyHours - 2) / (30 - 2)) * 100
+                        }%, rgba(255, 255, 255, 0.1) 100%)`
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.field}>
+                  <label className={styles.label}>Learning Style</label>
+                  <div className={styles.chipGroup}>
+                    {LEARNING_STYLES.map((style) => (
+                      <div
+                        key={style}
+                        onClick={() => toggleLearningStyle(style)}
+                        className={`${styles.chip} ${
+                          selectedLearningStyles.includes(style) ? styles.chipActive : ""
+                        }`}
+                      >
+                        {style}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Auto-detected profiles indicator */}
+                {(detectedSkills.length > 0 || detectedWeaknesses.length > 0) && (
+                  <div className={styles.autoContext}>
+                    <span className={styles.autoTitle}>Auto-Detected Profile Context</span>
+                    <div className={styles.contextChips}>
+                      {detectedSkills.length > 0 && (
+                        <span className={styles.contextChip}>
+                          Resume Analyzer Scan: {detectedSkills.length} skills found (Match: {detectedResumeScore}%)
+                        </span>
+                      )}
+                      {detectedWeaknesses.map((w, idx) => (
+                        <span key={idx} className={styles.contextChip}>
+                          Interview Gap: {w}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className={styles.buttonGroup}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTargetCompany("Other / General");
+                      setTargetRole("Full Stack");
+                      setExperienceLevel("Fresher");
+                      setCurrentSkillLevel("Intermediate");
+                      setWeeklyStudyHours(16); // step: 2, min: 2, max: 30
+                      setSelectedLearningStyles(["Video", "Projects"]);
+                    }}
+                    className={styles.clearBtn}
+                  >
+                    <Eraser size={16} /> Clear
+                  </button>
+                  <button
+                    onClick={handleGenerate}
+                    className={styles.generateBtn}
+                    disabled={selectedLearningStyles.length === 0}
+                  >
+                    <Zap size={16} /> Generate AI Roadmap
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
       ) : (
         /* WORKSPACE VIEW: CANVAS + SIDEBAR */
           <div className={styles.layout}>
             {/* Left Column: Spine & Timeline Canvas */}
             <div className={styles.canvas}>
-              {/* Dynamic Progress Spine */}
-              <div className={styles.spine}>
-                <div
-                  className={styles.spineFill}
-                  style={{ height: `${overallProgress}%` }}
-                ></div>
-              </div>
+              <div className={styles.timelineContainer}>
+                {/* Dynamic Progress Spine */}
+                <div className={styles.spine}>
+                  <div
+                    className={styles.spineFill}
+                    style={{ height: `${overallProgress}%` }}
+                  ></div>
+                </div>
 
-              {/* Loop Phases */}
-              {phases.map((phase) => {
+                {/* Loop Phases */}
+                {phases.map((phase) => {
                 const isExpanded = expandedPhaseId === phase.id;
                 const isLocked = phase.status === "locked";
 
@@ -544,7 +591,12 @@ export default function CareerRoadmapPage() {
                     >
                       {/* Collapsible header click triggers toggle */}
                       <div
-                        onClick={() => !isLocked && setExpandedPhaseId(isExpanded ? null : phase.id)}
+                        onClick={() => {
+                          if (!isLocked) {
+                            hasUserInteracted.current = true;
+                            setExpandedPhaseId(isExpanded ? null : phase.id);
+                          }
+                        }}
                         className={styles.phaseHeader}
                         style={{ cursor: isLocked ? "not-allowed" : "pointer" }}
                       >
@@ -762,143 +814,146 @@ export default function CareerRoadmapPage() {
                   </div>
                 );
               })}
+              </div>
 
-              {/* Progress Summary stat tiles */}
-              <section className={styles.statsStrip}>
-                <div className={styles.statTile}>
-                  <span className={styles.statTileLabel}>Current Level</span>
-                  <span className={styles.statTileValue}>{level}</span>
-                </div>
-                <div className={styles.statTile}>
-                  <span className={styles.statTileLabel}>XP Earned</span>
-                  <span className={styles.statTileValue}>{xp}</span>
-                </div>
-                <div className={styles.statTile}>
-                  <span className={styles.statTileLabel}>Skills Done</span>
-                  <span className={styles.statTileValue}>
-                    {completedSkillsCount} / {totalSkills}
-                  </span>
-                </div>
-                <div className={styles.statTile}>
-                  <span className={styles.statTileLabel}>Est. Weeks left</span>
-                  <span className={styles.statTileValue}>{totalWeeks}</span>
-                </div>
-              </section>
+              <div className={styles.diagnosticCard}>
+                {/* Progress Summary stat tiles */}
+                <section className={styles.statsStrip}>
+                  <div className={styles.statTile}>
+                    <span className={styles.statTileLabel}>Current Level</span>
+                    <span className={styles.statTileValue}>{level}</span>
+                  </div>
+                  <div className={styles.statTile}>
+                    <span className={styles.statTileLabel}>XP Earned</span>
+                    <span className={styles.statTileValue}>{xp}</span>
+                  </div>
+                  <div className={styles.statTile}>
+                    <span className={styles.statTileLabel}>Skills Done</span>
+                    <span className={styles.statTileValue}>
+                      {completedSkillsCount} / {totalSkills}
+                    </span>
+                  </div>
+                  <div className={styles.statTile}>
+                    <span className={styles.statTileLabel}>Est. Weeks left</span>
+                    <span className={styles.statTileValue}>{totalWeeks}</span>
+                  </div>
+                </section>
 
-              {/* Skill Gap Comparison module */}
-              <section className={styles.analysisCard}>
-                <div className={styles.radialContainer}>
-                  <div className={styles.radialGauge}>
-                    {/* Ring gauge */}
-                    <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
-                      <path
-                        className="text-neutral-800"
-                        strokeWidth="2"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                      <path
-                        className="text-orange-500"
-                        strokeWidth="2.5"
-                        strokeDasharray={`${overallProgress}, 100`}
-                        strokeLinecap="round"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                    </svg>
-                    <span className={styles.radialText}>{overallProgress}%</span>
-                  </div>
-                  <span className={styles.radialLabel}>Match Progress</span>
-                </div>
-
-                <div className={styles.gapBarsContainer}>
-                  <div className="flex justify-between items-center border-b border-neutral-900 pb-2">
-                    <h4 className="text-xs uppercase font-bold text-neutral-400 tracking-wider">
-                      Role Competency Gaps
-                    </h4>
-                    <span className="text-xs text-neutral-400">Current vs Target Level</span>
-                  </div>
-                  <div className={styles.gapBarRow}>
-                    <div className={styles.gapBarHeader}>
-                      <span className={styles.gapBarName}>Data Structures & Algorithms</span>
-                      <span className={styles.gapBarValue}>60% Match</span>
+                {/* Skill Gap Comparison module */}
+                <section className={styles.analysisCard}>
+                  <div className={styles.radialContainer}>
+                    <div className={styles.radialGauge}>
+                      {/* Ring gauge */}
+                      <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
+                        <path
+                          className="text-neutral-800"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path
+                          className="text-orange-500"
+                          strokeWidth="2.5"
+                          strokeDasharray={`${overallProgress}, 100`}
+                          strokeLinecap="round"
+                          stroke="currentColor"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                      </svg>
+                      <span className={styles.radialText}>{overallProgress}%</span>
                     </div>
-                    <div className={styles.gapBarTrack}>
-                      <div className={styles.gapBarFill} style={{ width: "60%" }}></div>
-                    </div>
-                  </div>
-                  <div className={styles.gapBarRow}>
-                    <div className={styles.gapBarHeader}>
-                      <span className={styles.gapBarName}>System Design & Scaling</span>
-                      <span className={styles.gapBarValue}>45% Match</span>
-                    </div>
-                    <div className={styles.gapBarTrack}>
-                      <div className={styles.gapBarFill} style={{ width: "45%" }}></div>
-                    </div>
-                  </div>
-                  <div className={styles.gapBarRow}>
-                    <div className={styles.gapBarHeader}>
-                      <span className={styles.gapBarName}>STAR Method Behavioral responses</span>
-                      <span className={styles.gapBarValue}>75% Match</span>
-                    </div>
-                    <div className={styles.gapBarTrack}>
-                      <div className={styles.gapBarFill} style={{ width: "75%" }}></div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* Recommended Certifications section */}
-              <section className={styles.certificationsSection}>
-                <h4 className="text-xs uppercase font-bold text-neutral-400 tracking-wider border-b border-neutral-900 pb-2">
-                  Target Recommended Certifications
-                </h4>
-                <div className={styles.certsGrid}>
-                  <div className={styles.certCard}>
-                    <div className={styles.certIcon}>
-                      <Award className="text-orange-500" size={24} />
-                    </div>
-                    <div className={styles.certInfo}>
-                      <span className={styles.certName}>AWS Certified Developer Associate</span>
-                      <span className={styles.certRelevance}>Highly relevant (92% match)</span>
-                      <span className={styles.certActions}>Cloud Foundations track</span>
-                    </div>
+                    <span className={styles.radialLabel}>Match Progress</span>
                   </div>
 
-                  <div className={styles.certCard}>
-                    <div className={styles.certIcon}>
-                      <Award className="text-orange-500" size={24} />
+                  <div className={styles.gapBarsContainer}>
+                    <div className="flex justify-between items-center border-b border-neutral-900 pb-2">
+                      <h4 className="text-xs uppercase font-bold text-neutral-400 tracking-wider">
+                        Role Competency Gaps
+                      </h4>
+                      <span className="text-xs text-neutral-400">Current vs Target Level</span>
                     </div>
-                    <div className={styles.certInfo}>
-                      <span className={styles.certName}>HashiCorp Certified Terraform Associate</span>
-                      <span className={styles.certRelevance}>Recommended for {userContext?.targetRole}</span>
-                      <span className={styles.certActions}>Infrastructure management track</span>
+                    <div className={styles.gapBarRow}>
+                      <div className={styles.gapBarHeader}>
+                        <span className={styles.gapBarName}>Data Structures & Algorithms</span>
+                        <span className={styles.gapBarValue}>60% Match</span>
+                      </div>
+                      <div className={styles.gapBarTrack}>
+                        <div className={styles.gapBarFill} style={{ width: "60%" }}></div>
+                      </div>
+                    </div>
+                    <div className={styles.gapBarRow}>
+                      <div className={styles.gapBarHeader}>
+                        <span className={styles.gapBarName}>System Design & Scaling</span>
+                        <span className={styles.gapBarValue}>45% Match</span>
+                      </div>
+                      <div className={styles.gapBarTrack}>
+                        <div className={styles.gapBarFill} style={{ width: "45%" }}></div>
+                      </div>
+                    </div>
+                    <div className={styles.gapBarRow}>
+                      <div className={styles.gapBarHeader}>
+                        <span className={styles.gapBarName}>STAR Method Behavioral responses</span>
+                        <span className={styles.gapBarValue}>75% Match</span>
+                      </div>
+                      <div className={styles.gapBarTrack}>
+                        <div className={styles.gapBarFill} style={{ width: "75%" }}></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </section>
+                </section>
 
-              {/* Gamification layer achievements strip */}
-              <section className={styles.gamificationStrip}>
-                <div className={styles.badgeGroup}>
-                  <Flame className={styles.badgeIcon} />
-                  <div className={styles.badgeMeta}>
-                    <span className={styles.badgeName}>{streak} Day Learning Streak</span>
-                    <span className={styles.badgeDesc}>Keep learning daily to compound your skills!</span>
+                {/* Recommended Certifications section */}
+                <section className={styles.certificationsSection}>
+                  <h4 className="text-xs uppercase font-bold text-neutral-400 tracking-wider border-b border-neutral-900 pb-2">
+                    Target Recommended Certifications
+                  </h4>
+                  <div className={styles.certsGrid}>
+                    <div className={styles.certCard}>
+                      <div className={styles.certIcon}>
+                        <Award className="text-orange-500" size={24} />
+                      </div>
+                      <div className={styles.certInfo}>
+                        <span className={styles.certName}>AWS Certified Developer Associate</span>
+                        <span className={styles.certRelevance}>Highly relevant (92% match)</span>
+                        <span className={styles.certActions}>Cloud Foundations track</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.certCard}>
+                      <div className={styles.certIcon}>
+                        <Award className="text-orange-500" size={24} />
+                      </div>
+                      <div className={styles.certInfo}>
+                        <span className={styles.certName}>HashiCorp Certified Terraform Associate</span>
+                        <span className={styles.certRelevance}>Recommended for {userContext?.targetRole}</span>
+                        <span className={styles.certActions}>Infrastructure management track</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <button
-                  onClick={() => {
-                    incrementStreak();
-                    toast.success("Streak validated! You earned 10 XP.");
-                  }}
-                  className="text-xs font-semibold text-white bg-orange-600 hover:bg-orange-500 px-4 py-2 rounded-md transition-all active:scale-[0.98]"
-                >
-                  Verify Today's Progress
-                </button>
-              </section>
+                </section>
+
+                {/* Gamification layer achievements strip */}
+                <section className={styles.gamificationStrip}>
+                  <div className={styles.badgeGroup}>
+                    <Flame className={styles.badgeIcon} />
+                    <div className={styles.badgeMeta}>
+                      <span className={styles.badgeName}>{streak} Day Learning Streak</span>
+                      <span className={styles.badgeDesc}>Keep learning daily to compound your skills!</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      incrementStreak();
+                      toast.success("Streak validated! You earned 10 XP.");
+                    }}
+                    className="text-xs font-semibold text-white bg-orange-600 hover:bg-orange-500 px-4 py-2 rounded-md transition-all active:scale-[0.98]"
+                  >
+                    Verify Today's Progress
+                  </button>
+                </section>
+              </div>
             </div>
 
             {/* Right Column: AI Insights Sidebar */}
@@ -984,6 +1039,18 @@ export default function CareerRoadmapPage() {
                 {/* Motivational quotes */}
                 <div className={styles.quoteBox}>{quote}</div>
               </div>
+
+              {/* Regenerate button (placed outside the glass card) */}
+              <button
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to rebuild your roadmap? Progress stats will reset.")) {
+                    clearRoadmap();
+                  }
+                }}
+                className={styles.regenBtnSidebar}
+              >
+                <RotateCcw size={12} /> Regenerate Roadmap
+              </button>
             </aside>
           </div>
         )}
