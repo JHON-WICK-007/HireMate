@@ -206,6 +206,15 @@
   padding-left: 2.75rem;
 }
 
+.inputError {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.inputError:focus {
+  border-color: rgba(239, 68, 68, 0.8) !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15) !important;
+}
+
 .iconWrapper {
   position: absolute;
   left: 14px;

@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import styles from "../builder.module.css";
-import { Check, Link as LinkIcon, Mail, Phone, Globe, Trash2, Camera, ChevronDown } from "lucide-react";
+import { Check, Link as LinkIcon, Mail, Phone, Globe, Trash2, Camera, ChevronDown, X } from "lucide-react";
 import { useResumeStore } from "../store";
 
 const Linkedin = ({ size = 16, className = "" }) => (
@@ -63,7 +63,7 @@ export const TextInput: React.FC<TextInputProps> = ({
       <div className="relative flex items-center">
         {icon && <div className={styles.iconWrapper}>{icon}</div>}
         <input
-          className={`${styles.input} ${icon ? styles.inputWithIcon : ""} ${className}`}
+          className={`${styles.input} ${icon ? styles.inputWithIcon : ""} ${error ? styles.inputError : ""} ${className}`}
           required={required}
           autoComplete="off"
           {...props}
@@ -73,8 +73,12 @@ export const TextInput: React.FC<TextInputProps> = ({
             <Check size={16} strokeWidth={2.5} />
           </div>
         )}
+        {error && (
+          <div className="absolute right-4 text-red-500 flex items-center pointer-events-none">
+            <X size={16} strokeWidth={2.5} />
+          </div>
+        )}
       </div>
-      {error && <span className="text-xs text-red-500 mt-1">{error}</span>}
     </div>
   );
 };
@@ -271,12 +275,16 @@ export const UrlInput: React.FC<UrlInputProps> = ({
       <div className="relative flex items-center">
         <div className={styles.iconWrapper}>{getIcon()}</div>
         <input
-          className={`${styles.input} ${styles.inputWithIcon} ${className}`}
+          className={`${styles.input} ${styles.inputWithIcon} ${error ? styles.inputError : ""} ${className}`}
           autoComplete="off"
           {...props}
         />
+        {error && (
+          <div className="absolute right-4 text-red-500 flex items-center pointer-events-none">
+            <X size={16} strokeWidth={2.5} />
+          </div>
+        )}
       </div>
-      {error && <span className="text-xs text-red-500 mt-1">{error}</span>}
     </div>
   );
 };
