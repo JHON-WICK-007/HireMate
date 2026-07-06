@@ -1694,6 +1694,10 @@
   align-items: flex-start;
   gap: 0.75rem;
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .summaryTemplateCard:hover {
