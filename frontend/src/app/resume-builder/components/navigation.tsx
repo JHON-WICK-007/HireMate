@@ -48,7 +48,14 @@ export const isValidPhone = (phone: string): boolean => {
 
 export const isValidPinCode = (pin: string): boolean => {
   if (!pin) return false;
-  return /^[a-zA-Z0-9\s-]{3,10}$/.test(pin.trim());
+  // Requires at least one digit and restricts characters to alphanumeric, spaces, and hyphens (3-10 chars)
+  return /^(?=.*\d)[a-zA-Z0-9\s-]{3,10}$/.test(pin.trim());
+};
+
+export const isValidLocation = (loc: string): boolean => {
+  if (!loc) return false;
+  // Allows letters, spaces, hyphens, dots, and single quotes (2-50 chars)
+  return /^[a-zA-Z\s.\-']{2,50}$/.test(loc.trim());
 };
 
 export const isValidUrl = (url: string): boolean => {
@@ -64,7 +71,9 @@ const validateStep = (step: number, state: any): boolean => {
         p.firstName?.trim() &&
         p.surname?.trim() &&
         p.city?.trim() &&
+        isValidLocation(p.city) &&
         p.country?.trim() &&
+        isValidLocation(p.country) &&
         p.pinCode?.trim() &&
         isValidPinCode(p.pinCode) &&
         p.phone?.trim() &&

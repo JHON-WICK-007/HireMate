@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
 import { useResumeStore } from "../../store";
 import { TextInput, UrlInput, ProfilePictureUpload } from "../inputs";
-import { StepHeader, cardVariant, isValidEmail, isValidPhone, isValidPinCode, isValidUrl } from "../navigation";
+import { StepHeader, cardVariant, isValidEmail, isValidPhone, isValidPinCode, isValidUrl, isValidLocation } from "../navigation";
 import styles from "../../builder.module.css";
 
 export const PersonalInfoStep: React.FC = () => {
@@ -17,7 +17,9 @@ export const PersonalInfoStep: React.FC = () => {
   };
 
   // Compute validation errors dynamically
-  const pinCodeError = personalInfo.pinCode && !isValidPinCode(personalInfo.pinCode) ? "Pin Code must be alphanumeric (3-10 chars)." : "";
+  const cityError = personalInfo.city && !isValidLocation(personalInfo.city) ? "City name must contain only letters (e.g. London)." : "";
+  const countryError = personalInfo.country && !isValidLocation(personalInfo.country) ? "Country name must contain only letters (e.g. Canada)." : "";
+  const pinCodeError = personalInfo.pinCode && !isValidPinCode(personalInfo.pinCode) ? "Pin Code must be alphanumeric and contain at least one digit." : "";
   const phoneError = personalInfo.phone && !isValidPhone(personalInfo.phone) ? "Invalid phone format (min 7 digits, e.g. +91 11 1234 5677)." : "";
   const emailError = personalInfo.email && !isValidEmail(personalInfo.email) ? "Please enter a valid email address (e.g. name@domain.com)." : "";
   const linkedinError = personalInfo.linkedinUrl && !isValidUrl(personalInfo.linkedinUrl) ? "Please enter a valid URL." : "";
@@ -65,6 +67,7 @@ export const PersonalInfoStep: React.FC = () => {
               placeholder="e.g. Any City"
               required
               showSuccess
+              error={cityError}
             />
             <TextInput
               label="Country"
@@ -73,6 +76,7 @@ export const PersonalInfoStep: React.FC = () => {
               placeholder="e.g. India"
               required
               showSuccess
+              error={countryError}
             />
             <TextInput
               label="Pin Code"
