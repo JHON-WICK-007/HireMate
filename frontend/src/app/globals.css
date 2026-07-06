@@ -179,6 +179,20 @@
   padding: 0;
 }
 
+button,
+[role="button"],
+.btn,
+.button,
+a[class*="button"],
+a[class*="btn"],
+input[type="button"],
+input[type="submit"] {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
 html {
   color-scheme: dark;
 }
