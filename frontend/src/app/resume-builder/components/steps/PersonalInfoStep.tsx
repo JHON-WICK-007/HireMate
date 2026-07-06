@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
 import { useResumeStore } from "../../store";
 import { TextInput, UrlInput, ProfilePictureUpload } from "../inputs";
-import { StepHeader, cardVariant } from "../navigation";
+import { StepHeader, cardVariant, isValidEmail, isValidPhone, isValidPinCode, isValidUrl } from "../navigation";
 import styles from "../../builder.module.css";
 
 export const PersonalInfoStep: React.FC = () => {
@@ -15,6 +15,14 @@ export const PersonalInfoStep: React.FC = () => {
   const handleChange = (field: keyof typeof personalInfo, value: string) => {
     actions.updatePersonalInfo(field, value);
   };
+
+  // Compute validation errors dynamically
+  const pinCodeError = personalInfo.pinCode && !isValidPinCode(personalInfo.pinCode) ? "Pin Code must be alphanumeric (3-10 chars)." : "";
+  const phoneError = personalInfo.phone && !isValidPhone(personalInfo.phone) ? "Invalid phone format (min 7 digits, e.g. +91 11 1234 5677)." : "";
+  const emailError = personalInfo.email && !isValidEmail(personalInfo.email) ? "Please enter a valid email address (e.g. name@domain.com)." : "";
+  const linkedinError = personalInfo.linkedinUrl && !isValidUrl(personalInfo.linkedinUrl) ? "Please enter a valid URL." : "";
+  const githubError = personalInfo.githubUrl && !isValidUrl(personalInfo.githubUrl) ? "Please enter a valid URL." : "";
+  const portfolioError = personalInfo.portfolioUrl && !isValidUrl(personalInfo.portfolioUrl) ? "Please enter a valid URL." : "";
 
   return (
     <div className="flex flex-col gap-0">
@@ -73,6 +81,7 @@ export const PersonalInfoStep: React.FC = () => {
               placeholder="e.g. 110034"
               required
               showSuccess
+              error={pinCodeError}
             />
             <TextInput
               label="Phone"
@@ -81,6 +90,7 @@ export const PersonalInfoStep: React.FC = () => {
               placeholder="e.g. +91 11 1234 5677"
               required
               showSuccess
+              error={phoneError}
             />
           </div>
         </div>
@@ -99,6 +109,7 @@ export const PersonalInfoStep: React.FC = () => {
             placeholder="e.g. hello@reallygreatsite.com"
             required
             showSuccess
+            error={emailError}
           />
           <UrlInput
             label="LinkedIn URL"
@@ -106,6 +117,7 @@ export const PersonalInfoStep: React.FC = () => {
             value={personalInfo.linkedinUrl}
             onChange={(e) => handleChange("linkedinUrl", e.target.value)}
             placeholder="linkedin.com/in/username"
+            error={linkedinError}
           />
           <UrlInput
             label="GitHub URL"
@@ -113,6 +125,7 @@ export const PersonalInfoStep: React.FC = () => {
             value={personalInfo.githubUrl}
             onChange={(e) => handleChange("githubUrl", e.target.value)}
             placeholder="github.com/username"
+            error={githubError}
           />
           <UrlInput
             label="Portfolio URL"
@@ -120,6 +133,7 @@ export const PersonalInfoStep: React.FC = () => {
             value={personalInfo.portfolioUrl}
             onChange={(e) => handleChange("portfolioUrl", e.target.value)}
             placeholder="portfolio.com"
+            error={portfolioError}
           />
         </div>
       </motion.div>

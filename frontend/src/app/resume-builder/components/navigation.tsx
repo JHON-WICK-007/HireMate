@@ -36,6 +36,26 @@ export const StepHeader: React.FC<StepHeaderProps> = ({ title, description }) =>
   );
 };
 
+export const isValidEmail = (email: string): boolean => {
+  if (!email) return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+};
+
+export const isValidPhone = (phone: string): boolean => {
+  if (!phone) return false;
+  return /^\+?[0-9\s\-()]{7,20}$/.test(phone.trim());
+};
+
+export const isValidPinCode = (pin: string): boolean => {
+  if (!pin) return false;
+  return /^[a-zA-Z0-9\s-]{3,10}$/.test(pin.trim());
+};
+
+export const isValidUrl = (url: string): boolean => {
+  if (!url) return true;
+  return /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9-_.~!$&'()*+,;=:@%]*)*\/?$/.test(url.trim());
+};
+
 const validateStep = (step: number, state: any): boolean => {
   switch (step) {
     case 1: {
@@ -46,8 +66,14 @@ const validateStep = (step: number, state: any): boolean => {
         p.city?.trim() &&
         p.country?.trim() &&
         p.pinCode?.trim() &&
+        isValidPinCode(p.pinCode) &&
         p.phone?.trim() &&
-        p.email?.trim()
+        isValidPhone(p.phone) &&
+        p.email?.trim() &&
+        isValidEmail(p.email) &&
+        isValidUrl(p.linkedinUrl) &&
+        isValidUrl(p.githubUrl) &&
+        isValidUrl(p.portfolioUrl)
       );
     }
     case 2:

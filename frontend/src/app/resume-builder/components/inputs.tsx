@@ -248,6 +248,7 @@ interface UrlInputProps extends TextInputProps {
 export const UrlInput: React.FC<UrlInputProps> = ({
   typeOfUrl,
   label,
+  error,
   className = "",
   ...props
 }) => {
@@ -275,6 +276,7 @@ export const UrlInput: React.FC<UrlInputProps> = ({
           {...props}
         />
       </div>
+      {error && <span className="text-xs text-red-500 mt-1">{error}</span>}
     </div>
   );
 };
