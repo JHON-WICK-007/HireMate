@@ -183,10 +183,14 @@ button,
 [role="button"],
 .btn,
 .button,
+a,
 a[class*="button"],
 a[class*="btn"],
 input[type="button"],
-input[type="submit"] {
+input[type="submit"],
+[class*="cta"],
+[class*="Cta"],
+[class*="CTA"] {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
