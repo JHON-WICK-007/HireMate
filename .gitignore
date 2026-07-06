@@ -39,7 +39,13 @@ test-resume.pdf
 AGENTS.md
 CLAUDE.md
 GEMINI.md
-GOD.md
+ARCHITECTURE.md
+3D_CONSOLE.md
+API_ROUTES.md
+MASTER_SYSTEM_PROMPT.md
+RESUME_BUILDER_ARCH.md
+SECURITY.md
+TOAST_AUDIT.md
 skills-lock.json
 b.md
 backend/src/scripts/testEnd.ts

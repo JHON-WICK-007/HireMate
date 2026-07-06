@@ -7,9 +7,9 @@ HireMate AI is a full-stack, AI-powered career development and interview prepara
 ## 1. Project Summary
 HireMate AI provides a unified journey for technical candidates:
 1. **Resume Audit & Parsing:** Extract skills, experience, and education from PDF/DOCX files and run automated ATS-scoring and feedback reports.
-2. **AI Mock Interviews (Planned):** Conduct company-specific and role-specific mock interviews via text and voice with real-time feedback.
-3. **Career Roadmap Generation (Planned):** Create custom skills timelines, learning guides, and project recommendations to close profile gaps.
-4. **Coding Sandbox (Planned):** Practice technical challenges in a browser-based online editor with automated test cases and AI evaluations.
+2. **AI Mock Interviews:** Conduct company-specific and role-specific mock interviews via text and voice with real-time feedback.
+3. **Career Roadmap Generation:** Create custom skills timelines, learning guides, and project recommendations to close profile gaps.
+4. **Coding Sandbox:** Practice technical challenges in a browser-based online editor with automated test cases and AI evaluations.
 
 ---
 
@@ -22,14 +22,13 @@ HireMate AI provides a unified journey for technical candidates:
 | **Styling** | Tailwind CSS | `v4.0.0` (PostCSS `^4`) | Modern CSS-first utility-class styling |
 | **Animations** | Framer Motion | `^12.40.0` | Fluid state-transitions and micro-animations |
 | **Icons** | Lucide React | `^1.21.0` | SVG iconography |
-| **3D Graphics** | Spline React | `^4.1.0` | Embedding the interactive hero 3D console |
 | **Document Parsing** | pdf-parse, mammoth | `2.4.5` / `1.12.0` | Extraction of raw text from PDFs and DOCXs |
 | **File Generation** | docx, html2pdf.js, file-saver | `9.7.1` / `0.14.0` / `2.0.5` | Client-side exports for resume documents |
 | **Backend Framework** | Express.js | `^4.21.2` (TypeScript) | API Server controller |
 | **Language** | TypeScript | `^5` (Frontend / Backend) | Static typing and type safety |
 | **Database** | MongoDB | Atlas (Cloud Hosting) | Document store database |
 | **ORM / ODM** | Mongoose | `^8.9.5` | MongoDB schema modeling and object-relational mapping |
-| **AI Integration** | Google GenAI SDK | `@google/genai ^2.8.0` | Querying `gemini-2.5-flash-lite` |
+| **AI Integration** | Google GenAI SDK | `@google/genai ^2.8.0` | Querying `gemini-2.5-flash` |
 | **Authentication** | JWT, bcryptjs, cookie-parser | `9.0.2` / `2.4.3` / `1.4.7` | Token authentication stored in HTTP-Only Cookies |
 | **Security / Logs** | Helmet, Morgan, CORS | `8.0.0` / `1.10.0` / `2.8.5` | Express security compliance and access control |
 
@@ -44,12 +43,12 @@ graph TD
 
     A[Landing Page /] :::built
     B[Auth /auth] :::built
-    C[Resume Analyzer /resume] :::built
+    C[Resume Analyzer /resume-optimizer] :::built
     D[Profile /profile] :::built
-    E[Mock Interview /interview] :::planned
-    F[Roadmap Gen /roadmap] :::planned
-    G[Dashboard /dashboard] :::planned
-    H[Coding Sandbox /coding] :::planned
+    E[Mock Interview /interview] :::built
+    F[Roadmap Gen /roadmap] :::built
+    G[Resume Builder /resume-builder] :::built
+    H[Sandbox Compiler] :::planned
 
     A --> B
     A --> C
@@ -64,20 +63,21 @@ graph TD
 ### Built Pages / Components
 - **Landing Page (`/`):** Full homepage featuring animated backdrop grids, a premium WebGL Shader visual console, dynamic pricing toggles, testimonials, and functional tab navigation demonstrating resume rating, mock interviews, and roadmaps.
 - **Authentication (`/auth`):** Fully custom Login & Registration screen with layout slide transitions, password rules validator, and JWT authorization flow.
-- **Resume Upload & Audit (`/resume`):** Custom drag-and-drop file upload component supporting PDF and DOCX, a visual check checklist divided into 5 groups (ATS Essentials, Content, Red Flags, Sections, Job Tailoring), and automated evaluation summary page showing ATS scores, strengths, weaknesses, and missing skills.
+- **Resume Upload & Audit (`/resume-optimizer`):** Custom drag-and-drop file upload component supporting PDF and DOCX, a visual check checklist divided into 5 groups (ATS Essentials, Content, Red Flags, Sections, Job Tailoring), and automated evaluation summary page showing ATS scores, strengths, weaknesses, and missing skills.
+- **Resume Builder (`/resume-builder`):** Structured resume form with templates, theme selectors, live preview pane, and vector PDF compilation downloads.
 - **User Profile (`/profile`):** Multi-step user profile management allowing edits to personal information, skills chips, experience logs, and educational background.
+- **Mock Interview Console (`/interview`):** Dashboard setup and live workspace routing candidates through typing chat, voice mode (mic orb), or coding module with Monaco editor and test cases, followed by post-interview evaluation report cards.
+- **Career Roadmap Builder (`/roadmap`):** Visual path timelines rendering milestones, ETA bounds, skill prerequisite tags, and learning resources.
 
 ### Built Backend Services
 - **Auth Service:** Registration, Login, logout, and token validation middlewares (`/api/auth`).
 - **Profile Service:** GET/PUT endpoints to fetch and update user records including nested arrays (`/api/users`).
 - **Resume parsing & analysis:** Server-side file reception (`multer`), doc reader (`pdf-parse`, `mammoth`), and Google Gemini model integration (`/api/resume/analyze`).
+- **Interview Service:** Session setup checker, start handlers, answer graders, and session termination/evaluation controllers (`/api/interviews`).
 
 ### Planned Features & Screens
-- **Mock Interview Engine (`/interview`):** Interactive AI text and voice chat. Voice speaking capability requires speech-to-text integration.
-- **Career Roadmap Builder (`/roadmap`):** Visual study pathway rendering learning timeline nodes based on target roles.
-- **Coding Interview Area (`/coding`):** Code sandbox editor, compiler simulator, and AI code reviewer.
-- **Progress Dashboard (`/dashboard`):** Historical tracking of interview scores, skill metrics, and progress logs.
-- **Admin Control Panel (`/admin`):** System diagnostics and content creation editor.
+- **Code Execution Sandbox Compiler:** Sandboxed container execution engine (e.g., Docker or Judge0 API Integration) to evaluate custom code submissions in virtualised sandboxes rather than mockup validation.
+- **Low-Latency WebRTC Speech:** Native WebRTC audio stream connections for near zero-latency voice conversations during live mock interviews.
 
 ---
 
@@ -85,14 +85,14 @@ graph TD
 
 | Route | Purpose | Modules / Code Coverage | Connected Pages | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| `/` | Application Home / Landing | `frontend/src/app/page.tsx`, `home.module.css` | `/auth`, `/profile`, `/resume` | **Built** |
+| `/` | Application Home / Landing | `frontend/src/app/page.tsx`, `home.module.css` | `/auth`, `/profile`, `/resume-optimizer` | **Built** |
 | `/auth` | Authentication Entry | `frontend/src/app/auth/page.tsx`, `auth.module.css` | `/` | **Built** |
-| `/profile` | Profile View & Customization | `frontend/src/app/profile/page.tsx`, `profile.module.css` | `/`, `/resume` | **Built** |
-| `/resume` | Upload, Parse & Audit Resume | `frontend/src/app/resume/page.tsx`, `resume.module.css` | `/`, `/profile` | **Built** |
-| `/interview` | Interactive AI Mock Interview | *Planned screen* | `/dashboard` | *Planned* |
-| `/roadmap` | Career Timeline & Goals | *Planned screen* | `/dashboard` | *Planned* |
-| `/coding` | Code Sandbox Practice | *Planned screen* | `/dashboard` | *Planned* |
-| `/dashboard` | Analytics & History Gutter | *Planned screen* | `/interview`, `/roadmap`, `/resume` | *Planned* |
+| `/profile` | Profile View & Customization | `frontend/src/app/profile/page.tsx`, `profile.module.css` | `/`, `/resume-optimizer` | **Built** |
+| `/resume-optimizer` | Upload, Parse & Audit Resume | `frontend/src/app/resume-optimizer/page.tsx`, `resume-optimizer/` | `/`, `/profile`, `/resume-builder` | **Built** |
+| `/resume-builder` | Structural Resume Document Builder | `frontend/src/app/resume-builder/page.tsx`, `resume-builder/` | `/profile` | **Built** |
+| `/interview` | Interactive AI Mock Interview | `frontend/src/app/interview/page.tsx`, `interview/` (setup, live-interview, results) | `/profile` | **Built** |
+| `/roadmap` | Career Timeline & Goals | `frontend/src/app/roadmap/page.tsx`, `roadmap/` | `/profile` | **Built** |
+| `/pricing` | Dynamic Subscription Pricing Plans | `frontend/src/app/pricing/page.tsx`, `pricing/` | `/` | **Built** |
 
 ---
 
@@ -101,10 +101,13 @@ graph TD
 All shared components are currently housed in `frontend/src/app/components`:
 ```
 frontend/src/app/components/
-├── ThemeToggle.tsx        # Manages Tailwind v4 light/dark modes (saved to localStorage)
-├── ShaderBackground.tsx   # Premium WebGL canvas rendering console-like backdrop patterns
+├── BorderGlow.tsx         # Renders animated high-impact border lighting
 ├── HomeBackdrop.tsx       # Standard home screen background animation particles
+├── Navbar.tsx             # Unified top navbar containing navigation and page links
+├── ScrollToTop.tsx        # Inset utility to scroll user back to top
+├── ShinyText.tsx          # Styling wrapper component for shiny/glowing text effects
 ├── SiteFooter.tsx         # Unified footer containing layout links and legal notices
+├── SiteFooter.module.css  # Footer layout styles
 ├── Toast.tsx              # Stateful toast messaging system with slide-out alerts
 └── Toast.module.css       # Toast animation layers
 ```
@@ -143,13 +146,34 @@ frontend/src/app/components/
   - **Description:** Multi-part file upload. Extracts doc text and passes it to Gemini AI for structural assessment.
   - **Body:** FormData containing file `resume` (PDF or DOCX)
   - **Response:** `{ success: true, data: { personalInfo, skills, education, experience, projects, analysis: { atsScore, strengths, weaknesses, missingSkills, improvementSuggestions } } }`
+- **`POST /download`** (Protected)
+  - **Description:** Triggers Puppeteer PDF compiling/rendering download task of the current resume state.
+
+### 4. Mock Interview Routes (`/api/interviews`)
+- **`GET /check-session-name`** (Protected)
+  - **Description:** Verifies whether a given session name is already used by the candidate.
+  - **Params:** `?name=string`
+  - **Response:** `{ success: true, exists: boolean }`
+- **`POST /start`** (Protected)
+  - **Description:** Creates an in-progress Interview session document and yields the first question prompt.
+  - **Body:** `{ company, role, level, questionTypes, totalQuestions, sessionName }`
+  - **Response:** `{ success: true, session: { _id, company, role, questions: [...] }, question: string }`
+- **`POST /:id/submit`** (Protected)
+  - **Description:** Submits the user's text answer, invokes Gemini for scoring/feedback of the answer, and generates the next question.
+  - **Body:** `{ answer }`
+  - **Response:** `{ success: true, feedback, score, nextQuestion, isFinished }`
+- **`POST /:id/end`** (Protected)
+  - **Description:** Gracefully terminates the session, triggers global evaluation analysis metrics via Gemini, and marks the status as completed.
+  - **Response:** `{ success: true, overallScore, metrics: { technicalAccuracy, communication, problemSolving } }`
+- **`GET /:id`** (Protected)
+  - **Description:** Fetches all details, questions, answers, and scores for a specific completed session.
 
 ---
 
 ## 7. AI Integration Points
 
 ### Resume Audit (`/api/resume/analyze`)
-- **Model:** `gemini-2.5-flash-lite`
+- **Model:** `gemini-2.5-flash`
 - **Integration library:** `@google/genai`
 - **Logic:**
   - Raw document text is parsed out of the uploaded buffer (PDF text extracted using `pdf-parse`; DOCX text extracted using `mammoth`).
@@ -222,6 +246,33 @@ User Document (Mongoose Schema)
 ├── resumeParsedData: Mixed Schema (JSON)
 ├── interviewHistory: [ ObjectId -> ref: 'Interview' ]
 └── timestamps (createdAt, updatedAt)
+
+Interview Document (Mongoose Schema)
+├── _id: ObjectId
+├── user: ObjectId (ref: 'User', required)
+├── company: String (required)
+├── role: String (required)
+├── level: String (required)
+├── questionTypes: [ String ]
+├── questions: [
+│   ├── questionText: String
+│   ├── type: String
+│   ├── userAnswer: String
+│   ├── score: Number
+│   ├── feedback: String
+│   ├── strongAnswer: String
+│   └── competencies: [ String ]
+│   ]
+├── currentQuestionIndex: Number
+├── totalQuestions: Number
+├── overallScore: Number
+├── metrics:
+│   ├── technicalAccuracy: Number
+│   ├── communication: Number
+│   └── problemSolving: Number
+├── status: String ("in-progress" | "completed")
+├── sessionName: String
+└── timestamps (createdAt, updatedAt)
 ```
 
 ---
@@ -230,21 +281,14 @@ User Document (Mongoose Schema)
 1. **Resume Database Persistence:** While the backend successfully parses files and returns structured evaluation details, the extracted skills, experience data, and score summaries are **not** auto-persisted to the active User document in MongoDB. The user must copy or submit these details separately on the Profile page to update their record.
 2. **Text Layout Scrambling:** Basic PDF text extraction (`pdf-parse`) can occasionally scramble strings in multi-column, complex layout resume designs, reducing the accuracy of the Gemini parsed JSON.
 3. **Session Refresh Token Missing:** The authentication system relies on a single JWT token valid for 7 days. There is no active token rotation/refresh flow configured.
-4. **Interview Model Missing:** The `User` model defines an `interviewHistory` reference array referencing `'Interview'`, but the corresponding Mongoose model is not yet implemented.
 
 ---
 
 ## 10. Next Priority Build Order
 
-1. **Step 1: Mock Interview Database Model & Routes**
-   - Create `Interview.ts` schema on the backend (storing session state, logs of QA, overall score).
-   - Hook up endpoints `/api/interviews` to initialize sessions and handle answer submissions.
-2. **Step 2: Interactive Interview Screen (`/interview`)**
-   - Build a clean chat console featuring dynamic messaging layouts.
-   - Implement audio response recording using HTML5 MediaRecorder and integrate a transcription API.
-3. **Step 3: AI Interview Evaluator**
-   - Integrate Gemini prompts on the backend to grade candidate responses based on communication, technical accuracy, and problem solving.
-4. **Step 4: Career Roadmap Builder (`/roadmap`)**
-   - Map profile gap values (skills candidate has vs target job prerequisites) to generate visual milestone roadmaps.
-5. **Step 5: Automated Resume Sync**
+1. **Step 1: Automated Resume Sync**
    - Modify the `/api/resume/analyze` handler to automatically write the extracted skills, education, and experience fields directly to the user's Mongoose record on successful evaluation.
+2. **Step 2: Coding Sandbox Compiler Sandbox**
+   - Move from client-side Monaco mockup validations to a sandboxed execution runtime environment (e.g. Judge0 API or docker containers) to run active code test cases safely.
+3. **Step 3: Low-Latency WebRTC Voice**
+   - Shift the voice mock interview from client-side Web Audio chunks transcribed on REST calls to a WebRTC audio streaming connection for fluid, low-latency conversational turns.

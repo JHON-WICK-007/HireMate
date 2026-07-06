@@ -28,7 +28,7 @@ HireMate AI's visual identity is **monochrome with surgical color accents**. The
 ## 2. Color System
 
 ### Palette rationale
-A **monochrome (true black ↔ true white) neutral foundation** is chosen because (a) it reads as premium and developer-native, matching the target user (students/freshers/job-seekers who aspire to tech careers); (b) it lets the three product domains and AI outputs "pop" without competing with a loud brand color; (c) it makes a genuinely good dark mode trivial, and dark mode is the default. The three feature accents — **cyan (resume), purple (interview), orange (roadmap)** — already exist in the hero 3D console (`3d_model_specification.md`) and are promoted here to the canonical domain-color system so the entire product stays consistent with its own marketing.
+A **monochrome (true black ↔ true white) neutral foundation** is chosen because (a) it reads as premium and developer-native, matching the target user (students/freshers/job-seekers who aspire to tech careers); (b) it lets the three product domains and AI outputs "pop" without competing with a loud brand color; (c) it makes a genuinely good dark mode trivial, and dark mode is the default. The three feature accents — **cyan (resume), purple (interview), orange (roadmap)** — already exist in the hero 3D console (`3D_CONSOLE.md`) and are promoted here to the canonical domain-color system so the entire product stays consistent with its own marketing.
 
 ### 2.1 Light mode token table
 
@@ -289,7 +289,7 @@ All badges: `radius-full`, `px-2.5 py-0.5`, Body-sm (`text-xs`), optional leadin
 | Indicator | Anatomy | Use |
 | --------- | ------- | --- |
 | **Linear progress** | `h-2 --radius-full` track `--surface-200`, fill `--primary`; optional domain color when tied to a feature | Roadmap completion, upload progress |
-| **Circular score** | `size 120–160px`, `stroke 8–12`, track `--border`, value arc `--primary` (or domain color); center: `Stat` number + `/100` caption | ATS score, interview score (reuses hero HUD dial pattern from `3d_model_specification.md`) |
+| **Circular score** | `size 120–160px`, `stroke 8–12`, track `--border`, value arc `--primary` (or domain color); center: `Stat` number + `/100` caption | ATS score, interview score (reuses hero HUD dial pattern from `3D_CONSOLE.md`) |
 | **Skill meter** | Row: H5 label left, `Stat`-sm % right; below, linear progress in domain/semantic color | Skill breakdown |
 | **Stepper** | Horizontal at top of multi-step forms; numbered circles (`--radius-full`, `h-8 w-8`), connector line `--border`; complete = `--primary` fill + check; current = `--primary` ring; pending = `--surface-200` | Resume optimizer, roadmap generator |
 
@@ -327,7 +327,7 @@ Custom component set (no suitable Shadcn primitive):
 ## 6. Page-by-Page UI Specification
 
 ### 6.1 Landing / homepage
-- **Hero:** asymmetric `lg:grid-cols-2`. Left: H6 eyebrow ("AI-powered interview prep") → Display headline with `.gradient-text` → Body-lg subcopy → primary CTA ("Start free") + ghost ("Watch demo") → trust row (logos / stat chips). Right: the **3D parallax console** (`HomeBackdrop` + console from `3d_model_specification.md`) with tab switcher (Resume/Interview/Roadmap) that swaps domain colors.
+- **Hero:** asymmetric `lg:grid-cols-2`. Left: H6 eyebrow ("AI-powered interview prep") → Display headline with `.gradient-text` → Body-lg subcopy → primary CTA ("Start free") + ghost ("Watch demo") → trust row (logos / stat chips). Right: the **3D parallax console** (`HomeBackdrop` + console from `3D_CONSOLE.md`) with tab switcher (Resume/Interview/Roadmap) that swaps domain colors.
 - **Logos / social proof:** horizontal marquee, `opacity-60`, grayscale.
 - **Feature highlights:** `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`, glass cards, Lucide icon (domain color), H3 title, Body-sm.
 - **How it works:** 3-step horizontal stepper with connecting line; each step = number circle + H4 + Body-sm.
@@ -345,28 +345,28 @@ Custom component set (no suitable Shadcn primitive):
 - Step fields: target role (select), experience level (radio cards), target companies (multi-select chips), preferred interview domains.
 - Footer: ghost "Back" + primary "Continue"; final step = "Finish" → routes to dashboard.
 
-### 6.4 Resume upload & analysis results
-- **Upload:** H2 + Body-lg intro, large file-upload dropzone (5.2), recent uploads list (table-lite).
+### 6.4 Resume optimizer (`/resume-optimizer`)
+- **Upload:** H2 + Body-lg intro, large file-upload dropzone, recent uploads list.
 - **Results:** top stat row — **ATS score circular** (left, resume-cyan arc) + 3 stat cards (keyword match, formatting, impact). Below: 2-col layout — left: skill/strength breakdown (skill meters), right: keyword gaps (chips, weak-area style) + AI recommendations (accordion). Sticky right rail "Download report" + "Generate interview" (primary).
 
-### 6.5 Resume optimizer (multi-step)
-- 3-pane: top stepper, left form sections accordion (Contact / Summary / Experience / Education / Skills), right live preview (`--surface-100` A4-ish page, `--radius-lg`, `shadow-lg`). Footer: Back / Continue / "Export DOCX/PDF" (uses `docx` + `html2pdf.js` deps). Each experience entry = repeatable card with add/remove.
+### 6.5 Resume builder (`/resume-builder`)
+- 3-pane: top stepper sidebar, left form sections accordion (Contact / Summary / Experience / Education / Skills), right live preview (`--surface-100` A4 page, `--radius-lg`, `shadow-lg`). Footer: Back / Continue / "Export PDF" (triggers server-side Puppeteer download). Each experience/education entry is a repeatable block with duplicate/delete actions.
 
-### 6.6 Interview setup
-- Card layout, `max-w-[640px]`: company select (searchable), role input, experience level (radio cards), interview type (chat / voice / coding) as 3 selectable cards with Lucide icons, difficulty slider, "Number of questions" stepper. Primary "Start interview" → routes to chosen mode.
+### 6.6 Interview setup (`/interview/setup`)
+- Card layout, `max-w-[640px]`: company select (searchable), role input, experience level (radio cards), interview type (chat / voice / coding) as 3 selectable cards with Lucide icons, difficulty level selector. Primary "Start Practice Session" → routes to live interview.
 
-### 6.7 Mock interview — chat mode
-- Full-height chat layout (5.10). Top bar: company logo + role + elapsed timer + progress (`3 / 10`). Right rail (`hidden <lg`): collapsible question list + notes. On finish → confirmation dialog → evaluation screen.
+### 6.7 Mock interview — live interview (`/interview/live-interview`)
+- Full-height chat layout (5.10). Top bar: company logo + role + elapsed timer + progress (`3 / 7`). Right rail (`hidden <lg`): collapsible question list + notes. Integrates chat bubbles, voice waveform orb animations, and side-by-side Monaco code editor sandbox. On finish → confirmation dialog → evaluation screen.
 
-### 6.8 Mock interview — voice mode
-- Same shell as chat, but message area shows **live transcript** (interim text dimmed, finalized normal). Center mic orb (5.10) pulsing while AI is "speaking"/listening. Subtitles toggle. Right rail: same.
+### 6.8 Mock interview — voice mode (`/interview/live-interview`)
+- Same shell as live interview, but message area displays **live transcription** segments. Center mic orb pulsing dynamically during active speech sessions.
 
-### 6.9 Coding interview module
-- 3-pane IDE (responsive, see §10):
-  - **Left:** problem statement (H3 title + difficulty badge + tags + Body description + examples).
-  - **Center:** Monaco editor (theme-synced, see §7), language select top-right, run button.
-  - **Right:** tabbed panel — Test cases (table pass/fail) / Console / **AI review** (chat-style, inline suggestions with Accept buttons).
-- Top bar: timer, submit (primary), "Ask AI hint" (ghost). Bottom status bar: language + line/col.
+### 6.9 Coding interview panel (`/interview/live-interview`)
+- 3-pane IDE:
+  - **Left:** problem statement (H3 title + difficulty badge + description + examples).
+  - **Center:** Monaco code editor (theme-synced), language select dropdown, run code button.
+  - **Right:** tabbed panel — Test cases results / Console Output / **AI code review**.
+- Top bar: timer tracker, submit answers (primary), "Ask AI Hint" (ghost). Bottom status bar: active language + line/col pointer.
 
 ### 6.10 Post-interview evaluation / feedback
 - Hero: **overall score circular** (large, domain-colored) + verdict badge (Pass/Fail) + Body-lg summary.
@@ -375,11 +375,12 @@ Custom component set (no suitable Shadcn primitive):
 - Question-by-question breakdown: accordion, each item shows question, your answer (collapsed), AI feedback (Body), per-question score.
 - Footer: "Practice similar" (secondary) + "Download report" (ghost) + "Back to dashboard" (ghost).
 
-### 6.11 Performance dashboard
-- **Top bar:** greeting + date-range select + export.
-- **Stat card row** (4): total interviews, avg score, avg ATS, streak — each with delta.
-- **Main grid (`lg:grid-cols-3`):** score-over-time line (col-span-2) + skill radar (col-span-1). Below: practice volume bar chart (col-span-2) + recent activity feed (col-span-1).
-- **Interview history table** (5.6) below the fold.
+### 6.11 Profile & performance dashboard (`/profile`)
+- **Top bar:** Candidate profile settings, personal info forms, avatar upload.
+- **Analytics View:** Greeting + progress trackers.
+- **Stat card row** (4): total interviews, avg score, avg ATS, practice streaks.
+- **Main grid (`lg:grid-cols-3`):** score trends line-charts + skill performance radar charts. Below: interview volume metrics + recent activity logs.
+- **Interview history table:** List of past completed mock interview sessions linking directly to their evaluation results.
 
 ### 6.12 Career roadmap generator & result
 - **Generator:** centered card — current role, target role, timeframe (slider), "Generate" primary button; skeleton placeholders while generating.
@@ -442,7 +443,7 @@ Implemented with **Framer Motion** (already a dependency). Standardized transiti
 - **Skeleton loading:** shimmer using `--shimmer-color` gradient sweep, `1.2s linear infinite`.
 - **Score reveal:** circular score animates arc from 0 → value over 900ms with ease-out; number counts up (Framer Motion `useMotionValue` + `animate`), synced to the arc.
 - **Tab indicator:** shared `layoutId` underline slides between tabs (`layout` transition, `base` duration).
-- **3D console:** existing spring-damped tilt (`useSpring`) + layered `translateZ` parallax — keep as-is per `3d_model_specification.md`.
+- **3D console:** existing spring-damped tilt (`useSpring`) + layered `translateZ` parallax — keep as-is per `3D_CONSOLE.md`.
 
 ### What should NOT be animated
 - Data values inside tables (no count-up on every cell).
