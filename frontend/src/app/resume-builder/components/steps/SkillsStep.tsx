@@ -46,6 +46,36 @@ const CATEGORY_OPTIONS = CATEGORIES.filter((c) => c !== "All").map((c) => ({
   label: c,
 }));
 
+const getProficiencyBadgeStyle = (level: string) => {
+  switch (level.toLowerCase()) {
+    case "beginner":
+      return {
+        color: "#f97316", // Orange
+        background: "rgba(249, 115, 22, 0.1)",
+      };
+    case "intermediate":
+      return {
+        color: "#3b82f6", // Blue
+        background: "rgba(59, 130, 246, 0.1)",
+      };
+    case "advanced":
+      return {
+        color: "#06b6d4", // Cyan
+        background: "rgba(6, 182, 212, 0.1)",
+      };
+    case "expert":
+      return {
+        color: "#a855f7", // Purple
+        background: "rgba(168, 85, 247, 0.1)",
+      };
+    default:
+      return {
+        color: "#06b6d4",
+        background: "rgba(6, 182, 212, 0.1)",
+      };
+  }
+};
+
 export const SkillsStep: React.FC = () => {
   const skills = useResumeStore((state) => state.skills);
   const showProficiency = useResumeStore((state) => state.showProficiency);
@@ -217,11 +247,12 @@ export const SkillsStep: React.FC = () => {
                       <span
                         style={{
                           fontSize: "10px",
-                          color: "#06b6d4",
                           textTransform: "capitalize",
                           padding: "2px 6px",
                           borderRadius: "4px",
-                          background: "rgba(6, 182, 212, 0.1)",
+                          fontWeight: 600,
+                          letterSpacing: "0.02em",
+                          ...getProficiencyBadgeStyle(sk.proficiency),
                         }}
                       >
                         {sk.proficiency}
