@@ -1742,50 +1742,38 @@ export default function Home() {
       <section className={styles.ctaSection}>
         <div className={styles.ctaGridBg} />
         <div className={styles.sectionInner}>
-          <motion.div
-            className={styles.ctaBox}
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className={styles.ctaInner}>
+          <div className={styles.ctaBox}>
+            <motion.div
+              className={styles.ctaInner}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+            >
               {/* Left: Text Content */}
               <div className={styles.ctaContent}>
                 <motion.span
                   className={styles.sectionLabel}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1, duration: 0.5 }}
+                  variants={fadeInUp}
                 >
                   Get Started
                 </motion.span>
                 <motion.h2
                   className={styles.ctaTitle}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  variants={fadeInUp}
                 >
                   Ready to land your<br />
                   <span className={styles.ctaTitleFaded}>Dream engineering job?</span>
                 </motion.h2>
                 <motion.p
                   className={styles.ctaSubtitle}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.35, duration: 0.5 }}
+                  variants={fadeInUp}
                 >
                   Join thousands of developers using HireMate AI to build resumes, prepare for mock interviews, and master technical assessments.
                 </motion.p>
                 <motion.div
                   className={styles.ctaButtonWrap}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.45, duration: 0.5 }}
+                  variants={fadeInUp}
                 >
                   <Link href="/auth?mode=signup" className={styles.ctaButton}>
                     <span className={styles.ctaButtonShimmer} />
@@ -1797,8 +1785,8 @@ export default function Home() {
                   <span className={styles.ctaTrust}>Free — No credit card required</span>
                 </motion.div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
