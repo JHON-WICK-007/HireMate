@@ -64,6 +64,11 @@ export default function ResumeBuilderPage() {
     useResumeStore.persist.rehydrate();
   }, []);
 
+  // Scroll to top of the page when the wizard step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentStep]);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
