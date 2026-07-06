@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HireMate AI — Next.js Client Application
 
-## Getting Started
+This directory contains the premium, dark-themed frontend client application for **HireMate AI**, built with Next.js 16 (App Router), React 19, TypeScript, and Tailwind CSS v4.
 
-First, run the development server:
+---
+
+## ❶ Core Tech Stack
+
+*   **Framework:** Next.js 16.2.7 (App Router)
+*   **UI Library:** React 19.2.4
+*   **Styling:** Tailwind CSS v4 (mapped using CSS custom properties via `@theme inline` block in `globals.css`)
+*   **State Management:** Zustand v5 (with localStorage persistence)
+*   **Animations:** Framer Motion v12 (for step wizard page-transitions and subtle micro-animations)
+*   **Icons:** Lucide React (stroke width: 2px, stroke color: `currentColor`)
+
+---
+
+## ❷ Interface Directories (`src/app/`)
+
+The application is structured around flat routing directories:
+
+*   `/` — Landing homepage with spring-damped parallax 3D HUD visuals and color theme selectors.
+*   `/auth` — Split-screen registration and login portal supporting OAuth integrations.
+*   `/profile` — Profile setting panel, skills configurator, and activity statistics dashboard.
+*   `/resume-optimizer` — Resume uploader supporting drag-and-drop parsing and ATS scoring feedback.
+*   `/resume-builder` — 7-step structural resume editor supporting active preview panels and PDF downloads.
+*   `/interview` — Mock interview core directory:
+    *   `setup/` — Company, role, and practice type selectors.
+    *   `live-interview/` — Real-time typing composer, voice orb waveform, and Monaco editor compiler workspace.
+    *   `results/` — Post-interview results HUD displaying circular scores, competency matrices, and radar charts.
+*   `/roadmap` — Career roadmap timeline milestones tracker.
+*   `/pricing` — Tiered subscription options page.
+*   `/contact` — Validated contact and query form.
+
+---
+
+## ❸ Client Scripts
+
+Execute these scripts from the `/frontend` directory:
 
 ```bash
+# Run the local development server on Port 3000
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build the optimized production application bundle
+npm run build
+
+# Run the built production application
+npm run start
+
+# Run ESLint validation audits
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ❹ Environment Settings
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file inside the `frontend/` directory (ignored by Git):
 
-## Learn More
+```env
+# URL pointer to the API Gateway Node.js server (Default: Port 5000)
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ❺ Formatting & Design Compliance
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All custom components and page layouts must adhere strictly to the monochrome design system.
+*   Refer to `DESIGN_SYSTEM.md` in the repository root for typography, sizing scales, and spacing details.
+*   Refer to `MASTER_SYSTEM_PROMPT.md` in the repository root for code component contracts and visual rules.
