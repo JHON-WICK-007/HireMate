@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, FormEvent } from "react";
+import React, { useState, useEffect, useLayoutEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import styles from "./profile.module.css";
@@ -117,6 +117,46 @@ const IconBuilding = () => (
   </svg>
 );
 
+interface ProfileInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  error?: string | boolean;
+}
+
+const ProfileInput: React.FC<ProfileInputProps> = ({ error, className = "", ...props }) => {
+  return (
+    <div className="relative flex items-center w-full">
+      <input
+        className={`${styles.input} ${error ? styles.inputError : ""} ${className}`}
+        {...props}
+      />
+      {error && (
+        <div className="absolute right-3 text-red-500 flex items-center pointer-events-none">
+          <IconX />
+        </div>
+      )}
+    </div>
+  );
+};
+
+interface ProfileTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  error?: string | boolean;
+}
+
+const ProfileTextarea: React.FC<ProfileTextareaProps> = ({ error, className = "", ...props }) => {
+  return (
+    <div className="relative flex items-start w-full">
+      <textarea
+        className={`${styles.textarea} ${error ? styles.inputError : ""} ${className}`}
+        {...props}
+      />
+      {error && (
+        <div className="absolute right-3 top-3 text-red-500 flex items-center pointer-events-none">
+          <IconX />
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function ProfilePage() {
   const router = useRouter();
   const toast = useToast();
@@ -150,6 +190,40 @@ export default function ProfilePage() {
 
   // Section edit states
   const [editing, setEditing] = useState({ personal: false, skills: false, experience: false, education: false, goals: false });
+
+  // ── Compute validation errors dynamically ──
+  const personalErrors = {
+    fullName: fullName.trim() && !/^[a-zA-Z]+([ \'-][a-zA-Z]+)*$/.test(fullName.trim()) ? "Invalid name" : (!fullName.trim() && editing.personal ? "Required" : ""),
+    phone: phone.trim() && !/^[\d\s()+\-]{7,20}$/.test(phone.trim()) ? "Invalid phone" : (!phone.trim() && editing.personal ? "Required" : ""),
+  };
+
+  const skillInputError = newSkill.trim() && !/^[a-zA-Z0-9\s.#+()\-]{1,30}$/.test(newSkill.trim()) ? "Invalid skill" : "";
+
+  const expErrors = experienceList.map(exp => ({
+    company: !exp.company.trim() ? "Required" : (!/^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/.test(exp.company.trim()) ? "Invalid" : ""),
+    role: !exp.role.trim() ? "Required" : (!/^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/.test(exp.role.trim()) ? "Invalid" : ""),
+    duration: exp.duration.trim() && !/^(?=.*(\d|present|current))[a-zA-Z0-9\s.,\-\–/()]{2,30}$/i.test(exp.duration.trim()) ? "Invalid" : "",
+    description: exp.description.trim() && exp.description.trim().length > 500 ? "Too long" : "",
+  }));
+
+  const eduErrors = educationList.map(edu => ({
+    institution: !edu.institution.trim() ? "Required" : (!/^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-]{2,100}$/.test(edu.institution.trim()) ? "Invalid" : ""),
+    degree: !edu.degree.trim() ? "Required" : (!/^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-]{2,100}$/.test(edu.degree.trim()) ? "Invalid" : ""),
+    field: edu.field.trim() && !/^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-]{2,100}$/.test(edu.field.trim()) ? "Invalid" : "",
+    year: edu.year.trim() && !/^(?=.*(\d|present|expected))[a-zA-Z0-9\s\-\–]{4,15}$/i.test(edu.year.trim()) ? "Invalid" : "",
+  }));
+
+  const goalErrors = {
+    targetRole: !targetRole.trim() ? "Required" : (!/^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/.test(targetRole.trim()) ? "Invalid" : ""),
+    targetCompany: targetCompany.trim() && !/^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/.test(targetCompany.trim()) ? "Invalid" : "",
+  };
+
+  // Section error flags for disabling Save buttons
+  const personalHasError = !!(personalErrors.fullName || personalErrors.phone);
+  const skillsHasError = false; // Add Skill button is disabled locally if input is invalid
+  const experienceHasError = expErrors.some(e => e.company || e.role || e.duration || e.description);
+  const educationHasError = eduErrors.some(e => e.institution || e.degree || e.field || e.year);
+  const goalsHasError = !!(goalErrors.targetRole || goalErrors.targetCompany);
 
   // ── Load from cache BEFORE browser paints (no flicker) ──
   useLayoutEffect(() => {
@@ -314,12 +388,7 @@ export default function ProfilePage() {
   const addSkill = (e: FormEvent) => {
     e.preventDefault();
     const s = newSkill.trim();
-    if (!s) return;
-    const skillRegex = /^[a-zA-Z0-9\s.#+()\-]{1,30}$/;
-    if (!skillRegex.test(s)) {
-      toast.error("Skill name can only contain letters, numbers, spaces, and simple symbols (.#+-()) up to 30 characters.");
-      return;
-    }
+    if (!s || skillInputError) return;
     if (!skills.includes(s)) { setSkills(p => [...p, s]); setNewSkill(""); }
   };
 
@@ -428,19 +497,9 @@ export default function ProfilePage() {
                   ? <button className={styles.editBtn} onClick={() => setEditing(p => ({ ...p, personal: true }))}><IconEdit2 />Edit</button>
                   : <div className={styles.actionRow}>
                     <button className={styles.cancelBtn} onClick={() => setEditing(p => ({ ...p, personal: false }))}><IconX />Cancel</button>
-                    <button className={styles.saveBtn} disabled={isSaving === "personal"} onClick={() => {
-                      if (!fullName.trim()) { toast.error("Full name is required."); return; }
-                      const nameRegex = /^[a-zA-Z]+([ \'-][a-zA-Z]+)*$/;
-                      if (!nameRegex.test(fullName.trim())) {
-                        toast.error("Full name must contain only letters, spaces, hyphens or apostrophes.");
-                        return;
-                      }
-                      if (!phone.trim()) { toast.error("Phone number is required."); return; }
-                      const phoneRegex = /^[\d\s()+\-]{7,20}$/;
-                      if (!phoneRegex.test(phone.trim())) {
-                        toast.error("Please enter a valid phone number (7 to 20 digits/symbols).");
-                        return;
-                      }
+                    <button className={styles.saveBtn} disabled={isSaving === "personal" || personalHasError} onClick={() => {
+                      if (!fullName.trim() || personalErrors.fullName) return;
+                      if (!phone.trim() || personalErrors.phone) return;
                       save("personal", { fullName, phone, bio });
                     }}>
                       <IconCheck />{isSaving === "personal" ? "Saving…" : "Save"}
@@ -457,9 +516,9 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <div className={styles.formGrid}>
-                  <div className={styles.field}><label>Full Name<span className={styles.required}>*</span></label><input className={styles.input} value={fullName} onChange={e => setFullName(e.target.value)} placeholder="John Doe" /></div>
-                  <div className={styles.field}><label>Phone<span className={styles.required}>*</span></label><input className={styles.input} value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 (555) 000-1234" /></div>
-                  <div className={styles.field + " " + styles.span2}><label>Bio <span className={styles.charHint} style={bio.length >= 480 ? { color: bio.length >= 500 ? "#ef4444" : "#f59e0b" } : undefined}>{bio.length}/500</span></label><textarea className={styles.textarea} value={bio} onChange={e => setBio(e.target.value)} rows={5} maxLength={500} placeholder="Brief professional summary…" />{bio.length >= 480 && <span style={{ color: bio.length >= 500 ? "#ef4444" : "#f59e0b", fontSize: "0.8rem", marginTop: "0.35rem", display: "block" }}>{bio.length >= 500 ? "Character limit reached." : `Only ${500 - bio.length} characters left.`}</span>}</div>
+                  <div className={styles.field}><label>Full Name<span className={styles.required}>*</span></label><ProfileInput value={fullName} onChange={e => setFullName(e.target.value)} placeholder="John Doe" error={personalErrors.fullName} /></div>
+                  <div className={styles.field}><label>Phone<span className={styles.required}>*</span></label><ProfileInput value={phone} onChange={e => setPhone(e.target.value)} placeholder="+1 (555) 000-1234" error={personalErrors.phone} /></div>
+                  <div className={styles.field + " " + styles.span2}><label>Bio <span className={styles.charHint} style={bio.length >= 480 ? { color: bio.length >= 500 ? "#ef4444" : "#f59e0b" } : undefined}>{bio.length}/500</span></label><ProfileTextarea value={bio} onChange={e => setBio(e.target.value)} rows={5} maxLength={500} placeholder="Brief professional summary…" />{bio.length >= 480 && <span style={{ color: bio.length >= 500 ? "#ef4444" : "#f59e0b", fontSize: "0.8rem", marginTop: "0.35rem", display: "block" }}>{bio.length >= 500 ? "Character limit reached." : `Only ${500 - bio.length} characters left.`}</span>}</div>
                 </div>
               )}
             </motion.section>
@@ -486,8 +545,8 @@ export default function ProfilePage() {
                       </button>
                     )}
                     <button className={styles.cancelBtn} onClick={() => { setSkills(snapshot.skills); setEditing(p => ({ ...p, skills: false })); }}><IconX />Cancel</button>
-                    <button className={styles.saveBtn} disabled={isSaving === "skills"} onClick={() => {
-                      if (skills.length === 0) { toast.error("Add at least one skill before saving."); return; }
+                    <button className={styles.saveBtn} disabled={isSaving === "skills" || skills.length === 0} onClick={() => {
+                      if (skills.length === 0) return;
                       save("skills", { skills });
                     }}>
                       <IconCheck />{isSaving === "skills" ? "Saving…" : "Save"}
@@ -502,8 +561,8 @@ export default function ProfilePage() {
               ) : (
                 <>
                   <form onSubmit={addSkill} className={styles.skillForm}>
-                    <input className={styles.input} value={newSkill} onChange={e => setNewSkill(e.target.value)} placeholder="Type a skill and press Enter…" />
-                    <button type="submit" className={styles.addSkillBtn}><IconPlus /></button>
+                    <ProfileInput value={newSkill} onChange={e => setNewSkill(e.target.value)} placeholder="Type a skill and press Enter…" error={skillInputError} />
+                    <button type="submit" className={styles.addSkillBtn} disabled={!!skillInputError}><IconPlus /></button>
                   </form>
                   <div className={styles.tagCloud}>
                     {skills.map((s, i) => (
@@ -543,32 +602,9 @@ export default function ProfilePage() {
                       </button>
                     )}
                     <button className={styles.cancelBtn} onClick={() => { setExperienceList(snapshot.experience); setEditing(p => ({ ...p, experience: false })); }}><IconX />Cancel</button>
-                    <button className={styles.saveBtn} disabled={isSaving === "experience"} onClick={() => {
+                    <button className={styles.saveBtn} disabled={isSaving === "experience" || experienceHasError} onClick={() => {
                       const filled = experienceList.filter(e => e.role || e.company || e.duration || e.description);
-                      if (filled.length === 0) { toast.error("Add at least one experience entry before saving."); return; }
-                      const companyRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/;
-                      const roleRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/;
-                      const durationRegex = /^(?=.*(\d|present|current))[a-zA-Z0-9\s.,\-\–/()]{2,30}$/i;
-                      for (const exp of filled) {
-                        if (!exp.company.trim()) { toast.error("Company is required."); return; }
-                        if (!companyRegex.test(exp.company.trim())) {
-                          toast.error("Company name must contain at least one letter and be between 2 and 50 characters.");
-                          return;
-                        }
-                        if (!exp.role.trim()) { toast.error("Role / Title is required."); return; }
-                        if (!roleRegex.test(exp.role.trim())) {
-                          toast.error("Role must contain at least one letter and be between 2 and 50 characters.");
-                          return;
-                        }
-                        if (exp.duration.trim() && !durationRegex.test(exp.duration.trim())) {
-                          toast.error("Duration must refer to a time period (containing a year/number or 'present'/'current').");
-                          return;
-                        }
-                        if (exp.description.trim() && exp.description.trim().length > 500) {
-                          toast.error("Description cannot exceed 500 characters.");
-                          return;
-                        }
-                      }
+                      if (filled.length === 0 || experienceHasError) return;
                       save("experience", { experience: filled });
                     }}>
                       <IconCheck />{isSaving === "experience" ? "Saving…" : "Save"}
@@ -596,20 +632,23 @@ export default function ProfilePage() {
                 ) : <p className={styles.empty}>No experience added yet. Click Edit to build your timeline.</p>
               ) : (
                 <div className={styles.entryList}>
-                  {experienceList.map((exp, i) => (
-                    <div key={i} className={styles.entryCard}>
-                      <div className={styles.entryCardHeader}>
-                        <span className={styles.entryIndex}>Position {i + 1}</span>
-                        <button className={styles.removeEntry} onClick={() => setExperienceList(p => p.filter((_, j) => j !== i))}><IconTrash />Remove</button>
+                  {experienceList.map((exp, i) => {
+                    const errs = expErrors[i] || {};
+                    return (
+                      <div key={i} className={styles.entryCard}>
+                        <div className={styles.entryCardHeader}>
+                          <span className={styles.entryIndex}>Position {i + 1}</span>
+                          <button className={styles.removeEntry} onClick={() => setExperienceList(p => p.filter((_, j) => j !== i))}><IconTrash />Remove</button>
+                        </div>
+                        <div className={styles.entryGrid}>
+                          <div className={styles.field}><label>Company<span className={styles.required}>*</span></label><ProfileInput value={exp.company} onChange={e => setExperienceList(p => p.map((x, j) => j === i ? { ...x, company: e.target.value } : x))} placeholder="Acme Corp" error={errs.company} /></div>
+                          <div className={styles.field}><label>Role / Title<span className={styles.required}>*</span></label><ProfileInput value={exp.role} onChange={e => setExperienceList(p => p.map((x, j) => j === i ? { ...x, role: e.target.value } : x))} placeholder="Senior Engineer" error={errs.role} /></div>
+                          <div className={styles.field}><label>Duration</label><ProfileInput value={exp.duration} onChange={e => setExperienceList(p => p.map((x, j) => j === i ? { ...x, duration: e.target.value } : x))} placeholder="Jan 2022 – Present" error={errs.duration} /></div>
+                          <div className={styles.field + " " + styles.span2}><label>Description <span className={styles.charHint} style={exp.description.length >= 480 ? { color: exp.description.length >= 500 ? "#ef4444" : "#f59e0b" } : undefined}>{exp.description.length}/500</span></label><ProfileTextarea rows={5} value={exp.description} onChange={e => setExperienceList(p => p.map((x, j) => j === i ? { ...x, description: e.target.value } : x))} maxLength={500} placeholder="Key responsibilities and achievements…" error={errs.description} />{exp.description.length >= 480 && <span style={{ color: exp.description.length >= 500 ? "#ef4444" : "#f59e0b", fontSize: "0.8rem", marginTop: "0.35rem", display: "block" }}>{exp.description.length >= 500 ? "Character limit reached." : `Only ${500 - exp.description.length} characters left.`}</span>}</div>
+                        </div>
                       </div>
-                      <div className={styles.entryGrid}>
-                        <div className={styles.field}><label>Company<span className={styles.required}>*</span></label><input className={styles.input} value={exp.company} onChange={e => setExperienceList(p => p.map((x, j) => j === i ? { ...x, company: e.target.value } : x))} placeholder="Acme Corp" /></div>
-                        <div className={styles.field}><label>Role / Title<span className={styles.required}>*</span></label><input className={styles.input} value={exp.role} onChange={e => setExperienceList(p => p.map((x, j) => j === i ? { ...x, role: e.target.value } : x))} placeholder="Senior Engineer" /></div>
-                        <div className={styles.field}><label>Duration</label><input className={styles.input} value={exp.duration} onChange={e => setExperienceList(p => p.map((x, j) => j === i ? { ...x, duration: e.target.value } : x))} placeholder="Jan 2022 – Present" /></div>
-                        <div className={styles.field + " " + styles.span2}><label>Description <span className={styles.charHint} style={exp.description.length >= 480 ? { color: exp.description.length >= 500 ? "#ef4444" : "#f59e0b" } : undefined}>{exp.description.length}/500</span></label><textarea className={styles.textarea} rows={5} value={exp.description} onChange={e => setExperienceList(p => p.map((x, j) => j === i ? { ...x, description: e.target.value } : x))} maxLength={500} placeholder="Key responsibilities and achievements…" />{exp.description.length >= 480 && <span style={{ color: exp.description.length >= 500 ? "#ef4444" : "#f59e0b", fontSize: "0.8rem", marginTop: "0.35rem", display: "block" }}>{exp.description.length >= 500 ? "Character limit reached." : `Only ${500 - exp.description.length} characters left.`}</span>}</div>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   <button className={styles.addEntryBtn} onClick={() => setExperienceList(p => [...p, { company: "", role: "", duration: "", description: "" }])}><IconPlus />Add Position</button>
                 </div>
               )}
@@ -641,31 +680,9 @@ export default function ProfilePage() {
                       </button>
                     )}
                     <button className={styles.cancelBtn} onClick={() => { setEducationList(snapshot.education); setEditing(p => ({ ...p, education: false })); }}><IconX />Cancel</button>
-                    <button className={styles.saveBtn} disabled={isSaving === "education"} onClick={() => {
+                    <button className={styles.saveBtn} disabled={isSaving === "education" || educationHasError} onClick={() => {
                       const filled = educationList.filter(e => e.institution || e.degree || e.field || e.year);
-                      if (filled.length === 0) { toast.error("Add at least one education entry before saving."); return; }
-                      const textRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,()\-]{2,100}$/;
-                      const yearRegex = /^(?=.*(\d|present|expected))[a-zA-Z0-9\s\-\–]{4,15}$/i;
-                      for (const edu of filled) {
-                        if (!edu.institution.trim()) { toast.error("Institution is required."); return; }
-                        if (!textRegex.test(edu.institution.trim())) {
-                          toast.error("Institution must contain at least one letter and be between 2 and 100 characters.");
-                          return;
-                        }
-                        if (!edu.degree.trim()) { toast.error("Degree is required."); return; }
-                        if (!textRegex.test(edu.degree.trim())) {
-                          toast.error("Degree must contain at least one letter and be between 2 and 100 characters.");
-                          return;
-                        }
-                        if (edu.field.trim() && !textRegex.test(edu.field.trim())) {
-                          toast.error("Field of study must contain at least one letter and be between 2 and 100 characters.");
-                          return;
-                        }
-                        if (edu.year.trim() && !yearRegex.test(edu.year.trim())) {
-                          toast.error("Year must refer to a time period (containing a year/number or 'present'/'expected').");
-                          return;
-                        }
-                      }
+                      if (filled.length === 0 || educationHasError) return;
                       save("education", { education: filled });
                     }}>
                       <IconCheck />{isSaving === "education" ? "Saving…" : "Save"}
@@ -690,20 +707,23 @@ export default function ProfilePage() {
                 ) : <p className={styles.empty}>No education records yet. Click Edit to add.</p>
               ) : (
                 <div className={styles.entryList}>
-                  {educationList.map((edu, i) => (
-                    <div key={i} className={styles.entryCard}>
-                      <div className={styles.entryCardHeader}>
-                        <span className={styles.entryIndex}>Education {i + 1}</span>
-                        <button className={styles.removeEntry} onClick={() => setEducationList(p => p.filter((_, j) => j !== i))}><IconTrash />Remove</button>
+                  {educationList.map((edu, i) => {
+                    const errs = eduErrors[i] || {};
+                    return (
+                      <div key={i} className={styles.entryCard}>
+                        <div className={styles.entryCardHeader}>
+                          <span className={styles.entryIndex}>Education {i + 1}</span>
+                          <button className={styles.removeEntry} onClick={() => setEducationList(p => p.filter((_, j) => j !== i))}><IconTrash />Remove</button>
+                        </div>
+                        <div className={styles.entryGrid}>
+                          <div className={styles.field + " " + styles.span2}><label>Institution<span className={styles.required}>*</span></label><ProfileInput value={edu.institution} onChange={e => setEducationList(p => p.map((x, j) => j === i ? { ...x, institution: e.target.value } : x))} placeholder="Stanford University" error={errs.institution} /></div>
+                          <div className={styles.field}><label>Degree<span className={styles.required}>*</span></label><ProfileInput value={edu.degree} onChange={e => setEducationList(p => p.map((x, j) => j === i ? { ...x, degree: e.target.value } : x))} placeholder="B.S. Computer Science" error={errs.degree} /></div>
+                          <div className={styles.field}><label>Field</label><ProfileInput value={edu.field} onChange={e => setEducationList(p => p.map((x, j) => j === i ? { ...x, field: e.target.value } : x))} placeholder="Computer Science" error={errs.field} /></div>
+                          <div className={styles.field}><label>Graduation Year</label><ProfileInput value={edu.year} onChange={e => setEducationList(p => p.map((x, j) => j === i ? { ...x, year: e.target.value } : x))} placeholder="2024" error={errs.year} /></div>
+                        </div>
                       </div>
-                      <div className={styles.entryGrid}>
-                        <div className={styles.field + " " + styles.span2}><label>Institution<span className={styles.required}>*</span></label><input className={styles.input} value={edu.institution} onChange={e => setEducationList(p => p.map((x, j) => j === i ? { ...x, institution: e.target.value } : x))} placeholder="Stanford University" /></div>
-                        <div className={styles.field}><label>Degree<span className={styles.required}>*</span></label><input className={styles.input} value={edu.degree} onChange={e => setEducationList(p => p.map((x, j) => j === i ? { ...x, degree: e.target.value } : x))} placeholder="B.S. Computer Science" /></div>
-                        <div className={styles.field}><label>Field</label><input className={styles.input} value={edu.field} onChange={e => setEducationList(p => p.map((x, j) => j === i ? { ...x, field: e.target.value } : x))} placeholder="Computer Science" /></div>
-                        <div className={styles.field}><label>Graduation Year</label><input className={styles.input} value={edu.year} onChange={e => setEducationList(p => p.map((x, j) => j === i ? { ...x, year: e.target.value } : x))} placeholder="2024" /></div>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   <button className={styles.addEntryBtn} onClick={() => setEducationList(p => [...p, { institution: "", degree: "", field: "", year: "" }])}><IconPlus />Add Education</button>
                 </div>
               )}
@@ -733,18 +753,9 @@ export default function ProfilePage() {
                       </button>
                     )}
                     <button className={styles.cancelBtn} onClick={() => { setCareerGoal(snapshot.careerGoal); setTargetRole(snapshot.targetRole); setTargetCompany(snapshot.targetCompany); setEditing(p => ({ ...p, goals: false })); }}><IconX />Cancel</button>
-                    <button className={styles.saveBtn} disabled={isSaving === "goals"} onClick={() => {
-                      if (!targetRole.trim()) { toast.error("Target role is required."); return; }
-                      const roleRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&/\-]{2,50}$/;
-                      if (!roleRegex.test(targetRole.trim())) {
-                        toast.error("Target role must contain at least one letter and be between 2 and 50 characters.");
-                        return;
-                      }
-                      const companyRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s&.,\-]{2,50}$/;
-                      if (targetCompany.trim() && !companyRegex.test(targetCompany.trim())) {
-                        toast.error("Target company must contain at least one letter and be between 2 and 50 characters.");
-                        return;
-                      }
+                    <button className={styles.saveBtn} disabled={isSaving === "goals" || goalsHasError} onClick={() => {
+                      if (!targetRole.trim() || goalErrors.targetRole) return;
+                      if (targetCompany.trim() && goalErrors.targetCompany) return;
                       save("goals", { careerGoal, targetRole, targetCompany });
                     }}>
                       <IconCheck />{isSaving === "goals" ? "Saving…" : "Save"}
@@ -762,9 +773,9 @@ export default function ProfilePage() {
                 ) : <p className={styles.empty}>No goals set yet. Click Edit to add.</p>
               ) : (
                 <div className={styles.formGrid}>
-                  <div className={styles.field}><label>Target Role<span className={styles.required}>*</span></label><input className={styles.input} value={targetRole} onChange={e => setTargetRole(e.target.value)} placeholder="Principal Engineer" /></div>
-                  <div className={styles.field}><label>Target Company</label><input className={styles.input} value={targetCompany} onChange={e => setTargetCompany(e.target.value)} placeholder="Google, OpenAI…" /></div>
-                  <div className={styles.field + " " + styles.span2}><label>Career Objectives</label><textarea className={styles.textarea} value={careerGoal} onChange={e => setCareerGoal(e.target.value)} rows={4} placeholder="Describe your career ambitions and goals…" /></div>
+                  <div className={styles.field}><label>Target Role<span className={styles.required}>*</span></label><ProfileInput value={targetRole} onChange={e => setTargetRole(e.target.value)} placeholder="Principal Engineer" error={goalErrors.targetRole} /></div>
+                  <div className={styles.field}><label>Target Company</label><ProfileInput value={targetCompany} onChange={e => setTargetCompany(e.target.value)} placeholder="Google, OpenAI…" error={goalErrors.targetCompany} /></div>
+                  <div className={styles.field + " " + styles.span2}><label>Career Objectives</label><ProfileTextarea value={careerGoal} onChange={e => setCareerGoal(e.target.value)} rows={4} placeholder="Describe your career ambitions and goals…" /></div>
                 </div>
               )}
             </motion.section>

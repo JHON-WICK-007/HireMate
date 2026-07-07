@@ -658,6 +658,15 @@
   box-shadow: 0 0 0 3px var(--glass-bg);
 }
 
+.inputError {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.inputError:focus {
+  border-color: rgba(239, 68, 68, 0.8) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
 .input:-webkit-autofill,
 .input:-webkit-autofill:hover,
 .input:-webkit-autofill:focus,
