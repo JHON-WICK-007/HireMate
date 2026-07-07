@@ -12,6 +12,8 @@ import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
 import { saveAs } from "file-saver";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
+import { ResumeCardRender } from "../resume-builder/components/preview";
+import builderStyles from "../resume-builder/builder.module.css";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -38,6 +40,13 @@ const IconDownload = () => <svg width="16" height="16" viewBox="0 0 24 24" fill=
 const IconFile = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>;
 const IconRefresh = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" /></svg>;
 const IconShield = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>;
+const IconLayoutTemplate = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <path d="M21 12H3" />
+    <path d="M12 21V12" />
+  </svg>
+);
 const IconZap = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>;
 const IconTarget = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>;
 const IconSpinner = () => (
@@ -242,6 +251,163 @@ const faqItems = [
   }
 ];
 
+const COLOR_SWATCHES = [
+  { value: "#1B365D", label: "Midnight Navy" },
+  { value: "#1A1A1A", label: "Classic Black" },
+  { value: "#2D3748", label: "Charcoal" },
+  { value: "#4A607A", label: "Slate Blue" },
+  { value: "#143D2D", label: "Deep Emerald" },
+  { value: "#7A2828", label: "Heritage Red" },
+  { value: "#B87333", label: "Copper (Signature)" },
+  { value: "#C9A84C", label: "Gold (Blueprint)" },
+];
+
+const TEMPLATES_LIST = [
+  { id: 1, name: "Premium HireMate", desc: "Signature copper hairline, clean single-column ATS-ready layout." },
+  { id: 2, name: "Blueprint Schematic", desc: "Architectural left-sidebar navy layout with timeline nodes." },
+  { id: 3, name: "Creative Editorial", desc: "Bold left-column layout, modern serif headers, and vertical grids." },
+  { id: 4, name: "Modern Technical Grid", desc: "Structured mono-spaced blocks, geometric dividers, and clean metadata." },
+  { id: 5, name: "Executive Heritage", desc: "Center-aligned heritage headings, double-border accents, and classic look." },
+  { id: 6, name: "Luxury Editorial", desc: "Champagne gold accents, Garamond serif, luxury editorial feel." }
+];
+
+const parseDateString = (dateStr: string) => {
+  if (!dateStr) return { month: null, year: null };
+  const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  const cleanStr = dateStr.trim().toLowerCase();
+  
+  if (cleanStr === "present" || cleanStr === "current") {
+    return { month: null, year: null };
+  }
+  
+  const yearMatch = cleanStr.match(/\b(19|20)\d{2}\b/);
+  const year = yearMatch ? parseInt(yearMatch[0]) : null;
+  
+  let month: number | null = null;
+  for (let i = 0; i < monthNames.length; i++) {
+    if (cleanStr.includes(monthNames[i])) {
+      month = i + 1;
+      break;
+    }
+  }
+  return { month, year };
+};
+
+const parseDurationRange = (duration: string) => {
+  if (!duration) {
+    return {
+      startDate: { month: null, year: null },
+      endDate: { month: null, year: null },
+      isCurrent: false
+    };
+  }
+  
+  const parts = duration.split(/-|to|–/);
+  const startPart = parts[0]?.trim() || "";
+  const endPart = parts[1]?.trim() || "";
+  
+  const startDate = parseDateString(startPart);
+  const endDate = parseDateString(endPart);
+  
+  const isCurrent = endPart.toLowerCase().includes("present") || endPart.toLowerCase().includes("current") || duration.toLowerCase().includes("present");
+  
+  return {
+    startDate,
+    endDate: isCurrent ? { month: null, year: null } : endDate,
+    isCurrent
+  };
+};
+
+const transformToBuilderData = (optData: any) => {
+  if (!optData) return undefined;
+
+  // Split fullName
+  const nameParts = (optData.personalInfo?.fullName || "").trim().split(/\s+/);
+  const firstName = nameParts[0] || "";
+  const surname = nameParts.slice(1).join(" ") || "";
+
+  // Location
+  const locParts = (optData.personalInfo?.location || "").split(/,+/);
+  const city = locParts[0]?.trim() || "";
+  const country = locParts.slice(1).join(", ")?.trim() || "";
+
+  // Links
+  const links = optData.personalInfo?.links || [];
+  const linkedinUrl = links.find((l: string) => l.includes("linkedin.com")) || "";
+  const githubUrl = links.find((l: string) => l.includes("github.com")) || "";
+  const portfolioUrl = links.find((l: string) => !l.includes("linkedin.com") && !l.includes("github.com")) || "";
+
+  // Experiences
+  const experiences = (optData.experience || []).map((exp: any, index: number) => {
+    const dates = parseDurationRange(exp.duration);
+    return {
+      id: `exp-${index}`,
+      role: exp.role || "",
+      company: exp.company || "",
+      location: "",
+      startDate: dates.startDate,
+      endDate: dates.endDate,
+      isCurrent: dates.isCurrent,
+      description: exp.description || ""
+    };
+  });
+
+  // Educations
+  const educations = (optData.education || []).map((edu: any, index: number) => {
+    const dates = parseDurationRange(edu.year);
+    return {
+      id: `edu-${index}`,
+      degree: edu.degree || "",
+      fieldOfStudy: "",
+      institution: edu.institution || "",
+      startDate: dates.startDate,
+      endDate: dates.endDate,
+      isCurrent: dates.isCurrent,
+      description: ""
+    };
+  });
+
+  // Skills
+  const skills = (optData.skills || []).map((sk: string, index: number) => {
+    return {
+      id: `sk-${index}`,
+      name: sk,
+      category: "Technical"
+    };
+  });
+
+  // Projects
+  const projects = (optData.projects || []).map((proj: any, index: number) => {
+    return {
+      id: `proj-${index}`,
+      name: proj.name || "",
+      role: "Developer",
+      description: proj.description || "",
+      technologies: proj.technologies || []
+    };
+  });
+
+  return {
+    personalInfo: {
+      firstName,
+      surname,
+      email: optData.personalInfo?.email || "",
+      phone: optData.personalInfo?.phone || "",
+      city,
+      country,
+      linkedinUrl,
+      githubUrl,
+      portfolioUrl
+    },
+    summary: optData.summary || "",
+    experiences,
+    educations,
+    skills,
+    projects,
+    certifications: []
+  };
+};
+
 export default function ResumePage() {
   const router = useRouter();
   const toast = useToast();
@@ -256,7 +422,13 @@ export default function ResumePage() {
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
   const [expandedFaqId, setExpandedFaqId] = useState<number | null>(null);
   const [displayScore, setDisplayScore] = useState(0);
-  const [selectedTemplate, setSelectedTemplate] = useState<"minimal" | "sidebar" | "classic">("minimal");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<number>(1);
+  const [selectedColor, setSelectedColor] = useState<string>("#B87333");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempTemplateId, setTempTemplateId] = useState(1);
+  const [tempColor, setTempColor] = useState("#B87333");
+  const [hoverColor, setHoverColor] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     if (resumeData) {
@@ -267,7 +439,7 @@ export default function ResumePage() {
       }
       const duration = 1200; // 1.2s
       const startTime = performance.now();
-      
+
       let animationFrameId: number;
       const updateScore = (currentTime: number) => {
         const elapsed = currentTime - startTime;
@@ -275,18 +447,46 @@ export default function ResumePage() {
         const easeProgress = progress * (2 - progress); // quadratic ease-out
         const currentScore = Math.round(easeProgress * target);
         setDisplayScore(currentScore);
-        
+
         if (progress < 1) {
           animationFrameId = requestAnimationFrame(updateScore);
         }
       };
-      
+
       animationFrameId = requestAnimationFrame(updateScore);
       return () => cancelAnimationFrame(animationFrameId);
     } else {
       setDisplayScore(0);
     }
   }, [resumeData]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if (isUploading) {
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, [isUploading]);
 
   const scoreColor = displayScore > 80 ? "#10b981" : displayScore > 60 ? "#f59e0b" : "#ef4444";
   const scoreGlow = displayScore > 80 ? "rgba(16, 185, 129, 0.45)" : displayScore > 60 ? "rgba(245, 158, 11, 0.45)" : "rgba(239, 68, 68, 0.45)";
@@ -338,7 +538,7 @@ export default function ResumePage() {
       if (savedUser) {
         try {
           setUser(JSON.parse(savedUser));
-        } catch (e) {}
+        } catch (e) { }
       }
       fetch(`${API_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` }, credentials: "include" })
         .then(r => r.json())
@@ -409,21 +609,112 @@ export default function ResumePage() {
   };
 
   const exportPDF = async () => {
-    if (!resumeRef.current) return;
+    if (!resumeRef.current || !resumeData) return;
+    setIsExporting(true);
     try {
-      const html2pdfModule = await import("html2pdf.js");
-      const html2pdf = html2pdfModule.default || html2pdfModule;
-      const opt = {
-        margin: 0,
-        filename: 'HireMate_Resume.pdf',
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 3, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
-      };
-      await html2pdf().set(opt).from(resumeRef.current).save();
-      toast.success("PDF exported!");
+      const element = resumeRef.current;
+      const fullName = (resumeData.personalInfo.fullName || "Resume").trim();
+
+      // Clone the element to manipulate without affecting the live preview DOM
+      const clone = element.cloneNode(true) as HTMLElement;
+
+      // Extract the CSS content from the <style> tag before removing it
+      const styleEl = element.querySelector("style");
+      const cssContent = styleEl?.innerHTML || "";
+
+      // Strip <link> and <style> tags from the clone — they move to <head>
+      clone.querySelectorAll('link[href*="fonts.googleapis.com"]').forEach((el) => el.remove());
+      clone.querySelectorAll("style").forEach((el) => el.remove());
+
+      // Google Fonts <link> per template
+      let googleFontsLink = `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">`;
+      if (selectedTemplateId === 2) {
+        googleFontsLink = `<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">`;
+      } else if (selectedTemplateId === 4) {
+        googleFontsLink = `<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">`;
+      } else if (selectedTemplateId === 6) {
+        googleFontsLink = `<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">`;
+      }
+
+      const fullHTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  ${googleFontsLink}
+  <style>
+    @page { size: A4; margin: 0; }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #FFFFFF;
+    }
+
+    /* Force colour rendering on every element for print */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    /* Break-inside control for clean page breaks */
+    .resume-container .resume-section,
+    .resume-container .content-section,
+    .resume-container .entry {
+      break-inside: avoid;
+    }
+
+    /* Template CSS extracted from preview component */
+    ${cssContent}
+  </style>
+</head>
+<body>
+  ${clone.innerHTML}
+</body>
+</html>`;
+
+      toast.success("Generating PDF...", "Compiling vector PDF on backend...");
+
+      const token = localStorage.getItem("token");
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+      const response = await fetch(`${API_URL}/api/resume/download`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token || ""}`
+        },
+        body: JSON.stringify({ html: fullHTML })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to compile PDF on the server.");
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = `${fullName.replace(/\s+/g, "_")}_Resume.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+
+      toast.success("Success ✓", "PDF downloaded successfully!");
     } catch (err) {
-      toast.error("Failed to export PDF. Please try again.");
+      console.error(err);
+      toast.error("Export Failed", "Could not render PDF document.");
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -753,7 +1044,9 @@ export default function ResumePage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <div className={styles.loadingSpinner} />
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite", marginBottom: "1.5rem" }}>
+              <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+            </svg>
             <div className={styles.loadingText}>Analyzing your resume…</div>
             <div className={styles.loadingSubtext}>Our AI is evaluating your resume against ATS standards</div>
           </motion.div>
@@ -891,139 +1184,139 @@ export default function ResumePage() {
       {!resumeData && (
         <>
           <section className={styles.checksSection}>
-          <div className={styles.checksContent}>
-            <h2 className={styles.checksTitle}>
-              Advanced AI Diagnostics <br />
-              Beyond Basic Formatting & Grammar
-            </h2>
-            <p className={styles.checksSubtitle}>
-              HireMate AI runs deep algorithmic audits across 27 critical parameters to ensure your resume is fully optimized for ATS filters and recruiter benchmarks. We evaluate layout compliance, keyword tailoring, red flags, and seniority fit to maximize your interview conversion rate. Here is a full list of the checks performed:
-            </p>
+            <div className={styles.checksContent}>
+              <h2 className={styles.checksTitle}>
+                Advanced AI Diagnostics <br />
+                Beyond Basic Formatting & Grammar
+              </h2>
+              <p className={styles.checksSubtitle}>
+                HireMate AI runs deep algorithmic audits across 27 critical parameters to ensure your resume is fully optimized for ATS filters and recruiter benchmarks. We evaluate layout compliance, keyword tailoring, red flags, and seniority fit to maximize your interview conversion rate. Here is a full list of the checks performed:
+              </p>
 
-            <motion.div
-              className={styles.checksGrid}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={staggerContainer}
-            >
-              {checkCategories.map((category, index) => {
-                const isLastCard = index === checkCategories.length - 1;
-                const isExpanded = expandedCardId === index;
+              <motion.div
+                className={styles.checksGrid}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={staggerContainer}
+              >
+                {checkCategories.map((category, index) => {
+                  const isLastCard = index === checkCategories.length - 1;
+                  const isExpanded = expandedCardId === index;
 
-                return (
-                  <motion.div
-                    key={index}
-                    className={`${styles.checkCard} ${isLastCard ? styles.cardLast : ""} ${isExpanded ? styles.isExpanded : ""}`}
-                    variants={fadeInUp}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setExpandedCardId(isExpanded ? null : index)}
-                  >
-                    {/* Left Column: Visual Image Box */}
-                    <div className={styles.cardVisual}>
-                      <img
-                        src={category.image}
-                        alt={category.title}
-                        className={styles.cardVisualBg}
-                        style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                      />
-                    </div>
-
-                    {/* Right Column: Card Contents */}
-                    <div className={styles.cardContent}>
-                      <div className={styles.cardHeader}>
-                        <h3 className={styles.cardTitle}>{category.title}</h3>
-                        <p className={styles.cardDescription}>{category.description}</p>
-
-                        <div className={styles.checklistContainer}>
-                          <ul className={styles.cardChecklist}>
-                            {category.checks.map((check, cIdx) => (
-                              <li key={cIdx}>
-                                <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                  <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                                <span>{check}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                  return (
+                    <motion.div
+                      key={index}
+                      className={`${styles.checkCard} ${isLastCard ? styles.cardLast : ""} ${isExpanded ? styles.isExpanded : ""}`}
+                      variants={fadeInUp}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setExpandedCardId(isExpanded ? null : index)}
+                    >
+                      {/* Left Column: Visual Image Box */}
+                      <div className={styles.cardVisual}>
+                        <img
+                          src={category.image}
+                          alt={category.title}
+                          className={styles.cardVisualBg}
+                          style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                        />
                       </div>
 
-                      {/* Card Footer: Stats Row (Mobile Chevron Only) */}
-                      <div className={styles.cardStats}>
-                        {/* Mobile chevron to indicate expandable list */}
-                        <div className={styles.mobileChevron}>
-                          <svg
-                            className={`${styles.chevronIcon} ${isExpanded ? styles.chevronRotate : ""}`}
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <polyline points="6 9 12 15 18 9" />
-                          </svg>
+                      {/* Right Column: Card Contents */}
+                      <div className={styles.cardContent}>
+                        <div className={styles.cardHeader}>
+                          <h3 className={styles.cardTitle}>{category.title}</h3>
+                          <p className={styles.cardDescription}>{category.description}</p>
+
+                          <div className={styles.checklistContainer}>
+                            <ul className={styles.cardChecklist}>
+                              {category.checks.map((check, cIdx) => (
+                                <li key={cIdx}>
+                                  <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                  </svg>
+                                  <span>{check}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Card Footer: Stats Row (Mobile Chevron Only) */}
+                        <div className={styles.cardStats}>
+                          {/* Mobile chevron to indicate expandable list */}
+                          <div className={styles.mobileChevron}>
+                            <svg
+                              className={`${styles.chevronIcon} ${isExpanded ? styles.chevronRotate : ""}`}
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className={styles.faqSection}>
-          <div className={styles.faqContent}>
-            <h2 className={styles.faqTitle}>Frequently Asked Questions</h2>
-            <p className={styles.faqSubtitle}>
-              Answered all frequently asked questions. Still confused?{" "}
-              <Link href="/contact" className={styles.faqLink}>
-                feel free to contact us
-              </Link>
-            </p>
-
-            <div className={styles.faqList}>
-              {faqItems.map((item, idx) => {
-                const isOpen = expandedFaqId === idx;
-                return (
-                  <div
-                    key={idx}
-                    className={`${styles.faqItem} ${isOpen ? styles.faqItemOpen : ""}`}
-                  >
-                    <button
-                      type="button"
-                      className={styles.faqHeader}
-                      onClick={() => setExpandedFaqId(isOpen ? null : idx)}
-                    >
-                      <span className={styles.faqQuestion}>{item.question}</span>
-                      <span className={styles.faqToggle}>
-                        {isOpen ? (
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                        ) : (
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                        )}
-                      </span>
-                    </button>
-                    <div
-                      className={styles.faqBody}
-                      style={{
-                        maxHeight: isOpen ? "150px" : "0px",
-                        opacity: isOpen ? 1 : 0
-                      }}
-                    >
-                      <p className={styles.faqAnswer}>{item.answer}</p>
-                    </div>
-                  </div>
-                );
-              })}
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
             </div>
-          </div>
-        </section>
-      </>
-    )}
+          </section>
+
+          {/* FAQ Section */}
+          <section className={styles.faqSection}>
+            <div className={styles.faqContent}>
+              <h2 className={styles.faqTitle}>Frequently Asked Questions</h2>
+              <p className={styles.faqSubtitle}>
+                Answered all frequently asked questions. Still confused?{" "}
+                <Link href="/contact" className={styles.faqLink}>
+                  feel free to contact us
+                </Link>
+              </p>
+
+              <div className={styles.faqList}>
+                {faqItems.map((item, idx) => {
+                  const isOpen = expandedFaqId === idx;
+                  return (
+                    <div
+                      key={idx}
+                      className={`${styles.faqItem} ${isOpen ? styles.faqItemOpen : ""}`}
+                    >
+                      <button
+                        type="button"
+                        className={styles.faqHeader}
+                        onClick={() => setExpandedFaqId(isOpen ? null : idx)}
+                      >
+                        <span className={styles.faqQuestion}>{item.question}</span>
+                        <span className={styles.faqToggle}>
+                          {isOpen ? (
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                          ) : (
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                          )}
+                        </span>
+                      </button>
+                      <div
+                        className={styles.faqBody}
+                        style={{
+                          maxHeight: isOpen ? "150px" : "0px",
+                          opacity: isOpen ? 1 : 0
+                        }}
+                      >
+                        <p className={styles.faqAnswer}>{item.answer}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
 
       {/* ─── Results Section ───────────────────────────────── */}
       {resumeData && (
@@ -1086,23 +1379,6 @@ export default function ResumePage() {
                     stroke: "url(#scoreRingGradient)",
                   } as React.CSSProperties}
                 />
-                {/* Orbiting tip orb indicator */}
-                {displayScore > 0 && (
-                  <g transform={`translate(${indicatorX}, ${indicatorY})`}>
-                    <circle
-                      r="4.5"
-                      fill={gradientEnd}
-                      className={styles.scoreRingIndicatorGlow}
-                      style={{
-                        filter: `drop-shadow(0 0 5px ${scoreColor})`
-                      }}
-                    />
-                    <circle
-                      r="2"
-                      fill="#ffffff"
-                    />
-                  </g>
-                )}
               </svg>
               <div className={styles.scoreBannerInner}>
                 <span className={styles.scoreBannerNumber}>{displayScore}</span>
@@ -1271,421 +1547,38 @@ export default function ResumePage() {
                 className={styles.tabPanel}
               >
                 <div className={styles.exportBar}>
-                  <div className={styles.templateSelector}>
-                    <span className={styles.templateSelectorLabel}>Template:</span>
-                    <button
-                      type="button"
-                      className={`${styles.templateBtn} ${selectedTemplate === "minimal" ? styles.templateActive : ""}`}
-                      onClick={() => setSelectedTemplate("minimal")}
-                    >
-                      Charcoal Sidebar
-                    </button>
-                    <button
-                      type="button"
-                      className={`${styles.templateBtn} ${selectedTemplate === "sidebar" ? styles.templateActive : ""}`}
-                      onClick={() => setSelectedTemplate("sidebar")}
-                    >
-                      Corporate Blue
-                    </button>
-                    <button
-                      type="button"
-                      className={`${styles.templateBtn} ${selectedTemplate === "classic" ? styles.templateActive : ""}`}
-                      onClick={() => setSelectedTemplate("classic")}
-                    >
-                      Modern Timeline
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    className={styles.btnChangeTemplate}
+                    onClick={() => {
+                      setTempTemplateId(selectedTemplateId);
+                      setTempColor(selectedColor);
+                      setHoverColor(null);
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    <IconLayoutTemplate />
+                    Change Template
+                  </button>
                   <div className={styles.exportActions}>
-                    <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={exportPDF}><IconDownload /> Export PDF</button>
-                    <button className={`${styles.btn} ${styles.btnOutline}`} onClick={exportDOCX}><IconDownload /> Export DOCX</button>
+                    <button 
+                      className={`${styles.btn} ${styles.btnPrimary}`} 
+                      onClick={exportPDF}
+                      disabled={isExporting}
+                    >
+                      <IconDownload /> 
+                      {isExporting ? "Exporting..." : "Export PDF"}
+                    </button>
                   </div>
                 </div>
 
                 <div className={styles.resumePreviewWrap}>
                   <div className={styles.resumePreview} ref={resumeRef} style={{ padding: 0, display: "flex", flexDirection: "column" }}>
-                    {/* Helper to render avatar or placeholder */}
-                    {(() => {
-                      const RenderAvatar = ({ variant = "circle" }: { variant?: "circle" | "square" }) => {
-                        const avatarUrl = user?.avatar;
-                        const fullName = resumeData.personalInfo.fullName || "User";
-                        const initials = fullName
-                          .split(" ")
-                          .map((n: string) => n[0])
-                          .join("")
-                          .slice(0, 2)
-                          .toUpperCase();
-                        
-                        if (avatarUrl) {
-                          return (
-                            <div className={variant === "circle" ? styles.avatarCircleWrap : styles.avatarSquareWrap}>
-                              <img src={avatarUrl} alt="Profile" className={styles.avatarImg} crossOrigin="anonymous" draggable={false} />
-                            </div>
-                          );
-                        }
-                        return (
-                          <div className={variant === "circle" ? styles.avatarPlaceholderCircle : styles.avatarPlaceholderSquare}>
-                            <span>{initials}</span>
-                          </div>
-                        );
-                      };
-
-                      const formatBulletPoints = (text: string, ulClass: string, liClass: string) => {
-                        if (!text) return null;
-                        const points = text
-                          .split(/\n|•|\s+-\s+/)
-                          .map(p => p.trim())
-                          .filter(p => p.length > 0);
-                        
-                        if (points.length <= 1) {
-                          return <p className={liClass}>{text}</p>;
-                        }
-                        return (
-                          <ul className={ulClass}>
-                            {points.map((pt, i) => (
-                              <li key={i} className={liClass}>{pt}</li>
-                            ))}
-                          </ul>
-                        );
-                      };
-
-                      // Bio/Summary helper
-                      const getSummary = () => {
-                        if (user?.bio && user.bio.trim().length > 0) {
-                          return user.bio;
-                        }
-                        const name = resumeData.personalInfo.fullName || "software engineer";
-                        const skillList = resumeData.skills.slice(0, 3).join(", ");
-                        return `I am a software engineer with experience in a variety of programming languages (including ${skillList || "modern developer tools"}) and a track record of delivering quality code. I am skilled in problem-solving and have a strong background in computer science. I am a strong communicator and enjoy working collaboratively with others.`;
-                      };
-
-                      return (
-                        <>
-                          {/* Template 1: Charcoal Sidebar */}
-                          {selectedTemplate === "minimal" && (
-                            <div className={`${styles.templateContainer} ${styles.t1Container}`} style={{ margin: 0, padding: 0, flex: 1, display: "flex", width: "100%" }}>
-                              {/* Left Dark Sidebar */}
-                              <div className={styles.t1Sidebar} style={{ margin: 0 }}>
-                                <div className={styles.t1AvatarSection}>
-                                  <RenderAvatar variant="circle" />
-                                </div>
-
-                                <div className={styles.t1NameSection}>
-                                  <h1 className={styles.t1Name}>{resumeData.personalInfo.fullName}</h1>
-                                  <div className={styles.t1Title}>
-                                    {resumeData.experience?.[0]?.role || "Software Engineer"}
-                                  </div>
-                                </div>
-
-                                <div className={styles.t1SidebarSection}>
-                                  <h3 className={styles.t1SidebarSectionTitle}>CONTACT</h3>
-                                  <ul className={styles.t1ContactList}>
-                                    {resumeData.personalInfo.phone && (
-                                      <li>
-                                        <span className={styles.t1ContactIcon}>📞</span>
-                                        <span>{resumeData.personalInfo.phone}</span>
-                                      </li>
-                                    )}
-                                    {resumeData.personalInfo.email && (
-                                      <li>
-                                        <span className={styles.t1ContactIcon}>✉️</span>
-                                        <span>{resumeData.personalInfo.email}</span>
-                                      </li>
-                                    )}
-                                    {(resumeData.personalInfo.links || []).map((link, idx) => (
-                                      <li key={idx}>
-                                        <span className={styles.t1ContactIcon}>🔗</span>
-                                        <span className={styles.t1LinkValue}>{link}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-
-                                {resumeData.skills.length > 0 && (
-                                  <div className={styles.t1SidebarSection}>
-                                    <h3 className={styles.t1SidebarSectionTitle}>SKILLS</h3>
-                                    <ul className={styles.t1List}>
-                                      {resumeData.skills.slice(0, 8).map((skill, idx) => (
-                                        <li key={idx}>○ {skill}</li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-
-                                <div className={styles.t1SidebarSection}>
-                                  <h3 className={styles.t1SidebarSectionTitle}>LANGUAGES</h3>
-                                  <ul className={styles.t1List}>
-                                    <li>○ English: Proficient</li>
-                                    <li>○ Native Language: Proficient</li>
-                                  </ul>
-                                </div>
-
-                                <div className={styles.t1SidebarSection}>
-                                  <h3 className={styles.t1SidebarSectionTitle}>HOBBIES</h3>
-                                  <ul className={styles.t1List}>
-                                    <li>○ Writing</li>
-                                    <li>○ Cricket</li>
-                                    <li>○ Music</li>
-                                  </ul>
-                                </div>
-                              </div>
-
-                              {/* Right Main Content */}
-                              <div className={styles.t1Main} style={{ margin: 0 }}>
-                                <div className={styles.t1Section}>
-                                  <h2 className={styles.t1SectionTitle}>PROFILE</h2>
-                                  <p className={styles.t1ProfileDesc}>{getSummary()}</p>
-                                </div>
-
-                                {resumeData.experience.length > 0 && (
-                                  <div className={styles.t1Section}>
-                                    <h2 className={styles.t1SectionTitle}>WORK EXPERIENCE</h2>
-                                    {resumeData.experience.map((exp, i) => (
-                                      <div className={styles.t1WorkItem} key={i}>
-                                        <div className={styles.t1ItemHeader}>
-                                          <span className={styles.t1ItemRole}>{exp.role}</span>
-                                          <span className={styles.t1ItemDuration}>{exp.duration}</span>
-                                        </div>
-                                        <div className={styles.t1ItemSub}>{exp.company}</div>
-                                        {formatBulletPoints(exp.description, styles.t1BulletList, styles.t1BulletItem)}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-
-                                {resumeData.education.length > 0 && (
-                                  <div className={styles.t1Section}>
-                                    <h2 className={styles.t1SectionTitle}>EDUCATION</h2>
-                                    {resumeData.education.map((ed, i) => (
-                                      <div className={styles.t1EduItem} key={i}>
-                                        <div className={styles.t1ItemHeader}>
-                                          <span className={styles.t1ItemRole}>{ed.degree}</span>
-                                          <span className={styles.t1ItemDuration}>{ed.year}</span>
-                                        </div>
-                                        <div className={styles.t1ItemSub}>{ed.institution}</div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Template 2: Corporate Blue */}
-                          {selectedTemplate === "sidebar" && (
-                            <div className={`${styles.templateContainer} ${styles.t2Container}`} style={{ margin: 0, flex: 1 }}>
-                              {/* Top Corporate Header */}
-                              <div className={styles.t2Header}>
-                                <div className={styles.t2HeaderLeft}>
-                                  <h1 className={styles.t2Name}>{resumeData.personalInfo.fullName}</h1>
-                                  <div className={styles.t2Title}>
-                                    {resumeData.experience?.[0]?.role || "Software Engineer"}
-                                  </div>
-                                  <div className={styles.t2ContactStrip}>
-                                    {[
-                                      resumeData.personalInfo.email,
-                                      resumeData.personalInfo.phone,
-                                      ...(resumeData.personalInfo.links || [])
-                                    ].filter(Boolean).join("  |  ")}
-                                  </div>
-                                </div>
-                                <div className={styles.t2HeaderRight}>
-                                  <RenderAvatar variant="square" />
-                                </div>
-                              </div>
-
-                              {/* Summary Section */}
-                              <div className={styles.t2Section}>
-                                <h2 className={styles.t2SectionTitle}>SUMMARY</h2>
-                                <p className={styles.t2SummaryText}>{getSummary()}</p>
-                              </div>
-
-                              {/* Experience Section */}
-                              {resumeData.experience.length > 0 && (
-                                <div className={styles.t2Section}>
-                                  <h2 className={styles.t2SectionTitle}>PROFESSIONAL EXPERIENCE</h2>
-                                  {resumeData.experience.map((exp, i) => (
-                                    <div className={styles.t2Item} key={i}>
-                                      <div className={styles.t2ItemHeader}>
-                                        <span className={styles.t2ItemRole}>{exp.role}, {exp.company}</span>
-                                        <span className={styles.t2ItemDuration}>{exp.duration}</span>
-                                      </div>
-                                      {formatBulletPoints(exp.description, styles.t2BulletList, styles.t2BulletItem)}
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-
-                              {/* Education Section */}
-                              {resumeData.education.length > 0 && (
-                                <div className={styles.t2Section}>
-                                  <h2 className={styles.t2SectionTitle}>EDUCATION</h2>
-                                  {resumeData.education.map((ed, i) => (
-                                    <div className={styles.t2Item} key={i}>
-                                      <div className={styles.t2ItemHeader}>
-                                        <span className={styles.t2ItemRole}>{ed.degree}</span>
-                                        <span className={styles.t2ItemDuration}>{ed.year}</span>
-                                      </div>
-                                      <div className={styles.t2ItemSub}>{ed.institution}</div>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-
-                              {/* Skills Section (4-column Grid) */}
-                              {resumeData.skills.length > 0 && (
-                                <div className={styles.t2Section}>
-                                  <h2 className={styles.t2SectionTitle}>TECHNICAL SKILLS</h2>
-                                  <div className={styles.t2SkillsGrid}>
-                                    {resumeData.skills.slice(0, 12).map((skill, idx) => (
-                                      <div key={idx} className={styles.t2SkillItem}>{skill}</div>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Additional Info Section */}
-                              <div className={styles.t2Section}>
-                                <h2 className={styles.t2SectionTitle}>ADDITIONAL INFORMATION</h2>
-                                <ul className={styles.t2InfoList}>
-                                  <li><strong>Languages:</strong> English, Native Language</li>
-                                  <li><strong>Certifications:</strong> Verified Technical Professional License</li>
-                                </ul>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Template 3: Modern Timeline */}
-                          {selectedTemplate === "classic" && (
-                            <div className={`${styles.templateContainer} ${styles.t3Container}`} style={{ margin: 0, padding: 0, flex: 1, display: "flex", width: "100%" }}>
-                              {/* Left Light Gray Sidebar */}
-                              <div className={styles.t3Sidebar} style={{ margin: 0 }}>
-                                <div className={styles.t3AvatarSection}>
-                                  <RenderAvatar variant="circle" />
-                                </div>
-
-                                <div className={styles.t3SidebarSection}>
-                                  <h3 className={styles.t3SidebarTitle}>ABOUT ME</h3>
-                                  <p className={styles.t3AboutText}>{getSummary()}</p>
-                                </div>
-
-                                {resumeData.education.length > 0 && (
-                                  <div className={styles.t3SidebarSection}>
-                                    <h3 className={styles.t3SidebarTitle}>EDUCATION</h3>
-                                    {resumeData.education.map((ed, i) => (
-                                      <div key={i} className={styles.t3EduItem}>
-                                        <div className={styles.t3EduDegree}>{ed.degree}</div>
-                                        <div className={styles.t3EduInst}>{ed.institution}</div>
-                                        <div className={styles.t3EduYear}>{ed.year}</div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-
-                                {resumeData.skills.length > 0 && (
-                                  <div className={styles.t3SidebarSection}>
-                                    <h3 className={styles.t3SidebarTitle}>SKILLS</h3>
-                                    <div className={styles.t3SkillsList}>
-                                      {resumeData.skills.slice(0, 6).map((skill, idx) => {
-                                        const levels = [95, 85, 80, 75, 70, 65];
-                                        const level = levels[idx] || 70;
-                                        return (
-                                          <div key={idx} className={styles.t3SkillRow}>
-                                            <span className={styles.t3SkillName}>{skill}</span>
-                                            <div className={styles.t3SkillTrack}>
-                                              <div className={styles.t3SkillBar} style={{ width: `${level}%` }} />
-                                            </div>
-                                          </div>
-                                        );
-                                      })}
-                                    </div>
-                                  </div>
-                                )}
-
-                                <div className={styles.t3SidebarSection}>
-                                  <h3 className={styles.t3SidebarTitle}>LANGUAGE</h3>
-                                  <ul className={styles.t3LanguageList}>
-                                    <li>English</li>
-                                    <li>Native Language</li>
-                                  </ul>
-                                </div>
-                              </div>
-
-                              {/* Right Main Column */}
-                              <div className={styles.t3Main} style={{ margin: 0 }}>
-                                {/* Dark Top Header Band */}
-                                <div className={styles.t3Header}>
-                                  <h1 className={styles.t3Name}>{resumeData.personalInfo.fullName}</h1>
-                                  <div className={styles.t3Title}>
-                                    {resumeData.experience?.[0]?.role || "Software Engineer"}
-                                  </div>
-                                </div>
-
-                                {/* Contact Grid (2x2) */}
-                                <div className={styles.t3ContactGrid}>
-                                  {resumeData.personalInfo.phone && (
-                                    <div className={styles.t3ContactItem}>
-                                      <span className={styles.t3ContactIcon}>📞</span>
-                                      <span>{resumeData.personalInfo.phone}</span>
-                                    </div>
-                                  )}
-                                  {resumeData.personalInfo.email && (
-                                    <div className={styles.t3ContactItem}>
-                                      <span className={styles.t3ContactIcon}>✉️</span>
-                                      <span>{resumeData.personalInfo.email}</span>
-                                    </div>
-                                  )}
-                                  {(resumeData.personalInfo.links || []).slice(0, 2).map((link, idx) => (
-                                    <div key={idx} className={styles.t3ContactItem}>
-                                      <span className={styles.t3ContactIcon}>🔗</span>
-                                      <span className={styles.t3LinkValue}>{link}</span>
-                                    </div>
-                                  ))}
-                                </div>
-
-                                {/* Experience Timeline */}
-                                {resumeData.experience.length > 0 && (
-                                  <div className={styles.t3Section}>
-                                    <h2 className={styles.t3SectionTitle}>EXPERIENCE</h2>
-                                    <div className={styles.t3Timeline}>
-                                      {resumeData.experience.map((exp, i) => (
-                                        <div className={styles.t3TimelineItem} key={i}>
-                                          <div className={styles.t3TimelineNode} />
-                                          <div className={styles.t3ItemHeader}>
-                                            <span className={styles.t3ItemRole}>{exp.role}</span>
-                                            <span className={styles.t3ItemDuration}>{exp.duration}</span>
-                                          </div>
-                                          <div className={styles.t3ItemSub}>{exp.company}</div>
-                                          {formatBulletPoints(exp.description, styles.t3BulletList, styles.t3BulletItem)}
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-
-                                {/* References (2-Column) */}
-                                <div className={styles.t3Section}>
-                                  <h2 className={styles.t3SectionTitle}>REFERENCES</h2>
-                                  <div className={styles.t3ReferencesGrid}>
-                                    <div className={styles.t3ReferenceItem}>
-                                      <div className={styles.t3RefName}>Harumi Kobayashi</div>
-                                      <div className={styles.t3RefTitle}>Wardiere Inc. / CEO</div>
-                                      <div className={styles.t3RefContact}>Phone: 123-456-7890</div>
-                                      <div className={styles.t3RefContact}>Email: hello@reallygreatsite.com</div>
-                                    </div>
-                                    <div className={styles.t3ReferenceItem}>
-                                      <div className={styles.t3RefName}>Bailey Dupont</div>
-                                      <div className={styles.t3RefTitle}>Wardiere Inc. / CEO</div>
-                                      <div className={styles.t3RefContact}>Phone: 123-456-7890</div>
-                                      <div className={styles.t3RefContact}>Email: hello@reallygreatsite.com</div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </>
-                      );
-                    })()}
+                    <ResumeCardRender
+                      templateId={selectedTemplateId}
+                      color={selectedColor}
+                      data={transformToBuilderData(resumeData)}
+                    />
                   </div>
                 </div>
               </motion.div>
@@ -1695,6 +1588,162 @@ export default function ResumePage() {
       )}
 
       <SiteFooter />
+
+      {/* Select Modal */}
+      {isModalOpen && (
+        <div className={`${builderStyles.modalBackdrop} backdrop-blur-lg`}>
+          <div className={builderStyles.modalCard}>
+
+            {/* Main Body (Split Columns) */}
+            <div className={builderStyles.modalBody}>
+
+              {/* Left Column: Live Resume Preview */}
+              <div className={builderStyles.modalLeftColumn}>
+                <div
+                  className={`h-full overflow-y-auto pr-2 custom-scrollbar ${builderStyles.zoomViewportScrollbar}`}
+                  style={{ width: `${794 * 0.65 + 20}px` }}
+                >
+                  <div
+                    className="bg-white shadow-lg rounded-sm overflow-hidden flex-shrink-0"
+                    style={{
+                      width: "794px",
+                      minHeight: "1123px",
+                      color: "#000000",
+                      zoom: 0.65,
+                      margin: "auto",
+                      userSelect: "none"
+                    }}
+                    onDragStart={(e) => e.preventDefault()}
+                  >
+                    <ResumeCardRender templateId={tempTemplateId} color={hoverColor || tempColor} data={transformToBuilderData(resumeData)} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Settings Panel */}
+              <div className={builderStyles.modalRightColumn}>
+
+                {/* Header */}
+                <div className={builderStyles.modalHeader}>
+                  <h3 className={builderStyles.modalTitle}>Change Template</h3>
+                  <button
+                    type="button"
+                    className={builderStyles.modalCloseBtn}
+                    onClick={() => setIsModalOpen(false)}
+                    aria-label="Close"
+                  >
+                    <IconX />
+                  </button>
+                </div>
+
+                {/* Fixed Colors Section */}
+                <div className={builderStyles.colorsSectionFixed}>
+                  <div className={builderStyles.colorsRow}>
+                    <span className={builderStyles.colorsLabel}>Colors</span>
+                    <div className={builderStyles.colorSwatchesGrid}>
+                      {COLOR_SWATCHES.map((swatch) => {
+                        const isSelected = tempColor === swatch.value;
+                        return (
+                          <div
+                            key={swatch.value}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => setTempColor(swatch.value)}
+                            onMouseEnter={() => setHoverColor(swatch.value)}
+                            onMouseLeave={() => setHoverColor(null)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                setTempColor(swatch.value);
+                              }
+                            }}
+                            className={`${builderStyles.colorSwatchItem} ${isSelected ? builderStyles.colorSwatchItemActive : ""
+                              }`}
+                            style={{ backgroundColor: swatch.value }}
+                            title={swatch.label}
+                          >
+                            {isSelected && (
+                              <span className="text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] flex items-center justify-center">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Scrollable Content */}
+                <div className={builderStyles.modalContent}>
+
+                  {/* Templates List */}
+                  <div className={builderStyles.modalSection}>
+                    <div className={builderStyles.templatesGrid}>
+                      {TEMPLATES_LIST.map((temp) => {
+                        const isSelected = tempTemplateId === temp.id;
+                        return (
+                          <div
+                            key={temp.id}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => setTempTemplateId(temp.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                setTempTemplateId(temp.id);
+                              }
+                            }}
+                            className={`${builderStyles.templateCard} ${isSelected ? builderStyles.templateCardActive : ""
+                              }`}
+                          >
+                            {/* Visual Template Thumbnail */}
+                            <div className={builderStyles.templateCardPreview}>
+                              <div style={{ transform: "scale(0.24)", transformOrigin: "top center", width: "794px", height: "1123px" }}>
+                                <ResumeCardRender templateId={temp.id} color={tempColor} data={transformToBuilderData(resumeData)} />
+                              </div>
+                              {isSelected && (
+                                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white text-black border border-black flex items-center justify-center shadow-md z-10">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className={builderStyles.modalFooter}>
+              <button
+                type="button"
+                className={builderStyles.modalCancelBtn}
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={builderStyles.modalSaveBtn}
+                onClick={() => {
+                  setSelectedTemplateId(tempTemplateId);
+                  setSelectedColor(tempColor);
+                  setIsModalOpen(false);
+                  toast.success("Success ✓", "Template and theme color updated!");
+                }}
+              >
+                Save
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
