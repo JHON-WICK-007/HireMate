@@ -122,13 +122,29 @@ interface ProfileInputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 const ProfileInput: React.FC<ProfileInputProps> = ({ error, className = "", ...props }) => {
+  const [isTouched, setIsTouched] = React.useState(false);
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsTouched(true);
+    if (props.onBlur) props.onBlur(e);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsTouched(true);
+    if (props.onChange) props.onChange(e);
+  };
+
+  const showError = isTouched && !!error;
+
   return (
     <div className="relative flex items-center w-full">
       <input
-        className={`${styles.input} ${error ? styles.inputError : ""} ${className}`}
+        className={`${styles.input} ${showError ? styles.inputError : ""} ${className}`}
         {...props}
+        onBlur={handleBlur}
+        onChange={handleChange}
       />
-      {error && (
+      {showError && (
         <div className="absolute right-3 text-red-500 flex items-center pointer-events-none">
           <IconX />
         </div>
@@ -142,13 +158,29 @@ interface ProfileTextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
 }
 
 const ProfileTextarea: React.FC<ProfileTextareaProps> = ({ error, className = "", ...props }) => {
+  const [isTouched, setIsTouched] = React.useState(false);
+
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    setIsTouched(true);
+    if (props.onBlur) props.onBlur(e);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setIsTouched(true);
+    if (props.onChange) props.onChange(e);
+  };
+
+  const showError = isTouched && !!error;
+
   return (
     <div className="relative flex items-start w-full">
       <textarea
-        className={`${styles.textarea} ${error ? styles.inputError : ""} ${className}`}
+        className={`${styles.textarea} ${showError ? styles.inputError : ""} ${className}`}
         {...props}
+        onBlur={handleBlur}
+        onChange={handleChange}
       />
-      {error && (
+      {showError && (
         <div className="absolute right-3 top-3 text-red-500 flex items-center pointer-events-none">
           <IconX />
         </div>
