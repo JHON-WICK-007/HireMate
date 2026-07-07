@@ -29,19 +29,36 @@ const TEMPLATES_LIST = [
   { id: 6, name: "Luxury Editorial", desc: "Champagne gold accents, Garamond serif, luxury editorial feel." }
 ];
 
-interface ResumeCardRenderProps {
+export interface ResumeCardRenderProps {
   templateId: number;
   color: string;
+  data?: {
+    personalInfo: any;
+    summary: string;
+    experiences: any[];
+    educations: any[];
+    skills: any[];
+    projects: any[];
+    certifications: any[];
+  };
 }
 
-export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, color }) => {
-  const personalInfo = useResumeStore((state) => state.personalInfo);
-  const summary = useResumeStore((state) => state.summary);
-  const experiences = useResumeStore((state) => state.experiences);
-  const educations = useResumeStore((state) => state.educations);
-  const skills = useResumeStore((state) => state.skills);
-  const projects = useResumeStore((state) => state.projects);
-  const certifications = useResumeStore((state) => state.certifications);
+export const ResumeCardRender: React.FC<ResumeCardRenderProps> = ({ templateId, color, data }) => {
+  const storePersonalInfo = useResumeStore((state) => state.personalInfo);
+  const storeSummary = useResumeStore((state) => state.summary);
+  const storeExperiences = useResumeStore((state) => state.experiences);
+  const storeEducations = useResumeStore((state) => state.educations);
+  const storeSkills = useResumeStore((state) => state.skills);
+  const storeProjects = useResumeStore((state) => state.projects);
+  const storeCertifications = useResumeStore((state) => state.certifications);
+
+  const personalInfo = data ? data.personalInfo : storePersonalInfo;
+  const summary = data ? data.summary : storeSummary;
+  const experiences = data ? data.experiences : storeExperiences;
+  const educations = data ? data.educations : storeEducations;
+  const skills = data ? data.skills : storeSkills;
+  const projects = data ? data.projects : storeProjects;
+  const certifications = data ? data.certifications : storeCertifications;
 
   // Fallback placeholder data
   const displayFirst = personalInfo.firstName || "Bradley";
@@ -3280,11 +3297,16 @@ export const LivePreviewPanel: React.FC = () => {
 
   React.useEffect(() => {
     if (isModalOpen || isZoomOpen) {
+      document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     } else {
+      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
   }, [isModalOpen, isZoomOpen]);
 
   React.useEffect(() => {

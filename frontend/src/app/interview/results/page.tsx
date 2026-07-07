@@ -761,8 +761,8 @@ return (
                 <button className={styles.btnPrimary} onClick={() => router.push("/interview/setup")}>
                   New interview
                 </button>
-                <button className={styles.btnSecondary} onClick={() => router.push("/profile")}>
-                  View profile history
+                <button className={styles.btnSecondary} onClick={() => router.push("/interview/history")}>
+                  View interview history
                 </button>
               </div>
             </div>

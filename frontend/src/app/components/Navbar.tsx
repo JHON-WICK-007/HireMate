@@ -4,6 +4,13 @@ import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import homeStyles from "../home.module.css";
 
+const IconSpinner = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin-nav 1s linear infinite" }}>
+    <line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+    <style>{`@keyframes spin-nav { 100% { transform: rotate(360deg); } }`}</style>
+  </svg>
+);
+
 interface NavbarProps {
   activePage?: "resume" | "resume-builder" | "pricing" | "contact" | "interview" | "roadmap";
 }
@@ -21,9 +28,9 @@ export default function Navbar({ activePage }: NavbarProps) {
   const [userLoading, setUserLoading] = useState(true);
   const lastScrollY = useRef(0);
 
-  const initials = mounted && user?.fullName
+  const initials = user?.fullName
     ? user.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
-    : (mounted && !userLoading ? "U" : "");
+    : "U";
 
   useEffect(() => {
     setAvatarFailed(false);
@@ -85,6 +92,7 @@ export default function Navbar({ activePage }: NavbarProps) {
       if (savedUser) {
         try {
           setUser(JSON.parse(savedUser));
+          setUserLoading(false);
         } catch (e) {}
       } else {
         // No cached user but has token - need to load from API
@@ -133,10 +141,7 @@ export default function Navbar({ activePage }: NavbarProps) {
         })
         .catch(() => { })
         .finally(() => {
-          // Only set loading false if we didn't already have cached data
-          if (!localStorage.getItem("user")) {
-            setUserLoading(false);
-          }
+          setUserLoading(false);
         });
     } else {
       setUserLoading(false);
@@ -247,7 +252,9 @@ export default function Navbar({ activePage }: NavbarProps) {
                     opacity: (!user?.avatar || avatarFailed || !avatarLoaded) ? 1 : 0,
                     transition: "opacity 0.2s ease"
                   }}
-                />
+                >
+                  {initials}
+                </div>
 
                 {/* Avatar Image - Overlay layer */}
                 {user?.avatar && !avatarFailed && (
@@ -268,18 +275,28 @@ export default function Navbar({ activePage }: NavbarProps) {
                     }}
                   />
                 )}
+
+                {/* Spinner Overlay during initial user API fetch or avatar image download */}
+                {(userLoading || (user?.avatar && !avatarLoaded && !avatarFailed)) && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "rgba(0, 0, 0, 0.55)",
+                      color: "var(--text-primary)",
+                      borderRadius: "50%",
+                      zIndex: 3
+                    }}
+                  >
+                    <IconSpinner />
+                  </div>
+                )}
               </div>
-              <span
-                style={{
-                  display: "inline-block",
-                  width: "64px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  textAlign: "left"
-                }}
-              >
-                {mounted && user?.fullName ? user.fullName.split(" ")[0] : (mounted && !userLoading ? "Profile" : "")}
+              <span>
+                {user?.fullName ? user.fullName.split(" ")[0] : "Profile"}
               </span>
             </Link>
           </div>
@@ -331,7 +348,9 @@ export default function Navbar({ activePage }: NavbarProps) {
                       opacity: (!user?.avatar || avatarFailed || !avatarLoaded) ? 1 : 0,
                       transition: "opacity 0.2s ease"
                     }}
-                  />
+                  >
+                    {initials}
+                  </div>
 
                   {/* Avatar Image - Overlay layer */}
                   {user?.avatar && !avatarFailed && (
@@ -352,8 +371,27 @@ export default function Navbar({ activePage }: NavbarProps) {
                       }}
                     />
                   )}
+
+                  {/* Spinner Overlay during initial user API fetch or avatar image download */}
+                  {(userLoading || (user?.avatar && !avatarLoaded && !avatarFailed)) && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "rgba(0, 0, 0, 0.55)",
+                        color: "var(--text-primary)",
+                        borderRadius: "50%",
+                        zIndex: 3
+                      }}
+                    >
+                      <IconSpinner />
+                    </div>
+                  )}
                 </div>
-                <span>{mounted && user?.fullName ? user.fullName.split(" ")[0] : (mounted && !userLoading ? "Profile" : "")}</span>
+                <span>{user?.fullName ? user.fullName.split(" ")[0] : "Profile"}</span>
               </Link>
             ) : (
               <>

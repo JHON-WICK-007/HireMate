@@ -80,7 +80,7 @@
   --logo-stroke: #000000;
   --logo-check-bg: #ffffff;
   --gradient-text-start: #ffffff;
-  --gradient-text-end: #737373;
+  --gradient-text-end: #a3a3a3;
   --particle-bg: rgba(255, 255, 255, 0.15);
   --particle-bg-even: rgba(255, 255, 255, 0.08);
   --auth-content-bg: rgba(0, 0, 0, 0.8);
@@ -148,7 +148,7 @@
   --logo-stroke: #ffffff;
   --logo-check-bg: #000000;
   --gradient-text-start: #000000;
-  --gradient-text-end: #525252;
+  --gradient-text-end: #737373;
   --particle-bg: rgba(0, 0, 0, 0.1);
   --particle-bg-even: rgba(0, 0, 0, 0.05);
   --auth-content-bg: rgba(255, 255, 255, 0.75);
@@ -199,6 +199,8 @@ input[type="submit"],
 
 html {
   color-scheme: dark;
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
 }
 
 [data-theme="light"] html,

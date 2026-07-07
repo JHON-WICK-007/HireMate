@@ -64,6 +64,23 @@ router.get("/check-session-name", protect, async (req: Request, res: Response): 
   }
 });
 
+// @route   GET /api/interviews
+// @desc    Retrieve all interview sessions for the current user
+// @access  Protected
+router.get("/", protect, async (req: Request, res: Response): Promise<void> => {
+  try {
+    const interviews = await Interview.find({ user: req.user?._id }).sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      interviews,
+    });
+  } catch (error: any) {
+    console.error("Get user interviews error:", error);
+    res.status(500).json({ success: false, message: error.message || "Failed to retrieve interviews." });
+  }
+});
+
+
 router.post("/start", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { company, role, level, questionTypes, totalQuestions, sessionName } = req.body;

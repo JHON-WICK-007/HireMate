@@ -86,6 +86,7 @@ export const TextInput: React.FC<TextInputProps> = ({
 interface TextareaFieldProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   error?: string;
+  required?: boolean;
 }
 
 export const TextareaField: React.FC<TextareaFieldProps> = ({
@@ -94,6 +95,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = ({
   className = "",
   maxLength,
   value,
+  required,
   ...props
 }) => {
   const charCount = typeof value === "string" ? value.length : 0;
@@ -104,7 +106,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = ({
   return (
     <div className={styles.formGroup}>
       <label className={styles.label}>
-        {label}
+        {label} {required && "*"}
         {showCounter && (
           <span
             style={{
@@ -123,6 +125,7 @@ export const TextareaField: React.FC<TextareaFieldProps> = ({
           className={`${styles.textarea} ${error ? styles.inputError : ""} ${className}`}
           maxLength={maxLength}
           value={value}
+          required={required}
           {...props}
         />
         {error && (

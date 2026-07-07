@@ -6,8 +6,6 @@ import { useResumeStore } from "../../store";
 import { StepHeader, cardVariant } from "../navigation";
 import {
   Search,
-  Plus,
-  Check,
   WandSparkles,
   Eraser,
 } from "lucide-react";
@@ -317,7 +315,11 @@ export const SummaryStep: React.FC = () => {
             </div>
             <div className={styles.templateList}>
               {filteredTemplates.map((template) => (
-                <div key={template.id} className={`${styles.summaryTemplateCard} ${selectedTemplateId === template.id ? styles.summaryTemplateCardActive : ""}`}>
+                <div
+                  key={template.id}
+                  className={`${styles.summaryTemplateCard} ${selectedTemplateId === template.id ? styles.summaryTemplateCardActive : ""}`}
+                  onClick={() => handleUseTemplate(template.id, template.text)}
+                >
                   <div className={styles.summaryTemplateCardContent}>
                     <div className={styles.summaryTemplateCardTitle}>
                       <span>{template.title}</span>
@@ -326,14 +328,6 @@ export const SummaryStep: React.FC = () => {
                       {template.text}
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className={styles.templateAddBtn}
-                    onClick={() => handleUseTemplate(template.id, template.text)}
-                    title={`Use ${template.title} template`}
-                  >
-                    {selectedTemplateId === template.id ? <Check size={14} /> : <Plus size={14} />}
-                  </button>
                 </div>
               ))}
               {filteredTemplates.length === 0 && (
@@ -351,12 +345,11 @@ export const SummaryStep: React.FC = () => {
                 <label style={{
                   fontSize: "1rem",
                   fontWeight: 700,
-                  color: "#ffffff",
                   display: "flex",
                   alignItems: "center",
                   width: "100%",
                 }}>
-                  Professional Summary
+                  <span className="gradient-text inline-block">Professional Summary</span>
                   <span style={{
                     fontWeight: 400,
                     fontSize: "0.75rem",

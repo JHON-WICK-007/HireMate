@@ -260,6 +260,5 @@ GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
 
 *   **Project Status:** In Active Development (Beta)
 *   **Current Version:** 2.5.0
-*   **License:** MIT License
 *   **Author:** JHON-WICK-007
 *   **Known Limitations:** Real-time code execution in Coding mode currently runs mockup verification. Full sandboxed execution is slated for future release.

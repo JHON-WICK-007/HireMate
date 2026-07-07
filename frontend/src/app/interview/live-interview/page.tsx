@@ -356,6 +356,8 @@ function LiveInterviewContent() {
   const [avatar, setAvatar] = useState("");
   const [fullName, setFullName] = useState("");
   const [userInitials, setUserInitials] = useState("U");
+  const [avatarLoaded, setAvatarLoaded] = useState(false);
+  const [avatarFailed, setAvatarFailed] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
@@ -633,13 +635,8 @@ const savedUserStr = localStorage.getItem("user");
     toast.error("Please end the session first before navigating away.");
   };
 
-  // Warn on browser refresh/close and block ALL link clicks globally
+  // Block ALL link clicks globally during active session
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = "";
-    };
-
     // Intercept any <a> click on the page (catches footer, external links, etc.)
     const handleGlobalClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest("a");
@@ -650,10 +647,8 @@ const savedUserStr = localStorage.getItem("user");
       }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
     document.addEventListener("click", handleGlobalClick, true);
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
       document.removeEventListener("click", handleGlobalClick, true);
     };
   }, []);
@@ -749,36 +744,66 @@ const savedUserStr = localStorage.getItem("user");
               }}
               onClick={blockNavigation}
             >
-              {avatar ? (
-                <img
-                  src={avatar}
-                  alt="Profile"
-                  style={{
-                    width: "42px",
-                    height: "42px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    border: "1.5px solid var(--border-default)",
-                  }}
-                />
-              ) : (
+              <div style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0, borderRadius: "50%", background: "var(--surface-300)", overflow: "hidden" }}>
+                {/* Initials - only when no valid avatar */}
                 <div
                   style={{
-                    width: "42px",
-                    height: "42px",
+                    position: "absolute",
+                    inset: 0,
                     borderRadius: "50%",
-                    background: "var(--surface-300)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "0.95rem",
                     fontWeight: "bold",
                     color: "var(--text-primary)",
+                    zIndex: 1,
+                    opacity: (!avatar || avatarFailed || !avatarLoaded) ? 1 : 0,
+                    transition: "opacity 0.2s ease"
                   }}
                 >
                   {userInitials}
                 </div>
-              )}
+
+                {/* Avatar Image - Overlay layer */}
+                {avatar && !avatarFailed && (
+                  <img
+                    src={avatar}
+                    alt="Profile"
+                    onLoad={() => setAvatarLoaded(true)}
+                    onError={() => setAvatarFailed(true)}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "1.5px solid var(--border-default)",
+                      zIndex: 2
+                    }}
+                  />
+                )}
+
+                {/* Spinner Overlay during initial session loading or avatar image download */}
+                {(!sessionLoaded || (avatar && !avatarLoaded && !avatarFailed)) && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "rgba(0, 0, 0, 0.55)",
+                      color: "var(--text-primary)",
+                      borderRadius: "50%",
+                      zIndex: 3
+                    }}
+                  >
+                    <IconSpinner />
+                  </div>
+                )}
+              </div>
               <span
                 style={{
                   display: "inline-block",

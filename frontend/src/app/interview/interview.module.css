@@ -98,6 +98,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  width: fit-content;
   margin-bottom: 0.5rem;
 }
 
@@ -278,11 +279,16 @@
 .tcTitle {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  transition: color var(--transition-fast);
+}
+
+.typeCard:not(.typeCardSelectedQuestion):hover .tcTitle {
+  color: var(--text-primary);
 }
 
 .typeCardSelectedQuestion .tcTitle {
@@ -413,7 +419,11 @@
   transform: translateX(-50%);
   font-size: 1.35rem;
   font-weight: 800;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--gradient-text-start) 0%, var(--gradient-text-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  width: fit-content;
   text-align: center;
   letter-spacing: -0.02em;
   white-space: nowrap;
@@ -719,10 +729,10 @@
 }
 
 .endBtn {
-  font-size: 0.8rem;
-  color: var(--error);
-  border: 1px solid var(--error);
-  background: transparent;
+  font-size: 0.95rem;
+  color: #fafaf9;
+  border: 1px solid #dc2626;
+  background: #dc2626;
   border-radius: var(--radius-md);
   padding: 0.5rem 1.2rem;
   width: 140px;
@@ -732,21 +742,21 @@
   justify-content: center;
   gap: 6px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.01em;
   transition: all 0.2s ease;
-  box-shadow: none;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
 }
 
 .endBtn:hover:not(:disabled) {
-  background: var(--error);
-  color: #fff;
-  border-color: var(--error);
-  box-shadow: none;
+  background: #b91c1c;
+  color: #fafaf9;
+  border-color: #b91c1c;
+  box-shadow: 0 4px 16px rgba(185, 28, 28, 0.3);
 }
 
 .endBtn:active:not(:disabled) {
-  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+  transform: scale(0.98);
 }
 
 .endBtn:disabled {
@@ -1279,8 +1289,15 @@
 }
 
 @keyframes filterFadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .filterOption {
@@ -1356,8 +1373,8 @@
   background: transparent;
   border-radius: var(--radius-md);
   transition: background 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-              border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-              box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .qaItemExpanded {
@@ -1794,6 +1811,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  width: fit-content;
   letter-spacing: -0.01em;
 }
 
@@ -2029,5 +2047,499 @@
 @media (max-width: 768px) {
   .sessionNameCenter {
     display: none;
+  }
+}
+
+/* ─── Interview History Styles ──────────────────────────── */
+.historyContainer {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 8rem 2rem 4rem 2rem;
+  min-height: 80vh;
+}
+
+.historyTitle {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--gradient-text-start) 0%, var(--gradient-text-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  width: fit-content;
+  margin-bottom: 0.5rem;
+}
+
+.historySub {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.historyCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  transition: all var(--transition-base);
+}
+
+.historyCard:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.cardLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+.cardMainInfo {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.cardRole {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--gradient-text-start) 0%, var(--gradient-text-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  width: fit-content;
+}
+
+.cardCompany {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.cardMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cardMiddle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  text-align: right;
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: 110px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.statusCompleted {
+  background: rgba(16, 185, 129, 0.08);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.statusInProgress {
+  background: rgba(249, 115, 22, 0.08);
+  color: #f97316;
+  border: 1px solid rgba(249, 115, 22, 0.25);
+}
+
+.cardRight {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.scoreWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.scoreValue {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #10b981;
+}
+
+.scoreSvg {
+  pointer-events: none;
+}
+
+.scoreLabel {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.scorePending {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+}
+
+.historyBtnSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.historyBtnSecondary:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.historyBtnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 140px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--btn-solid-bg);
+  color: var(--btn-solid-fg);
+  border: 1px solid var(--btn-solid-bg);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.historyBtnPrimary:hover {
+  background: var(--btn-solid-hover);
+  border-color: var(--btn-solid-hover);
+}
+
+/* ─── Skeleton Loading ──────────────────────────────────── */
+.skeletonCard {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 2rem;
+  height: 98px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.skeletonLine {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.02) 25%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.02) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ─── Empty state card ──────────────────────────────────── */
+.emptyCard {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 4rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.emptyIcon {
+  width: 48px;
+  height: 48px;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.emptyText {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.emptySubText {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  max-width: 400px;
+  margin-top: -1rem;
+}
+
+@media (max-width: 768px) {
+  .historyCard {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem 1.5rem;
+    gap: 1rem;
+  }
+
+  .cardMiddle {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .cardRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* ─── History Search & Action Row ───────────────────────── */
+.historyHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.searchWrapper {
+  position: relative;
+  flex: 1;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: color var(--transition-fast);
+}
+
+.searchInput {
+  width: 100%;
+  height: 46px;
+  padding: 0 1rem 0 2.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+.searchInput:focus + .searchIcon {
+  color: var(--text-primary);
+}
+
+.newInterviewBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 46px;
+  padding: 0 2.5rem;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--btn-solid-bg);
+  color: var(--btn-solid-fg);
+  border: none;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.newInterviewBtn:hover {
+  background: var(--btn-solid-hover);
+}
+
+@media (max-width: 600px) {
+  .historyHeaderRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .searchWrapper {
+    max-width: none;
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Premium Score Circle (from Optimizer) ──────────────── */
+.historyScoreRing {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.scoreRingSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible !important;
+}
+
+.scoreRingBg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.04);
+  stroke-width: 4;
+}
+
+.scoreRingOuterOrbit {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 0.5;
+  stroke-dasharray: 2 4;
+}
+
+.scoreRingTrack {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 5;
+  stroke-dasharray: 1 3;
+  stroke-linecap: round;
+}
+
+.scoreRingFillGlow {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  filter: blur(6px);
+  opacity: 0.8;
+  transition: stroke-dashoffset 0.08s ease-out;
+}
+
+.scoreRingFill {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.08s ease-out;
+}
+
+.scoreRingIndicatorGlow {
+  animation: indicatorPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes indicatorPulse {
+  0% {
+    r: 4.5;
+    opacity: 0.8;
+  }
+  100% {
+    r: 6;
+    opacity: 1;
+  }
+}
+
+.scoreBannerInner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.scoreBannerNumber {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  line-height: 1;
+  color: var(--score-color, var(--text-primary));
+}
+
+.scoreBannerLabel {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
   }
 }

@@ -86,6 +86,7 @@ export const ProjectsStep: React.FC = () => {
                   onChange={(e) => handleUpdate(proj.id, "description", e.target.value)}
                   maxLength={500}
                   placeholder="e.g. Designed and implemented a responsive web app utilizing Next.js..."
+                  required
                   error={projectDescError}
                 />
               </div>

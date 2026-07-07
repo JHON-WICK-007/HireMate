@@ -26,7 +26,7 @@ interface StepHeaderProps {
 export const StepHeader: React.FC<StepHeaderProps> = ({ title, description }) => {
   return (
     <motion.div variants={cardVariant} className="mb-6 text-left">
-      <h2 className="font-display font-bold text-2xl lg:text-3xl text-white tracking-tight mb-2">
+      <h2 className="font-display font-bold text-2xl lg:text-3xl tracking-tight mb-2 gradient-text inline-block">
         {title}
       </h2>
       <p className="text-sm text-gray-400 font-sans">
@@ -70,7 +70,7 @@ export const isValidUrl = (url: string): boolean => {
 
 export const isValidGithubUrl = (url: string): boolean => {
   if (!url) return true;
-  return /^(https?:\/\/)?(www\.)?github\.com\/[a-zA-Z0-9\-_.]{1,}\/?$/.test(url.trim());
+  return /^(https?:\/\/)?(www\.)?github\.com\/[a-zA-Z0-9\-_./]{1,}\/?$/.test(url.trim());
 };
 
 export const isValidCompany = (comp: string): boolean => {
