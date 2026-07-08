@@ -222,32 +222,24 @@ const checkCategories = [
 
 const faqItems = [
   {
-    question: "Do I get free updates?",
-    answer: "Yes, absolutely! We continuously refine our platform, incorporating new ATS algorithm adjustments, UI enhancements, and diagnostic parameters. You will receive all updates automatically and for free."
-  },
-  {
-    question: "What does the number of \"Projects\" refer to?",
-    answer: "Projects represent distinct workspaces where you can optimize, manage, and version-control different resumes. You can keep multiple versions tailored for different job profiles (e.g., Software Engineer, Product Manager) simultaneously."
-  },
-  {
-    question: "Can I upgrade to a higher plan?",
-    answer: "Yes, you can upgrade your plan at any time through your Profile Billing dashboard. Upgrades take effect immediately, unlocking additional project slots, faster processing, and advanced mock interview sessions."
-  },
-  {
-    question: "What does \"Unlimited Projects\" mean?",
-    answer: "Unlimited Projects means there is no cap on the number of resume optimization workspaces you can create. This is ideal for job seekers targeting multiple diverse roles who want separate, customized resume versions for every single application."
-  },
-  {
-    question: "How can I add Gemini API Key?",
-    answer: "You can securely add your Gemini API Key in your Profile Settings panel. By providing your own key, you bypass public rate limits and ensure maximum performance during peak hours."
-  },
-  {
     question: "How does the AI Resume Optimizer analyze my resume?",
-    answer: "HireMate runs your resume through a comprehensive 27-parameter diagnostic scanner. It checks ATS parsing compatibility, sections order, recruiter red flags, content density, and job tailoring matching to output a ready-to-use analysis report."
+    answer: "HireMate runs your resume through a comprehensive 27-parameter diagnostic scanner. It checks ATS parsing compatibility, sections order, recruiter red flags, content density, and job-tailoring matching to output a detailed, ready-to-use analysis report."
   },
   {
-    question: "Is my resume data secure?",
-    answer: "Yes. All resumes uploaded to HireMate are encrypted in transit and at rest, processed within isolated secure servers, and never sold, shared, or used for AI training without your explicit authorization."
+    question: "Is my resume data secure and private?",
+    answer: "Yes, absolutely. All resumes uploaded to HireMate are encrypted in transit and at rest, processed within isolated secure servers, and never sold, shared, or used for training AI models without your explicit authorization."
+  },
+  {
+    question: "How can I configure my own Gemini API Key?",
+    answer: "You can securely add your Gemini API Key in your Profile Settings panel. By providing your own key, you can bypass public rate limits and ensure maximum performance for resume optimization and mock interviews."
+  },
+  {
+    question: "What does a \"Project\" refer to in the Resume Optimizer?",
+    answer: "A Project represents a distinct workspace where you can optimize, manage, and version-control a specific resume. This allows you to keep multiple versions tailored for different job profiles (e.g., Software Engineer vs. Product Manager) simultaneously."
+  },
+  {
+    question: "Do I get updates when ATS screening algorithms change?",
+    answer: "Yes, absolutely! We continuously refine our platform, incorporating new ATS algorithm adjustments, recruitment trends, and diagnostic parameters to ensure your resumes always score high."
   }
 ];
 

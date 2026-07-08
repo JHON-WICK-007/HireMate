@@ -29,6 +29,18 @@ const TEMPLATES_LIST = [
   { id: 6, name: "Luxury Editorial", desc: "Champagne gold accents, Garamond serif, luxury editorial feel." }
 ];
 
+export const ResumeSpinner: React.FC = () => {
+  return (
+    <div className="w-[794px] h-[1123px] bg-white flex flex-col items-center justify-center text-zinc-400 gap-8 font-sans select-none pointer-events-none">
+      <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}>
+        <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+        <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+      </svg>
+      <span className="text-lg font-bold tracking-wide text-[#000000]/70">Loading Resume Preview...</span>
+    </div>
+  );
+};
+
 export interface ResumeCardRenderProps {
   templateId: number;
   color: string;
@@ -3247,6 +3259,7 @@ export const LivePreviewPanel: React.FC = () => {
   const toast = useToast();
   const selectedTemplateId = useResumeStore((state) => state.selectedTemplateId);
   const selectedColor = useResumeStore((state) => state.selectedColor);
+  const hasHydrated = useResumeStore((state) => state.hasHydrated);
   const actions = useResumeStore((state) => state.actions);
 
   // Modal states
@@ -3259,8 +3272,12 @@ export const LivePreviewPanel: React.FC = () => {
   const [hoverColor, setHoverColor] = useState<string | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    setTempTemplateId(selectedTemplateId);
+    setTempColor(selectedColor);
+  }, [selectedTemplateId, selectedColor]);
 
   const fitToScreen = React.useCallback(() => {
     const vw = window.innerWidth;
@@ -3342,10 +3359,10 @@ export const LivePreviewPanel: React.FC = () => {
         >
           <div style={{ zoom: 0.44, width: "794px", userSelect: "none" }}>
             <div id="resume-print-capture" onDragStart={(e) => e.preventDefault()}>
-              {mounted ? (
+              {mounted && hasHydrated ? (
                 <ResumeCardRender templateId={selectedTemplateId} color={selectedColor} />
               ) : (
-                <ResumeCardRender templateId={1} color="#B87333" />
+                <ResumeSpinner />
               )}
             </div>
           </div>

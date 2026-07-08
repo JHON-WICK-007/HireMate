@@ -34,6 +34,7 @@ export default function ResumeBuilderPage() {
   const toast = useToast();
   const currentStep = useResumeStore((state) => state.currentStep);
   const selectedColor = useResumeStore((state) => state.selectedColor);
+  const hasHydrated = useResumeStore((state) => state.hasHydrated);
   const actions = useResumeStore((state) => state.actions);
   const [isExporting, setIsExporting] = useState(false);
 
@@ -70,6 +71,8 @@ export default function ResumeBuilderPage() {
   }, [currentStep]);
 
   useEffect(() => {
+    if (!hasHydrated) return;
+
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Authentication Required", "Please log in or sign up to access the Resume Builder.");
@@ -125,7 +128,7 @@ export default function ResumeBuilderPage() {
         if (state.projects.length === 0) actions.addProject();
         if (state.certifications.length === 0) actions.addCertification();
       });
-  }, [router, actions]);
+  }, [router, actions, hasHydrated]);
 
 
 

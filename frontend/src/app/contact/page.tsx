@@ -280,18 +280,32 @@ export default function ContactPage() {
                   />
                 </div>
 
-                <div className={styles.formGroup}>
-                  <label htmlFor="message" className={styles.label}>Message *</label>
+                <div className={styles.formGroup} style={{ marginBottom: "-10px" }}>
+                  <label htmlFor="message" className={styles.label}>
+                    Message *
+                    <span className={styles.charHint} style={formData.message.length >= 1900 ? { color: formData.message.length >= 2000 ? "#ef4444" : "#f59e0b" } : undefined}>
+                      {formData.message.length}/2000
+                    </span>
+                  </label>
                   <textarea
                     id="message"
                     name="message"
                     required
                     rows={5}
+                    maxLength={2000}
                     value={formData.message}
                     onChange={handleInputChange}
                     className={styles.textarea}
                     placeholder="Write your message here..."
                   />
+                  {/* Fixed space reserved for warning message to prevent button shifts */}
+                  <div style={{ height: "16px", marginTop: "4px", display: "flex", alignItems: "center" }}>
+                    {formData.message.length >= 1900 && (
+                      <span style={{ color: formData.message.length >= 2000 ? "#ef4444" : "#f59e0b", fontSize: "0.78rem", display: "block" }}>
+                        {formData.message.length >= 2000 ? "Character limit reached." : `Only ${2000 - formData.message.length} characters left.`}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <button

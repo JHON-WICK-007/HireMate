@@ -297,6 +297,17 @@ a.infoValue:hover {
   font-weight: 500;
   color: #94a3b8;
   letter-spacing: 0.01em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.charHint {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: #64748b;
+  margin-left: auto;
 }
 
 [data-theme="light"] .label {
@@ -327,6 +338,7 @@ a.infoValue:hover {
   min-height: 130px;
   padding: 14px 16px;
   line-height: 1.6;
+  resize: none;
 }
 
 .input::placeholder,

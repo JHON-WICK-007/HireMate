@@ -12,7 +12,7 @@ const IconSpinner = () => (
 );
 
 interface NavbarProps {
-  activePage?: "resume" | "resume-builder" | "pricing" | "contact" | "interview" | "roadmap";
+  activePage?: "resume" | "resume-builder" | "pricing" | "contact" | "interview" | "roadmap" | "interview-history";
 }
 
 export default function Navbar({ activePage }: NavbarProps) {
@@ -23,6 +23,7 @@ export default function Navbar({ activePage }: NavbarProps) {
   const [navHidden, setNavHidden] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [resumeDropdown, setResumeDropdown] = useState(false);
+  const [interviewDropdown, setInterviewDropdown] = useState(false);
   const [avatarFailed, setAvatarFailed] = useState(false);
   const [avatarLoaded, setAvatarLoaded] = useState(false);
   const [userLoading, setUserLoading] = useState(true);
@@ -216,7 +217,52 @@ export default function Navbar({ activePage }: NavbarProps) {
               </div>
             )}
           </div>
-          <Link href="/interview/setup" className={homeStyles.navLink} style={activePage === "interview" ? activeLinkStyle : undefined}>Mock Interview</Link>
+          <div
+            className={homeStyles.dropdownContainer}
+            onMouseEnter={() => setInterviewDropdown(true)}
+            onMouseLeave={() => setInterviewDropdown(false)}
+          >
+            <Link
+              href="/interview/setup"
+              className={`${homeStyles.navLink} ${homeStyles.dropdownTrigger} ${interviewDropdown || activePage === "interview" || activePage === "interview-history" ? homeStyles.dropdownTriggerActive : ""}`}
+            >
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                Mock Interview
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{
+                    transition: "transform 0.2s ease",
+                    transform: interviewDropdown ? "rotate(180deg)" : "rotate(0deg)"
+                  }}
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </span>
+            </Link>
+            {interviewDropdown && (
+              <div className={homeStyles.dropdownMenu}>
+                <Link
+                  href="/interview/setup"
+                  className={`${homeStyles.dropdownLink} ${activePage === "interview" ? homeStyles.dropdownLinkActive : ""}`}
+                >
+                  Start Interview
+                </Link>
+                <Link
+                  href="/interview/history"
+                  className={`${homeStyles.dropdownLink} ${activePage === "interview-history" ? homeStyles.dropdownLinkActive : ""}`}
+                >
+                  Interview History
+                </Link>
+              </div>
+            )}
+          </div>
           <Link href="/roadmap" className={homeStyles.navLink} style={activePage === "roadmap" ? activeLinkStyle : undefined}>Career Roadmap</Link>
           <Link href="/pricing" className={homeStyles.navLink} style={activePage === "pricing" ? activeLinkStyle : undefined}>Pricing</Link>
           <Link href="/contact" className={homeStyles.navLink} style={activePage === "contact" ? activeLinkStyle : undefined}>Contact Us</Link>
@@ -323,6 +369,7 @@ export default function Navbar({ activePage }: NavbarProps) {
           <Link href="/resume-optimizer" className={homeStyles.mobileLink} style={activePage === "resume" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
           <Link href="/resume-builder" className={homeStyles.mobileLink} style={activePage === "resume-builder" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Resume Builder</Link>
           <Link href="/interview/setup" className={homeStyles.mobileLink} style={activePage === "interview" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
+          <Link href="/interview/history" className={homeStyles.mobileLink} style={activePage === "interview-history" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Interview History</Link>
           <Link href="/roadmap" className={homeStyles.mobileLink} style={activePage === "roadmap" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Career Roadmap</Link>
           <Link href="/pricing" className={homeStyles.mobileLink} style={activePage === "pricing" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Pricing</Link>
           <Link href="/contact" className={homeStyles.mobileLink} style={activePage === "contact" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Contact Us</Link>

@@ -108,7 +108,7 @@ export default function InterviewHistoryPage() {
 
   return (
     <div className={styles.page} style={{ minHeight: "100vh" }}>
-      <Navbar activePage="interview" />
+      <Navbar activePage="interview-history" />
       <HomeBackdrop />
 
       <main className={styles.historyContainer}>

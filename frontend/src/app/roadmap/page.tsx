@@ -25,7 +25,8 @@ import {
   Briefcase,
   GraduationCap,
   Info,
-  Eraser
+  Eraser,
+  Sparkles
 } from "lucide-react";
 import styles from "./roadmap.module.css";
 import Navbar from "../components/Navbar";
@@ -319,10 +320,10 @@ export default function CareerRoadmapPage() {
         <header className={styles.heroCompact}>
           <div className={styles.heroHeaderLeft}>
             <h1 className={styles.heroCompactTitle}>
-              <Compass className="text-orange-500" size={28} /> Career Journey
+              <Compass className="text-cyan-500" size={28} /> Career Journey
             </h1>
             <div className={styles.roleBadge}>
-              <Target size={12} className="text-orange-500" />
+              <Target size={12} className="text-cyan-500" />
               {userContext?.targetCompany} - {userContext?.targetRole} - {userContext?.experienceLevel}
             </div>
           </div>
@@ -465,7 +466,7 @@ export default function CareerRoadmapPage() {
                     ]}
                   />
 
-                  <div className={styles.field}>
+                  <div className={styles.field} style={{ marginTop: "24px" }}>
                     <div className={styles.sliderHeader}>
                       <label className={styles.label}>Weekly Study Plan</label>
                       <span className={styles.sliderValue}>{weeklyStudyHours} hrs / week</span>
@@ -492,17 +493,18 @@ export default function CareerRoadmapPage() {
                 <div className={styles.field}>
                   <label className={styles.label}>Learning Style</label>
                   <div className={styles.chipGroup}>
-                    {LEARNING_STYLES.map((style) => (
-                      <div
-                        key={style}
-                        onClick={() => toggleLearningStyle(style)}
-                        className={`${styles.chip} ${
-                          selectedLearningStyles.includes(style) ? styles.chipActive : ""
-                        }`}
-                      >
-                        {style}
-                      </div>
-                    ))}
+                    {LEARNING_STYLES.map((style) => {
+                      const isSelected = selectedLearningStyles.includes(style);
+                      return (
+                        <div
+                          key={style}
+                          onClick={() => toggleLearningStyle(style)}
+                          className={isSelected ? styles.chipSelected : styles.chipUnselected}
+                        >
+                          <span>{style}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -718,7 +720,7 @@ export default function CareerRoadmapPage() {
                                                     className={styles.resourceLink}
                                                     onClick={(e) => e.stopPropagation()}
                                                   >
-                                                    <span className="text-orange-500 font-semibold">
+                                                    <span className="text-cyan-500 font-semibold">
                                                       [{res.source}]
                                                     </span>
                                                     <span>{res.name}</span>
@@ -853,7 +855,7 @@ export default function CareerRoadmapPage() {
                           d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                         />
                         <path
-                          className="text-orange-500"
+                          className="text-cyan-500"
                           strokeWidth="2.5"
                           strokeDasharray={`${overallProgress}, 100`}
                           strokeLinecap="round"
@@ -912,7 +914,7 @@ export default function CareerRoadmapPage() {
                   <div className={styles.certsGrid}>
                     <div className={styles.certCard}>
                       <div className={styles.certIcon}>
-                        <Award className="text-orange-500" size={24} />
+                        <Award className="text-cyan-500" size={24} />
                       </div>
                       <div className={styles.certInfo}>
                         <span className={styles.certName}>AWS Certified Developer Associate</span>
@@ -923,7 +925,7 @@ export default function CareerRoadmapPage() {
 
                     <div className={styles.certCard}>
                       <div className={styles.certIcon}>
-                        <Award className="text-orange-500" size={24} />
+                        <Award className="text-cyan-500" size={24} />
                       </div>
                       <div className={styles.certInfo}>
                         <span className={styles.certName}>HashiCorp Certified Terraform Associate</span>
@@ -948,7 +950,7 @@ export default function CareerRoadmapPage() {
                       incrementStreak();
                       toast.success("Streak validated! You earned 10 XP.");
                     }}
-                    className="text-xs font-semibold text-white bg-orange-600 hover:bg-orange-500 px-4 py-2 rounded-md transition-all active:scale-[0.98]"
+                    className="text-xs font-semibold text-white bg-cyan-600 hover:bg-cyan-500 px-4 py-2 rounded-md transition-all active:scale-[0.98]"
                   >
                     Verify Today's Progress
                   </button>

@@ -3314,6 +3314,11 @@ his
   display: flex;
   flex-direction: row;
   position: relative;
+  /* Anti-flicker hardware acceleration */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @keyframes neonOrbit1 {
@@ -3347,6 +3352,10 @@ his
   padding: 2.5rem;
   position: relative;
   overflow: hidden;
+  /* Anti-flicker hardware acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Static Subtle Gradient Background */
@@ -3381,6 +3390,10 @@ his
   justify-content: center;
   gap: 1.25rem;
   position: relative;
+  /* Anti-flicker hardware acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .dotRow {

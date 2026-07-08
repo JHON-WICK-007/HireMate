@@ -85,6 +85,7 @@ export interface ResumeState {
   certifications: CertificationEntry[];
   showProficiency: boolean;
   selectedSummaryTemplateId: string | null;
+  hasHydrated: boolean;
 }
 
 export interface ResumeStore extends ResumeState {
@@ -118,6 +119,7 @@ export interface ResumeStore extends ResumeState {
     setSelectedColor: (color: string) => void;
     setSelectedSummaryTemplateId: (id: string | null) => void;
     loadFromProfile: (profile: any) => void;
+    setHasHydrated: (hydrated: boolean) => void;
   };
 }
 
@@ -160,6 +162,7 @@ export const useResumeStore = create<ResumeStore>()(
   certifications: defaultCertifications,
   showProficiency: false,
   selectedSummaryTemplateId: null,
+  hasHydrated: false,
 
   actions: {
     goToStep: (step) => set((state) => {
@@ -453,14 +456,18 @@ export const useResumeStore = create<ResumeStore>()(
         certifications: state.certifications
       };
     }),
+    setHasHydrated: (hydrated) => set({ hasHydrated: hydrated }),
   },
 }),
 {
   name: "hiremate-resume-step",
   partialize: (state) => {
-    const { actions, ...rest } = state;
+    const { actions, hasHydrated, ...rest } = state;
     return rest;
   },
+  onRehydrateStorage: () => (state) => {
+    state?.actions.setHasHydrated(true);
+  }
 }
 )
 );

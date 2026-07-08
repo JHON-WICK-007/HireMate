@@ -12,36 +12,32 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const faqItems = [
   {
-    question: "What payment methods do you accept?",
-    answer: "We accept all major credit and debit cards (Visa, MasterCard, American Express), UPI payments, and net banking. All transactions are securely processed through Razorpay."
+    question: "Can I try HireMate AI for free before upgrading?",
+    answer: "Yes! Our Free plan allows you to try basic features including 3 resume analyses and 5 mock interviews. You can also start a 7-day free trial of our Professional plan with no credit card required to experience the full premium suite."
   },
   {
-    question: "Is there a free trial for the Professional plan?",
-    answer: "Yes! You can try the Professional plan for free for 7 days. No credit card required. If you decide not to continue, you will automatically be moved to the Free plan with no charges."
+    question: "What payment methods do you support?",
+    answer: "We support all major credit and debit cards (Visa, MasterCard, American Express), UPI payments, and popular net banking options. All payments are securely processed through Razorpay."
+  },
+  {
+    question: "How do I cancel my subscription and what happens when it expires?",
+    answer: "You can cancel your subscription at any time with a single click from your Profile Billing settings. Once cancelled or expired, your account will downgrade to the Free plan, but all of your saved resumes, interview history, and data will remain securely preserved."
   },
   {
     question: "Can I switch between monthly and yearly billing?",
-    answer: "Absolutely. You can switch from monthly to yearly billing (and vice versa) at any time from your Profile Billing dashboard. When switching to yearly, you will receive a pro-rata credit for the remaining days of your current billing cycle."
-  },
-  {
-    question: "How do I cancel my subscription?",
-    answer: "You can cancel your subscription at any time from your Profile Billing settings. Your access will continue until the end of your current billing period. No cancellation fees apply."
+    answer: "Yes, absolutely. You can upgrade from monthly to yearly billing (and vice versa) at any time from your Profile Billing dashboard. Switches to yearly billing apply a pro-rata credit of your unused monthly days to the new invoice."
   },
   {
     question: "Do you offer refunds?",
-    answer: "We offer a full refund within 7 days of any new purchase or upgrade if you are not satisfied. After 7 days, refunds are handled on a case-by-case basis. Contact our support team for assistance."
-  },
-  {
-    question: "What happens when my plan expires?",
-    answer: "When your plan expires, you will be automatically moved to the Free plan. Your data and history are preserved. You can re-upgrade at any time to regain access to premium features."
+    answer: "We offer a 100% full refund within 7 days of any new subscription or upgrade purchase if you are not completely satisfied. To request a refund, simply reach out to our team at support@hiremate.ai."
   },
   {
     question: "Are there discounts for students or teams?",
-    answer: "Yes! We offer a 50% discount for verified students with a valid student ID. For teams of 5 or more, our Enterprise plan includes volume discounts. Contact us at support@hiremate.ai for custom team pricing."
+    answer: "Yes! We offer a 50% discount for verified students with a valid academic email address or ID. We also offer custom bulk volume pricing for enterprise teams of 5 or more members. Contact us for details."
   },
   {
-    question: "Is my payment information secure?",
-    answer: "Absolutely. All payment processing is handled by Razorpay, a PCI-DSS Level 1 compliant payment gateway. We never store your card details on our servers. All transactions are encrypted end-to-end."
+    question: "Is my payment and transaction secure?",
+    answer: "Absolutely. All transactions are handled by Razorpay, a PCI-DSS Level 1 compliant gateway. We never store or process your credit card details on our servers, and all transactions are fully encrypted end-to-end."
   }
 ];
 
