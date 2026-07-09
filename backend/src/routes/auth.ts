@@ -4,6 +4,8 @@ import passport from "passport";
 import User, { IUser } from "../models/User";
 import { protect } from "../middleware/auth";
 import "../config/passport";
+import crypto from "crypto";
+import { sendEmail } from "../utils/sendEmail";
 
 declare global {
   namespace Express {
@@ -300,5 +302,158 @@ router.get(
     }
   }
 );
+
+// ─── Rate limit for forgot-password (in-memory) ─────────────
+const forgotPasswordRateLimit = new Map<string, number>();
+
+// ─── POST /api/auth/forgot-password ─────────────────────────
+router.post("/forgot-password", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+
+    if (!email || typeof email !== "string") {
+      res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address.",
+      });
+      return;
+    }
+
+    // Rate limit: 1 request per 60 seconds per email
+    const emailKey = email.trim().toLowerCase();
+    const now = Date.now();
+    const lastRequest = forgotPasswordRateLimit.get(emailKey);
+    if (lastRequest && now - lastRequest < 60000) {
+      const waitSeconds = Math.ceil((60000 - (now - lastRequest)) / 1000);
+      res.status(429).json({
+        success: false,
+        message: `Please wait ${waitSeconds} seconds before requesting another reset link.`,
+      });
+      return;
+    }
+    forgotPasswordRateLimit.set(emailKey, now);
+
+    const user = await User.findOne({ email: emailKey });
+
+    if (!user) {
+      // Silently succeed to prevent email enumeration
+      res.status(200).json({
+        success: true,
+        message: "A password reset link has been sent to your email address.",
+      });
+      return;
+    }
+
+    // Generate reset token
+    const resetToken = user.getResetPasswordToken();
+
+    // Save user with token properties (turn off validation temporarily to allow save without hashing password again)
+    await user.save({ validateBeforeSave: false });
+
+    // Create reset URL
+    const resetUrl = `${process.env.CLIENT_URL || "http://localhost:3000"}/auth/reset-password?token=${resetToken}`;
+
+    const message = `You are receiving this email because you (or someone else) have requested a password reset. Reset your password here: ${resetUrl}`;
+
+    const html = `
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; text-align: center; padding: 2.5rem; max-width: 480px; margin: 0 auto;">
+  <h2 style="color: #0f172a; font-size: 22px; margin-bottom: 0.5rem;">Reset Your Password</h2>
+  <p style="color: #64748b; font-size: 14px; margin-bottom: 2rem;">Click the button below to set a new password for your HireMate AI account.</p>
+  <a href="${resetUrl}" style="display: inline-block; padding: 14px 40px; background: #ffffff; color: #000000; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 16px; border: 1px solid #e2e8f0;">Reset Password</a>
+  <p style="color: #64748b; font-size: 12px; margin-top: 2rem;">This link expires in 10 minutes. If you didn't request this, ignore this email.</p>
+</div>`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "HireMate AI - Password Reset Link",
+        message,
+        html,
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "A password reset link has been sent to your email address.",
+        resetUrl: process.env.NODE_ENV === "development" ? resetUrl : undefined,
+      });
+    } catch (err) {
+      console.error("Email send failed:", err);
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      res.status(500).json({
+        success: false,
+        message: "The reset email could not be sent. Please try again later.",
+      });
+    }
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again.",
+    });
+  }
+});
+
+// ─── POST /api/auth/reset-password/:resettoken ───────────────
+router.post("/reset-password/:resettoken", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { password } = req.body;
+
+    if (!password || typeof password !== "string") {
+      res.status(400).json({
+        success: false,
+        message: "Please provide a valid password.",
+      });
+      return;
+    }
+
+    // Password strength check (Minimum 12 chars, 1 upper, 1 lower, 1 digit, 1 special)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+    if (!passwordRegex.test(password)) {
+      res.status(400).json({
+        success: false,
+        message: "Password must be at least 12 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+      });
+      return;
+    }
+
+    // Get hashed token
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.resettoken as string)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      res.status(400).json({
+        success: false,
+        message: "The password reset token is invalid or has expired.",
+      });
+      return;
+    }
+
+    // Set new password
+    user.password = password;
+    user.authProvider = "local";
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    sendTokenResponse(user, 200, res);
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again.",
+    });
+  }
+});
 
 export default router;

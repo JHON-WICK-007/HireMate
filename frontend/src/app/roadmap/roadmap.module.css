@@ -93,6 +93,7 @@
   font-weight: 700;
   letter-spacing: -0.03em;
   background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: flex;
@@ -107,6 +108,7 @@
   letter-spacing: -0.04em;
   line-height: 1.1;
   background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;

@@ -409,7 +409,13 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
     <div className="flex flex-col items-center gap-2">
       <div
         className={styles.avatarWrap}
-        onClick={() => fileInputRef.current?.click()}
+        onClick={(e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest(`.${styles.avatarDeleteBtn}`)) {
+            return;
+          }
+          fileInputRef.current?.click();
+        }}
       >
         {/* Initials Fallback - Base layer */}
         <div className={styles.avatarFallback}>{initials}</div>

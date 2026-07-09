@@ -405,7 +405,7 @@
   transition: color 0.2s ease-out;
 }
 
-.input:focus ~ .inputIcon,
+.input:focus~.inputIcon,
 .inputWrapper:focus-within .inputIcon {
   color: #e2e8f0;
 }
@@ -414,7 +414,7 @@
   color: #64748b;
 }
 
-[data-theme="light"] .input:focus ~ .inputIcon,
+[data-theme="light"] .input:focus~.inputIcon,
 [data-theme="light"] .inputWrapper:focus-within .inputIcon {
   color: #7c3aed;
 }
@@ -668,7 +668,7 @@
 /* Social */
 .socialButtons {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
 }
 
@@ -693,7 +693,7 @@
 }
 
 .socialBtn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.4);
   border-color: rgba(255, 255, 255, 0.15);
 }
 
@@ -704,7 +704,7 @@
 }
 
 [data-theme="light"] .socialBtn:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.7);
   border-color: rgba(0, 0, 0, 0.15);
 }
 
@@ -834,6 +834,7 @@
     transform: translateY(-20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -955,7 +956,7 @@
     top: 50%;
     left: calc(100% + 12px);
     right: auto;
-    width: 260px;
+    width: 240px;
     margin-top: 0;
     animation: tooltipFadeInSideways 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
@@ -977,6 +978,7 @@
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -988,6 +990,7 @@
     opacity: 0;
     transform: translateY(-50%) translateX(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(-50%) translateX(0);
@@ -1054,11 +1057,7 @@
   align-items: center;
   text-align: center;
   padding: 3rem;
-  background: rgba(10, 10, 10, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   max-width: 400px;
   width: 90%;
   animation: scale-up-fade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -1101,11 +1100,14 @@
 }
 
 @keyframes pulseLogo {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.8;
     box-shadow: 0 8px 32px rgba(255, 255, 255, 0.02);
   }
+
   50% {
     transform: scale(1.05);
     opacity: 1;
@@ -1117,6 +1119,7 @@
   0% {
     left: -40%;
   }
+
   100% {
     left: 100%;
   }
@@ -1141,6 +1144,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -1151,8 +1155,48 @@
     opacity: 0;
     transform: scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Password Header and Hide/Show Button */
+.passwordHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.togglePasswordBtn {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-sans);
+  transition: color 0.15s ease;
+}
+
+.togglePasswordBtn:hover {
+  color: #f1f5f9;
+}
+
+[data-theme="light"] .togglePasswordBtn {
+  color: #94a3b8;
+}
+
+[data-theme="light"] .togglePasswordBtn:hover {
+  color: #0f172a;
+}
+
+/* Hide default browser password reveal eye (Edge / IE / Chrome) */
+.input::-ms-reveal,
+.input::-ms-clear {
+  display: none;
 }

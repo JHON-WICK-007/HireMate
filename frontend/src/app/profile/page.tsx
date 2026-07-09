@@ -205,7 +205,16 @@ export default function ProfilePage() {
   useEffect(() => {
     setAvatarFailed(false);
     setAvatarLoaded(true);
-  }, [avatar]);
+    if (mounted) {
+      if (avatar && avatar.trim() !== "") {
+        document.documentElement.style.setProperty('--user-avatar-url', `url("${avatar}")`);
+        document.documentElement.classList.add('has-avatar');
+      } else {
+        document.documentElement.style.setProperty('--user-avatar-url', 'none');
+        document.documentElement.classList.remove('has-avatar');
+      }
+    }
+  }, [avatar, mounted]);
 
   const [phone, setPhone] = useState("");
   const [bio, setBio] = useState("");
@@ -294,7 +303,7 @@ export default function ProfilePage() {
           const cachedFullName = savedUser ? JSON.parse(savedUser).fullName : "";
           const cachedAvatar = savedUser ? JSON.parse(savedUser).avatar : "";
           
-          const finalAvatar = (u.avatar && u.avatar.trim() !== "") ? u.avatar : cachedAvatar;
+          const finalAvatar = (u.avatar !== undefined) ? (u.avatar || "") : (cachedAvatar || "");
           const finalFullName = u.fullName || cachedFullName;
           
           const finalUser = {
@@ -445,7 +454,18 @@ export default function ProfilePage() {
           {/* ── Left: Profile Card ── */}
           <motion.aside className={styles.profileCard} variants={cardVariant}>
             {/* Avatar */}
-            <div className={`${styles.avatarWrap} avatar-container-instant`} onClick={() => !isUploadingAvatar && document.getElementById("avatarInput")?.click()}>
+            <div
+              className={`${styles.avatarWrap} avatar-container-instant`}
+              onClick={(e) => {
+                const target = e.target as HTMLElement;
+                if (target.closest(`.${styles.avatarDeleteBtn}`)) {
+                  return;
+                }
+                if (!isUploadingAvatar) {
+                  document.getElementById("avatarInput")?.click();
+                }
+              }}
+            >
               {/* Initials Fallback - Base layer */}
               <div className={`${styles.avatarFallback} avatar-fallback-prevent-flash`} />
 
@@ -466,7 +486,7 @@ export default function ProfilePage() {
               <span className={styles.avatarEditBtn} title="Change photo">
                 {isUploadingAvatar ? <div className={styles.avatarLoading} /> : <IconCamera />}
               </span>
-              {avatar && <button className={styles.avatarDeleteBtn} title="Remove photo" onClick={handleAvatarDelete}><IconTrash /></button>}
+              {avatar && <button type="button" className={styles.avatarDeleteBtn} title="Remove photo" onClick={handleAvatarDelete}><IconTrash /></button>}
               <input id="avatarInput" type="file" accept="image/*" onChange={handleAvatarChange} style={{ display: "none" }} disabled={isUploadingAvatar} />
             </div>
 
