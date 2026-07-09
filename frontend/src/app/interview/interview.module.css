@@ -39,7 +39,7 @@
   border-radius: var(--radius-lg);
   border: none;
   box-shadow: none;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   transition: all var(--transition-base);
@@ -1129,6 +1129,7 @@
 
 .filterWrapper {
   position: relative;
+  z-index: 50;
 }
 
 .filterColorDot {
@@ -1205,26 +1206,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: fit-content;
-  height: 40px;
-  margin: 8px auto 0;
+  width: 100%;
+  height: 36px;
+  margin: 12px auto 0;
   gap: 0.35rem;
   font-size: 0.82rem;
-  font-weight: 500;
-  padding: 0 2.5rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--error);
-  background: transparent;
-  color: var(--error);
+  font-weight: 700;
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid #dc2626;
+  background: #dc2626;
+  color: #fafaf9;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
   font-family: var(--font-sans);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
 }
 
 .filterReset:hover {
-  border-color: var(--error);
-  color: #fff;
-  background: var(--error);
+  background: #b91c1c;
+  color: #fafaf9;
+  border-color: #b91c1c;
+  box-shadow: 0 4px 16px rgba(185, 28, 28, 0.3);
+}
+
+.filterReset:active {
+  transform: scale(0.98);
 }
 
 .filterBtn {
@@ -1270,22 +1277,23 @@
 }
 
 .filterDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
   min-width: 200px;
-  background: rgba(15, 15, 20, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  padding: 6px;
-  z-index: 9999;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  animation: filterFadeIn 0.15s ease-out;
+  background: #000000 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  z-index: 100;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: filterFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :global([data-theme="light"]) .filterDropdown {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 @keyframes filterFadeIn {

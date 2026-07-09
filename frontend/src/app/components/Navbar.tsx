@@ -13,9 +13,10 @@ const IconSpinner = () => (
 
 interface NavbarProps {
   activePage?: "resume" | "resume-builder" | "pricing" | "contact" | "interview" | "roadmap" | "interview-history";
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
-export default function Navbar({ activePage }: NavbarProps) {
+export default function Navbar({ activePage, onClick }: NavbarProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
@@ -28,6 +29,11 @@ export default function Navbar({ activePage }: NavbarProps) {
   const [avatarLoaded, setAvatarLoaded] = useState(false);
   const [userLoading, setUserLoading] = useState(true);
   const lastScrollY = useRef(0);
+
+  const handleMobileClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    setMobileMenu(false);
+    if (onClick) onClick(e);
+  };
 
   const initials = user?.fullName
     ? user.fullName.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
@@ -154,7 +160,7 @@ export default function Navbar({ activePage }: NavbarProps) {
   return (
     <nav className={`${homeStyles.nav} ${scrolled ? homeStyles.navScrolled : ""} ${navHidden ? homeStyles.navHidden : ""}`}>
       <div className={homeStyles.navInner}>
-        <Link href="/" className={homeStyles.navLogo}>
+        <Link href="/" className={homeStyles.navLogo} onClick={onClick}>
           <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
             <rect x="2" y="2" width="36" height="36" rx="10" fill="url(#navLogoGrad)" />
             <path d="M12 14h16M12 20h10M12 26h14" stroke="var(--logo-stroke)" strokeWidth="2.5" strokeLinecap="round" />
@@ -179,6 +185,7 @@ export default function Navbar({ activePage }: NavbarProps) {
             <Link
               href="/resume-optimizer"
               className={`${homeStyles.navLink} ${homeStyles.dropdownTrigger} ${resumeDropdown || activePage === "resume" || activePage === "resume-builder" ? homeStyles.dropdownTriggerActive : ""}`}
+              onClick={onClick}
             >
               <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
                 Resume
@@ -205,12 +212,14 @@ export default function Navbar({ activePage }: NavbarProps) {
                 <Link
                   href="/resume-optimizer"
                   className={`${homeStyles.dropdownLink} ${activePage === "resume" ? homeStyles.dropdownLinkActive : ""}`}
+                  onClick={onClick}
                 >
                   Resume Optimizer
                 </Link>
                 <Link
                   href="/resume-builder"
                   className={`${homeStyles.dropdownLink} ${activePage === "resume-builder" ? homeStyles.dropdownLinkActive : ""}`}
+                  onClick={onClick}
                 >
                   Resume Builder
                 </Link>
@@ -225,6 +234,7 @@ export default function Navbar({ activePage }: NavbarProps) {
             <Link
               href="/interview/setup"
               className={`${homeStyles.navLink} ${homeStyles.dropdownTrigger} ${interviewDropdown || activePage === "interview" || activePage === "interview-history" ? homeStyles.dropdownTriggerActive : ""}`}
+              onClick={onClick}
             >
               <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
                 Mock Interview
@@ -251,21 +261,23 @@ export default function Navbar({ activePage }: NavbarProps) {
                 <Link
                   href="/interview/setup"
                   className={`${homeStyles.dropdownLink} ${activePage === "interview" ? homeStyles.dropdownLinkActive : ""}`}
+                  onClick={onClick}
                 >
                   Start Interview
                 </Link>
                 <Link
                   href="/interview/history"
                   className={`${homeStyles.dropdownLink} ${activePage === "interview-history" ? homeStyles.dropdownLinkActive : ""}`}
+                  onClick={onClick}
                 >
                   Interview History
                 </Link>
               </div>
             )}
           </div>
-          <Link href="/roadmap" className={homeStyles.navLink} style={activePage === "roadmap" ? activeLinkStyle : undefined}>Career Roadmap</Link>
-          <Link href="/pricing" className={homeStyles.navLink} style={activePage === "pricing" ? activeLinkStyle : undefined}>Pricing</Link>
-          <Link href="/contact" className={homeStyles.navLink} style={activePage === "contact" ? activeLinkStyle : undefined}>Contact Us</Link>
+          <Link href="/roadmap" className={homeStyles.navLink} style={activePage === "roadmap" ? activeLinkStyle : undefined} onClick={onClick}>Career Roadmap</Link>
+          <Link href="/pricing" className={homeStyles.navLink} style={activePage === "pricing" ? activeLinkStyle : undefined} onClick={onClick}>Pricing</Link>
+          <Link href="/contact" className={homeStyles.navLink} style={activePage === "contact" ? activeLinkStyle : undefined} onClick={onClick}>Contact Us</Link>
         </div>
 
         <div className={homeStyles.navActions} suppressHydrationWarning>
@@ -279,6 +291,7 @@ export default function Navbar({ activePage }: NavbarProps) {
                 paddingRight: "16px",
                 justifyContent: "flex-start"
               }}
+              onClick={onClick}
             >
               <div className="avatar-container-instant" style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0, borderRadius: "50%", background: "var(--surface-300)", overflow: "hidden" }}>
                 {/* Initials - only when no valid avatar */}
@@ -348,8 +361,8 @@ export default function Navbar({ activePage }: NavbarProps) {
           </div>
 
           <div className="auth-logged-out-only">
-            <Link href="/auth?mode=signin" className={homeStyles.navBtnGhost}>Sign In</Link>
-            <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid}>Get Started</Link>
+            <Link href="/auth?mode=signin" className={homeStyles.navBtnGhost} onClick={onClick}>Sign In</Link>
+            <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid} onClick={onClick}>Get Started</Link>
           </div>
         </div>
 
@@ -366,17 +379,17 @@ export default function Navbar({ activePage }: NavbarProps) {
 
       {mobileMenu && (
         <div className={homeStyles.mobileMenu}>
-          <Link href="/resume-optimizer" className={homeStyles.mobileLink} style={activePage === "resume" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Resume Optimizer</Link>
-          <Link href="/resume-builder" className={homeStyles.mobileLink} style={activePage === "resume-builder" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Resume Builder</Link>
-          <Link href="/interview/setup" className={homeStyles.mobileLink} style={activePage === "interview" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Mock Interview</Link>
-          <Link href="/interview/history" className={homeStyles.mobileLink} style={activePage === "interview-history" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Interview History</Link>
-          <Link href="/roadmap" className={homeStyles.mobileLink} style={activePage === "roadmap" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Career Roadmap</Link>
-          <Link href="/pricing" className={homeStyles.mobileLink} style={activePage === "pricing" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Pricing</Link>
-          <Link href="/contact" className={homeStyles.mobileLink} style={activePage === "contact" ? activeLinkStyle : undefined} onClick={() => setMobileMenu(false)}>Contact Us</Link>
+          <Link href="/resume-optimizer" className={homeStyles.mobileLink} style={activePage === "resume" ? activeLinkStyle : undefined} onClick={handleMobileClick}>Resume Optimizer</Link>
+          <Link href="/resume-builder" className={homeStyles.mobileLink} style={activePage === "resume-builder" ? activeLinkStyle : undefined} onClick={handleMobileClick}>Resume Builder</Link>
+          <Link href="/interview/setup" className={homeStyles.mobileLink} style={activePage === "interview" ? activeLinkStyle : undefined} onClick={handleMobileClick}>Mock Interview</Link>
+          <Link href="/interview/history" className={homeStyles.mobileLink} style={activePage === "interview-history" ? activeLinkStyle : undefined} onClick={handleMobileClick}>Interview History</Link>
+          <Link href="/roadmap" className={homeStyles.mobileLink} style={activePage === "roadmap" ? activeLinkStyle : undefined} onClick={handleMobileClick}>Career Roadmap</Link>
+          <Link href="/pricing" className={homeStyles.mobileLink} style={activePage === "pricing" ? activeLinkStyle : undefined} onClick={handleMobileClick}>Pricing</Link>
+          <Link href="/contact" className={homeStyles.mobileLink} style={activePage === "contact" ? activeLinkStyle : undefined} onClick={handleMobileClick}>Contact Us</Link>
           <div className={homeStyles.mobileDivider} />
           {mounted && (
             isLoggedIn ? (
-              <Link href="/profile" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Link href="/profile" className={homeStyles.mobileLink} onClick={handleMobileClick} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <div className="avatar-container-instant" style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0, borderRadius: "50%", background: "var(--surface-300)", overflow: "hidden" }}>
                   {/* Initials - only when no valid avatar */}
                   <div
@@ -442,8 +455,8 @@ export default function Navbar({ activePage }: NavbarProps) {
               </Link>
             ) : (
               <>
-                <Link href="/auth?mode=signin" className={homeStyles.mobileLink} onClick={() => setMobileMenu(false)}>Sign In</Link>
-                <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid} style={{ width: "100%", textAlign: "center" }} onClick={() => setMobileMenu(false)}>Get Started</Link>
+                <Link href="/auth?mode=signin" className={homeStyles.mobileLink} onClick={handleMobileClick}>Sign In</Link>
+                <Link href="/auth?mode=signup" className={homeStyles.navBtnSolid} style={{ width: "100%", textAlign: "center" }} onClick={handleMobileClick}>Get Started</Link>
               </>
             )
           )}

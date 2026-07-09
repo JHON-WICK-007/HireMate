@@ -21,9 +21,10 @@ function AuthPageContent() {
   const [isResending, setIsResending] = useState(false);
   const toast = useToast();
 
-  // Sync cooldown with localStorage on mount (survives page refresh)
+  // Sync cooldown and state with localStorage on mount (survives page refresh)
   useEffect(() => {
     const lastRequest = localStorage.getItem("forgotPasswordLastRequest");
+    const savedEmail = localStorage.getItem("forgotPasswordEmail");
     if (lastRequest) {
       const elapsed = Date.now() - parseInt(lastRequest);
       const remaining = Math.ceil((60000 - elapsed) / 1000);
@@ -35,6 +36,13 @@ function AuthPageContent() {
             return prev - 1;
           });
         }, 1000);
+      }
+      
+      // Persist success screen within 10-minute validity
+      if (elapsed < 600000 && savedEmail) {
+        setIsForgot(true);
+        setIsForgotSuccess(true);
+        setEmail(savedEmail);
       }
     }
   }, []);
@@ -151,8 +159,12 @@ function AuthPageContent() {
 
     if (mode === "signup") {
       setIsLogin(false);
+      setIsForgot(false);
     } else if (mode === "signin") {
       setIsLogin(true);
+      setIsForgot(false);
+    } else if (mode === "forgot") {
+      setIsForgot(true);
     }
     if (redirect) {
       setRedirectPath(redirect);
@@ -321,6 +333,7 @@ function AuthPageContent() {
         setDevResetUrl(data.resetUrl);
       }
       localStorage.setItem("forgotPasswordLastRequest", Date.now().toString());
+      localStorage.setItem("forgotPasswordEmail", email.trim().toLowerCase());
       setIsForgotSuccess(true);
     } catch (err) {
       toast.error("Unable to connect to server. Please try again.");
@@ -354,6 +367,7 @@ function AuthPageContent() {
       toast.success("Password reset link resent successfully.");
       if (data.resetUrl) setDevResetUrl(data.resetUrl);
       localStorage.setItem("forgotPasswordLastRequest", Date.now().toString());
+      localStorage.setItem("forgotPasswordEmail", email.trim().toLowerCase());
       setResendCooldown(60);
       const timer = setInterval(() => {
         setResendCooldown((prev) => {
@@ -373,6 +387,7 @@ function AuthPageContent() {
     setResendCooldown(0);
     setDevResetUrl("");
     localStorage.removeItem("forgotPasswordLastRequest");
+    localStorage.removeItem("forgotPasswordEmail");
   };
 
   const isCallbackInProgress = (searchParams.get("token") !== null) || isRedirecting;
@@ -383,10 +398,47 @@ function AuthPageContent() {
         <div className={styles.loadingGlow} />
         <div className={styles.loadingCard}>
           <div className={styles.loadingLogo}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 6v6h6" />
-              <rect width="20" height="20" x="2" y="2" rx="6" />
-              <path d="M9 18v-6H3" />
+            <svg
+              viewBox="0 0 40 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              width="56"
+              height="56"
+            >
+              <rect
+                x="2"
+                y="2"
+                width="36"
+                height="36"
+                rx="10"
+                fill="url(#logoGradLoading)"
+              />
+              <path
+                d="M12 14h16M12 20h10M12 26h14"
+                stroke="var(--logo-stroke)"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <circle cx="30" cy="26" r="4" fill="var(--logo-stroke)" opacity="0.9" />
+              <path
+                d="M29 25.5l1 1 2-2"
+                stroke="var(--logo-check-bg)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <defs>
+                <linearGradient
+                  id="logoGradLoading"
+                  x1="0"
+                  y1="0"
+                  x2="40"
+                  y2="40"
+                >
+                  <stop stopColor="var(--logo-grad-start)" />
+                  <stop offset="1" stopColor="var(--logo-grad-end)" />
+                </linearGradient>
+              </defs>
             </svg>
           </div>
           <div className={styles.progressBar}>
@@ -605,12 +657,24 @@ function AuthPageContent() {
                     onClick={handleResendEmail}
                     disabled={resendCooldown > 0 || isResending}
                     className={styles.submitBtn}
-                    style={{ width: "180px", padding: "12px 24px", height: "auto", marginTop: 0, opacity: resendCooldown > 0 || isResending ? 0.4 : 1 }}
+                    style={{ width: "200px", padding: "12px 24px", height: "auto", marginTop: 0, opacity: resendCooldown > 0 || isResending ? 0.4 : 1, whiteSpace: "nowrap" }}
                   >
                     <>
                       {isResending ? "Sending..." : "Resend Email"}
                       {resendCooldown > 0 && !isResending && (
-                        <span style={{ marginLeft: "4px", fontSize: "12px", opacity: 0.5 }}>{resendCooldown}s</span>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: "28px",
+                            textAlign: "left",
+                            marginLeft: "8px",
+                            fontSize: "14px",
+                            opacity: 0.6,
+                            fontVariantNumeric: "tabular-nums"
+                          }}
+                        >
+                          {resendCooldown}s
+                        </span>
                       )}
                     </>
                   </button>
@@ -644,8 +708,14 @@ function AuthPageContent() {
                       setDevResetUrl("");
                       setResendCooldown(0);
                       localStorage.removeItem("forgotPasswordLastRequest");
+                      localStorage.removeItem("forgotPasswordEmail");
                       toast.dismissAll();
                       setFormErrors({});
+                      if (typeof window !== "undefined") {
+                        const params = new URLSearchParams(window.location.search);
+                        params.set("mode", "signin");
+                        window.history.replaceState({}, document.title, `${window.location.pathname}?${params.toString()}`);
+                      }
                     }}
                     className={styles.forgotLink}
                     style={{ fontSize: "15px" }}
@@ -723,6 +793,13 @@ function AuthPageContent() {
                       setIsLogin(true);
                       toast.dismissAll();
                       setFormErrors({});
+                      localStorage.removeItem("forgotPasswordLastRequest");
+                      localStorage.removeItem("forgotPasswordEmail");
+                      if (typeof window !== "undefined") {
+                        const params = new URLSearchParams(window.location.search);
+                        params.set("mode", "signin");
+                        window.history.replaceState({}, document.title, `${window.location.pathname}?${params.toString()}`);
+                      }
                     }}
                     className={styles.forgotLink}
                     style={{ fontSize: "15px" }}
@@ -987,7 +1064,7 @@ function AuthPageContent() {
 
                         {/* Confirm Password Match Tooltip */}
                         {isConfirmFocused && (
-                          <div className={styles.passwordRulesTooltip} onMouseDown={(e) => e.preventDefault()}>
+                          <div className={styles.confirmPasswordTooltip} onMouseDown={(e) => e.preventDefault()}>
                             <div className={styles.tooltipArrow} />
                             <h4 className={styles.rulesTitle}>MATCH CHECK</h4>
                             <ul className={styles.rulesList}>
@@ -1033,6 +1110,11 @@ function AuthPageContent() {
                           setIsForgot(true);
                           toast.dismissAll();
                           setFormErrors({});
+                          if (typeof window !== "undefined") {
+                            const params = new URLSearchParams(window.location.search);
+                            params.set("mode", "forgot");
+                            window.history.replaceState({}, document.title, `${window.location.pathname}?${params.toString()}`);
+                          }
                         }}
                       >
                         Forgot password?

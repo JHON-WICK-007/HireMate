@@ -872,12 +872,22 @@ export default function Home() {
         .catch(() => {
           // Fallback: keep logged in state if fetch fails
         });
-    } else {
-      document.documentElement.style.setProperty('--auth-logged-in-display', 'none');
-      document.documentElement.style.setProperty('--auth-logged-out-display', 'flex');
-      setIsLoggedIn(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (showWelcome) {
+      document.documentElement.classList.add("no-scroll");
+      document.body.classList.add("no-scroll");
+    } else {
+      document.documentElement.classList.remove("no-scroll");
+      document.body.classList.remove("no-scroll");
+    }
+    return () => {
+      document.documentElement.classList.remove("no-scroll");
+      document.body.classList.remove("no-scroll");
+    };
+  }, [showWelcome]);
 
   const handleSignOut = async () => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";

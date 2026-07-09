@@ -216,7 +216,7 @@ input[type="submit"],
 html {
   color-scheme: dark;
   scrollbar-gutter: stable;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 [data-theme="light"] html,
@@ -555,4 +555,10 @@ html.has-avatar .avatar-fallback-prevent-flash {
 
 .avatar-fallback-prevent-flash::before {
   content: var(--user-initials, "");
+}
+
+/* Scroll Lock for Modals */
+.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
 }

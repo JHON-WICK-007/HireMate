@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef, Suspense, useCallback } from "react";
-import { createPortal } from "react-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -252,7 +251,6 @@ function ResultsContent() {
   const filterRef = useRef<HTMLDivElement>(null);
   const filterBtnRef = useRef<HTMLButtonElement>(null);
   const filterDropdownRef = useRef<HTMLDivElement>(null);
-  const [filterPos, setFilterPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
   const [resultsLoaded, setResultsLoaded] = useState(false);
 
   const toggleQuestion = (idx: number) => {
@@ -326,20 +324,7 @@ function ResultsContent() {
     };
   }, []);
 
-  // Update dropdown position on scroll
-  useEffect(() => {
-    if (!filterOpen) return;
-    const updatePos = () => {
-      if (filterBtnRef.current) {
-        const rect = filterBtnRef.current.getBoundingClientRect();
-        setFilterPos({ top: rect.bottom + 6, right: window.innerWidth - rect.right });
-      }
-    };
-    const onScroll = () => requestAnimationFrame(updatePos);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    updatePos();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [filterOpen]);
+
 
   // Scroll logic for navbar
   useEffect(() => {
@@ -542,23 +527,16 @@ return (
                   <button
                     ref={filterBtnRef}
                     className={styles.filterBtn}
-                    onClick={() => {
-                      if (!filterOpen && filterBtnRef.current) {
-                        const rect = filterBtnRef.current.getBoundingClientRect();
-                        setFilterPos({ top: rect.bottom + 6, right: window.innerWidth - rect.right });
-                      }
-                      setFilterOpen((o) => !o);
-                    }}
+                    onClick={() => setFilterOpen((o) => !o)}
                     title="Filter questions"
                   >
                     <IconFilter />
                     {hasActiveFilter && <span className={styles.filterActiveDot} />}
                   </button>
-                  {filterOpen && createPortal(
+                  {filterOpen && (
                     <div
                       ref={filterDropdownRef}
                       className={styles.filterDropdown}
-                      style={{ position: "fixed", top: filterPos.top, right: filterPos.right }}
                     >
                       <div className={styles.filterColumns}>
                         {/* Left: Question Type */}
@@ -566,7 +544,7 @@ return (
                           <div className={styles.filterColHeader}>Question Type</div>
                           {FILTER_TYPE_OPTIONS.map((opt) => {
                             const isActive = filterType === opt.value;
-                            const activeColor = opt.color || "#a855f7";
+                            const activeColor = opt.color || "var(--text-primary)";
                             return (
                               <button
                                 key={opt.value}
@@ -599,7 +577,7 @@ return (
                           <div className={styles.filterColHeader}>Score</div>
                           {FILTER_SCORE_OPTIONS.map((opt) => {
                             const isActive = filterScore === opt.value;
-                            const activeColor = opt.color || "#a855f7";
+                            const activeColor = opt.color || "var(--text-primary)";
                             return (
                               <button
                                 key={opt.value}
@@ -638,8 +616,7 @@ return (
                           Reset filters
                         </button>
                       )}
-                    </div>,
-                    document.body
+                    </div>
                   )}
                 </div>
               </div>

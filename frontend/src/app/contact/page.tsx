@@ -72,6 +72,25 @@ export default function ContactPage() {
 
     // Fetch user details
     const token = localStorage.getItem("token");
+    const cachedUser = localStorage.getItem("user");
+    
+    if (cachedUser) {
+      try {
+        const parsedUser = JSON.parse(cachedUser);
+        if (parsedUser) {
+          setIsLoggedIn(true);
+          setUser(parsedUser);
+          setFormData((prev) => ({
+            ...prev,
+            name: parsedUser.fullName || "",
+            email: parsedUser.email || ""
+          }));
+        }
+      } catch (e) {
+        console.error("Error parsing cached user profile:", e);
+      }
+    }
+
     if (token) {
       fetch(`${API_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -81,10 +100,11 @@ export default function ContactPage() {
           if (data.success && data.user) {
             setIsLoggedIn(true);
             setUser(data.user);
+            localStorage.setItem("user", JSON.stringify(data.user));
             setFormData((prev) => ({
               ...prev,
-              name: data.user.fullName || "",
-              email: data.user.email || ""
+              name: data.user.fullName || prev.name || "",
+              email: data.user.email || prev.email || ""
             }));
           }
         })
@@ -96,12 +116,15 @@ export default function ContactPage() {
 
   useEffect(() => {
     if (showSuccessModal) {
-      document.body.style.overflow = "hidden";
+      document.documentElement.classList.add("no-scroll");
+      document.body.classList.add("no-scroll");
     } else {
-      document.body.style.overflow = "";
+      document.documentElement.classList.remove("no-scroll");
+      document.body.classList.remove("no-scroll");
     }
     return () => {
-      document.body.style.overflow = "";
+      document.documentElement.classList.remove("no-scroll");
+      document.body.classList.remove("no-scroll");
     };
   }, [showSuccessModal]);
 

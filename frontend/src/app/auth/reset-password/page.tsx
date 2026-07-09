@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent, Suspense } from "react";
+import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "../auth.module.css";
 import { useToast } from "../../components/Toast";
@@ -13,6 +13,22 @@ function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const toast = useToast();
+  
+  // Animated background particles
+  const [particles, setParticles] = useState<
+    { id: number; x: number; y: number; size: number; delay: number }[]
+  >([]);
+
+  useEffect(() => {
+    const generated = Array.from({ length: 30 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 4 + 1,
+      delay: Math.random() * 5,
+    }));
+    setParticles(generated);
+  }, []);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -100,54 +116,173 @@ function ResetPasswordContent() {
     }
   };
 
-  if (!token) {
-    return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.loadingGlow} />
-        <div className={styles.loadingCard} style={{ background: "rgba(10, 10, 10, 0.4)", border: "1px solid rgba(239, 68, 68, 0.2)", padding: "3rem" }}>
-          <div className={styles.loadingLogo} style={{ color: "#ef4444", background: "rgba(239, 68, 68, 0.05)", borderColor: "rgba(239, 68, 68, 0.2)", animation: "none", margin: "0 auto 1.5rem" }}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-          </div>
-          <h2 className={styles.loadingTitle} style={{ fontSize: "1.4rem" }}>Invalid Reset Link</h2>
-          <p className={styles.loadingSubtitle} style={{ marginBottom: "1.5rem" }}>This link does not contain a valid reset token.</p>
-          <button
-            type="button"
-            onClick={() => router.push("/auth")}
-            className={styles.submitBtn}
-          >
-            Return to Sign In
-          </button>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <>
-      <HomeBackdrop />
       <div className={styles.container}>
-        <div className={styles.bgGradient}>
-          <div className={styles.bgOrb1} />
-          <div className={styles.bgOrb2} />
-          <div className={styles.gridOverlay} />
-        </div>
+        {/* Animated Background */}
+        <HomeBackdrop />
 
-        <div className={styles.content} style={{ gridTemplateColumns: "1fr", maxWidth: "550px", minHeight: "auto", padding: "2.5rem" }}>
-          <div className={styles.formPanel} style={{ padding: "1.5rem" }}>
-            <div className={styles.formContainer}>
-              {/* Form Header */}
-              <div className={styles.formHeader} style={{ textAlign: "center" }}>
-                <h2 className={styles.formTitle}>Reset password</h2>
-                <p className={styles.formSubtitle}>
-                  Please choose a strong, secure new password.
-                </p>
+        {/* Floating Particles */}
+        {particles.map((p) => (
+          <div
+            key={p.id}
+            className={styles.particle}
+            style={{
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              animationDelay: `${p.delay}s`,
+            }}
+          />
+        ))}
+
+        <div className={styles.content}>
+          {/* Left Panel - Branding */}
+          <div className={styles.brandPanel}>
+            <div className={styles.brandContent}>
+              {/* Logo */}
+              <div className={styles.logo}>
+                <div className={styles.logoIcon}>
+                  <svg
+                    viewBox="0 0 40 40"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect
+                      x="2"
+                      y="2"
+                      width="36"
+                      height="36"
+                      rx="10"
+                      fill="url(#logoGrad)"
+                    />
+                    <path
+                      d="M12 14h16M12 20h10M12 26h14"
+                      stroke="var(--logo-stroke)"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    />
+                    <circle cx="30" cy="26" r="4" fill="var(--logo-stroke)" opacity="0.9" />
+                    <path
+                      d="M29 25.5l1 1 2-2"
+                      stroke="var(--logo-check-bg)"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <defs>
+                      <linearGradient
+                        id="logoGrad"
+                        x1="0"
+                        y1="0"
+                        x2="40"
+                        y2="40"
+                      >
+                        <stop stopColor="var(--logo-grad-start)" />
+                        <stop offset="1" stopColor="var(--logo-grad-end)" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+                <span className={styles.logoText}>HireMate AI</span>
               </div>
 
-              {isSuccess ? (
+              {/* Tagline */}
+              <h1 className={styles.brandTitle}>
+                Your AI-Powered
+                <br />
+                <span className="gradient-text">Career Partner</span>
+              </h1>
+              <p className={styles.brandSubtitle}>
+                Ace your next interview with intelligent mock interviews, resume
+                analysis, and personalized career roadmaps.
+              </p>
+
+              {/* Feature pills */}
+              <div className={styles.featurePills}>
+                {[
+                  { icon: "🎯", text: "Smart Mock Interviews" },
+                  { icon: "📄", text: "AI Resume Analysis" },
+                  { icon: "💻", text: "Coding Playground" },
+                  { icon: "🗺️", text: "Career Roadmaps" },
+                ].map((feature, i) => (
+                  <div
+                    key={i}
+                    className={styles.featurePill}
+                    style={{ animationDelay: `${i * 0.1 + 0.5}s` }}
+                  >
+                    <span className={styles.featurePillIcon}>{feature.icon}</span>
+                    <span>{feature.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Social proof */}
+              <div className={styles.socialProof}>
+                <div className={styles.avatarStack}>
+                  {[
+                    "https://randomuser.me/api/portraits/women/44.jpg",
+                    "https://randomuser.me/api/portraits/men/32.jpg",
+                    "https://randomuser.me/api/portraits/women/68.jpg",
+                    "https://randomuser.me/api/portraits/men/75.jpg",
+                    "https://randomuser.me/api/portraits/women/90.jpg",
+                  ].map((src, i) => (
+                    <img
+                      key={i}
+                      className={styles.avatar}
+                      src={src}
+                      alt={`User ${i + 1}`}
+                      style={{
+                        zIndex: 5 - i,
+                        '--tx': `${i * -10}px`,
+                      } as React.CSSProperties}
+                    />
+                  ))}
+                </div>
+                <p className={styles.socialProofText}>
+                  <strong>2,500+</strong> developers preparing with HireMate AI
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel - Form */}
+          <div className={styles.formPanel}>
+            <div className={styles.formContainer}>
+              {/* Form Header */}
+              {token && !isSuccess && (
+                <div className={styles.formHeader} style={{ textAlign: "center" }}>
+                  <h2 className={styles.formTitle}>Reset password</h2>
+                  <p className={styles.formSubtitle}>
+                    Please choose a strong, secure new password.
+                  </p>
+                </div>
+              )}
+
+              {!token ? (
+                <div className={styles.form} style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "1rem" }}>
+                  <div className={styles.loadingLogo} style={{ color: "#ef4444", background: "rgba(239, 68, 68, 0.05)", borderColor: "rgba(239, 68, 68, 0.2)", animation: "none", margin: "0 auto 1.5rem" }}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                  </div>
+                  <h2 className={styles.formTitle} style={{ fontSize: "1.3rem" }}>Invalid Reset Link</h2>
+                  <p className={styles.formSubtitle} style={{ marginBottom: "0.5rem" }}>This link does not contain a valid reset token.</p>
+                  <button
+                    type="button"
+                    onClick={() => router.push("/auth?mode=signin")}
+                    className={styles.submitBtn}
+                    style={{ marginTop: "1rem" }}
+                  >
+                    Return to Sign In
+                  </button>
+                </div>
+              ) : isSuccess ? (
                 <div className={styles.form} style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "1rem" }}>
                   <div className={styles.loadingLogo} style={{ margin: "0 auto 1rem", animation: "none", color: "#22c55e", borderColor: "rgba(34, 197, 94, 0.2)", background: "rgba(34, 197, 94, 0.05)" }}>
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -339,7 +474,7 @@ function ResetPasswordContent() {
 
                       {/* Confirm Password Match Tooltip */}
                       {isConfirmFocused && (
-                        <div className={styles.passwordRulesTooltip} onMouseDown={(e) => e.preventDefault()}>
+                        <div className={styles.confirmPasswordTooltip} onMouseDown={(e) => e.preventDefault()}>
                           <div className={styles.tooltipArrow} />
                           <h4 className={styles.rulesTitle}>MATCH CHECK</h4>
                           <ul className={styles.rulesList}>

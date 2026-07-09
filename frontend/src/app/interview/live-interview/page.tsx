@@ -10,6 +10,7 @@ import SiteFooter from "../../components/SiteFooter";
 import HomeBackdrop from "../../components/HomeBackdrop";
 import { motion, AnimatePresence } from "framer-motion";
 import homeStyles from "../../home.module.css";
+import Navbar from "../../components/Navbar";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -391,6 +392,8 @@ function LiveInterviewContent() {
     }
   }, [userAnswer]);
 
+
+
   // Scroll logic for navbar
   useEffect(() => {
     const handleScroll = () => {
@@ -658,12 +661,15 @@ const savedUserStr = localStorage.getItem("user");
 
   useEffect(() => {
     if (showEndModal) {
-      document.body.style.overflow = "hidden";
+      document.documentElement.classList.add("no-scroll");
+      document.body.classList.add("no-scroll");
     } else {
-      document.body.style.overflow = "";
+      document.documentElement.classList.remove("no-scroll");
+      document.body.classList.remove("no-scroll");
     }
     return () => {
-      document.body.style.overflow = "";
+      document.documentElement.classList.remove("no-scroll");
+      document.body.classList.remove("no-scroll");
     };
   }, [showEndModal]);
 
@@ -709,131 +715,7 @@ const savedUserStr = localStorage.getItem("user");
       <HomeBackdrop />
 
       {/* ── Navbar ── */}
-      <nav className={`${nav.nav} ${scrolled ? nav.navScrolled : ""} ${navHidden ? nav.navHidden : ""}`}>
-        <div className={nav.navInner}>
-          <Link href="/" className={nav.navLogo} onClick={blockNavigation}>
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-              <rect x="2" y="2" width="36" height="36" rx="10" fill="url(#navGrad)" />
-              <path d="M12 14h16M12 20h10M12 26h14" stroke="var(--logo-stroke)" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="30" cy="26" r="4" fill="var(--logo-stroke)" opacity="0.8" />
-              <path d="M29 25.5l1 1 2-2" stroke="var(--logo-check-bg)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <defs>
-                <linearGradient id="navGrad" x1="0" y1="0" x2="40" y2="40">
-                  <stop stopColor="var(--logo-grad-start)" />
-                  <stop offset="1" stopColor="var(--logo-grad-end)" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <span>HireMate AI</span>
-          </Link>
-
-          <div className={nav.navLinks}>
-            <Link href="/resume-optimizer" className={nav.navLink} onClick={blockNavigation}>Resume Optimizer</Link>
-            <Link href="/interview/setup" className={`${nav.navLink} ${nav.navActive || ""}`} style={{ color: "var(--domain-interview)" }} onClick={blockNavigation}>Mock Interview</Link>
-          </div>
-
-          <div className={nav.navActions} suppressHydrationWarning>
-            <Link
-              href="/profile"
-              className={nav.navBtnGhost}
-              style={{
-                width: "136px",
-                paddingLeft: "6px",
-                paddingRight: "16px",
-                justifyContent: "flex-start"
-              }}
-              onClick={blockNavigation}
-            >
-              <div style={{ position: "relative", width: "42px", height: "42px", flexShrink: 0, borderRadius: "50%", background: "var(--surface-300)", overflow: "hidden" }}>
-                {/* Initials - only when no valid avatar */}
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.95rem",
-                    fontWeight: "bold",
-                    color: "var(--text-primary)",
-                    zIndex: 1,
-                    opacity: (!avatar || avatarFailed || !avatarLoaded) ? 1 : 0,
-                    transition: "opacity 0.2s ease"
-                  }}
-                >
-                  {userInitials}
-                </div>
-
-                {/* Avatar Image - Overlay layer */}
-                {avatar && !avatarFailed && (
-                  <img
-                    src={avatar}
-                    alt="Profile"
-                    onLoad={() => setAvatarLoaded(true)}
-                    onError={() => setAvatarFailed(true)}
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      width: "100%",
-                      height: "100%",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "1.5px solid var(--border-default)",
-                      zIndex: 2
-                    }}
-                  />
-                )}
-
-                {/* Spinner Overlay during initial session loading or avatar image download */}
-                {(!sessionLoaded || (avatar && !avatarLoaded && !avatarFailed)) && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      background: "rgba(0, 0, 0, 0.55)",
-                      color: "var(--text-primary)",
-                      borderRadius: "50%",
-                      zIndex: 3
-                    }}
-                  >
-                    <IconSpinner />
-                  </div>
-                )}
-              </div>
-              <span
-                style={{
-                  display: "inline-block",
-                  width: "64px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  textAlign: "left"
-                }}
-              >
-                {fullName ? fullName.split(" ")[0] : "Profile"}
-              </span>
-            </Link>
-          </div>
-
-          <button className={nav.hamburger} onClick={() => setMobileMenu(!mobileMenu)} aria-label="Menu">
-            <span className={`${nav.hamburgerLine} ${mobileMenu ? nav.hamburgerOpen1 : ""}`} />
-            <span className={`${nav.hamburgerLine} ${mobileMenu ? nav.hamburgerOpen2 : ""}`} />
-            <span className={`${nav.hamburgerLine} ${mobileMenu ? nav.hamburgerOpen3 : ""}`} />
-          </button>
-        </div>
-
-        {mobileMenu && (
-          <div className={nav.mobileMenu}>
-            <Link href="/resume-optimizer" className={nav.mobileLink} onClick={(e) => { blockNavigation(e); setMobileMenu(false); }}>Resume Optimizer</Link>
-            <Link href="/interview/setup" className={nav.mobileLink} onClick={(e) => { blockNavigation(e); setMobileMenu(false); }} style={{ color: "var(--domain-interview)" }}>Mock Interview</Link>
-            <Link href="/profile" className={nav.mobileLink} onClick={(e) => { blockNavigation(e); setMobileMenu(false); }}>Profile</Link>
-          </div>
-        )}
-      </nav>
+      <Navbar activePage="interview" onClick={blockNavigation} />
 
       <main className={styles.layout}>
         <div className={styles.consoleCard}>
