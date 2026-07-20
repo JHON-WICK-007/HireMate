@@ -27,6 +27,9 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
                 user: process.env.SMTP_USER,
                 pass: process.env.SMTP_PASSWORD,
               },
+              connectionTimeout: 8000,
+              greetingTimeout: 8000,
+              socketTimeout: 10000,
             }
           : {
               host: process.env.SMTP_HOST,
@@ -36,6 +39,9 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
                 user: process.env.SMTP_USER,
                 pass: process.env.SMTP_PASSWORD,
               },
+              connectionTimeout: 8000,
+              greetingTimeout: 8000,
+              socketTimeout: 10000,
             }
       );
 
