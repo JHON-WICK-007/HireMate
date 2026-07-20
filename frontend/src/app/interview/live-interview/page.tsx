@@ -889,7 +889,7 @@ const savedUserStr = localStorage.getItem("user");
                           {m.sender === "ai" ? (
                             "AI"
                           ) : avatar ? (
-                            <img src={avatar} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            <img src={avatar} alt="Profile" draggable={false} style={{ width: "100%", height: "100%", objectFit: "cover", userSelect: "none", WebkitUserDrag: "none" } as React.CSSProperties} />
                           ) : (
                             userInitials
                           )}

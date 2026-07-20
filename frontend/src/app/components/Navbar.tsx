@@ -320,6 +320,7 @@ export default function Navbar({ activePage, onClick }: NavbarProps) {
                   <img
                     src={user.avatar}
                     alt="Profile"
+                    draggable={false}
                     onLoad={() => setAvatarLoaded(true)}
                     onError={() => setAvatarFailed(true)}
                     style={{
@@ -330,8 +331,10 @@ export default function Navbar({ activePage, onClick }: NavbarProps) {
                       borderRadius: "50%",
                       objectFit: "cover",
                       border: "1.5px solid var(--border-default)",
-                      zIndex: 2
-                    }}
+                      zIndex: 2,
+                      userSelect: "none",
+                      WebkitUserDrag: "none"
+                    } as React.CSSProperties}
                   />
                 )}
 
@@ -417,6 +420,7 @@ export default function Navbar({ activePage, onClick }: NavbarProps) {
                     <img
                       src={user.avatar}
                       alt="Profile"
+                      draggable={false}
                       onLoad={() => setAvatarLoaded(true)}
                       onError={() => setAvatarFailed(true)}
                       style={{
@@ -427,8 +431,10 @@ export default function Navbar({ activePage, onClick }: NavbarProps) {
                         borderRadius: "50%",
                         objectFit: "cover",
                         border: "1.5px solid var(--border-default)",
-                        zIndex: 2
-                      }}
+                        zIndex: 2,
+                        userSelect: "none",
+                        WebkitUserDrag: "none"
+                      } as React.CSSProperties}
                     />
                   )}
 

@@ -474,13 +474,16 @@ export default function ProfilePage() {
                 <img
                   src={avatar}
                   alt="Profile"
+                  draggable={false}
                   className={styles.avatarImg}
                   onLoad={() => setAvatarLoaded(true)}
                   onError={() => setAvatarFailed(true)}
                   style={{
                     position: "absolute",
-                    inset: 0
-                  }}
+                    inset: 0,
+                    userSelect: "none",
+                    WebkitUserDrag: "none"
+                  } as React.CSSProperties}
                 />
               )}
               <span className={styles.avatarEditBtn} title="Change photo">
