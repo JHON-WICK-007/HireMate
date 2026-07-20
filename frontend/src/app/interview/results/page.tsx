@@ -455,14 +455,51 @@ return (
                 <div className={styles.scoreCircleInfo}>
                   <div className={styles.scoreCircleWrap}>
                     <svg className={styles.scoreSvg} viewBox="0 0 140 140">
-                      <circle className={styles.scoreCircleBackground} cx="70" cy="70" r="60" />
+                      <defs>
+                        <linearGradient id="interviewResultsScoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#06b6d4" />
+                          <stop offset="50%" stopColor="#a855f7" />
+                          <stop offset="100%" stopColor="#f97316" />
+                        </linearGradient>
+                      </defs>
+                      {/* Outer dashed orbit circle */}
+                      <circle
+                        cx="70" cy="70" r="66"
+                        fill="none"
+                        stroke="rgba(255, 255, 255, 0.08)"
+                        strokeWidth="0.75"
+                        strokeDasharray="2 4"
+                      />
+                      {/* Track dashed circle */}
+                      <circle
+                        className={styles.scoreCircleBackground}
+                        cx="70"
+                        cy="70"
+                        r="60"
+                      />
+                      {/* Glowing underlay */}
+                      <circle
+                        className={styles.scoreCircleFillGlow}
+                        cx="70"
+                        cy="70"
+                        r="60"
+                        style={{
+                          strokeDasharray: 376.99,
+                          strokeDashoffset: 376.99 - (376.99 * Math.min(100, Math.max(0, overallScore))) / 100,
+                          stroke: "url(#interviewResultsScoreGradient)",
+                        } as React.CSSProperties}
+                      />
+                      {/* Sharp foreground path */}
                       <circle
                         className={styles.scoreCircleFill}
                         cx="70"
                         cy="70"
                         r="60"
-                        strokeDasharray={2 * Math.PI * 60}
-                        strokeDashoffset={getStrokeDashOffset(overallScore)}
+                        style={{
+                          strokeDasharray: 376.99,
+                          strokeDashoffset: 376.99 - (376.99 * Math.min(100, Math.max(0, overallScore))) / 100,
+                          stroke: "url(#interviewResultsScoreGradient)",
+                        } as React.CSSProperties}
                       />
                     </svg>
                     <div className={styles.bigScore}>{overallScore}</div>

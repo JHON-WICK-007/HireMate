@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Check,
   X,
+  Clock,
   ChevronDown,
   ChevronUp,
   Play,
@@ -33,7 +34,7 @@ import Navbar from "../components/Navbar";
 import SiteFooter from "../components/SiteFooter";
 import HomeBackdrop from "../components/HomeBackdrop";
 import { useToast } from "../components/Toast";
-import { useRoadmapStore, UserContext } from "./store";
+import { useRoadmapStore, UserContext, ProjectNode } from "./store";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -83,7 +84,7 @@ const MOTIVATIONAL_QUOTES = [
   "Make it work, make it right, make it fast."
 ];
 
-/* ─── Reusable Custom Dropdown (mirrors builder's CustomDropdown) ─── */
+/* --- Reusable Custom Dropdown (mirrors builder's CustomDropdown) --- */
 interface DropdownOption {
   value: string;
   label: string;
@@ -160,6 +161,60 @@ const RoadmapDropdown: React.FC<RoadmapDropdownProps> = ({
   );
 };
 
+const getDynamicProjectGuide = (project: ProjectNode, role: string, company: string) => {
+  const techList = project.tech.join(", ");
+
+  // Custom steps based on role
+  let steps = [
+    {
+      title: "Step 1: Workspace & Repo Setup",
+      desc: `Setup a clean repository. Initialize a local directory, configure a suitable .gitignore for ${project.tech[0] || 'your tech stack'}, and layout folders (e.g. /src for modules and /tests for validations).`
+    },
+    {
+      title: "Step 2: Architecture & Contract Design",
+      desc: `Draft interface contracts, modular schemas, or classes. Define data structures or api endpoint signatures using ${techList} to support robust data flow.`
+    },
+    {
+      title: "Step 3: Business Logic Implementation",
+      desc: `Code the core logic. Implement features, functions, and state models using ${project.tech.slice(0, 3).join(", ")}. Commit frequently with descriptive messages.`
+    },
+    {
+      title: "Step 4: Quality Validation & Test Cases",
+      desc: `Verify implementation against requirements. Execute local unit tests, handle potential exceptions, and ensure proper boundary validation before completion.`
+    }
+  ];
+
+  if (role === "Frontend") {
+    steps[1].desc = `Draft mock visual wireframes and component boundaries. Define TypeScript interfaces for props, local state, and global store contexts using ${techList}.`;
+    steps[2].desc = `Build reusable UI components with responsive layouts using ${project.tech.slice(0, 3).join(", ")}. Optimize render loops and bundle sizes.`;
+  } else if (role === "Backend") {
+    steps[1].desc = `Design SQL/NoSQL schemas and database migration scripts. Setup routing controller matrices and JWT auth rules using ${techList}.`;
+    steps[2].desc = `Code endpoint logic, caching layers, and database query handlers using ${project.tech.slice(0, 3).join(", ")}. Maintain separation of concerns.`;
+  } else if (role === "DevOps") {
+    steps[1].desc = `Design Infrastructure-as-Code (IaC) templates or Dockerfiles. Map networking ports, environment secrets, and volume configs using ${techList}.`;
+    steps[2].desc = `Implement CI/CD pipeline automation scripts, container orchestration rules, and runner workflows using ${project.tech.slice(0, 3).join(", ")}.`;
+  } else if (role === "AI Engineer" || role === "ML Engineer") {
+    steps[1].desc = `Prepare data loading utilities and preprocessing pipelines. Define features, model architecture schemas, or RAG store indexes using ${techList}.`;
+    steps[2].desc = `Develop model training scripts, LLM prompt templates, or inference orchestration pipelines using ${project.tech.slice(0, 3).join(", ")}.`;
+  }
+
+  // Custom tips based on target company
+  let companyTip = `Focus on writing modular, self-documenting code. Adhere to professional code design guidelines, robust error boundaries, and comprehensive unit tests.`;
+  if (company === "Google") {
+    companyTip = `Google engineering loops prioritize extreme scalability and optimal space/time complexity. Focus on Big-O notations, data structure efficiencies, and optimal algorithms.`;
+  } else if (company === "Amazon") {
+    companyTip = `Amazon values customer obsession and operational excellence. Focus on highly fault-tolerant microservices, transaction rollbacks, and clean API versioning.`;
+  } else if (company === "Microsoft") {
+    companyTip = `Microsoft values solid enterprise design patterns and complete type safety. Focus on object-oriented programming (OOP), interface decoupling, and thorough unit test coverage.`;
+  } else if (company === "Meta") {
+    companyTip = `Meta values rapid iteration and high performance. Focus on frontend layout rendering efficiency, real-time sync capabilities, and optimal memory management.`;
+  } else if (company === "Netflix") {
+    companyTip = `Netflix operates under high-concurrency conditions. Focus on efficient stream reading, horizontal scaling, caching strategies, and stateless API layouts.`;
+  }
+
+  return { steps, companyTip };
+};
+
 export default function CareerRoadmapPage() {
   const router = useRouter();
   const toast = useToast();
@@ -173,7 +228,7 @@ export default function CareerRoadmapPage() {
   const level = useRoadmapStore((state) => state.level);
   const completedSkillsCount = useRoadmapStore((state) => state.completedSkillsCount);
   const completedProjectsCount = useRoadmapStore((state) => state.completedProjectsCount);
-  const { generateRoadmap, clearRoadmap, toggleSkillStatus, incrementStreak } = useRoadmapStore((state) => state.actions);
+  const { generateRoadmap, clearRoadmap, toggleSkillStatus, updateSkillProgress, incrementStreak, completeProject } = useRoadmapStore((state) => state.actions);
 
   // Local Intake Form State
   const [targetCompany, setTargetCompany] = useState("Other / General");
@@ -189,14 +244,17 @@ export default function CareerRoadmapPage() {
   const [detectedWeaknesses, setDetectedWeaknesses] = useState<string[]>(["System Design"]);
 
   // UI Flow States
+  const [isMounted, setIsMounted] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationStep, setGenerationStep] = useState(0);
   const [expandedPhaseId, setExpandedPhaseId] = useState<string | null>(null);
   const [expandedSkillId, setExpandedSkillId] = useState<string | null>(null);
+  const [activeProjectGuide, setActiveProjectGuide] = useState<ProjectNode | null>(null);
   const hasUserInteracted = useRef(false);
 
   // Load user profile details on mount for auto-detected context
   useEffect(() => {
+    setIsMounted(true);
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -216,7 +274,7 @@ export default function CareerRoadmapPage() {
           }
         }
       })
-      .catch(() => {});
+      .catch(() => { });
 
     // Fetch interviews to find weak spots
     fetch(`${API_URL}/api/interviews`, {
@@ -238,7 +296,7 @@ export default function CareerRoadmapPage() {
           }
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // Update active phase automatically if none selected
@@ -248,6 +306,21 @@ export default function CareerRoadmapPage() {
       setExpandedPhaseId(activePhase.id);
     }
   }, [hasRoadmap, phases, expandedPhaseId]);
+
+  // Lock background scroll when modal guide is open
+  useEffect(() => {
+    if (activeProjectGuide) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [activeProjectGuide]);
 
   // Handle Learning Styles Toggle
   const toggleLearningStyle = (style: string) => {
@@ -310,6 +383,34 @@ export default function CareerRoadmapPage() {
   // quote selector based on streak
   const quote = MOTIVATIONAL_QUOTES[streak % MOTIVATIONAL_QUOTES.length];
 
+  if (!isMounted) {
+    return (
+      <div className={styles.loadingPageContainer}>
+        <HomeBackdrop />
+        <svg
+          width="48"
+          height="48"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={styles.optimizerSpinner}
+        >
+          <line x1="12" y1="2" x2="12" y2="6" />
+          <line x1="12" y1="18" x2="12" y2="22" />
+          <line x1="4.93" y1="4.93" x2="7.76" y2="7.76" />
+          <line x1="16.24" y1="16.24" x2="19.07" y2="19.07" />
+          <line x1="2" y1="12" x2="6" y2="12" />
+          <line x1="18" y1="12" x2="22" y2="12" />
+          <line x1="4.93" y1="19.07" x2="7.76" y2="16.24" />
+          <line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+        </svg>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.page}>
       <HomeBackdrop />
@@ -320,10 +421,10 @@ export default function CareerRoadmapPage() {
         <header className={styles.heroCompact}>
           <div className={styles.heroHeaderLeft}>
             <h1 className={styles.heroCompactTitle}>
-              <Compass className="text-cyan-500" size={28} /> Career Journey
+              <Compass className="text-orange-500" size={28} /> Career Journey
             </h1>
             <div className={styles.roleBadge}>
-              <Target size={12} className="text-cyan-500" />
+              <Target size={14} className="text-orange-500" />
               {userContext?.targetCompany} - {userContext?.targetRole} - {userContext?.experienceLevel}
             </div>
           </div>
@@ -332,340 +433,528 @@ export default function CareerRoadmapPage() {
 
       {/* Dynamic Content Views */}
       <main className={styles.mainContainer}>
-          {isGenerating ? (
-            /* LOADING STATE CARD */
-            <div className={styles.loadingCard}>
-              <div className={styles.loadingSpinnerContainer}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={styles.spinnerRotation}>
-                  <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="4.93" y1="4.93" x2="7.76" y2="7.76" /><line x1="16.24" y1="16.24" x2="19.07" y2="19.07" /><line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="4.93" y1="19.07" x2="7.76" y2="16.24" /><line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-lg text-white mb-2">Analyzing Profiles</h3>
-              <p className="text-sm text-neutral-400 mb-6">Our AI is computing your learning curriculum...</p>
-              <div className={styles.loadingStatusList}>
-                {generationStatusLines.map((line, idx) => (
-                  <div
-                    key={idx}
-                    className={`${styles.loadingStatusItem} ${
-                      idx === generationStep
-                        ? styles.loadingStatusItemActive
-                        : idx < generationStep
-                        ? styles.loadingStatusItemDone
-                        : ""
-                    }`}
-                  >
-                    <div className={styles.statusIconSlot}>
-                      {idx < generationStep ? (
-                        <Check size={16} />
-                      ) : idx === generationStep ? (
-                        <div className="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></div>
-                      ) : (
-                        <div className="w-2.5 h-2.5 rounded-full bg-neutral-800"></div>
-                      )}
-                    </div>
-                    <span>{line}</span>
-                  </div>
-                ))}
-              </div>
-              <div className={styles.loadingBarContainer}>
+        {isGenerating ? (
+          /* LOADING STATE CARD */
+          <div className={styles.loadingCard}>
+            <div className={styles.loadingSpinnerContainer}>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                className={styles.glowingOrb}
+              >
+                <Compass size={32} className="text-orange-500" />
+              </motion.div>
+            </div>
+            <h3 className={styles.loadingTitle}>Analyzing Profiles</h3>
+            <p className={styles.loadingSubtitle}>Our AI is computing your learning curriculum...</p>
+            <div className={styles.loadingStatusList}>
+              {generationStatusLines.map((line, idx) => (
                 <div
-                  className={styles.loadingBarFill}
-                  style={{ width: `${(generationStep / generationStatusLines.length) * 100}%` }}
-                ></div>
+                  key={idx}
+                  className={`${styles.loadingStatusItem} ${idx === generationStep
+                    ? styles.loadingStatusItemActive
+                    : idx < generationStep
+                      ? styles.loadingStatusItemDone
+                      : ""
+                    }`}
+                >
+                  <div className={styles.statusIconSlot}>
+                    {idx < generationStep ? (
+                      <div className={styles.statusCircleDone}>
+                        <Check size={12} strokeWidth={3} />
+                      </div>
+                    ) : idx === generationStep ? (
+                      <div className={styles.statusCircleActive}>
+                        <div className={`${styles.statusDotActive} animate-pulse`}></div>
+                      </div>
+                    ) : (
+                      <div className={styles.statusCirclePending}></div>
+                    )}
+                  </div>
+                  <span>{line}</span>
+                </div>
+              ))}
+            </div>
+            <div className={styles.loadingBarContainer}>
+              <div
+                className={styles.loadingBarFill}
+                style={{ width: `${(generationStep / generationStatusLines.length) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+        ) : !hasRoadmap ? (
+          /* EMPTY STATE / GENERATOR INTAKE FORM */
+          <div className={styles.generatorWrapper}>
+            {/* Left Column: Heading + Info & Features */}
+            <div className={styles.infoColumn}>
+              <h1 className={styles.heroTitle}>Career Roadmap</h1>
+              <p className={styles.infoSubtitle}>
+                Unlocks an adaptive, personalized learning path synthesized directly from your resume analyzer score and mock interview diagnostics.
+              </p>
+              <div className={styles.infoList}>
+                <div className={styles.infoItem}>
+                  <div className={styles.infoIcon}>
+                    <Zap size={24} />
+                  </div>
+                  <div className={styles.infoText}>
+                    <span className={styles.infoLabel}>Tailored Curriculum</span>
+                    <span className={styles.infoValue}>Synthesized directly from your resume keywords and ATS matching score.</span>
+                  </div>
+                </div>
+                <div className={styles.infoItem}>
+                  <div className={styles.infoIcon}>
+                    <Target size={24} />
+                  </div>
+                  <div className={styles.infoText}>
+                    <span className={styles.infoLabel}>Mock Interview Alignment</span>
+                    <span className={styles.infoValue}>Targets weak competencies diagnosed during your live chat and voice practice.</span>
+                  </div>
+                </div>
+                <div className={styles.infoItem}>
+                  <div className={styles.infoIcon}>
+                    <BookOpen size={24} />
+                  </div>
+                  <div className={styles.infoText}>
+                    <span className={styles.infoLabel}>Resource Curation</span>
+                    <span className={styles.infoValue}>Hand-picked articles, videos, and documentation from top sources.</span>
+                  </div>
+                </div>
               </div>
             </div>
-          ) : !hasRoadmap ? (
-            /* EMPTY STATE / GENERATOR INTAKE FORM */
-            <div className={styles.generatorWrapper}>
-              {/* Left Column: Heading + Info & Features */}
-              <div className={styles.infoColumn}>
-                <h1 className={styles.heroTitle}>Career Roadmap</h1>
-                <p className={styles.infoSubtitle}>
-                  Unlocks an adaptive, personalized learning path synthesized directly from your resume analyzer score and mock interview diagnostics.
-                </p>
-                <div className={styles.infoList}>
-                  <div className={styles.infoItem}>
-                    <div className={styles.infoIcon}>
-                      <Zap size={24} />
+
+            {/* Right Column: Borderless Form Card */}
+            <div className={styles.generatorCardBorderless}>
+              <div className={styles.generatorHeader}>
+                <h2 className={styles.generatorTitle}>Build Your Road Map</h2>
+              </div>
+              <div className={styles.formGrid}>
+                <RoadmapDropdown
+                  label="Target Company"
+                  value={targetCompany}
+                  onChange={setTargetCompany}
+                  menuMaxHeight={168}
+                  options={COMPANIES.map((c) => ({ value: c, label: c }))}
+                />
+
+                <RoadmapDropdown
+                  label="Target Role"
+                  value={targetRole}
+                  onChange={setTargetRole}
+                  menuMaxHeight={168}
+                  options={ROLES.map((r) => ({ value: r, label: r }))}
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label}>Experience Level</label>
+                <div className={styles.radioGroup}>
+                  {EXPERIENCE_LEVELS.map((el) => (
+                    <div
+                      key={el}
+                      onClick={() => setExperienceLevel(el)}
+                      className={`${styles.radioPill} ${experienceLevel === el ? styles.radioPillActive : ""
+                        }`}
+                    >
+                      {el}
                     </div>
-                    <div className={styles.infoText}>
-                      <span className={styles.infoLabel}>Tailored Curriculum</span>
-                      <span className={styles.infoValue}>Synthesized directly from your resume keywords and ATS matching score.</span>
-                    </div>
-                  </div>
-                  <div className={styles.infoItem}>
-                    <div className={styles.infoIcon}>
-                      <Target size={24} />
-                    </div>
-                    <div className={styles.infoText}>
-                      <span className={styles.infoLabel}>Mock Interview Alignment</span>
-                      <span className={styles.infoValue}>Targets weak competencies diagnosed during your live chat and voice practice.</span>
-                    </div>
-                  </div>
-                  <div className={styles.infoItem}>
-                    <div className={styles.infoIcon}>
-                      <BookOpen size={24} />
-                    </div>
-                    <div className={styles.infoText}>
-                      <span className={styles.infoLabel}>Resource Curation</span>
-                      <span className={styles.infoValue}>Hand-picked articles, videos, and documentation from top sources.</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Right Column: Borderless Form Card */}
-              <div className={styles.generatorCardBorderless}>
-                <div className={styles.generatorHeader}>
-                  <h2 className={styles.generatorTitle}>Build Your Road Map</h2>
-                </div>
-                <div className={styles.formGrid}>
-                  <RoadmapDropdown
-                    label="Target Company"
-                    value={targetCompany}
-                    onChange={setTargetCompany}
-                    menuMaxHeight={168}
-                    options={COMPANIES.map((c) => ({ value: c, label: c }))}
-                  />
+              <div className={styles.formGrid}>
+                <RoadmapDropdown
+                  label="Current Skill Tier"
+                  value={currentSkillLevel}
+                  onChange={setCurrentSkillLevel}
+                  options={[
+                    { value: "Beginner", label: "Beginner (just starting out)" },
+                    { value: "Intermediate", label: "Intermediate (some experience)" },
+                    { value: "Advanced", label: "Advanced (seeking polish)" },
+                  ]}
+                />
 
-                  <RoadmapDropdown
-                    label="Target Role"
-                    value={targetRole}
-                    onChange={setTargetRole}
-                    menuMaxHeight={168}
-                    options={ROLES.map((r) => ({ value: r, label: r }))}
+                <div className={styles.field} style={{ marginTop: "24px" }}>
+                  <div className={styles.sliderHeader}>
+                    <label className={styles.label}>Weekly Study Plan</label>
+                    <span className={styles.sliderValue}>{weeklyStudyHours} hrs / week</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="2"
+                    max="30"
+                    step="2"
+                    value={weeklyStudyHours}
+                    onChange={(e) => setWeeklyStudyHours(Number(e.target.value))}
+                    className={styles.slider}
+                    style={{
+                      background: `linear-gradient(to right, var(--text-primary) 0%, var(--text-primary) ${((weeklyStudyHours - 2) / (30 - 2)) * 100
+                        }%, rgba(255, 255, 255, 0.1) ${((weeklyStudyHours - 2) / (30 - 2)) * 100
+                        }%, rgba(255, 255, 255, 0.1) 100%)`
+                    }}
                   />
                 </div>
+              </div>
 
-                <div className={styles.field}>
-                  <label className={styles.label}>Experience Level</label>
-                  <div className={styles.radioGroup}>
-                    {EXPERIENCE_LEVELS.map((el) => (
+              <div className={styles.field}>
+                <label className={styles.label}>Learning Style</label>
+                <div className={styles.chipGroup}>
+                  {LEARNING_STYLES.map((style) => {
+                    const isSelected = selectedLearningStyles.includes(style);
+                    return (
                       <div
-                        key={el}
-                        onClick={() => setExperienceLevel(el)}
-                        className={`${styles.radioPill} ${
-                          experienceLevel === el ? styles.radioPillActive : ""
-                        }`}
+                        key={style}
+                        onClick={() => toggleLearningStyle(style)}
+                        className={isSelected ? styles.chipSelected : styles.chipUnselected}
                       >
-                        {el}
+                        <span>{style}</span>
                       </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Auto-detected profiles indicator */}
+              {(detectedSkills.length > 0 || detectedWeaknesses.length > 0) && (
+                <div className={styles.autoContext}>
+                  <span className={styles.autoTitle}>Auto-Detected Profile Context</span>
+                  <div className={styles.contextChips}>
+                    {detectedSkills.length > 0 && (
+                      <span className={styles.contextChip}>
+                        Resume Analyzer Scan: {detectedSkills.length} skills found (Match: {detectedResumeScore}%)
+                      </span>
+                    )}
+                    {detectedWeaknesses.map((w, idx) => (
+                      <span key={idx} className={styles.contextChip}>
+                        Interview Gap: {w}
+                      </span>
                     ))}
                   </div>
                 </div>
+              )}
 
-                <div className={styles.formGrid}>
-                  <RoadmapDropdown
-                    label="Current Skill Tier"
-                    value={currentSkillLevel}
-                    onChange={setCurrentSkillLevel}
-                    options={[
-                      { value: "Beginner", label: "Beginner (just starting out)" },
-                      { value: "Intermediate", label: "Intermediate (some experience)" },
-                      { value: "Advanced", label: "Advanced (seeking polish)" },
-                    ]}
-                  />
-
-                  <div className={styles.field} style={{ marginTop: "24px" }}>
-                    <div className={styles.sliderHeader}>
-                      <label className={styles.label}>Weekly Study Plan</label>
-                      <span className={styles.sliderValue}>{weeklyStudyHours} hrs / week</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="2"
-                      max="30"
-                      step="2"
-                      value={weeklyStudyHours}
-                      onChange={(e) => setWeeklyStudyHours(Number(e.target.value))}
-                      className={styles.slider}
-                      style={{
-                        background: `linear-gradient(to right, var(--text-primary) 0%, var(--text-primary) ${
-                          ((weeklyStudyHours - 2) / (30 - 2)) * 100
-                        }%, rgba(255, 255, 255, 0.1) ${
-                          ((weeklyStudyHours - 2) / (30 - 2)) * 100
-                        }%, rgba(255, 255, 255, 0.1) 100%)`
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className={styles.field}>
-                  <label className={styles.label}>Learning Style</label>
-                  <div className={styles.chipGroup}>
-                    {LEARNING_STYLES.map((style) => {
-                      const isSelected = selectedLearningStyles.includes(style);
-                      return (
-                        <div
-                          key={style}
-                          onClick={() => toggleLearningStyle(style)}
-                          className={isSelected ? styles.chipSelected : styles.chipUnselected}
-                        >
-                          <span>{style}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Auto-detected profiles indicator */}
-                {(detectedSkills.length > 0 || detectedWeaknesses.length > 0) && (
-                  <div className={styles.autoContext}>
-                    <span className={styles.autoTitle}>Auto-Detected Profile Context</span>
-                    <div className={styles.contextChips}>
-                      {detectedSkills.length > 0 && (
-                        <span className={styles.contextChip}>
-                          Resume Analyzer Scan: {detectedSkills.length} skills found (Match: {detectedResumeScore}%)
-                        </span>
-                      )}
-                      {detectedWeaknesses.map((w, idx) => (
-                        <span key={idx} className={styles.contextChip}>
-                          Interview Gap: {w}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className={styles.buttonGroup}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTargetCompany("Other / General");
-                      setTargetRole("Full Stack");
-                      setExperienceLevel("Fresher");
-                      setCurrentSkillLevel("Intermediate");
-                      setWeeklyStudyHours(16); // step: 2, min: 2, max: 30
-                      setSelectedLearningStyles(["Video", "Projects"]);
-                    }}
-                    className={styles.clearBtn}
-                  >
-                    <Eraser size={16} /> Clear
-                  </button>
-                  <button
-                    onClick={handleGenerate}
-                    className={styles.generateBtn}
-                    disabled={selectedLearningStyles.length === 0}
-                  >
-                    <Zap size={16} /> Generate AI Roadmap
-                  </button>
-                </div>
+              <div className={styles.buttonGroup}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTargetCompany("Other / General");
+                    setTargetRole("Full Stack");
+                    setExperienceLevel("Fresher");
+                    setCurrentSkillLevel("Intermediate");
+                    setWeeklyStudyHours(16); // step: 2, min: 2, max: 30
+                    setSelectedLearningStyles(["Video", "Projects"]);
+                  }}
+                  className={styles.clearBtn}
+                >
+                  <Eraser size={16} /> Clear
+                </button>
+                <button
+                  onClick={handleGenerate}
+                  className={styles.generateBtn}
+                  disabled={selectedLearningStyles.length === 0}
+                >
+                  <Zap size={16} /> Generate AI Roadmap
+                </button>
               </div>
             </div>
-      ) : (
-        /* WORKSPACE VIEW: CANVAS + SIDEBAR */
-          <div className={styles.layout}>
+          </div>
+        ) : (
+          /* WORKSPACE VIEW: FULL-WIDTH MASTER DASHBOARD + CANVAS/SIDEBAR */
+          <div className="w-full space-y-6">
+            {/* Full-Width Master Analytics & Diagnostics Header */}
+            <div className={styles.dashHeroBanner}>
+              {/* Top Progress Stats Row */}
+              <section className={styles.dashStatsGrid}>
+                <div className={styles.dashStatBox}>
+                  <span className={styles.dashStatLabel}>Current Level</span>
+                  <span className={styles.dashStatValue}>{level}</span>
+                </div>
+                <div className={styles.dashStatBox}>
+                  <span className={styles.dashStatLabel}>XP Earned</span>
+                  <span className={styles.dashStatValue}>{xp}</span>
+                </div>
+                <div className={styles.dashStatBox}>
+                  <span className={styles.dashStatLabel}>Skills Done</span>
+                  <span className={styles.dashStatValue}>
+                    {completedSkillsCount} / {totalSkills}
+                  </span>
+                </div>
+                <div className={styles.dashStatBox}>
+                  <span className={styles.dashStatLabel}>Est. Weeks left</span>
+                  <span className={styles.dashStatValue}>{totalWeeks}</span>
+                </div>
+              </section>
+
+              {/* Middle Gauge & Competency Gaps */}
+              <section className={styles.dashMiddleGrid}>
+                <div className={styles.dashGaugeBox}>
+                  <div className={styles.dashGaugeRing}>
+                    <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 overflow-visible">
+                      <defs>
+                        <linearGradient id="roadmapScoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#06b6d4" />
+                          <stop offset="50%" stopColor="#a855f7" />
+                          <stop offset="100%" stopColor="#f97316" />
+                        </linearGradient>
+                      </defs>
+                      {/* Outer dashed orbit circle */}
+                      <circle
+                        cx="50" cy="50" r="47"
+                        fill="none"
+                        stroke="rgba(255, 255, 255, 0.08)"
+                        strokeWidth="0.75"
+                        strokeDasharray="2 4"
+                      />
+                      {/* Track dashed circle */}
+                      <circle
+                        className={styles.dashGaugeRingTrack}
+                        cx="50" cy="50" r="42"
+                      />
+                      {/* Glowing underlay */}
+                      <circle
+                        className={styles.dashGaugeRingFillGlow}
+                        cx="50" cy="50" r="42"
+                        style={{
+                          strokeDasharray: 263.89,
+                          strokeDashoffset: 263.89 - (263.89 * overallProgress) / 100,
+                          stroke: "url(#roadmapScoreGradient)",
+                        } as React.CSSProperties}
+                      />
+                      {/* Sharp foreground path */}
+                      <circle
+                        className={styles.dashGaugeRingFill}
+                        cx="50" cy="50" r="42"
+                        style={{
+                          strokeDasharray: 263.89,
+                          strokeDashoffset: 263.89 - (263.89 * overallProgress) / 100,
+                          stroke: "url(#roadmapScoreGradient)",
+                        } as React.CSSProperties}
+                      />
+                    </svg>
+                    <span className={styles.dashGaugeValue}>{overallProgress}%</span>
+                  </div>
+                  <span className={styles.dashGaugeTitle}>Match Progress</span>
+                </div>
+
+                <div className={styles.dashGapsBox}>
+                  <div className={styles.dashGapsHeader}>
+                    <h4 className={styles.dashGapsTitle}>Role Competency Gaps</h4>
+                    <span className={styles.dashGapsSubtitle}>Current vs Target Level</span>
+                  </div>
+                  <div className={styles.dashGapRow}>
+                    <div className={styles.dashGapMeta}>
+                      <span className={styles.dashGapName}>Data Structures & Algorithms</span>
+                      <span className={styles.dashGapValue}>60% Match</span>
+                    </div>
+                    <div className={styles.dashGapTrack}>
+                      <div className={styles.dashGapBar} style={{ width: "60%" }}></div>
+                    </div>
+                  </div>
+                  <div className={styles.dashGapRow}>
+                    <div className={styles.dashGapMeta}>
+                      <span className={styles.dashGapName}>System Design & Scaling</span>
+                      <span className={styles.dashGapValue}>45% Match</span>
+                    </div>
+                    <div className={styles.dashGapTrack}>
+                      <div className={styles.dashGapBar} style={{ width: "45%" }}></div>
+                    </div>
+                  </div>
+                  <div className={styles.dashGapRow}>
+                    <div className={styles.dashGapMeta}>
+                      <span className={styles.dashGapName}>STAR Method Behavioral responses</span>
+                      <span className={styles.dashGapValue}>75% Match</span>
+                    </div>
+                    <div className={styles.dashGapTrack}>
+                      <div className={styles.dashGapBar} style={{ width: "75%" }}></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Bottom Row: Certifications + Learning Streak */}
+              <div className={styles.dashBottomGrid}>
+                <section className={styles.dashCertsCard}>
+                  <h4 className={styles.dashCertsTitle}>Target Recommended Certifications</h4>
+                  <div className={styles.dashCertsGrid}>
+                    <div className={styles.dashCertItem}>
+                      <div className={styles.dashCertIcon}>
+                        <Award className="text-orange-500" size={20} />
+                      </div>
+                      <div className={styles.dashCertMeta}>
+                        <span className={styles.dashCertName}>AWS Certified Developer Associate</span>
+                        <span className={styles.dashCertTag}>Highly relevant (92% match)</span>
+                        <span className={styles.dashCertTrack}>Cloud Foundations track</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.dashCertItem}>
+                      <div className={styles.dashCertIcon}>
+                        <Award className="text-orange-500" size={20} />
+                      </div>
+                      <div className={styles.dashCertMeta}>
+                        <span className={styles.dashCertName}>HashiCorp Certified Terraform Associate</span>
+                        <span className={styles.dashCertTag}>Recommended for {userContext?.targetRole || "Cloud Engineer"}</span>
+                        <span className={styles.dashCertTrack}>Infrastructure management track</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section className={styles.dashStreakCard}>
+                  <h4 className={styles.dashCertsTitle}>Daily Learning Streak</h4>
+                  <div className={styles.dashStreakInfo}>
+                    <Flame className={styles.dashStreakIcon} size={24} />
+                    <div className={styles.dashStreakText}>
+                      <span className={styles.dashStreakTitle}>{streak} Day Learning Streak</span>
+                      <span className={styles.dashStreakDesc}>Keep learning daily to compound your skills!</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      incrementStreak();
+                      toast.success("Streak validated! You earned 10 XP.");
+                    }}
+                    className={styles.dashStreakActionBtn}
+                  >
+                    <Flame size={14} className="text-amber-200" />
+                    Verify Today's Progress
+                  </button>
+                </section>
+              </div>
+            </div>
+
+            {/* 2-Column Workspace Layout */}
+            <div className={styles.layout}>
             {/* Left Column: Spine & Timeline Canvas */}
             <div className={styles.canvas}>
               <div className={styles.timelineContainer}>
-                {/* Dynamic Progress Spine */}
-                <div className={styles.spine}>
-                  <div
-                    className={styles.spineFill}
-                    style={{ height: `${overallProgress}%` }}
-                  ></div>
-                </div>
-
                 {/* Loop Phases */}
-                {phases.map((phase) => {
-                const isExpanded = expandedPhaseId === phase.id;
-                const isLocked = phase.status === "locked";
+                {phases.map((phase, idx) => {
+                  const isExpanded = expandedPhaseId === phase.id;
+                  const isLocked = phase.status === "locked";
+                  const isCompleted = phase.status === "completed";
+                  const isActive = phase.status === "active";
+                  const isLast = idx === phases.length - 1;
 
-                return (
-                  <div key={phase.id} className={styles.phaseContainer}>
-                    {/* Spine connector Node */}
-                    <div
-                      className={`${styles.phaseNode} ${
-                        phase.status === "completed"
-                          ? styles.phaseNodeCompleted
-                          : phase.status === "active"
-                          ? styles.phaseNodeActive
-                          : ""
-                      }`}
-                    >
-                      {phase.status === "completed" && <Check size={12} className="text-black" />}
-                    </div>
+                  const isPrevCompleted = idx > 0 && phases[idx - 1].status === "completed";
 
+                  return (
                     <div
-                      className={`${styles.phaseCard} ${
-                        phase.status === "active" ? styles.phaseCardActive : ""
-                      }`}
+                      key={phase.id}
+                      className={`${styles.phaseContainer} ${isExpanded ? styles.phaseContainerExpanded : ""
+                        }`}
                     >
-                      {/* Collapsible header click triggers toggle */}
+                      {/* Top Connector Segment (runs from container top to node center) */}
+                      {idx > 0 && (
+                        <div className={styles.phaseConnectorTop}>
+                          <div
+                            className={`${styles.phaseConnectorFill} ${isPrevCompleted ? styles.phaseConnectorActive : ""
+                              }`}
+                          />
+                        </div>
+                      )}
+
+                      {/* Bottom Connector Segment (runs from node center to bottom gap) */}
+                      {!isLast && (
+                        <div className={styles.phaseConnectorBottom}>
+                          <div
+                            className={`${styles.phaseConnectorFill} ${isCompleted ? styles.phaseConnectorActive : ""
+                              }`}
+                          />
+                        </div>
+                      )}
+
+                      {/* Spine connector Node */}
                       <div
-                        onClick={() => {
-                          if (!isLocked) {
-                            hasUserInteracted.current = true;
-                            setExpandedPhaseId(isExpanded ? null : phase.id);
-                          }
-                        }}
-                        className={styles.phaseHeader}
-                        style={{ cursor: isLocked ? "not-allowed" : "pointer" }}
+                        className={`${styles.phaseNode} ${isCompleted
+                            ? styles.phaseNodeCompleted
+                            : isActive
+                              ? styles.phaseNodeActive
+                              : ""
+                          }`}
                       >
-                        <div className={styles.phaseMeta}>
-                          <div className={styles.phaseTitleRow}>
-                            <span className={styles.phaseNumber}>Phase {phase.order}</span>
-                            <h3 className={styles.phaseTitle}>{phase.title}</h3>
-                          </div>
-                          <span className={styles.phaseSub}>
-                            <span>{phase.skills.length} skills</span>
-                            <span>•</span>
-                            <span>{phase.estimatedWeeks} weeks</span>
-                            {phase.progressPercent > 0 && (
-                              <>
-                                <span>•</span>
-                                <span className="text-emerald-500 font-medium">{phase.progressPercent}% done</span>
-                              </>
-                            )}
-                          </span>
-                        </div>
-
-                        <div className={styles.phaseMetrics}>
-                          <span className={styles.difficultyBadge}>{phase.difficulty}</span>
-                          {isLocked ? (
-                            <Lock size={16} className="text-neutral-600" />
-                          ) : isExpanded ? (
-                            <ChevronUp size={18} className={styles.chevron} />
-                          ) : (
-                            <ChevronDown size={18} className={styles.chevron} />
-                          )}
-                        </div>
+                        {isCompleted && <Check size={12} className="text-black" />}
                       </div>
 
-                      {/* Expandable Phase Details Drawer */}
-                      <AnimatePresence initial={false}>
-                        {isExpanded && !isLocked && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className="overflow-hidden"
-                          >
-                            <div className={styles.phaseDetails}>
-                              {/* AI Rationale */}
-                              <div className={styles.rationaleBox}>
-                                <div className={styles.rationaleTitle}>AI Curator Explanation</div>
-                                <p className={styles.rationaleText}>{phase.aiRationale}</p>
-                              </div>
+                      <div
+                        className={`${styles.phaseCard} ${phase.status === "active" ? styles.phaseCardActive : ""
+                          }`}
+                      >
+                        {/* Collapsible header click triggers toggle */}
+                        <div
+                          onClick={() => {
+                            hasUserInteracted.current = true;
+                            setExpandedPhaseId(isExpanded ? null : phase.id);
+                          }}
+                          className={styles.phaseHeader}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <div className={styles.phaseMeta}>
+                            <div className={styles.phaseTitleRow}>
+                              <span className={styles.phaseNumber}>Phase {phase.order}</span>
+                              <h3 className={styles.phaseTitle}>{phase.title}</h3>
+                            </div>
+                            <span className={styles.phaseSub}>
+                              <span>{phase.skills.length} skills</span>
+                              <span>•</span>
+                              <span>{phase.estimatedWeeks} weeks</span>
+                              {phase.progressPercent > 0 && (
+                                <>
+                                  <span>•</span>
+                                  <span className="text-emerald-500 font-medium">{phase.progressPercent}% done</span>
+                                </>
+                              )}
+                            </span>
+                          </div>
 
-                              {/* Skills Grid */}
-                              <div>
-                                <h4 className="text-xs uppercase font-bold text-neutral-400 tracking-wider mb-3">
-                                  Skills Checklist
-                                </h4>
-                                <div className={styles.skillsGrid}>
-                                  {phase.skills.map((skill) => {
-                                    const isSkillCompleted = skill.status === "completed";
-                                    const isSkillExpanded = expandedSkillId === skill.id;
+                          <div className={styles.phaseMetrics}>
+                            <span className={styles.difficultyBadge}>{phase.difficulty}</span>
+                            {isLocked ? (
+                              <Lock size={16} className="text-neutral-600" />
+                            ) : isExpanded ? (
+                              <ChevronUp size={18} className={styles.chevron} />
+                            ) : (
+                              <ChevronDown size={18} className={styles.chevron} />
+                            )}
+                          </div>
+                        </div>
 
-                                    return (
-                                      <React.Fragment key={skill.id}>
+                        {/* Expandable Phase Details Drawer */}
+                        <AnimatePresence initial={false}>
+                          {isExpanded && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3, ease: "easeInOut" }}
+                              className="overflow-hidden"
+                            >
+                              <div className={styles.phaseDetails}>
+                                {/* AI Rationale */}
+                                <div className={styles.rationaleBox}>
+                                  <div className={styles.rationaleTitle}>AI Curator Explanation</div>
+                                  <p className={styles.rationaleText}>{phase.aiRationale}</p>
+                                </div>
+
+                                {/* Skills Grid */}
+                                <div className={styles.skillsGroup}>
+                                  <h4 className={styles.skillsGroupLabel}>
+                                    Skills Checklist
+                                  </h4>
+                                  <div className={styles.skillsGrid}>
+                                    {phase.skills.map((skill) => {
+                                      const isSkillCompleted = skill.status === "completed";
+                                      const isSkillExpanded = expandedSkillId === skill.id;
+                                      const hoursStudied = Math.min(
+                                        skill.estimatedHours,
+                                        Math.max(0, Math.round((skill.progressPercent / 100) * skill.estimatedHours))
+                                      );
+
+                                      return (
                                         <div
+                                          key={skill.id}
                                           onClick={() => setExpandedSkillId(isSkillExpanded ? null : skill.id)}
-                                          className={`${styles.skillCard} ${
-                                            isSkillCompleted ? styles.skillCardCompleted : ""
-                                          }`}
+                                          className={`${styles.skillCard} ${isSkillCompleted ? styles.skillCardCompleted : ""
+                                            }`}
                                         >
                                           <div className={styles.skillHeader}>
                                             <div className={styles.skillInfo}>
@@ -675,286 +964,179 @@ export default function CareerRoadmapPage() {
                                               )}
                                             </div>
 
-                                            {/* Skill checkbox trigger */}
+                                            {/* Top-Right Hours Input Tracker */}
                                             <div
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                toggleSkillStatus(phase.id, skill.id);
-                                              }}
-                                              className={`${styles.skillCheckbox} ${
-                                                isSkillCompleted ? styles.skillCheckboxChecked : ""
-                                              }`}
+                                              className={styles.skillHoursInputContainer}
+                                              onClick={(e) => e.stopPropagation()}
                                             >
-                                              {isSkillCompleted && <Check size={12} strokeWidth={3} />}
+                                              <Clock size={11} className="text-purple-500 mr-0.5" />
+                                              <input
+                                                type="number"
+                                                min={0}
+                                                max={skill.estimatedHours}
+                                                step={1}
+                                                placeholder="0"
+                                                value={hoursStudied === 0 ? "" : hoursStudied}
+                                                onFocus={(e) => e.target.select()}
+                                                onChange={(e) => {
+                                                  const val = parseFloat(e.target.value) || 0;
+                                                  const constrained = Math.min(skill.estimatedHours, Math.max(0, val));
+                                                  const newPercent = Math.round((constrained / skill.estimatedHours) * 100);
+                                                  updateSkillProgress(phase.id, skill.id, newPercent);
+                                                }}
+                                                className={styles.skillHoursInputField}
+                                              />
+                                              <span className={styles.skillHoursInputDivider}>/</span>
+                                              <span className={styles.skillHoursInputTotal}>{skill.estimatedHours} hrs</span>
                                             </div>
                                           </div>
 
                                           <div className={styles.skillFooter}>
-                                            <span>{skill.estimatedHours} hrs</span>
                                             <span className="capitalize">{skill.difficulty}</span>
+                                            <span className="text-neutral-500 hover:text-neutral-300 transition-colors flex items-center gap-1 text-xs">
+                                              {isSkillExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                                            </span>
                                           </div>
 
-                                          {/* Tiny progress fill bar */}
+                                          {/* Full-width progress fill bar */}
                                           <div className={styles.skillProgress}>
                                             <div
                                               className={styles.skillProgressFill}
-                                              style={{ width: `${skill.progressPercent}%` }}
+                                              style={{ clipPath: `inset(0 ${100 - skill.progressPercent}% 0 0)` }}
                                             ></div>
                                           </div>
-                                        </div>
 
-                                        {/* Expandable Resources Drawer for selected skill card */}
-                                        {isSkillExpanded && (
-                                          <div className={styles.skillDrawer}>
-                                            <div>
-                                              <div className={styles.drawerSectionTitle}>
-                                                <BookOpen size={12} /> Recommended Resources
-                                              </div>
-                                              <div className={styles.resourceTags}>
-                                                {skill.resources.map((res, rIdx) => (
-                                                  <a
-                                                    key={rIdx}
-                                                    href={res.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={styles.resourceLink}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                  >
-                                                    <span className="text-cyan-500 font-semibold">
-                                                      [{res.source}]
-                                                    </span>
-                                                    <span>{res.name}</span>
-                                                  </a>
-                                                ))}
-                                              </div>
-                                            </div>
-
-                                            <div>
-                                              <div className={styles.drawerSectionTitle}>
-                                                <Zap size={12} /> Practice Sandbox Assignment
-                                              </div>
-                                              <div className={styles.miniProjectBox}>
-                                                <div className={styles.miniProjectName}>
-                                                  {skill.miniProject.name}
-                                                </div>
-                                                <p className={styles.miniProjectDesc}>
-                                                  {skill.miniProject.description}
-                                                </p>
-                                                <div className={styles.projectTechs}>
-                                                  {skill.miniProject.tech.map((t) => (
-                                                    <span key={t} className={styles.projectTech}>
-                                                      {t}
-                                                    </span>
-                                                  ))}
-                                                </div>
-                                              </div>
-                                            </div>
-
-                                            <div>
-                                              <div className={styles.drawerSectionTitle}>
-                                                <Info size={12} /> Key Interview Diagnostics
-                                              </div>
-                                              <div className={styles.questionsList}>
-                                                {skill.practiceQuestions.map((q, qIdx) => (
-                                                  <div key={qIdx} className={styles.questionItem}>
-                                                    {q}
+                                          {/* Expandable Resources Drawer inside skill card */}
+                                          <AnimatePresence initial={false}>
+                                            {isSkillExpanded && (
+                                              <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: "auto" }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                className="overflow-hidden w-full"
+                                              >
+                                                <div
+                                                  className={styles.skillDrawer}
+                                                  onClick={(e) => e.stopPropagation()}
+                                                >
+                                                  <div>
+                                                    <div className={styles.drawerSectionTitle}>
+                                                      <BookOpen size={12} /> Recommended Resources
+                                                    </div>
+                                                    <div className={styles.resourceTags}>
+                                                      {skill.resources.map((res, rIdx) => (
+                                                        <a
+                                                          key={rIdx}
+                                                          href={res.url}
+                                                          target="_blank"
+                                                          rel="noopener noreferrer"
+                                                          className={styles.resourceLink}
+                                                          onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                          <span className="text-yellow-500 font-semibold">
+                                                            [{res.source}]
+                                                          </span>
+                                                          <span>{res.name}</span>
+                                                        </a>
+                                                      ))}
+                                                    </div>
                                                   </div>
-                                                ))}
-                                              </div>
+
+                                                  <div>
+                                                    <div className={styles.drawerSectionTitle}>
+                                                      <Zap size={12} /> Practice Sandbox Assignment
+                                                    </div>
+                                                    <div className={styles.miniProjectBox}>
+                                                      <div className={styles.miniProjectName}>
+                                                        {skill.miniProject.name}
+                                                      </div>
+                                                      <p className={styles.miniProjectDesc}>
+                                                        {skill.miniProject.description}
+                                                      </p>
+                                                      <div className={styles.projectTechs}>
+                                                        {skill.miniProject.tech.map((t) => (
+                                                          <span key={t} className={styles.projectTech}>
+                                                            {t}
+                                                          </span>
+                                                        ))}
+                                                      </div>
+                                                    </div>
+                                                  </div>
+
+                                                  <div>
+                                                    <div className={styles.drawerSectionTitle}>
+                                                      <Info size={12} /> Key Interview Diagnostics
+                                                    </div>
+                                                    <div className={styles.questionsList}>
+                                                      {skill.practiceQuestions.map((q, qIdx) => (
+                                                        <div key={qIdx} className={styles.questionItem}>
+                                                          {q}
+                                                        </div>
+                                                      ))}
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </motion.div>
+                                            )}
+                                          </AnimatePresence>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+
+                                {/* Phase Recommended Projects */}
+                                {phase.projects.length > 0 && (
+                                  <div>
+                                    <div className={styles.phaseProjectsTitle}>
+                                      <Briefcase size={12} /> Phase Recommended Projects
+                                    </div>
+                                    <div className={styles.projectsList}>
+                                      {phase.projects.map((proj, pIdx) => (
+                                        <div key={pIdx} className={styles.recProjectCard}>
+                                          <div className={styles.recProjHeader}>
+                                            <span className={styles.recProjTitle}>{proj.name}</span>
+                                            <div className={styles.recProjMeta}>
+                                              <span>{proj.difficulty}</span>
+                                              <span>•</span>
+                                              <span>{proj.estimatedTime}</span>
                                             </div>
                                           </div>
-                                        )}
-                                      </React.Fragment>
-                                    );
-                                  })}
-                                </div>
+                                          <p className={styles.recProjDesc}>{proj.description}</p>
+                                          <div className={styles.recProjFooter}>
+                                            <div className={styles.projectTechs}>
+                                              {proj.tech.map((t) => (
+                                                <span key={t} className={styles.projectTech}>
+                                                  {t}
+                                                </span>
+                                              ))}
+                                            </div>
+                                            <button
+                                              disabled={isLocked}
+                                              onClick={() => {
+                                                if (isLocked) return;
+                                                setActiveProjectGuide(proj);
+                                              }}
+                                              className={`${styles.startProjBtn} ${isLocked ? styles.startProjBtnLocked : ""
+                                                }`}
+                                            >
+                                              Start Project
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-
-                              {/* Phase Recommended Projects */}
-                              {phase.projects.length > 0 && (
-                                <div>
-                                  <div className={styles.phaseProjectsTitle}>
-                                    <Briefcase size={12} /> Phase Recommended Projects
-                                  </div>
-                                  <div className={styles.projectsList}>
-                                    {phase.projects.map((proj, pIdx) => (
-                                      <div key={pIdx} className={styles.recProjectCard}>
-                                        <div className={styles.recProjHeader}>
-                                          <span className={styles.recProjTitle}>{proj.name}</span>
-                                          <div className={styles.recProjMeta}>
-                                            <span>{proj.difficulty}</span>
-                                            <span>•</span>
-                                            <span>{proj.estimatedTime}</span>
-                                          </div>
-                                        </div>
-                                        <p className={styles.recProjDesc}>{proj.description}</p>
-                                        <div className={styles.recProjFooter}>
-                                          <div className={styles.projectTechs}>
-                                            {proj.tech.map((t) => (
-                                              <span key={t} className={styles.projectTech}>
-                                                {t}
-                                              </span>
-                                            ))}
-                                          </div>
-                                          <button
-                                            onClick={() => toast.success("Project sandbox initialized!")}
-                                            className={styles.startProjBtn}
-                                          >
-                                            Start Project
-                                          </button>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                );
-              })}
-              </div>
-
-              <div className={styles.diagnosticCard}>
-                {/* Progress Summary stat tiles */}
-                <section className={styles.statsStrip}>
-                  <div className={styles.statTile}>
-                    <span className={styles.statTileLabel}>Current Level</span>
-                    <span className={styles.statTileValue}>{level}</span>
-                  </div>
-                  <div className={styles.statTile}>
-                    <span className={styles.statTileLabel}>XP Earned</span>
-                    <span className={styles.statTileValue}>{xp}</span>
-                  </div>
-                  <div className={styles.statTile}>
-                    <span className={styles.statTileLabel}>Skills Done</span>
-                    <span className={styles.statTileValue}>
-                      {completedSkillsCount} / {totalSkills}
-                    </span>
-                  </div>
-                  <div className={styles.statTile}>
-                    <span className={styles.statTileLabel}>Est. Weeks left</span>
-                    <span className={styles.statTileValue}>{totalWeeks}</span>
-                  </div>
-                </section>
-
-                {/* Skill Gap Comparison module */}
-                <section className={styles.analysisCard}>
-                  <div className={styles.radialContainer}>
-                    <div className={styles.radialGauge}>
-                      {/* Ring gauge */}
-                      <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
-                        <path
-                          className="text-neutral-800"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          fill="none"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        />
-                        <path
-                          className="text-cyan-500"
-                          strokeWidth="2.5"
-                          strokeDasharray={`${overallProgress}, 100`}
-                          strokeLinecap="round"
-                          stroke="currentColor"
-                          fill="none"
-                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        />
-                      </svg>
-                      <span className={styles.radialText}>{overallProgress}%</span>
-                    </div>
-                    <span className={styles.radialLabel}>Match Progress</span>
-                  </div>
-
-                  <div className={styles.gapBarsContainer}>
-                    <div className="flex justify-between items-center border-b border-neutral-900 pb-2">
-                      <h4 className="text-xs uppercase font-bold text-neutral-400 tracking-wider">
-                        Role Competency Gaps
-                      </h4>
-                      <span className="text-xs text-neutral-400">Current vs Target Level</span>
-                    </div>
-                    <div className={styles.gapBarRow}>
-                      <div className={styles.gapBarHeader}>
-                        <span className={styles.gapBarName}>Data Structures & Algorithms</span>
-                        <span className={styles.gapBarValue}>60% Match</span>
-                      </div>
-                      <div className={styles.gapBarTrack}>
-                        <div className={styles.gapBarFill} style={{ width: "60%" }}></div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
                     </div>
-                    <div className={styles.gapBarRow}>
-                      <div className={styles.gapBarHeader}>
-                        <span className={styles.gapBarName}>System Design & Scaling</span>
-                        <span className={styles.gapBarValue}>45% Match</span>
-                      </div>
-                      <div className={styles.gapBarTrack}>
-                        <div className={styles.gapBarFill} style={{ width: "45%" }}></div>
-                      </div>
-                    </div>
-                    <div className={styles.gapBarRow}>
-                      <div className={styles.gapBarHeader}>
-                        <span className={styles.gapBarName}>STAR Method Behavioral responses</span>
-                        <span className={styles.gapBarValue}>75% Match</span>
-                      </div>
-                      <div className={styles.gapBarTrack}>
-                        <div className={styles.gapBarFill} style={{ width: "75%" }}></div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Recommended Certifications section */}
-                <section className={styles.certificationsSection}>
-                  <h4 className="text-xs uppercase font-bold text-neutral-400 tracking-wider border-b border-neutral-900 pb-2">
-                    Target Recommended Certifications
-                  </h4>
-                  <div className={styles.certsGrid}>
-                    <div className={styles.certCard}>
-                      <div className={styles.certIcon}>
-                        <Award className="text-cyan-500" size={24} />
-                      </div>
-                      <div className={styles.certInfo}>
-                        <span className={styles.certName}>AWS Certified Developer Associate</span>
-                        <span className={styles.certRelevance}>Highly relevant (92% match)</span>
-                        <span className={styles.certActions}>Cloud Foundations track</span>
-                      </div>
-                    </div>
-
-                    <div className={styles.certCard}>
-                      <div className={styles.certIcon}>
-                        <Award className="text-cyan-500" size={24} />
-                      </div>
-                      <div className={styles.certInfo}>
-                        <span className={styles.certName}>HashiCorp Certified Terraform Associate</span>
-                        <span className={styles.certRelevance}>Recommended for {userContext?.targetRole}</span>
-                        <span className={styles.certActions}>Infrastructure management track</span>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Gamification layer achievements strip */}
-                <section className={styles.gamificationStrip}>
-                  <div className={styles.badgeGroup}>
-                    <Flame className={styles.badgeIcon} />
-                    <div className={styles.badgeMeta}>
-                      <span className={styles.badgeName}>{streak} Day Learning Streak</span>
-                      <span className={styles.badgeDesc}>Keep learning daily to compound your skills!</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      incrementStreak();
-                      toast.success("Streak validated! You earned 10 XP.");
-                    }}
-                    className="text-xs font-semibold text-white bg-cyan-600 hover:bg-cyan-500 px-4 py-2 rounded-md transition-all active:scale-[0.98]"
-                  >
-                    Verify Today's Progress
-                  </button>
-                </section>
+                  );
+                })}
               </div>
             </div>
 
@@ -981,8 +1163,8 @@ export default function CareerRoadmapPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <span className="text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
+                  <div className={styles.sidebarMetricGroup}>
+                    <span className={styles.sidebarSubLabel}>
                       Identified Strengths
                     </span>
                     <div className={styles.sidebarChips}>
@@ -990,8 +1172,8 @@ export default function CareerRoadmapPage() {
                       <span className={`${styles.sidebarChip} ${styles.sidebarChipGreen}`}>Coding Consistency</span>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <span className="text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
+                  <div className={styles.sidebarMetricGroup}>
+                    <span className={styles.sidebarSubLabel}>
                       Identified Gaps
                     </span>
                     <div className={styles.sidebarChips}>
@@ -1045,9 +1227,15 @@ export default function CareerRoadmapPage() {
               {/* Regenerate button (placed outside the glass card) */}
               <button
                 onClick={() => {
-                  if (window.confirm("Are you sure you want to rebuild your roadmap? Progress stats will reset.")) {
-                    clearRoadmap();
-                  }
+                  toast.warning("Rebuild Roadmap?", {
+                    description: "Are you sure you want to rebuild your roadmap? Progress stats will reset.",
+                    confirmLabel: "Rebuild",
+                    onConfirm: () => {
+                      clearRoadmap();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    },
+                    duration: 6000
+                  });
                 }}
                 className={styles.regenBtnSidebar}
               >
@@ -1055,8 +1243,116 @@ export default function CareerRoadmapPage() {
               </button>
             </aside>
           </div>
+        </div>
+      )}
+    </main>
+
+      {/* --- Project Guide Modal Overlay --- */}
+      <AnimatePresence>
+        {activeProjectGuide && (
+          <div className={styles.modalOverlay}>
+            <motion.div
+              className={styles.modalCard}
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              {/* Modal Header */}
+              <div className={styles.modalHeader}>
+                <div className={styles.modalTitleArea}>
+                  <Compass className="text-orange-500" size={22} />
+                  <h3 className={styles.modalTitle}>{activeProjectGuide.name}</h3>
+                </div>
+                <button
+                  className={styles.modalCloseBtn}
+                  onClick={() => setActiveProjectGuide(null)}
+                  aria-label="Close guide"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Tags strip */}
+              <div className={styles.modalTagsStrip}>
+                <span className={styles.modalTagDifficulty}>
+                  {activeProjectGuide.difficulty}
+                </span>
+                <span className={styles.modalTagTime}>
+                  Est: {activeProjectGuide.estimatedTime}
+                </span>
+                {activeProjectGuide.tech.map((t, idx) => (
+                  <span key={idx} className={styles.modalTagTech}>
+                    {t}
+                  </span>
+                ))}
+              </div>
+
+              {/* Modal Body */}
+              {(() => {
+                const { steps, companyTip } = getDynamicProjectGuide(
+                  activeProjectGuide,
+                  userContext?.targetRole || "Full Stack",
+                  userContext?.targetCompany || "Other / General"
+                );
+                return (
+                  <div className={styles.modalBody}>
+                    <div className={styles.sectionBlock}>
+                      <h4 className={styles.sectionHeader}>Project Overview</h4>
+                      <p className={styles.sectionText}>{activeProjectGuide.description}</p>
+                    </div>
+
+                    <div className={styles.sectionBlock}>
+                      <h4 className={styles.sectionHeader}>Step-by-Step Implementation Guide</h4>
+                      <ol className={styles.guideStepsList}>
+                        {steps.map((s, idx) => (
+                          <li key={idx}>
+                            <strong>{s.title}</strong>
+                            <p>{s.desc}</p>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+
+                    <div className={styles.sectionBlock}>
+                      <h4 className={styles.sectionHeader}>Target Alignment Tips</h4>
+                      <ul className={styles.tipsList}>
+                        <li>
+                          <strong>Optimal Design:</strong> Ensure code matches professional industry clean standards (proper documentation, separation of concerns).
+                        </li>
+                        <li>
+                          <strong>Target Company ({userContext?.targetCompany || "General"}):</strong> {companyTip}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Modal Footer */}
+              <div className={styles.modalFooter}>
+                <button
+                  className={styles.modalCancelBtn}
+                  onClick={() => setActiveProjectGuide(null)}
+                >
+                  Close
+                </button>
+                <button
+                  className={styles.modalSubmitBtn}
+                  onClick={() => {
+                    completeProject();
+                    setActiveProjectGuide(null);
+                    toast.success(`Congratulations! You completed "${activeProjectGuide.name}" and earned 250 XP!`);
+                  }}
+                >
+                  Mark Project as Completed (+250 XP)
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
-      </main>
+      </AnimatePresence>
 
       <SiteFooter />
     </div>

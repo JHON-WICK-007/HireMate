@@ -24,6 +24,11 @@ const staggerContainer = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.12 } }
 };
+const getMaxTimeForQuestions = (q: number): number => {
+  if (q <= 5) return 25 * 60;
+  if (q <= 10) return 45 * 60;
+  return 90 * 60;
+};
 
 // ─── Inline SVG Icons ─────────────────────────────────────────
 const IconClock = () => (
@@ -382,6 +387,11 @@ function LiveInterviewContent() {
   const chatMessagesRef = useRef<HTMLDivElement>(null);
   const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const elapsedTimeRef = useRef(0);
+
+  useEffect(() => {
+    elapsedTimeRef.current = elapsedTime;
+  }, [elapsedTime]);
 
   // Auto-expand textarea height based on content
   useEffect(() => {
@@ -486,12 +496,27 @@ const savedUserStr = localStorage.getItem("user");
           setQuestionTypes(session.questionTypes || []);
           setCurrentQuestionIndex(session.currentQuestionIndex);
 
-          // Restore elapsed time from session's createdAt timestamp
-          if (session.createdAt) {
+          // Restore stored elapsedTime from session (resumes from exact point left off)
+          if (typeof session.elapsedTime === "number" && session.elapsedTime > 0) {
+            const maxAllowed = getMaxTimeForQuestions(session.totalQuestions || 10);
+            const restoredTime = Math.min(maxAllowed, session.elapsedTime);
+            setElapsedTime(restoredTime);
+            elapsedTimeRef.current = restoredTime;
+          } else if (session.createdAt) {
             const startTime = new Date(session.createdAt).getTime();
-            const now = Date.now();
-            const elapsedSeconds = Math.floor((now - startTime) / 1000);
-            setElapsedTime(elapsedSeconds > 0 ? elapsedSeconds : 0);
+            const rawElapsed = Math.floor((Date.now() - startTime) / 1000);
+            if (rawElapsed > 0 && rawElapsed < 3600) {
+              const maxAllowed = getMaxTimeForQuestions(session.totalQuestions || 10);
+              const restoredTime = Math.min(maxAllowed, rawElapsed);
+              setElapsedTime(restoredTime);
+              elapsedTimeRef.current = restoredTime;
+            } else {
+              setElapsedTime(0);
+              elapsedTimeRef.current = 0;
+            }
+          } else {
+            setElapsedTime(0);
+            elapsedTimeRef.current = 0;
           }
 
           // Rebuild message log history
@@ -541,6 +566,47 @@ const savedUserStr = localStorage.getItem("user");
     };
   }, [isAiTyping]);
 
+  // Auto-sync active elapsedTime to backend (3-second interval + tab close / page unload / visibility change)
+  useEffect(() => {
+    if (!id || !sessionLoaded) return;
+
+    const saveProgress = () => {
+      const timeToSave = elapsedTimeRef.current;
+      if (timeToSave <= 0) return;
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      fetch(`${API_URL}/api/interviews/${id}/progress`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        keepalive: true,
+        body: JSON.stringify({ elapsedTime: timeToSave }),
+      }).catch(() => {});
+    };
+
+    // Sync every 3 seconds while active
+    const syncInterval = setInterval(saveProgress, 3000);
+
+    // Sync immediately when leaving, closing tab, or switching visibility
+    const handleVisibilityOrUnload = () => {
+      saveProgress();
+    };
+
+    window.addEventListener("beforeunload", handleVisibilityOrUnload);
+    document.addEventListener("visibilitychange", handleVisibilityOrUnload);
+
+    return () => {
+      clearInterval(syncInterval);
+      window.removeEventListener("beforeunload", handleVisibilityOrUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityOrUnload);
+      saveProgress();
+    };
+  }, [id, sessionLoaded]);
+
   // Scroll to bottom of chat
   useEffect(() => {
     if (chatMessagesRef.current) {
@@ -549,8 +615,13 @@ const savedUserStr = localStorage.getItem("user");
   }, [messages, isAiTyping]);
 
   const formatTime = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
     const secs = totalSeconds % 60;
+
+    if (hrs > 0) {
+      return `${hrs}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
@@ -585,7 +656,7 @@ const savedUserStr = localStorage.getItem("user");
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ answer: ans }),
+        body: JSON.stringify({ answer: ans, elapsedTime }),
       });
 
       const data = await res.json();

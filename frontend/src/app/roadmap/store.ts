@@ -68,6 +68,7 @@ export interface RoadmapStore extends RoadmapState {
     updateSkillProgress: (phaseId: string, skillId: string, progress: number) => void;
     incrementStreak: () => void;
     addXp: (amount: number) => void;
+    completeProject: () => void;
   };
 }
 
@@ -332,13 +333,25 @@ export const useRoadmapStore = create<RoadmapStore>()(
 
         updateSkillProgress: (phaseId, skillId, progress) => {
           const { phases } = get();
+          let skillsCompletedChange = 0;
+
           const updatedPhases = phases.map((phase) => {
             if (phase.id !== phaseId) return phase;
 
             const updatedSkills = phase.skills.map((skill) => {
               if (skill.id !== skillId) return skill;
-              const status = progress === 100 ? "completed" as const : (progress > 0 ? "in-progress" as const : "locked" as const);
-              return { ...skill, progressPercent: progress, status };
+
+              const oldCompleted = skill.status === "completed";
+              const newStatus = progress === 100 ? "completed" as const : (progress > 0 ? "in-progress" as const : "locked" as const);
+              const newCompleted = newStatus === "completed";
+
+              if (!oldCompleted && newCompleted) {
+                skillsCompletedChange = 1;
+              } else if (oldCompleted && !newCompleted) {
+                skillsCompletedChange = -1;
+              }
+
+              return { ...skill, progressPercent: progress, status: newStatus };
             });
 
             const completedCount = updatedSkills.filter(s => s.status === "completed").length;
@@ -348,7 +361,31 @@ export const useRoadmapStore = create<RoadmapStore>()(
             return { ...phase, skills: updatedSkills, progressPercent, status };
           });
 
-          set({ phases: updatedPhases });
+          // Cascade active status to next phase if current one completed
+          const allCompletedIdxs = updatedPhases
+            .map((p, idx) => (p.progressPercent === 100 ? idx : -1))
+            .filter(idx => idx !== -1);
+
+          allCompletedIdxs.forEach((idx) => {
+            const nextIdx = idx + 1;
+            if (nextIdx < updatedPhases.length && updatedPhases[nextIdx].status === "locked") {
+              updatedPhases[nextIdx].status = "active";
+              if (updatedPhases[nextIdx].skills.length > 0) {
+                updatedPhases[nextIdx].skills[0].status = "in-progress";
+              }
+            }
+          });
+
+          const currentXp = get().xp;
+          const newXp = currentXp + (skillsCompletedChange > 0 ? 50 : (skillsCompletedChange < 0 ? -25 : 0));
+          const nextLevel = Math.floor(newXp / 1000) + 1;
+
+          set({
+            phases: updatedPhases,
+            completedSkillsCount: Math.max(0, get().completedSkillsCount + skillsCompletedChange),
+            xp: Math.max(0, newXp),
+            level: nextLevel,
+          });
         },
 
         incrementStreak: () => {
@@ -359,6 +396,16 @@ export const useRoadmapStore = create<RoadmapStore>()(
           const newXp = get().xp + amount;
           const nextLevel = Math.floor(newXp / 1000) + 1;
           set({ xp: newXp, level: nextLevel });
+        },
+
+        completeProject: () => {
+          const newXp = get().xp + 250;
+          const nextLevel = Math.floor(newXp / 1000) + 1;
+          set({
+            completedProjectsCount: get().completedProjectsCount + 1,
+            xp: newXp,
+            level: nextLevel,
+          });
         },
       },
     }),

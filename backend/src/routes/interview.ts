@@ -238,7 +238,7 @@ Respond ONLY with a valid JSON object matching this schema:
 router.post("/:id/submit", protect, async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const { answer } = req.body;
+    const { answer, elapsedTime } = req.body;
 
     if (typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
       res.status(400).json({ success: false, message: "Invalid session ID format." });
@@ -264,6 +264,10 @@ router.post("/:id/submit", protect, async (req: Request, res: Response): Promise
     if (interview.user.toString() !== req.user?._id.toString()) {
       res.status(403).json({ success: false, message: "Access denied." });
       return;
+    }
+
+    if (typeof elapsedTime === "number" && elapsedTime >= 0) {
+      interview.elapsedTime = elapsedTime;
     }
 
     if (interview.status === "completed") {
@@ -569,6 +573,45 @@ Respond ONLY with a valid JSON object:
   } catch (error: any) {
     console.error("End interview error:", error);
     res.status(500).json({ success: false, message: error.message || "Failed to end interview session." });
+  }
+});
+
+// @route   POST /api/interviews/:id/progress
+// @desc    Persist active timer elapsedTime for live interview session
+// @access  Protected
+router.post("/:id/progress", protect, async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { elapsedTime } = req.body;
+
+    if (typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ success: false, message: "Invalid session ID format." });
+      return;
+    }
+
+    if (typeof elapsedTime !== "number" || elapsedTime < 0) {
+      res.status(400).json({ success: false, message: "Invalid elapsedTime format." });
+      return;
+    }
+
+    const interview = await Interview.findById(id);
+    if (!interview) {
+      res.status(404).json({ success: false, message: "Interview session not found." });
+      return;
+    }
+
+    if (interview.user.toString() !== req.user?._id.toString()) {
+      res.status(403).json({ success: false, message: "Access denied." });
+      return;
+    }
+
+    interview.elapsedTime = elapsedTime;
+    await interview.save();
+
+    res.status(200).json({ success: true, elapsedTime: interview.elapsedTime });
+  } catch (error: any) {
+    console.error("Progress save error:", error);
+    res.status(500).json({ success: false, message: error.message || "Failed to update interview progress." });
   }
 });
 

@@ -28,6 +28,7 @@ export interface IInterview extends Document {
   status: "in-progress" | "completed";
   sessionName?: string;
   sessionNameNorm?: string;
+  elapsedTime?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -100,6 +101,10 @@ const interviewSchema = new Schema<IInterview>(
       type: String,
       trim: true,
       select: false,
+    },
+    elapsedTime: {
+      type: Number,
+      default: 0,
     },
   },
   {
