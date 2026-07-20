@@ -16,17 +16,31 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
 
   if (isSmtpConfigured) {
     try {
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || "2525"),
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASSWORD,
-        },
-      });
+      const port = parseInt(process.env.SMTP_PORT || "587");
+      const isGmail = (process.env.SMTP_HOST || "").includes("gmail");
+
+      const transporter = nodemailer.createTransport(
+        isGmail
+          ? {
+              service: "gmail",
+              auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASSWORD,
+              },
+            }
+          : {
+              host: process.env.SMTP_HOST,
+              port,
+              secure: port === 465,
+              auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASSWORD,
+              },
+            }
+      );
 
       const mailOptions = {
-        from: `${process.env.FROM_NAME || "HireMate AI"} <${process.env.FROM_EMAIL || "noreply@hiremate.ai"}>`,
+        from: `${process.env.FROM_NAME || "HireMate AI"} <${process.env.FROM_EMAIL || process.env.SMTP_USER}>`,
         to: options.email,
         subject: options.subject,
         text: options.message,
