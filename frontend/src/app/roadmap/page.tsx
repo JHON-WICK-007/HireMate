@@ -245,6 +245,7 @@ export default function CareerRoadmapPage() {
 
   // UI Flow States
   const [isMounted, setIsMounted] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationStep, setGenerationStep] = useState(0);
   const [expandedPhaseId, setExpandedPhaseId] = useState<string | null>(null);
@@ -256,7 +257,12 @@ export default function CareerRoadmapPage() {
   useEffect(() => {
     setIsMounted(true);
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+      toast.error("Please sign in to access your Career Roadmap.");
+      router.push("/auth?mode=signin");
+      return;
+    }
+    setIsAuthenticated(true);
 
     // Fetch profile
     fetch(`${API_URL}/api/auth/me`, {
@@ -383,7 +389,7 @@ export default function CareerRoadmapPage() {
   // quote selector based on streak
   const quote = MOTIVATIONAL_QUOTES[streak % MOTIVATIONAL_QUOTES.length];
 
-  if (!isMounted) {
+  if (!isMounted || !isAuthenticated) {
     return (
       <div className={styles.loadingPageContainer}>
         <HomeBackdrop />
