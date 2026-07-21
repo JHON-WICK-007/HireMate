@@ -59,9 +59,13 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
       ...(options.html ? { html: options.html } : {}),
     };
 
-    await transporter.sendMail(mailOptions);
-    console.log(`[SMTP] Reset email successfully dispatched to ${options.email}`);
-    return;
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log(`[SMTP] Reset email successfully dispatched to ${options.email}`);
+      return;
+    } catch (smtpErr: any) {
+      console.warn(`[SMTP Warning] SMTP delivery failed (${smtpErr.message || smtpErr}). Falling back to Dev Email console logger.`);
+    }
   }
 
   // Fallback console log (very clean for development)

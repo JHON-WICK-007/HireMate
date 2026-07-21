@@ -333,7 +333,10 @@ router.post("/forgot-password", async (req: Request, res: Response): Promise<voi
     }
     forgotPasswordRateLimit.set(emailKey, now);
 
-    const user = await User.findOne({ email: emailKey });
+    // Case-insensitive email lookup
+    const user = await User.findOne({
+      email: { $regex: new RegExp(`^${emailKey.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+    });
 
     if (!user) {
       // Silently succeed to prevent email enumeration
@@ -374,7 +377,7 @@ router.post("/forgot-password", async (req: Request, res: Response): Promise<voi
       res.status(200).json({
         success: true,
         message: "A password reset link has been sent to your email address.",
-        resetUrl: process.env.NODE_ENV === "development" ? resetUrl : undefined,
+        resetUrl: process.env.NODE_ENV !== "production" ? resetUrl : undefined,
       });
     } catch (err) {
       console.error("Email send failed:", err);
