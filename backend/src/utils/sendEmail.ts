@@ -14,42 +14,25 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
     process.env.SMTP_PASSWORD;
 
   if (isSmtpConfigured) {
+    const host = process.env.SMTP_HOST || "smtp.gmail.com";
     const port = parseInt(process.env.SMTP_PORT || "587");
-    const isGmail =
-      (process.env.SMTP_HOST || "").includes("gmail") ||
-      (process.env.SMTP_USER || "").includes("gmail");
+    const isSecure = port === 465;
 
-    const transporter = nodemailer.createTransport(
-      isGmail
-        ? {
-            service: "gmail",
-            auth: {
-              user: process.env.SMTP_USER,
-              pass: process.env.SMTP_PASSWORD,
-            },
-            tls: {
-              rejectUnauthorized: false,
-            },
-            connectionTimeout: 10000,
-            greetingTimeout: 10000,
-            socketTimeout: 12000,
-          }
-        : {
-            host: process.env.SMTP_HOST,
-            port,
-            secure: port === 465,
-            auth: {
-              user: process.env.SMTP_USER,
-              pass: process.env.SMTP_PASSWORD,
-            },
-            tls: {
-              rejectUnauthorized: false,
-            },
-            connectionTimeout: 10000,
-            greetingTimeout: 10000,
-            socketTimeout: 12000,
-          }
-    );
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: isSecure,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000,
+    });
 
     const mailOptions = {
       from: `${process.env.FROM_NAME || "HireMate AI"} <${process.env.FROM_EMAIL || process.env.SMTP_USER}>`,
@@ -60,8 +43,8 @@ export const sendEmail = async (options: EmailOptions): Promise<void> => {
     };
 
     try {
-      await transporter.sendMail(mailOptions);
-      console.log(`[SMTP] Reset email successfully dispatched to ${options.email}`);
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`[SMTP] Reset email successfully dispatched to ${options.email} (Message ID: ${info.messageId})`);
       return;
     } catch (smtpErr: any) {
       console.warn(`[SMTP Warning] SMTP delivery failed (${smtpErr.message || smtpErr}). Falling back to Dev Email console logger.`);
