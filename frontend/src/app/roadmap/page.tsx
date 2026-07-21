@@ -853,8 +853,13 @@ export default function CareerRoadmapPage() {
                       {idx > 0 && (
                         <div className={styles.phaseConnectorTop}>
                           <div
-                            className={`${styles.phaseConnectorFill} ${isPrevCompleted ? styles.phaseConnectorActive : ""
-                              }`}
+                            className={`${styles.phaseConnectorFill} ${
+                              isPrevCompleted
+                                ? isActive
+                                  ? `${styles.phaseConnectorActive} ${styles.phaseConnectorToActive}`
+                                  : `${styles.phaseConnectorActive} ${styles.phaseConnectorCompleted}`
+                                : ""
+                            }`}
                           />
                         </div>
                       )}
@@ -863,8 +868,11 @@ export default function CareerRoadmapPage() {
                       {!isLast && (
                         <div className={styles.phaseConnectorBottom}>
                           <div
-                            className={`${styles.phaseConnectorFill} ${isCompleted ? styles.phaseConnectorActive : ""
-                              }`}
+                            className={`${styles.phaseConnectorFill} ${
+                              isCompleted
+                                ? `${styles.phaseConnectorActive} ${styles.phaseConnectorCompleted}`
+                                : ""
+                            }`}
                           />
                         </div>
                       )}

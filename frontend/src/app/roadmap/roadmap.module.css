@@ -1058,12 +1058,22 @@
 .phaseConnectorFill {
   width: 100%;
   height: 0%;
-  background: linear-gradient(to bottom, var(--domain-roadmap), #22c55e);
+  background: #22c55e !important;
   transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .phaseConnectorActive {
   height: 100%;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.45);
+}
+
+.phaseConnectorCompleted {
+  background: #22c55e !important;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.45);
+}
+
+.phaseConnectorToActive {
+  background: linear-gradient(to bottom, #22c55e 0%, var(--domain-roadmap) 100%) !important;
   box-shadow: 0 0 10px rgba(var(--domain-roadmap-rgb), 0.45), 0 0 10px rgba(34, 197, 94, 0.45);
 }
 
