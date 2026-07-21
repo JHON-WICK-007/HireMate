@@ -272,6 +272,12 @@ export const useRoadmapStore = create<RoadmapStore>()(
 
         toggleSkillStatus: (phaseId, skillId) => {
           const { phases } = get();
+          const targetPhaseIdx = phases.findIndex(p => p.id === phaseId);
+          if (targetPhaseIdx > 0) {
+            const prevPhasesCompleted = phases.slice(0, targetPhaseIdx).every(p => p.status === "completed");
+            if (!prevPhasesCompleted) return; // Prevent completing skills in a locked phase!
+          }
+
           let skillsCompletedChange = 0;
 
           const updatedPhases = phases.map((phase) => {
@@ -333,6 +339,12 @@ export const useRoadmapStore = create<RoadmapStore>()(
 
         updateSkillProgress: (phaseId, skillId, progress) => {
           const { phases } = get();
+          const targetPhaseIdx = phases.findIndex(p => p.id === phaseId);
+          if (targetPhaseIdx > 0) {
+            const prevPhasesCompleted = phases.slice(0, targetPhaseIdx).every(p => p.status === "completed");
+            if (!prevPhasesCompleted) return; // Prevent modifying progress in a locked phase!
+          }
+
           let skillsCompletedChange = 0;
 
           const updatedPhases = phases.map((phase) => {

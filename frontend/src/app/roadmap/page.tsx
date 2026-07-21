@@ -836,12 +836,16 @@ export default function CareerRoadmapPage() {
                 {/* Loop Phases */}
                 {phases.map((phase, idx) => {
                   const isExpanded = expandedPhaseId === phase.id;
-                  const isLocked = phase.status === "locked";
-                  const isCompleted = phase.status === "completed";
-                  const isActive = phase.status === "active";
+
+                  // Strict sequential checks: Phase N is only completed/active if ALL upper phases (0..idx-1) are completed
+                  const areAllPreviousCompleted = idx === 0 || phases.slice(0, idx).every((p) => p.status === "completed" || p.progressPercent === 100);
+                  const isCompleted = (phase.status === "completed" || phase.progressPercent === 100) && areAllPreviousCompleted;
+                  const isActive = !isCompleted && areAllPreviousCompleted;
+                  const isLocked = !areAllPreviousCompleted;
                   const isLast = idx === phases.length - 1;
 
-                  const isPrevCompleted = idx > 0 && phases[idx - 1].status === "completed";
+                  const isPrevCompleted = idx > 0 && phases.slice(0, idx).every((p) => p.status === "completed" || p.progressPercent === 100);
+                  const isNodeActive = isActive;
 
                   return (
                     <div
@@ -855,9 +859,11 @@ export default function CareerRoadmapPage() {
                           <div
                             className={`${styles.phaseConnectorFill} ${
                               isPrevCompleted
-                                ? isActive
+                                ? isNodeActive
                                   ? `${styles.phaseConnectorActive} ${styles.phaseConnectorToActive}`
-                                  : `${styles.phaseConnectorActive} ${styles.phaseConnectorCompleted}`
+                                  : isCompleted
+                                    ? `${styles.phaseConnectorActive} ${styles.phaseConnectorCompleted}`
+                                    : ""
                                 : ""
                             }`}
                           />
@@ -879,12 +885,13 @@ export default function CareerRoadmapPage() {
 
                       {/* Spine connector Node */}
                       <div
-                        className={`${styles.phaseNode} ${isCompleted
+                        className={`${styles.phaseNode} ${
+                          isCompleted
                             ? styles.phaseNodeCompleted
-                            : isActive
+                            : isNodeActive
                               ? styles.phaseNodeActive
                               : ""
-                          }`}
+                        }`}
                       >
                         {isCompleted && <Check size={12} className="text-black" />}
                       </div>
@@ -911,7 +918,7 @@ export default function CareerRoadmapPage() {
                               <span>{phase.skills.length} skills</span>
                               <span>•</span>
                               <span>{phase.estimatedWeeks} weeks</span>
-                              {phase.progressPercent > 0 && (
+                              {!isLocked && phase.progressPercent > 0 && (
                                 <>
                                   <span>•</span>
                                   <span className="text-emerald-500 font-medium">{phase.progressPercent}% done</span>
@@ -956,19 +963,24 @@ export default function CareerRoadmapPage() {
                                   </h4>
                                   <div className={styles.skillsGrid}>
                                     {phase.skills.map((skill) => {
-                                      const isSkillCompleted = skill.status === "completed";
+                                      const isSkillCompleted = !isLocked && skill.status === "completed";
                                       const isSkillExpanded = expandedSkillId === skill.id;
+                                      const effectiveSkillProgress = isLocked ? 0 : skill.progressPercent;
                                       const hoursStudied = Math.min(
                                         skill.estimatedHours,
-                                        Math.max(0, Math.round((skill.progressPercent / 100) * skill.estimatedHours))
+                                        Math.max(0, Math.round((effectiveSkillProgress / 100) * skill.estimatedHours))
                                       );
 
                                       return (
                                         <div
                                           key={skill.id}
-                                          onClick={() => setExpandedSkillId(isSkillExpanded ? null : skill.id)}
-                                          className={`${styles.skillCard} ${isSkillCompleted ? styles.skillCardCompleted : ""
-                                            }`}
+                                          onClick={() => {
+                                            if (isLocked) return;
+                                            setExpandedSkillId(isSkillExpanded ? null : skill.id);
+                                          }}
+                                          className={`${styles.skillCard} ${
+                                            isSkillCompleted ? styles.skillCardCompleted : ""
+                                          } ${isLocked ? "opacity-60 cursor-not-allowed" : ""}`}
                                         >
                                           <div className={styles.skillHeader}>
                                             <div className={styles.skillInfo}>
@@ -990,9 +1002,11 @@ export default function CareerRoadmapPage() {
                                                 max={skill.estimatedHours}
                                                 step={1}
                                                 placeholder="0"
+                                                disabled={isLocked}
                                                 value={hoursStudied === 0 ? "" : hoursStudied}
                                                 onFocus={(e) => e.target.select()}
                                                 onChange={(e) => {
+                                                  if (isLocked) return;
                                                   const val = parseFloat(e.target.value) || 0;
                                                   const constrained = Math.min(skill.estimatedHours, Math.max(0, val));
                                                   const newPercent = Math.round((constrained / skill.estimatedHours) * 100);
@@ -1016,7 +1030,7 @@ export default function CareerRoadmapPage() {
                                           <div className={styles.skillProgress}>
                                             <div
                                               className={styles.skillProgressFill}
-                                              style={{ clipPath: `inset(0 ${100 - skill.progressPercent}% 0 0)` }}
+                                              style={{ clipPath: `inset(0 ${100 - effectiveSkillProgress}% 0 0)` }}
                                             ></div>
                                           </div>
 
