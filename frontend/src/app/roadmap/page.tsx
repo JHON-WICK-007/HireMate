@@ -215,6 +215,192 @@ const getDynamicProjectGuide = (project: ProjectNode, role: string, company: str
   return { steps, companyTip };
 };
 
+/* --- Dynamic Competency Gaps Generator --- */
+interface DynamicGap {
+  name: string;
+  matchPercent: number;
+}
+
+const getDynamicCompetencyGaps = (
+  role: string = "Full Stack",
+  resumeMatchScore: number = 65,
+  weakCompetencies: string[] = [],
+  overallProgress: number = 0
+): DynamicGap[] => {
+  let baseGaps: { name: string; baseOffset: number }[] = [];
+
+  switch (role) {
+    case "Frontend":
+      baseGaps = [
+        { name: "JavaScript & TypeScript Fundamentals", baseOffset: 0 },
+        { name: "React 19 & Next.js Architecture", baseOffset: -15 },
+        { name: "CSS Layouts & Web Performance", baseOffset: -10 },
+      ];
+      break;
+    case "Backend":
+      baseGaps = [
+        { name: "Node.js API & Database Schemas", baseOffset: 0 },
+        { name: "System Design & Distributed Caching", baseOffset: -20 },
+        { name: "Microservices & Docker Deployment", baseOffset: -10 },
+      ];
+      break;
+    case "Full Stack":
+      baseGaps = [
+        { name: "Full Stack Integration & Type Safety", baseOffset: 0 },
+        { name: "System Architecture & Database Scaling", baseOffset: -20 },
+        { name: "STAR Method Behavioral Responses", baseOffset: 10 },
+      ];
+      break;
+    case "AI Engineer":
+    case "ML Engineer":
+      baseGaps = [
+        { name: "LLM Architectures & RAG Vector Indexes", baseOffset: -10 },
+        { name: "Model Fine-Tuning & MLOps Pipelines", baseOffset: -25 },
+        { name: "Data Preprocessing & Algorithmic Optimization", baseOffset: 0 },
+      ];
+      break;
+    case "DevOps":
+      baseGaps = [
+        { name: "Docker & Kubernetes Container Orchestration", baseOffset: -15 },
+        { name: "Infrastructure as Code (Terraform)", baseOffset: -20 },
+        { name: "CI/CD Pipelines & Cloud Security", baseOffset: 5 },
+      ];
+      break;
+    case "Cybersecurity":
+      baseGaps = [
+        { name: "Linux Hardening & Network Defense", baseOffset: 0 },
+        { name: "OWASP Top 10 Audits & Penetration Testing", baseOffset: -15 },
+        { name: "Cryptography Patterns & IAM Security", baseOffset: -10 },
+      ];
+      break;
+    default:
+      baseGaps = [
+        { name: "Data Structures & Algorithms", baseOffset: -5 },
+        { name: "System Design & Architectural Scaling", baseOffset: -20 },
+        { name: "STAR Method Behavioral Responses", baseOffset: 10 },
+      ];
+      break;
+  }
+
+  return baseGaps.map((gap) => {
+    const isWeak = weakCompetencies.some((w) =>
+      gap.name.toLowerCase().includes(w.toLowerCase()) || w.toLowerCase().includes(gap.name.toLowerCase())
+    );
+    const weakPenalty = isWeak ? -10 : 0;
+    const rawMatch = resumeMatchScore + gap.baseOffset + weakPenalty + Math.round(overallProgress * 0.35);
+    const matchPercent = Math.min(98, Math.max(30, rawMatch));
+
+    return {
+      name: gap.name,
+      matchPercent,
+    };
+  });
+};
+
+/* --- Dynamic Target Certifications Generator --- */
+interface DynamicCert {
+  name: string;
+  matchTag: string;
+  track: string;
+}
+
+const getDynamicCertifications = (role: string = "Full Stack"): DynamicCert[] => {
+  switch (role) {
+    case "Frontend":
+      return [
+        {
+          name: "Meta Frontend Developer Professional Certificate",
+          matchTag: "Highly relevant (94% match)",
+          track: "Client UI & State Management track",
+        },
+        {
+          name: "OpenJS Node.js Application Developer (JSNAD)",
+          matchTag: `Recommended for ${role}`,
+          track: "JavaScript Engine & Web APIs track",
+        },
+      ];
+    case "Backend":
+      return [
+        {
+          name: "AWS Certified Developer - Associate",
+          matchTag: "Highly relevant (92% match)",
+          track: "Cloud Backend Infrastructure track",
+        },
+        {
+          name: "MongoDB Certified Developer Associate",
+          matchTag: `Recommended for ${role}`,
+          track: "Data Persistence & Aggregations track",
+        },
+      ];
+    case "Full Stack":
+      return [
+        {
+          name: "AWS Certified Solutions Architect Associate",
+          matchTag: "Highly relevant (95% match)",
+          track: "Full-Stack System Architecture track",
+        },
+        {
+          name: "Meta Full-Stack Software Engineer Certificate",
+          matchTag: `Recommended for ${role}`,
+          track: "End-to-End Web Applications track",
+        },
+      ];
+    case "AI Engineer":
+    case "ML Engineer":
+      return [
+        {
+          name: "AWS Certified Machine Learning - Specialty",
+          matchTag: "Highly relevant (96% match)",
+          track: "Generative AI & Model Pipelines track",
+        },
+        {
+          name: "Google Cloud Professional ML Engineer",
+          matchTag: `Recommended for ${role}`,
+          track: "Neural Networks & MLOps track",
+        },
+      ];
+    case "DevOps":
+      return [
+        {
+          name: "CKA: Certified Kubernetes Administrator",
+          matchTag: "Highly relevant (98% match)",
+          track: "Container Orchestration & Clusters track",
+        },
+        {
+          name: "HashiCorp Certified Terraform Associate",
+          matchTag: `Recommended for ${role}`,
+          track: "Infrastructure as Code (IaC) track",
+        },
+      ];
+    case "Cybersecurity":
+      return [
+        {
+          name: "CompTIA Security+ / CEH Certification",
+          matchTag: "Highly relevant (95% match)",
+          track: "Network Security & Penetration Testing track",
+        },
+        {
+          name: "AWS Certified Security - Specialty",
+          matchTag: `Recommended for ${role}`,
+          track: "Cloud Identity & Threat Protection track",
+        },
+      ];
+    default:
+      return [
+        {
+          name: "AWS Certified Developer Associate",
+          matchTag: "Highly relevant (92% match)",
+          track: "Software Foundations track",
+        },
+        {
+          name: "Meta Professional Software Engineer Certificate",
+          matchTag: `Recommended for ${role}`,
+          track: "Systems Development track",
+        },
+      ];
+  }
+};
+
 export default function CareerRoadmapPage() {
   const router = useRouter();
   const toast = useToast();
@@ -741,69 +927,62 @@ export default function CareerRoadmapPage() {
                   <span className={styles.dashGaugeTitle}>Match Progress</span>
                 </div>
 
-                <div className={styles.dashGapsBox}>
-                  <div className={styles.dashGapsHeader}>
-                    <h4 className={styles.dashGapsTitle}>Role Competency Gaps</h4>
-                    <span className={styles.dashGapsSubtitle}>Current vs Target Level</span>
-                  </div>
-                  <div className={styles.dashGapRow}>
-                    <div className={styles.dashGapMeta}>
-                      <span className={styles.dashGapName}>Data Structures & Algorithms</span>
-                      <span className={styles.dashGapValue}>60% Match</span>
+                {/* Dynamic Competency Gaps */}
+                {(() => {
+                  const dynamicGaps = getDynamicCompetencyGaps(
+                    userContext?.targetRole,
+                    userContext?.resumeMatchScore || 65,
+                    userContext?.weakCompetencies || [],
+                    overallProgress
+                  );
+
+                  return (
+                    <div className={styles.dashGapsBox}>
+                      <div className={styles.dashGapsHeader}>
+                        <h4 className={styles.dashGapsTitle}>Role Competency Gaps</h4>
+                        <span className={styles.dashGapsSubtitle}>Current vs Target Level</span>
+                      </div>
+                      {dynamicGaps.map((gap, gIdx) => (
+                        <div key={gIdx} className={styles.dashGapRow}>
+                          <div className={styles.dashGapMeta}>
+                            <span className={styles.dashGapName}>{gap.name}</span>
+                            <span className={styles.dashGapValue}>{gap.matchPercent}% Match</span>
+                          </div>
+                          <div className={styles.dashGapTrack}>
+                            <div className={styles.dashGapBar} style={{ width: `${gap.matchPercent}%` }}></div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <div className={styles.dashGapTrack}>
-                      <div className={styles.dashGapBar} style={{ width: "60%" }}></div>
-                    </div>
-                  </div>
-                  <div className={styles.dashGapRow}>
-                    <div className={styles.dashGapMeta}>
-                      <span className={styles.dashGapName}>System Design & Scaling</span>
-                      <span className={styles.dashGapValue}>45% Match</span>
-                    </div>
-                    <div className={styles.dashGapTrack}>
-                      <div className={styles.dashGapBar} style={{ width: "45%" }}></div>
-                    </div>
-                  </div>
-                  <div className={styles.dashGapRow}>
-                    <div className={styles.dashGapMeta}>
-                      <span className={styles.dashGapName}>STAR Method Behavioral responses</span>
-                      <span className={styles.dashGapValue}>75% Match</span>
-                    </div>
-                    <div className={styles.dashGapTrack}>
-                      <div className={styles.dashGapBar} style={{ width: "75%" }}></div>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })()}
               </section>
 
-              {/* Bottom Row: Certifications + Learning Streak */}
+              {/* Bottom Row: Dynamic Certifications + Learning Streak */}
               <div className={styles.dashBottomGrid}>
-                <section className={styles.dashCertsCard}>
-                  <h4 className={styles.dashCertsTitle}>Target Recommended Certifications</h4>
-                  <div className={styles.dashCertsGrid}>
-                    <div className={styles.dashCertItem}>
-                      <div className={styles.dashCertIcon}>
-                        <Award className="text-orange-500" size={20} />
-                      </div>
-                      <div className={styles.dashCertMeta}>
-                        <span className={styles.dashCertName}>AWS Certified Developer Associate</span>
-                        <span className={styles.dashCertTag}>Highly relevant (92% match)</span>
-                        <span className={styles.dashCertTrack}>Cloud Foundations track</span>
-                      </div>
-                    </div>
+                {(() => {
+                  const dynamicCerts = getDynamicCertifications(userContext?.targetRole);
 
-                    <div className={styles.dashCertItem}>
-                      <div className={styles.dashCertIcon}>
-                        <Award className="text-orange-500" size={20} />
+                  return (
+                    <section className={styles.dashCertsCard}>
+                      <h4 className={styles.dashCertsTitle}>Target Recommended Certifications</h4>
+                      <div className={styles.dashCertsGrid}>
+                        {dynamicCerts.map((cert, cIdx) => (
+                          <div key={cIdx} className={styles.dashCertItem}>
+                            <div className={styles.dashCertIcon}>
+                              <Award className="text-orange-500" size={20} />
+                            </div>
+                            <div className={styles.dashCertMeta}>
+                              <span className={styles.dashCertName}>{cert.name}</span>
+                              <span className={styles.dashCertTag}>{cert.matchTag}</span>
+                              <span className={styles.dashCertTrack}>{cert.track}</span>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div className={styles.dashCertMeta}>
-                        <span className={styles.dashCertName}>HashiCorp Certified Terraform Associate</span>
-                        <span className={styles.dashCertTag}>Recommended for {userContext?.targetRole || "Cloud Engineer"}</span>
-                        <span className={styles.dashCertTrack}>Infrastructure management track</span>
-                      </div>
-                    </div>
-                  </div>
-                </section>
+                    </section>
+                  );
+                })()}
 
                 <section className={styles.dashStreakCard}>
                   <h4 className={styles.dashCertsTitle}>Daily Learning Streak</h4>
