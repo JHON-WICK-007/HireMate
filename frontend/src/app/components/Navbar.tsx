@@ -173,7 +173,7 @@ export default function Navbar({ activePage, onClick }: NavbarProps) {
               </linearGradient>
             </defs>
           </svg>
-          <span>HireMate AI</span>
+          <span>HireMate</span>
         </Link>
 
         <div className={homeStyles.navLinks}>
