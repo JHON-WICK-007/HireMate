@@ -178,6 +178,50 @@ function ToastCard({
   );
 }
 
+/* ─── Human Error Message Sanitizer ─────────────────────── */
+function sanitizeHumanError(
+  text: string | undefined,
+  defaultFallback = "An unexpected server error occurred. Please try again."
+): string {
+  if (!text || typeof text !== "string") return defaultFallback;
+
+  const raw = text.trim();
+  if (!raw) return defaultFallback;
+
+  const lower = raw.toLowerCase();
+
+  // Detect raw developer logs, HTTP status dumps, or unhandled stack traces
+  const isInternalError =
+    lower.includes("econnrefused") ||
+    lower.includes("casterror") ||
+    lower.includes("objectid") ||
+    lower.includes("500") ||
+    lower.includes("502") ||
+    lower.includes("503") ||
+    lower.includes("internal server error") ||
+    lower.includes("syntaxerror") ||
+    lower.includes("typeerror") ||
+    lower.includes("proxy error") ||
+    lower.includes("mongo") ||
+    lower.includes("ml service error") ||
+    lower.includes("json.parse") ||
+    lower.includes("unexpected token") ||
+    lower.includes("failed to fetch") ||
+    lower.includes("networkerror") ||
+    lower.includes("<html") ||
+    lower.includes("<!doctype") ||
+    lower.includes("stack trace") ||
+    (lower.includes("at ") && lower.includes(".ts")) ||
+    (lower.includes("at ") && lower.includes(".js"));
+
+  if (isInternalError) {
+    console.error("[Toast Error Sanitized Internal Log]:", raw);
+    return defaultFallback;
+  }
+
+  return raw;
+}
+
 /* ─── Provider ───────────────────────────────────────────── */
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -281,7 +325,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const error = useCallback(
     (
-      message: string,
+      rawMessage: string,
       descriptionOrDuration?: string | number,
       options?: ToastOptions | number
     ) => {
@@ -290,7 +334,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       let onRetry: (() => void) | undefined = undefined;
 
       if (typeof descriptionOrDuration === "string") {
-        desc = descriptionOrDuration;
+        desc = sanitizeHumanError(descriptionOrDuration, "Please check your input and try again.");
         if (options && typeof options === "object") {
           if (options.duration !== undefined) dur = options.duration;
           if (options.onRetry !== undefined) onRetry = options.onRetry;
@@ -301,12 +345,16 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         dur = descriptionOrDuration;
       } else if (descriptionOrDuration && typeof descriptionOrDuration === "object") {
         const opts = descriptionOrDuration as unknown as ToastOptions;
-        desc = opts.description;
+        if (opts.description) {
+          desc = sanitizeHumanError(opts.description, "Please check your input and try again.");
+        }
         if (opts.duration !== undefined) dur = opts.duration;
         if (opts.onRetry !== undefined) onRetry = opts.onRetry;
       }
 
-      addToast("error", message, desc, dur, onRetry);
+      const humanMessage = sanitizeHumanError(rawMessage, "An unexpected server error occurred. Please try again.");
+
+      addToast("error", humanMessage, desc, dur, onRetry);
     },
     [addToast]
   );
