@@ -1375,8 +1375,25 @@ export default function CareerRoadmapPage() {
                       Identified Strengths
                     </span>
                     <div className={styles.sidebarChips}>
-                      <span className={`${styles.sidebarChip} ${styles.sidebarChipGreen}`}>Fast Learner</span>
-                      <span className={`${styles.sidebarChip} ${styles.sidebarChipGreen}`}>Coding Consistency</span>
+                      {streak >= 3 && (
+                        <span className={`${styles.sidebarChip} ${styles.sidebarChipGreen}`}>{streak}-Day Streak</span>
+                      )}
+                      {completedSkillsCount > 0 ? (
+                        phases
+                          .flatMap((p) => p.skills)
+                          .filter((s) => s.status === "completed")
+                          .slice(0, 3)
+                          .map((s, idx) => (
+                            <span key={idx} className={`${styles.sidebarChip} ${styles.sidebarChipGreen}`}>
+                              {s.name}
+                            </span>
+                          ))
+                      ) : (
+                        <>
+                          <span className={`${styles.sidebarChip} ${styles.sidebarChipGreen}`}>High Adaptability</span>
+                          <span className={`${styles.sidebarChip} ${styles.sidebarChipGreen}`}>Consistent Progress</span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className={styles.sidebarMetricGroup}>
