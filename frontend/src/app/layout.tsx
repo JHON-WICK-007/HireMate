@@ -67,6 +67,13 @@ export const metadata: Metadata = {
     "resume analysis",
     "coding interview",
   ],
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
